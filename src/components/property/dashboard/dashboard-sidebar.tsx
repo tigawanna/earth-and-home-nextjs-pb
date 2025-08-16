@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Building2,
   ChevronDown,
@@ -38,8 +38,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { authClient } from "@/lib/client-side-auth";
+
 import { ModeToggle } from "@/components/theme/theme-toggle";
+import { viewerQueryOptions, signoutMutationOptions } from "@/DAL/pocketbase/auth";
+import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
 
 // Menu items for regular users
 const userMenuItems = [
@@ -99,39 +101,22 @@ interface User {
 
 export function DashboardSidebar() {
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const session = await authClient.getSession();
-        if (session.data?.user) {
-          const userData = session.data.user as User;
-          setUser(userData);
-
-          // Check if user is admin by checking role
-          setIsAdmin(userData.role === "admin");
-        }
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
+  const router = useRouter();
+  const { data, isPending } = useSuspenseQuery(viewerQueryOptions());
+  const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
+  const user = data?.record;
   const handleSignOut = async () => {
     try {
-      await authClient.signOut();
-      window.location.href = "/";
+      await mutate();
+      router.push("/");
     } catch (error) {
       console.error("Sign out failed:", error);
     }
   };
 
+  const isAdmin = user?.is_admin;
   const allMenuItems = isAdmin ? [...userMenuItems, ...adminMenuItems] : userMenuItems;
-
   return (
     <Sidebar>
       <SidebarHeader>
@@ -218,7 +203,7 @@ export function DashboardSidebar() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user?.image} alt={user?.name || "User"} />
+                    <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
                     <AvatarFallback className="rounded-lg">
                       {user?.name?.charAt(0)?.toUpperCase() || "U"}
                     </AvatarFallback>
@@ -236,7 +221,7 @@ export function DashboardSidebar() {
                 align="end"
                 sideOffset={4}>
                 <DropdownMenuItem asChild>
-                  <ModeToggle compact/>
+                  <ModeToggle compact />
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
