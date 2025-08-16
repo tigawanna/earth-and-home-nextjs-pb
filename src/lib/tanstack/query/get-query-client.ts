@@ -8,6 +8,15 @@ import { cache } from "react";
 
 export const queryKeyPrefixes = {
   viewer: "viewer",
+  auth: "auth",
+  properties: "properties",
+  property: "property",
+  favorites: "favorites",
+  favorite: "favorite",
+  users: "users",
+  user: "user",
+  search: "search",
+  bookmarks: "bookmarks",
 } as const;
 
 export type QueryKey = [
