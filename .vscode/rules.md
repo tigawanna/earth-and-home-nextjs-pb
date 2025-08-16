@@ -26,7 +26,8 @@ This is a Next.js project that uses
   - Server client: `src/lib/pocketbase/server-client.ts`
   - Middleware guard: `src/middleware.ts`
   - Environment variable: `NEXT_PUBLIC_POCKETBASE_API_URL` must point to your PocketBase API (e.g. http://127.0.0.1:8090)
-  - Optional: generate typed models with `pocketbase-typegen` into `src/types/pocketbase-types.ts`
+  - 
+  - Optional: generate typed models with `pnm run pb-types` into `src/lib/pocketbase/types/pb-types.ts` and zod schemas into `src/lib/pocketbase/types/pb-zod.ts`
 
 # file structure
 - `/src/lib` has utils and configs for third party libraries
