@@ -1,4 +1,6 @@
 import { getProperty } from "@/DAL/drizzle/property-queries";
+import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
+
 import { SinglePropertyNotFound } from "./query-states";
 import { PropertyImageGallery } from "./list/PropertyImageGallery";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,7 +28,6 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import Link from "next/link";
-import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import { FavoriteProperty } from "./form/FavoriteProperty";
 
 const sampleImages = [
