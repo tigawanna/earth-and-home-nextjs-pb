@@ -1,14 +1,15 @@
-import PocketBase from 'pocketbase';
+import {TypedPocketBase} from "@tigawanna/typed-pocketbase"
+import { Schema } from "./types/pb-types";
 
-let singletonClient: PocketBase | null = null;
+let singletonClient: TypedPocketBase<Schema> | null = null;
 
 export function createBrowserClient() {
-  const url = process.env.NEXT_PUBLIC_POCKETBASE_API_URL;
+  const url = process.env.NEXT_PB_URL;
   if (!url) {
     throw new Error('Pocketbase API url not defined !');
   }
 
-  const createNewClient = () => new PocketBase(url);
+  const createNewClient = () => new TypedPocketBase(url);
 
   const _client = singletonClient ?? createNewClient();
 
