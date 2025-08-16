@@ -1,20 +1,32 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toggleFavorite } from "@/DAL/drizzle/property-mutations";
+import { toggleFavorite } from "@/DAL/pocketbase/favorite-mutations";
 import { Heart } from "lucide-react";
 import { useTransition } from "react";
 
 interface FavoritePropertyProps {
   propertyId: string;
-  isFavorited?:boolean //TODO fix thi
+  userId?: string; // Add userId prop
+  isFavorited?: boolean;
 }
 
-export function FavoriteProperty({ propertyId }: FavoritePropertyProps) {
+export function FavoriteProperty({ propertyId, userId }: FavoritePropertyProps) {
   const [isPending, startTransition] = useTransition();
+  
   const handleToggleFavorite = () => {
-    startTransition(() => {
-      toggleFavorite(propertyId);
+    if (!userId) {
+      // TODO: Handle authentication redirect
+      console.warn("User not authenticated");
+      return;
+    }
+    
+    startTransition(async () => {
+      try {
+        await toggleFavorite(propertyId, userId);
+      } catch (error) {
+        console.error("Failed to toggle favorite:", error);
+      }
     });
   };
 

@@ -1,24 +1,25 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Heart, Edit, Trash2 } from "lucide-react";
-import { deleteProperty, toggleFavorite } from "@/DAL/drizzle/property-mutations";
-import { toast } from "sonner";
-import Link from "next/link";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { PropertyWithAgent } from "@/DAL/drizzle/property-types";
+import { Button } from "@/components/ui/button";
+import { toggleFavorite } from "@/DAL/pocketbase/favorite-mutations";
+import { deleteProperty } from "@/DAL/pocketbase/property-mutations";
+import { PropertyWithAgent } from "@/DAL/pocketbase/property-types";
+import { Edit, Heart, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { PropertyCard } from "./PropertyCard";
 
 interface ClientPropertyCardProps {
@@ -53,7 +54,16 @@ export function ClientPropertyCard({
 
   const handleFavorite = () => {
     startTransition(async () => {
-      const result = await toggleFavorite(property.id);
+      // TODO: Get current user ID from auth context or session
+      // For now, we'll need to pass userId as a prop or get it from auth
+      const userId = ""; // This needs to be implemented
+      
+      if (!userId) {
+        toast.error("Please sign in to favorite properties");
+        return;
+      }
+      
+      const result = await toggleFavorite(property.id, userId);
       
       if (result.success) {
         toast.success(result.message);

@@ -64,3 +64,9 @@ export const deletePropertyMutationOptions = mutationOptions({
     }
   },
 });
+
+// For backwards compatibility
+export const deleteProperty = async (id: string) => {
+  const result = await deletePropertyMutationOptions.mutationFn!(id);
+  return result;
+};

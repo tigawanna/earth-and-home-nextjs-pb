@@ -1,34 +1,30 @@
-import { getProperty } from "@/DAL/drizzle/property-queries";
+import { getProperty } from "@/DAL/pocketbase/property-queries";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 
-import { SinglePropertyNotFound } from "./query-states";
-import { PropertyImageGallery } from "./list/PropertyImageGallery";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  MapPin,
-  Bed,
-  Bath,
-  Square,
-  Car,
-  Calendar,
-  Heart,
-  Share2,
-  Phone,
-  Mail,
-  Thermometer,
-  Snowflake,
-  TreePine,
-  Wifi,
-  Building,
-  ArrowLeft,
+    ArrowLeft,
+    Bath,
+    Bed,
+    Building,
+    Calendar,
+    Car,
+    Mail,
+    MapPin,
+    Phone,
+    Share2,
+    Snowflake,
+    Square,
+    Thermometer
 } from "lucide-react";
 import Link from "next/link";
 import { FavoriteProperty } from "./form/FavoriteProperty";
+import { PropertyImageGallery } from "./list/PropertyImageGallery";
+import { SinglePropertyNotFound } from "./query-states";
 
 const sampleImages = [
   {

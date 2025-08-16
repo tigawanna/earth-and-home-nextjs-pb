@@ -1,8 +1,8 @@
-import { property, user } from "@/lib/drizzle/schema";
+import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
-export type PropertyWithAgent = typeof property.$inferSelect & {
-  agent?: Pick<typeof user.$inferSelect, "id" | "name" | "email" | "image"> | null;
-  owner?: Pick<typeof user.$inferSelect, "id" | "name" | "email" | "image"> | null;
+export type PropertyWithAgent = PropertiesResponse & {
+  agent?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
+  owner?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
   isFavorited?: boolean;
 };
 
@@ -21,5 +21,5 @@ export type PropertyFilters = {
   isFeatured?: boolean;
 };
 
-export type PropertySortBy = "createdAt" | "updatedAt" | "price" | "title";
+export type PropertySortBy = "created" | "updated" | "price" | "title";
 export type SortOrder = "asc" | "desc";

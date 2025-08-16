@@ -1,10 +1,10 @@
-import { PropertyList } from "./list/PropertyList";
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { Button } from "@/components/ui/button";
+import { getProperties } from "@/DAL/pocketbase/property-queries";
+import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/pocketbase/property-types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { getProperties } from "@/DAL/drizzle/property-queries";
-import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/drizzle/property-types";
+import { PropertyList } from "./list/PropertyList";
 
 interface PropertyDashboardProps {
   searchParams: { [key: string]: string | string[] | undefined };

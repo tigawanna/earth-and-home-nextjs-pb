@@ -1,6 +1,6 @@
-import { PropertyList } from "./list/PropertyList";
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
-import { getFavoriteProperties } from "@/DAL/drizzle/property-queries";
+import { getFavoriteProperties } from "@/DAL/pocketbase/property-queries";
+import { PropertyList } from "./list/PropertyList";
 
 interface FavoritesDashboardProps {
   searchParams: { [key: string]: string | string[] | undefined };

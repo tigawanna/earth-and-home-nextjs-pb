@@ -1,7 +1,7 @@
-import { Card } from "@/components/ui/card";
 import { PropertyCard } from "@/components/property/list/PropertyCard";
-import { getProperties } from "@/DAL/drizzle/property-queries";
-import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/drizzle/property-types";
+import { Card } from "@/components/ui/card";
+import { getProperties } from "@/DAL/pocketbase/property-queries";
+import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/pocketbase/property-types";
 import { Home } from "lucide-react";
 
 export const dynamic = "force-dynamic";

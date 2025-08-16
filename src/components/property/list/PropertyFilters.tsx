@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useQueryStates, parseAsString, parseAsInteger } from "nuqs";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,11 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Search, X, Filter, Loader2 } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { PropertyFilters as PropertyFiltersType } from "@/DAL/drizzle/property-types";
+import { PropertyFilters as PropertyFiltersType } from "@/DAL/pocketbase/property-types";
+import { Filter, Loader2, Search, X } from "lucide-react";
+import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import { useState, useTransition } from "react";
 
 interface PropertyFiltersProps {
   showStatusFilter?: boolean;
@@ -38,7 +38,7 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
       baths: parseAsInteger,
       city: parseAsString,
       featured: parseAsString,
-      sortBy: parseAsString.withDefault("createdAt"),
+      sortBy: parseAsString.withDefault("created"),
       sortOrder: parseAsString.withDefault("desc"),
       page: parseAsInteger.withDefault(1),
     },
@@ -324,8 +324,8 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                        <SelectItem value="createdAt">Date Created</SelectItem>
-                        <SelectItem value="updatedAt">Last Updated</SelectItem>
+                        <SelectItem value="created">Date Created</SelectItem>
+                        <SelectItem value="updated">Last Updated</SelectItem>
                         <SelectItem value="price">Price</SelectItem>
                         <SelectItem value="title">Title</SelectItem>
                       </SelectContent>

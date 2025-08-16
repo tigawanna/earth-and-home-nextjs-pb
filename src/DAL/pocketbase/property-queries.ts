@@ -1,10 +1,7 @@
 import "server-only";
 
-import { property, favorite, user } from "@/lib/drizzle/schema";
-import { eq, and, desc, asc, sql, count, ilike } from "drizzle-orm";
-import { auth } from "@/lib/auth";
-import { db } from "@/lib/drizzle/client";
-import { headers } from "next/headers";
+import { createServerClient } from "@/lib/pocketbase/server-client";
+import { and, eq, gte, like, lte, or } from "@tigawanna/typed-pocketbase";
 import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from "./property-types";
 
 // ====================================================
@@ -13,7 +10,7 @@ import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from ".
 
 export async function getProperties({
   filters = {},
-  sortBy = "createdAt",
+  sortBy = "created",
   sortOrder = "desc",
   page = 1,
   limit = 20,
@@ -27,125 +24,149 @@ export async function getProperties({
   userId?: string; // For checking favorites
 } = {}) {
   console.log("=== getProperties filters ===", filters);
+  
   try {
-    const offset = (page - 1) * limit;
-
-    // Build WHERE conditions
+    const client = createServerClient();
+    
+    // Build filter conditions
     const conditions = [];
 
     if (filters.search) {
       conditions.push(
-        sql`(${property.title} ILIKE ${`%${filters.search}%`} OR ${
-          property.description
-        } ILIKE ${`%${filters.search}%`} OR ${property.location} ILIKE ${`%${filters.search}%`})`
+        or(
+          like("title", `%${filters.search}%`),
+          like("description", `%${filters.search}%`),
+          like("location", `%${filters.search}%`)
+        )
       );
     }
 
     if (filters.propertyType) {
-      conditions.push(eq(property.propertyType, filters.propertyType as any));
+      conditions.push(eq("property_type", filters.propertyType));
     }
 
     if (filters.listingType) {
-      conditions.push(eq(property.listingType, filters.listingType));
+      conditions.push(eq("listing_type", filters.listingType));
     }
 
     if (filters.status) {
-      conditions.push(eq(property.status, filters.status as any));
+      conditions.push(eq("status", filters.status));
     }
 
     if (filters.minPrice) {
+      // PocketBase doesn't have COALESCE, so we'll use OR conditions
       conditions.push(
-        sql`COALESCE(${property.salePrice}, ${property.rentalPrice}, ${property.price}) >= ${filters.minPrice}`
+        or(
+          gte("sale_price", filters.minPrice),
+          gte("rental_price", filters.minPrice),
+          gte("price", filters.minPrice)
+        )
       );
     }
 
     if (filters.maxPrice) {
       conditions.push(
-        sql`COALESCE(${property.salePrice}, ${property.rentalPrice}, ${property.price}) <= ${filters.maxPrice}`
+        or(
+          lte("sale_price", filters.maxPrice),
+          lte("rental_price", filters.maxPrice),
+          lte("price", filters.maxPrice)
+        )
       );
     }
 
     if (filters.beds) {
-      conditions.push(eq(property.beds, filters.beds));
+      conditions.push(gte("beds", filters.beds));
     }
 
     if (filters.baths) {
-      conditions.push(eq(property.baths, filters.baths));
+      conditions.push(gte("baths", filters.baths));
     }
 
     if (filters.city) {
-      conditions.push(ilike(property.city, `%${filters.city}%`));
+      conditions.push(like("city", `%${filters.city}%`));
     }
 
     if (filters.agentId) {
-      conditions.push(eq(property.agentId, filters.agentId));
+      conditions.push(eq("agent_id", filters.agentId));
     }
 
     if (filters.ownerId) {
-      conditions.push(eq(property.ownerId, filters.ownerId));
+      conditions.push(eq("owner_id", filters.ownerId));
     }
 
     if (filters.isFeatured !== undefined) {
-      conditions.push(eq(property.isFeatured, filters.isFeatured));
+      conditions.push(eq("is_featured", filters.isFeatured));
     }
 
-    const whereClause = conditions.length > 0 ? sql.join(conditions, sql` AND `) : undefined;
+    // Combine all conditions with AND
+    const filter = conditions.length > 0 ? and(...conditions) : undefined;
 
-    // Build ORDER BY
-    const orderBy = sortOrder === "desc" ? desc(property[sortBy]) : asc(property[sortBy]);
+    // Build sort string for PocketBase
+    const sortPrefix = sortOrder === "desc" ? "-" : "+";
+    const sortField = sortBy === "createdAt" ? "created" : sortBy === "updatedAt" ? "updated" : sortBy;
+    const sort = `${sortPrefix}${sortField}`;
 
-    // Get properties with agent/owner info and favorite status
-    const baseQuery = db
-      .select({
-        property: property,
-        agent: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        },
-        isFavorited: userId
-          ? sql<boolean>`EXISTS(
-          SELECT 1 FROM ${favorite} 
-          WHERE ${favorite.propertyId} = ${property.id} 
-          AND ${favorite.userId} = ${userId}
-        )`
-          : sql<boolean>`false`,
-      })
-      .from(property)
-      .leftJoin(user, eq(property.agentId, user.id));
+    // Get properties with pagination
+    const propertiesResult = await client.from("properties").getList({
+      page,
+      perPage: limit,
+      filter,
+      sort,
+      select: {
+        expand: {
+          agent_id: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          }
+        }
+      }
+    });
 
-    // Execute query with conditions
-    const properties = whereClause
-      ? await baseQuery.where(whereClause).orderBy(orderBy).limit(limit).offset(offset)
-      : await baseQuery.orderBy(orderBy).limit(limit).offset(offset);
+    // Transform properties to include agent info and favorite status
+    const transformedProperties: PropertyWithAgent[] = [];
+    
+    for (const property of propertiesResult.items) {
+      let isFavorited = false;
+      
+      // Check if property is favorited by user (if userId provided)
+      if (userId) {
+        try {
+          const favoriteCheck = await client.from("favorites").getFirstListItem({
+            filter: and(
+              eq("property_id", property.id),
+              eq("user_id", userId)
+            )
+          });
+          isFavorited = !!favoriteCheck;
+        } catch (error) {
+          // Favorite not found, isFavorited remains false
+          isFavorited = false;
+        }
+      }
 
-    // Get total count for pagination
-    const totalCountQuery = whereClause
-      ? await db.select({ count: count() }).from(property).where(whereClause)
-      : await db.select({ count: count() }).from(property);
-
-    const totalCount = totalCountQuery[0]?.count || 0;
-    const totalPages = Math.ceil(totalCount / limit);
+      transformedProperties.push({
+        ...property,
+        agent: property.expand?.agent_id || null,
+        isFavorited,
+      } as PropertyWithAgent);
+    }
 
     return {
       success: true,
-      properties: properties.map((p) => ({
-        ...p.property,
-        agent: p.agent,
-        isFavorited: p.isFavorited,
-      })) as PropertyWithAgent[],
+      properties: transformedProperties,
       pagination: {
-        page,
-        limit,
-        totalCount,
-        totalPages,
-        hasNextPage: page < totalPages,
+        page: propertiesResult.page,
+        limit: propertiesResult.perPage,
+        totalCount: propertiesResult.totalItems,
+        totalPages: propertiesResult.totalPages,
+        hasNextPage: page < propertiesResult.totalPages,
         hasPrevPage: page > 1,
       },
     };
   } catch (error) {
-    // console.error("Error fetching properties:===>>>", error);
+    console.error("Error fetching properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch properties",
@@ -168,46 +189,54 @@ export async function getProperties({
 
 export async function getProperty(identifier: string, userId?: string) {
   try {
+    const client = createServerClient();
+    
     // Determine if identifier is ID or slug
-    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-      identifier
-    );
-    const condition = isUUID ? eq(property.id, identifier) : eq(property.slug, identifier);
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
+    const filter = isUUID ? eq("id", identifier) : eq("slug", identifier);
 
-    const result = await db
-      .select({
-        property: property,
-        agent: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        },
-        isFavorited: userId
-          ? sql<boolean>`EXISTS(
-          SELECT 1 FROM ${favorite} 
-          WHERE ${favorite.propertyId} = ${property.id} 
-          AND ${favorite.userId} = ${userId}
-        )`
-          : sql<boolean>`false`,
-      })
-      .from(property)
-      .leftJoin(user, eq(property.agentId, user.id))
-      .where(condition)
-      .limit(1);
+    // Get property with agent info
+    const property = await client.from("properties").getFirstListItem({
+      filter,
+      select: {
+        expand: {
+          agent_id: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          }
+        }
+      }
+    });
 
-    if (!result.length) {
+    if (!property) {
       return { success: false, message: "Property not found" };
     }
 
-    const propertyData = result[0];
+    // Check if property is favorited by user
+    let isFavorited = false;
+    if (userId) {
+      try {
+        const favoriteCheck = await client.from("favorites").getFirstListItem({
+          filter: and(
+            eq("property_id", property.id),
+            eq("user_id", userId)
+          )
+        });
+        isFavorited = !!favoriteCheck;
+      } catch (error) {
+        // Favorite not found, isFavorited remains false
+        isFavorited = false;
+      }
+    }
 
     return {
       success: true,
       property: {
-        ...propertyData.property,
-        agent: propertyData.agent,
-        isFavorited: propertyData.isFavorited,
+        ...property,
+        agent: property.expand?.agent_id || null,
+        isFavorited,
       } as PropertyWithAgent,
     };
   } catch (error) {
@@ -221,60 +250,61 @@ export async function getProperty(identifier: string, userId?: string) {
 
 export async function getFavoriteProperties(userId?: string, page = 1, limit = 20) {
   try {
+    const client = createServerClient();
+
     if (!userId) {
-      const session = await auth.api.getSession({
-        headers: await headers(),
-      });
-      if (!session?.user?.id) {
+      // Get user from PocketBase auth
+      const authData = client.authStore;
+      if (!authData.isValid || !authData.model?.id) {
         throw new Error("Unauthorized");
       }
-      userId = session.user.id;
+      userId = authData.model.id;
     }
 
-    const offset = (page - 1) * limit;
+    // Get favorites with property and agent info
+    const favoritesResult = await client.from("favorites").getList({
+      page,
+      perPage: limit,
+      filter: eq("user_id", userId),
+      sort: "-created",
+      select: {
+        expand: {
+          property_id: {
+            expand: {
+              agent_id: {
+                id: true,
+                name: true,
+                email: true,
+                avatar: true,
+              }
+            }
+          }
+        }
+      }
+    });
 
-    const favorites = await db
-      .select({
-        property: property,
-        agent: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-        },
-        favoritedAt: favorite.createdAt,
-      })
-      .from(favorite)
-      .innerJoin(property, eq(favorite.propertyId, property.id))
-      .leftJoin(user, eq(property.agentId, user.id))
-      .where(eq(favorite.userId, userId))
-      .orderBy(desc(favorite.createdAt))
-      .limit(limit)
-      .offset(offset);
-
-    // Get total count
-    const totalCountQuery = await db
-      .select({ count: count() })
-      .from(favorite)
-      .where(eq(favorite.userId, userId));
-
-    const totalCount = totalCountQuery[0]?.count || 0;
-    const totalPages = Math.ceil(totalCount / limit);
+    // Transform favorites to include property and agent info
+    const transformedProperties = favoritesResult.items.map((favorite) => {
+      const property = favorite.expand?.property_id;
+      if (!property) return null;
+      
+      return {
+        ...property,
+        agent: property.expand?.agent_id || null,
+        isFavorited: true,
+        favoritedAt: new Date(favorite.created),
+      } as PropertyWithAgent & { favoritedAt: Date };
+    }).filter(Boolean);
 
     return {
       success: true,
-      properties: favorites.map((f) => ({
-        ...f.property,
-        agent: f.agent,
-        isFavorited: true,
-        favoritedAt: f.favoritedAt,
-      })) as (PropertyWithAgent & { favoritedAt: Date })[],
+      properties: transformedProperties,
       pagination: {
-        page,
-        limit,
-        totalCount,
-        totalPages,
-        hasNextPage: page < totalPages,
+        page: favoritesResult.page,
+        limit: favoritesResult.perPage,
+        totalCount: favoritesResult.totalItems,
+        totalPages: favoritesResult.totalPages,
+        hasNextPage: page < favoritesResult.totalPages,
         hasPrevPage: page > 1,
       },
     };
@@ -302,30 +332,30 @@ export async function getFavoriteProperties(userId?: string, page = 1, limit = 2
 
 export async function getPropertyStats(agentId?: string) {
   try {
-    const conditions = agentId ? [eq(property.agentId, agentId)] : [];
+    const client = createServerClient();
+    
+    // Build filter condition for agent
+    const filter = agentId ? eq("agent_id", agentId) : undefined;
 
-    const stats = await db
-      .select({
-        totalProperties: count(),
-        activeProperties: count(sql`CASE WHEN ${property.status} = 'active' THEN 1 END`),
-        soldProperties: count(sql`CASE WHEN ${property.status} = 'sold' THEN 1 END`),
-        rentedProperties: count(sql`CASE WHEN ${property.status} = 'rented' THEN 1 END`),
-        draftProperties: count(sql`CASE WHEN ${property.status} = 'draft' THEN 1 END`),
-        featuredProperties: count(sql`CASE WHEN ${property.isFeatured} = true THEN 1 END`),
-      })
-      .from(property)
-      .where(conditions.length > 0 ? sql.join(conditions, sql` AND `) : undefined);
+    // Get all properties for the agent (or all if no agentId)
+    const propertiesResult = await client.from("properties").getFullList({
+      filter,
+      fields: "status,is_featured"
+    });
+
+    // Calculate stats from the results
+    const stats = {
+      totalProperties: propertiesResult.length,
+      activeProperties: propertiesResult.filter(p => p.status === "active").length,
+      soldProperties: propertiesResult.filter(p => p.status === "sold").length,
+      rentedProperties: propertiesResult.filter(p => p.status === "rented").length,
+      draftProperties: propertiesResult.filter(p => p.status === "draft").length,
+      featuredProperties: propertiesResult.filter(p => p.is_featured === true).length,
+    };
 
     return {
       success: true,
-      stats: stats[0] || {
-        totalProperties: 0,
-        activeProperties: 0,
-        soldProperties: 0,
-        rentedProperties: 0,
-        draftProperties: 0,
-        featuredProperties: 0,
-      },
+      stats,
     };
   } catch (error) {
     console.error("Error fetching property stats:", error);

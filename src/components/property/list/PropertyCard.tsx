@@ -1,10 +1,10 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MapPin, Home, Bed, Bath } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PropertyWithAgent } from "@/DAL/pocketbase/property-types";
+import { Bath, Bed, Heart, Home, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { PropertyWithAgent } from "@/DAL/drizzle/property-types";
 import { EditPropertyLink } from "../dashboard/EditPropertyLink";
 
 interface PropertyCardProps {
