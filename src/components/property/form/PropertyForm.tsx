@@ -1,33 +1,30 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { CardContent } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { createProperty, updateProperty } from "@/DAL/drizzle/property-mutations";
+import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
+import { isLandProperty } from "@/utils/forms";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, Loader2, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+import { ImagesUploadSection } from "./files/ImagesUploadSection";
 import {
   PropertyFormData,
-  propertyFormSchema,
-  defaultPropertyFormValues,
+  propertyFormSchema
 } from "./property-form-schema";
 import { BasicInfoSection } from "./sections/BasicInfoSection";
-import { LocationSection } from "./sections/LocationSection";
 import { BuildingSection } from "./sections/BuildingSection";
+import { FeaturesAmenitiesSection } from "./sections/FeaturesAmenitiesSection";
 import { LandSection } from "./sections/LandSection";
+import { LocationSection } from "./sections/LocationSection";
+import { MediaSection } from "./sections/MediaSection";
 import { ParkingSection } from "./sections/ParkingSection";
 import { PricingSection } from "./sections/PricingSection";
-import { FeaturesAmenitiesSection } from "./sections/FeaturesAmenitiesSection";
-import { MediaSection } from "./sections/MediaSection";
-import { ImagesUploadSection } from "./files/ImagesUploadSection";
-import { useEffect, useState, useTransition } from "react";
-import { Loader2, Save, Eye, AlertCircle } from "lucide-react";
-import { toast } from "sonner";
-import { useWatch } from "react-hook-form";
-import { isLandProperty } from "@/utils/forms";
-import { FormPersist } from "@/lib/react-hook-form/FormPersist";
-import { createProperty, updateProperty } from "@/DAL/drizzle/property-mutations";
-import { useRouter } from "next/navigation";
 
 // Convert Partial<T> (undefined) to nullable properties (null)
 type Nullable<T> = {
@@ -57,9 +54,6 @@ export default function PropertyForm({
       ...initialData,
     } as PropertyFormData,
   });
-  const errors = form.formState.errors;
-  const isSubmitted = form.formState.isSubmitted;
-
 
   // Watch property type for conditional rendering
   const propertyType = useWatch({ control: form.control, name: "propertyType" });
@@ -107,27 +101,6 @@ export default function PropertyForm({
   };
 
   const isSubmitButtonDisabled = isPending;
-
-  // Get all error messages for user display
-  const getErrorMessages = () => {
-    const errorMessages: string[] = [];
-
-    const extractErrors = (obj: any, prefix = "") => {
-      Object.keys(obj).forEach((key) => {
-        if (obj[key]?.message) {
-          errorMessages.push(`${prefix}${key}: ${obj[key].message}`);
-        } else if (typeof obj[key] === "object" && obj[key] !== null) {
-          extractErrors(obj[key], `${prefix}${key}.`);
-        }
-      });
-    };
-
-    extractErrors(errors);
-    return errorMessages;
-  };
-
-  const errorMessages = getErrorMessages();
-  const hasErrors = errorMessages.length > 0 && isSubmitted;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
@@ -283,45 +256,10 @@ export default function PropertyForm({
                 </div>
 
                 {/* Enhanced Error Display */}
-                {hasErrors && (
-                  <div className="mt-6 p-6 bg-destructive/10 border-2 border-destructive/20 rounded-xl">
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 bg-destructive/20 rounded-full flex items-center justify-center">
-                        <AlertCircle className="h-5 w-5 text-destructive" />
-                      </div>
-                      <div className="space-y-3 flex-1">
-                        <h4 className="font-semibold text-destructive text-lg">
-                          Please fix the following errors:
-                        </h4>
-                        <ul className="text-sm text-destructive/80 space-y-2">
-                          {errorMessages.slice(0, 5).map((error, index) => (
-                            <li key={index} className="flex items-start gap-3 p-2 bg-destructive/5 rounded-lg">
-                              <span className="w-2 h-2 bg-destructive rounded-full mt-2 flex-shrink-0" />
-                              <span className="font-medium">{error}</span>
-                            </li>
-                          ))}
-                          {errorMessages.length > 5 && (
-                            <li className="text-destructive/70 italic text-center py-2">
-                              ... and {errorMessages.length - 5} more errors
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                <FormErrorDisplay form={form} />
 
                 {/* Form State Debug (dev only) */}
-                {process.env.NODE_ENV === "development" && (
-                  <details className="mt-6 p-4 bg-muted rounded-xl border border-border">
-                    <summary className="cursor-pointer text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                      🔧 Form State (Development)
-                    </summary>
-                    <pre className="mt-3 text-xs overflow-auto text-muted-foreground bg-card p-3 rounded border">
-                      {JSON.stringify(form.formState.errors, null, 2)}
-                    </pre>
-                  </details>
-                )}
+                <FormStateDebug form={form} />
               </CardContent>
             </div>
           </form>

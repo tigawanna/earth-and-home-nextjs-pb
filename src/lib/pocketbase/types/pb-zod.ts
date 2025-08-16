@@ -203,7 +203,7 @@ export const UsersResponseSchema = authResponseSchema.extend({
     verified: z.boolean().optional(),
     name: z.string().max(255).optional(),
     avatar: z.string().optional(),
-    role: z.enum(['', 'user', 'admin']).optional(),
+    is_admin: z.boolean().optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -215,7 +215,7 @@ export const UsersCreateSchema = authCreateSchema.extend({
     verified: z.boolean().optional(),
     name: z.string().max(255).optional(),
     avatar: z.instanceof(File).nullable().optional(),
-    role: z.enum(['', 'user', 'admin']).optional(),
+    is_admin: z.boolean().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -227,7 +227,7 @@ export const UsersUpdateSchema = authUpdateSchema.extend({
     verified: z.boolean().optional(),
     name: z.string().max(255).optional(),
     avatar: z.instanceof(File).nullable().optional(),
-    role: z.enum(['', 'user', 'admin']).optional(),
+    is_admin: z.boolean().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });

@@ -356,7 +356,7 @@ export interface UsersResponse extends AuthCollectionResponse {
 	verified: boolean;
 	name: string;
 	avatar: string;
-	role: '' | 'user' | 'admin';
+	is_admin: boolean;
 	created: string;
 	updated: string;
 }
@@ -368,7 +368,7 @@ export interface UsersCreate extends AuthCollectionCreate {
 	verified?: boolean;
 	name?: string;
 	avatar?: File | null;
-	role?: '' | 'user' | 'admin';
+	is_admin?: boolean;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -380,7 +380,7 @@ export interface UsersUpdate extends AuthCollectionUpdate {
 	verified?: boolean;
 	name?: string;
 	avatar?: File | null;
-	role?: '' | 'user' | 'admin';
+	is_admin?: boolean;
 	created?: string | Date;
 	updated?: string | Date;
 }

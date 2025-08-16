@@ -1,51 +1,41 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { User, Settings, LogOut, LayoutDashboard, Loader2 } from "lucide-react"
+} from "@/components/ui/dropdown-menu";
+import {
+  signoutMutationOptions,
+  viewerQueryOptions
+} from "@/DAL/pocketbase/auth";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { LayoutDashboard, LogOut, Settings, User } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-
-interface User {
-  id: string
-  name: string
-  email: string
-  image?: string
-  role?: string
-}
 
 interface DashboardOrAuthProps {
-  className?: string
+  className?: string;
 }
 
 export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
-
-
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
-  } = authClient.useSession();
-
-
-
+  const router = useRouter();
+  const { data, isPending } = useSuspenseQuery(viewerQueryOptions());
+  const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
+  const user = data?.record;
   const handleSignOut = async () => {
     try {
-      await authClient.signOut()
-      window.location.href = "/"
+      await mutate();
+      router.push("/");
     } catch (error) {
-      console.error("Sign out failed:", error)
+      console.error("Sign out failed:", error);
     }
-  }
+  };
 
   if (isPending) {
     return (
@@ -57,21 +47,17 @@ export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
     );
   }
 
-  if (!session?.user) {
+  if (!user) {
     // Not authenticated - show login button
     return (
       <div className={`flex items-center gap-2 ${className}`}>
         <Button asChild variant="outline" size="sm">
-          <Link href="/auth/signin">
-            Sign In
-          </Link>
+          <Link href="/auth/signin">Sign In</Link>
         </Button>
       </div>
-    )
+    );
   }
 
-  // Authenticated - show user avatar with dropdown
-    const user = session.user
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <Button asChild variant="outline" size="sm">
@@ -80,15 +66,13 @@ export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
           Dashboard
         </Link>
       </Button>
-      
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user.image||"/user-fallback.png"} alt={user.name || "User"} />
-              <AvatarFallback>
-                {user.name?.charAt(0)?.toUpperCase() || "U"}
-              </AvatarFallback>
+              <AvatarImage src={user.avatar || "/user-fallback.png"} alt={user.name || "User"} />
+              <AvatarFallback>{user.name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
@@ -96,9 +80,7 @@ export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
           <div className="flex items-center justify-start gap-2 p-2">
             <div className="flex flex-col space-y-1 leading-none">
               <p className="font-medium">{user.name}</p>
-              <p className="w-[200px] truncate text-sm text-muted-foreground">
-                {user.email}
-              </p>
+              <p className="w-[200px] truncate text-sm text-muted-foreground">{user.email}</p>
             </div>
           </div>
           <DropdownMenuSeparator />
@@ -122,5 +104,5 @@ export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  )
+  );
 }

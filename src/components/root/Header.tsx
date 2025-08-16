@@ -80,7 +80,7 @@ export function Header({ isLandingPage }: { isLandingPage?: boolean }) {
       {/* CTA Buttons */}
       <div className="flex-none hidden md:flex">
         <div className="flex items-center space-x-2">
-          {/* <DashboardOrAuth /> */}
+          <DashboardOrAuth />
           <ModeToggle compact/>
         </div>
       </div>

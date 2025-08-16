@@ -118,7 +118,7 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
           {/* CTA Buttons */}
           <div className="mt-6">
             <div className="flex flex-wrap  gap-4">
-              {/* <DashboardOrAuth /> */}
+              <DashboardOrAuth />
               <ModeToggle />
             </div>
           </div>

@@ -28,8 +28,12 @@ This is a Next.js project that uses
   - Environment variable: `NEXT_PUBLIC_POCKETBASE_API_URL` must point to your PocketBase API (e.g. http://127.0.0.1:8090)
   - Optional: generate typed models with `pocketbase-typegen` into `src/types/pocketbase-types.ts`
 
-## Uploads
-- Use PocketBase file storage for property images/files. Replace any previous R2/code for uploads with PocketBase upload flows and the existing upload UI components.
+# file structure
+- `/src/lib` has utils and configs for third party libraries
+- `/src/components` contains reusable components
+- `/src/utils` contains utility functions and types that doesn't rely on any specific framework or library
+
+
 
 ## Preferences & Conventions
 - Avoid using `any` except when absolutely necessary.
@@ -40,6 +44,7 @@ This is a Next.js project that uses
 - Next.js App Router + RSCs guidance:
   - Prefer server components for data fetching. Wrap server-rendered async components in `<Suspense>`.
   - If a client component needs data, prefetch in the server component and pass as props.
+  - When creating usage examples and documentation put in `/doc/the-feature`and use markdown
 
 ## Dev tooling
 - Run type checks: `npx tsc --noEmit`
