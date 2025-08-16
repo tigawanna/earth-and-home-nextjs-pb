@@ -3,20 +3,23 @@
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { createProperty, updateProperty } from "@/DAL/drizzle/property-mutations";
+import {
+  createPropertyMutationOptions,
+  updatePropertyMutationOptions,
+} from "@/DAL/pocketbase/property-mutations";
+import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
+import { PropertiesResponse } from "@/lib/pocketbase/types/pb-zod";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { isLandProperty } from "@/utils/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Eye, Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { ImagesUploadSection } from "./files/ImagesUploadSection";
-import {
-  PropertyFormData,
-  propertyFormSchema
-} from "./property-form-schema";
+import { PropertyFormData, PropertyFormSchema } from "./property-form-schema";
 import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { BuildingSection } from "./sections/BuildingSection";
 import { FeaturesAmenitiesSection } from "./sections/FeaturesAmenitiesSection";
@@ -32,7 +35,7 @@ type Nullable<T> = {
 };
 
 interface PropertyFormProps {
-  initialData?: Nullable<PropertyFormData>;
+  initialData?: PropertiesResponse;
   isEdit?: boolean;
   propertyId?: string; // Add propertyId for editing
 }
@@ -43,55 +46,95 @@ export default function PropertyForm({
   propertyId,
 }: PropertyFormProps) {
 
-  
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  
-  const form = useForm<PropertyFormData>({
-    resolver: zodResolver(propertyFormSchema) as any,
+  const [isSubmittingDraft, submitDraft] = useTransition();
+  const form = useForm({
+    resolver: zodResolver(PropertyFormSchema),
     defaultValues: {
       // ...defaultPropertyFormValues,
       ...initialData,
-    } as PropertyFormData,
+    },
   });
 
   // Watch property type for conditional rendering
-  const propertyType = useWatch({ control: form.control, name: "propertyType" });
+  const propertyType = useWatch({ control: form.control, name: "property_type" });
   const isLand = isLandProperty(propertyType);
 
-  const handleSubmit = async (data: PropertyFormData) => {
-    startTransition(async () => {
-      try {
-        let result;
-        if (isEdit && propertyId) {
-          result = await updateProperty(propertyId, data);
+  const createPropertyMutation = useMutation({
+    ...createPropertyMutationOptions,
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(data.message);
+        // Redirect to the property page or dashboard
+        form.reset();
+        if (data.record?.id) {
+          router.push(`/properties/${data.record.id}`);
         } else {
-          result = await createProperty(data);
+          router.push("/dashboard/properties");
         }
-
-        if (result.success) {
-          toast.success(result.message);
-          // Redirect to the property page or dashboard
-          form.reset();
-          if (result.property?.slug) {
-            router.push(`/properties/${result.property.slug}`);
-          } else {
-            router.push("/dashboard/properties");
-          }
-        } else {
-          toast.error(result.message);
-        }
-      } catch (error) {
-        console.error("Form submission error:", error);
-        toast.error("Failed to save property. Please try again.");
+      } else {
+        toast.error(data.message);
       }
-    });
+    },
+    onError: (error) => {
+      console.error("Property mutation error:", error);
+      toast.error("Failed to save property. Please try again.");
+    },
+  });
+
+  const updatePropertyMutation = useMutation({
+    ...updatePropertyMutationOptions,
+    onSuccess: (data) => {
+      if (data.success) {
+        toast.success(data.message);
+        // Redirect to the property page or dashboard
+        form.reset();
+        if (data.record?.id) {
+          router.push(`/properties/${data.record.id}`);
+        } else {
+          router.push("/dashboard/properties");
+        }
+      } else {
+        toast.error(data.message);
+      }
+    },
+    onError: (error) => {
+      console.error("Property mutation error:", error);
+      toast.error("Failed to save property. Please try again.");
+    },
+  });
+
+  const handleSubmit = async (values: PropertyFormData) => {
+    try {
+      if (isEdit && propertyId) {
+        const payload = { id: propertyId, ...values } as PropertiesUpdate;
+        await updatePropertyMutation.mutateAsync(payload);
+      } else {
+        await createPropertyMutation.mutateAsync(values as PropertiesCreate);
+      }
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error("Failed to save property. Please try again.");
+    }
   };
 
-  const handleSaveDraft = async () => {
+  const handleSaveDraft = () => {
     const data = form.getValues();
     data.status = "draft";
-    await handleSubmit(data);
+
+    submitDraft(async () => {
+      try {
+        if (isEdit && propertyId) {
+          const payload = { id: propertyId, ...data } as PropertiesUpdate;
+          await updatePropertyMutation.mutateAsync(payload);
+        } else {
+          await createPropertyMutation.mutateAsync(data as PropertiesCreate);
+        }
+      } catch (error) {
+        console.error("Save draft error:", error);
+        toast.error("Failed to save draft. Please try again.");
+      }
+    });
   };
 
   const handlePublish = async () => {
@@ -100,7 +143,10 @@ export default function PropertyForm({
     await handleSubmit(data);
   };
 
-  const isSubmitButtonDisabled = isPending;
+  // React Query v5 typing can make isLoading not directly visible on the result in some cases,
+  // use `status === 'loading'` which is stable and typed.
+  const isSubmitting =
+    createPropertyMutation.isPending || updatePropertyMutation.isPending;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
@@ -134,7 +180,7 @@ export default function PropertyForm({
         </div>
 
         {/* <FormPersist form={form} formKey="property-form" /> */}
-        
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handlePublish)} className="space-y-8">
             {/* Progress Indicator */}
@@ -144,13 +190,20 @@ export default function PropertyForm({
                 <span>Step by step</span>
               </div>
               <div className="h-2 bg-muted rounded-full">
-                <div className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-300" 
-                     style={{ width: "70%" }} />
+                <div
+                  className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-300"
+                  style={{ width: "70%" }}
+                />
               </div>
             </div>
-            <Button type="button" variant={"outline"} onClick={()=>{
-              toast("Hello from button")
-            }}>hello</Button>
+            <Button
+              type="button"
+              variant={"outline"}
+              onClick={() => {
+                toast("Hello from button");
+              }}>
+              hello
+            </Button>
 
             {/* Basic Information - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
@@ -173,14 +226,14 @@ export default function PropertyForm({
                 <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
                   <BuildingSection control={form.control as any} />
                 </div>
-                
+
                 <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
                 {/* Parking & Climate Control - Enhanced */}
                 <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
                   <ParkingSection control={form.control as any} />
                 </div>
-                
+
                 <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
               </>
             )}
@@ -191,7 +244,7 @@ export default function PropertyForm({
                 <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
                   <LandSection control={form.control as any} />
                 </div>
-                
+
                 <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
               </>
             )}
@@ -212,7 +265,10 @@ export default function PropertyForm({
 
             {/* Images Upload - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
-              <ImagesUploadSection control={form.control as any} propertyTitle={form.watch("title")} />
+              {/* <ImagesUploadSection
+                control={form.control as any}
+                propertyTitle={form.watch("title")}
+              /> */}
             </div>
 
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
@@ -230,10 +286,10 @@ export default function PropertyForm({
                     type="button"
                     variant="outline"
                     onClick={handleSaveDraft}
-                    disabled={isPending}
+                    disabled={isSubmittingDraft}
                     size="lg"
                     className="flex ">
-                    {isPending ? (
+                    {isSubmittingDraft ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
                       <Save className="h-5 w-5" />
@@ -241,12 +297,8 @@ export default function PropertyForm({
                     Save as Draft
                   </Button>
 
-                  <Button
-                    type="submit"
-                    disabled={isSubmitButtonDisabled}
-                    size="lg"
-                    className="flex">
-                    {isPending ? (
+                  <Button type="submit" disabled={isSubmitting} size="lg" className="flex">
+                    {isSubmitting ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
                       <Eye className="h-5 w-5" />

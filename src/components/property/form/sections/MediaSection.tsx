@@ -28,7 +28,7 @@ export function MediaSection({ control }: MediaSectionProps) {
         <div className="space-y-4">
           <TextFieldComponent
             control={control}
-            name="imageUrl"
+            name="image_url"
             label="Primary Image URL"
             placeholder="https://example.com/image.jpg"
             description="URL to the main property image"
@@ -36,7 +36,7 @@ export function MediaSection({ control }: MediaSectionProps) {
           
           <TextFieldComponent
             control={control}
-            name="videoUrl"
+            name="video_url"
             label="Video URL"
             placeholder="https://youtube.com/watch?v=..."
             description="YouTube, Vimeo, or other video platform URL"
@@ -44,7 +44,7 @@ export function MediaSection({ control }: MediaSectionProps) {
           
           <TextFieldComponent
             control={control}
-            name="virtualTourUrl"
+            name="virtual_tour_url"
             label="Virtual Tour URL"
             placeholder="https://matterport.com/..."
             description="360° virtual tour or walkthrough URL"

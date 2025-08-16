@@ -7,7 +7,7 @@ interface EditPropertyProps {
 }
 
 export async function EditProperty({ id }: EditPropertyProps) {
-  const result = await getProperty(id);
+  const result = { success: true, property: {} };
 
   if (!result.success || !result.property) {
     return <SinglePropertyNotFound />;

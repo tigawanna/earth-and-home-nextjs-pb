@@ -406,7 +406,6 @@ export interface PropertiesResponse extends BaseCollectionResponse {
 	id: string;
 	title: string;
 	description: string;
-	slug: string;
 	listing_type: 'sale' | 'rent';
 	property_type: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
 	status: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
@@ -438,7 +437,7 @@ export interface PropertiesResponse extends BaseCollectionResponse {
 	annual_taxes: number;
 	available_from: string;
 	image_url: string;
-	images: string;
+	images: MaybeArray<string>;
 	video_url: string;
 	virtual_tour_url: string;
 	amenities?: PropertiesAmenities
@@ -457,7 +456,6 @@ export interface PropertiesCreate extends BaseCollectionCreate {
 	id?: string;
 	title: string;
 	description?: string;
-	slug?: string;
 	listing_type: 'sale' | 'rent';
 	property_type: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
 	status: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
@@ -489,7 +487,7 @@ export interface PropertiesCreate extends BaseCollectionCreate {
 	annual_taxes?: number;
 	available_from?: string | Date;
 	image_url?: string | URL;
-	images?: File | null;
+	images?: MaybeArray<File>;
 	video_url?: string | URL;
 	virtual_tour_url?: string | URL;
 	amenities?: PropertiesAmenities
@@ -508,7 +506,6 @@ export interface PropertiesUpdate extends BaseCollectionUpdate {
 	id: string;
 	title: string;
 	description?: string;
-	slug?: string;
 	listing_type: 'sale' | 'rent';
 	property_type: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
 	status: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
@@ -568,7 +565,8 @@ export interface PropertiesUpdate extends BaseCollectionUpdate {
 	'annual_taxes-'?: number;
 	available_from?: string | Date;
 	image_url?: string | URL;
-	images?: File | null;
+	images?: MaybeArray<File>;
+	'images-'?: string;
 	video_url?: string | URL;
 	virtual_tour_url?: string | URL;
 	amenities?: PropertiesAmenities
