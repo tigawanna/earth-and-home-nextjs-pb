@@ -1,3 +1,9 @@
+// === start of custom type ===
+  // Properties.PropertiesAmenities.amenities
+  export type PropertiesAmenities = Array<{
+ 
+  }>;
+  // === end of custom type ===
 
 /**
  * This file was @generated using typed-pocketbase
@@ -350,6 +356,7 @@ export interface UsersResponse extends AuthCollectionResponse {
 	verified: boolean;
 	name: string;
 	avatar: string;
+	role: '' | 'user' | 'admin';
 	created: string;
 	updated: string;
 }
@@ -361,6 +368,7 @@ export interface UsersCreate extends AuthCollectionCreate {
 	verified?: boolean;
 	name?: string;
 	avatar?: File | null;
+	role?: '' | 'user' | 'admin';
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -372,6 +380,7 @@ export interface UsersUpdate extends AuthCollectionUpdate {
 	verified?: boolean;
 	name?: string;
 	avatar?: File | null;
+	role?: '' | 'user' | 'admin';
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -383,7 +392,249 @@ export interface UsersCollection {
 	response: UsersResponse;
 	create: UsersCreate;
 	update: UsersUpdate;
-	relations: Record<string, never>;
+	relations: {
+		properties_via_agent_id: PropertiesCollection[];
+		properties_via_owner_id: PropertiesCollection[];
+		favorites_via_user_id: FavoritesCollection[];
+	};
+}
+
+// ===== properties =====
+
+export interface PropertiesResponse extends BaseCollectionResponse {
+	collectionName: 'properties';
+	id: string;
+	title: string;
+	description: string;
+	slug: string;
+	listing_type: 'sale' | 'rent';
+	property_type: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
+	status: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
+	location: string;
+	street_address: string;
+	city: string;
+	state: string;
+	postal_code: string;
+	country: string;
+	dimensions: string;
+	building_size_sqft: number;
+	lot_size_sqft: number;
+	lot_size_acres: number;
+	year_built: number;
+	floors: number;
+	beds: number;
+	baths: number;
+	parking_spaces: number;
+	parking_type: '' | 'garage' | 'carport' | 'street' | 'covered' | 'assigned' | 'none';
+	heating: '' | 'none' | 'electric' | 'gas' | 'oil' | 'heat_pump' | 'solar' | 'geothermal';
+	cooling: '' | 'none' | 'central' | 'wall_unit' | 'evaporative' | 'geothermal';
+	zoning: '' | 'residential' | 'commercial' | 'agricultural' | 'industrial' | 'mixed_use' | 'recreational' | 'other';
+	currency: string;
+	price: number;
+	sale_price: number;
+	rental_price: number;
+	security_deposit: number;
+	hoa_fee: number;
+	annual_taxes: number;
+	available_from: string;
+	image_url: string;
+	images: string;
+	video_url: string;
+	virtual_tour_url: string;
+	amenities?: PropertiesAmenities
+	features: Record<string, any> | Array<any> | null;
+	utilities: Record<string, any> | Array<any> | null;
+	agent_id: string;
+	owner_id: string;
+	is_featured: boolean;
+	is_new: boolean;
+	location_point: unknown;
+	created: string;
+	updated: string;
+}
+
+export interface PropertiesCreate extends BaseCollectionCreate {
+	id?: string;
+	title: string;
+	description?: string;
+	slug?: string;
+	listing_type: 'sale' | 'rent';
+	property_type: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
+	status: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
+	location: string;
+	street_address?: string;
+	city?: string;
+	state?: string;
+	postal_code?: string;
+	country?: string;
+	dimensions?: string;
+	building_size_sqft?: number;
+	lot_size_sqft?: number;
+	lot_size_acres?: number;
+	year_built?: number;
+	floors?: number;
+	beds?: number;
+	baths?: number;
+	parking_spaces?: number;
+	parking_type?: '' | 'garage' | 'carport' | 'street' | 'covered' | 'assigned' | 'none';
+	heating?: '' | 'none' | 'electric' | 'gas' | 'oil' | 'heat_pump' | 'solar' | 'geothermal';
+	cooling?: '' | 'none' | 'central' | 'wall_unit' | 'evaporative' | 'geothermal';
+	zoning?: '' | 'residential' | 'commercial' | 'agricultural' | 'industrial' | 'mixed_use' | 'recreational' | 'other';
+	currency?: string;
+	price?: number;
+	sale_price?: number;
+	rental_price?: number;
+	security_deposit?: number;
+	hoa_fee?: number;
+	annual_taxes?: number;
+	available_from?: string | Date;
+	image_url?: string | URL;
+	images?: File | null;
+	video_url?: string | URL;
+	virtual_tour_url?: string | URL;
+	amenities?: PropertiesAmenities
+	features?: Record<string, any> | Array<any> | null;
+	utilities?: Record<string, any> | Array<any> | null;
+	agent_id?: string;
+	owner_id?: string;
+	is_featured?: boolean;
+	is_new?: boolean;
+	location_point?: unknown;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface PropertiesUpdate extends BaseCollectionUpdate {
+	id: string;
+	title: string;
+	description?: string;
+	slug?: string;
+	listing_type: 'sale' | 'rent';
+	property_type: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
+	status: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
+	location: string;
+	street_address?: string;
+	city?: string;
+	state?: string;
+	postal_code?: string;
+	country?: string;
+	dimensions?: string;
+	building_size_sqft?: number;
+	'building_size_sqft+'?: number;
+	'building_size_sqft-'?: number;
+	lot_size_sqft?: number;
+	'lot_size_sqft+'?: number;
+	'lot_size_sqft-'?: number;
+	lot_size_acres?: number;
+	'lot_size_acres+'?: number;
+	'lot_size_acres-'?: number;
+	year_built?: number;
+	'year_built+'?: number;
+	'year_built-'?: number;
+	floors?: number;
+	'floors+'?: number;
+	'floors-'?: number;
+	beds?: number;
+	'beds+'?: number;
+	'beds-'?: number;
+	baths?: number;
+	'baths+'?: number;
+	'baths-'?: number;
+	parking_spaces?: number;
+	'parking_spaces+'?: number;
+	'parking_spaces-'?: number;
+	parking_type?: '' | 'garage' | 'carport' | 'street' | 'covered' | 'assigned' | 'none';
+	heating?: '' | 'none' | 'electric' | 'gas' | 'oil' | 'heat_pump' | 'solar' | 'geothermal';
+	cooling?: '' | 'none' | 'central' | 'wall_unit' | 'evaporative' | 'geothermal';
+	zoning?: '' | 'residential' | 'commercial' | 'agricultural' | 'industrial' | 'mixed_use' | 'recreational' | 'other';
+	currency?: string;
+	price?: number;
+	'price+'?: number;
+	'price-'?: number;
+	sale_price?: number;
+	'sale_price+'?: number;
+	'sale_price-'?: number;
+	rental_price?: number;
+	'rental_price+'?: number;
+	'rental_price-'?: number;
+	security_deposit?: number;
+	'security_deposit+'?: number;
+	'security_deposit-'?: number;
+	hoa_fee?: number;
+	'hoa_fee+'?: number;
+	'hoa_fee-'?: number;
+	annual_taxes?: number;
+	'annual_taxes+'?: number;
+	'annual_taxes-'?: number;
+	available_from?: string | Date;
+	image_url?: string | URL;
+	images?: File | null;
+	video_url?: string | URL;
+	virtual_tour_url?: string | URL;
+	amenities?: PropertiesAmenities
+	features?: Record<string, any> | Array<any> | null;
+	utilities?: Record<string, any> | Array<any> | null;
+	agent_id?: string;
+	owner_id?: string;
+	is_featured?: boolean;
+	is_new?: boolean;
+	location_point?: unknown;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface PropertiesCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'properties';
+	response: PropertiesResponse;
+	create: PropertiesCreate;
+	update: PropertiesUpdate;
+	relations: {
+		agent_id: UsersCollection[];
+		owner_id: UsersCollection[];
+		favorites_via_property_id: FavoritesCollection[];
+	};
+}
+
+// ===== favorites =====
+
+export interface FavoritesResponse extends BaseCollectionResponse {
+	collectionName: 'favorites';
+	id: string;
+	user_id: string;
+	property_id: string;
+	created: string;
+	updated: string;
+}
+
+export interface FavoritesCreate extends BaseCollectionCreate {
+	id?: string;
+	user_id: string;
+	property_id: string;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface FavoritesUpdate extends BaseCollectionUpdate {
+	id: string;
+	user_id: string;
+	property_id: string;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface FavoritesCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'favorites';
+	response: FavoritesResponse;
+	create: FavoritesCreate;
+	update: FavoritesUpdate;
+	relations: {
+		user_id: UsersCollection[];
+		property_id: PropertiesCollection[];
+	};
 }
 
 // ===== Schema =====
@@ -395,4 +646,6 @@ export type Schema = {
 	_authOrigins: AuthOriginsCollection;
 	_superusers: SuperusersCollection;
 	users: UsersCollection;
+	properties: PropertiesCollection;
+	favorites: FavoritesCollection;
 };

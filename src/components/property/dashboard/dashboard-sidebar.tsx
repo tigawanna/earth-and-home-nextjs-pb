@@ -236,7 +236,7 @@ export function DashboardSidebar() {
                 align="end"
                 sideOffset={4}>
                 <DropdownMenuItem asChild>
-                  <ModeToggle />
+                  <ModeToggle compact/>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

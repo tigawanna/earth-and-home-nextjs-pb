@@ -203,6 +203,7 @@ export const UsersResponseSchema = authResponseSchema.extend({
     verified: z.boolean().optional(),
     name: z.string().max(255).optional(),
     avatar: z.string().optional(),
+    role: z.enum(['', 'user', 'admin']).optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -214,6 +215,7 @@ export const UsersCreateSchema = authCreateSchema.extend({
     verified: z.boolean().optional(),
     name: z.string().max(255).optional(),
     avatar: z.instanceof(File).nullable().optional(),
+    role: z.enum(['', 'user', 'admin']).optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -225,6 +227,218 @@ export const UsersUpdateSchema = authUpdateSchema.extend({
     verified: z.boolean().optional(),
     name: z.string().max(255).optional(),
     avatar: z.instanceof(File).nullable().optional(),
+    role: z.enum(['', 'user', 'admin']).optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
+// ===== properties =====
+
+export const PropertiesResponseSchema = baseResponseSchema.extend({
+    collectionName: z.literal('properties'),
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    title: z.string(),
+    description: z.string().optional(),
+    slug: z.string().optional(),
+    listing_type: z.enum(['sale', 'rent']),
+    property_type: z.enum(['house', 'apartment', 'condo', 'townhouse', 'duplex', 'studio', 'villa', 'land', 'commercial', 'industrial', 'farm']),
+    status: z.enum(['draft', 'active', 'pending', 'sold', 'rented', 'off_market']),
+    location: z.string(),
+    street_address: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    postal_code: z.string().optional(),
+    country: z.string().optional(),
+    dimensions: z.string().optional(),
+    building_size_sqft: z.number().optional(),
+    lot_size_sqft: z.number().optional(),
+    lot_size_acres: z.number().optional(),
+    year_built: z.number().optional(),
+    floors: z.number().optional(),
+    beds: z.number().optional(),
+    baths: z.number().optional(),
+    parking_spaces: z.number().optional(),
+    parking_type: z.enum(['', 'garage', 'carport', 'street', 'covered', 'assigned', 'none']).optional(),
+    heating: z.enum(['', 'none', 'electric', 'gas', 'oil', 'heat_pump', 'solar', 'geothermal']).optional(),
+    cooling: z.enum(['', 'none', 'central', 'wall_unit', 'evaporative', 'geothermal']).optional(),
+    zoning: z.enum(['', 'residential', 'commercial', 'agricultural', 'industrial', 'mixed_use', 'recreational', 'other']).optional(),
+    currency: z.string().optional(),
+    price: z.number().optional(),
+    sale_price: z.number().optional(),
+    rental_price: z.number().optional(),
+    security_deposit: z.number().optional(),
+    hoa_fee: z.number().optional(),
+    annual_taxes: z.number().optional(),
+    available_from: z.string().optional(),
+    image_url: z.url().optional(),
+    images: z.string().optional(),
+    video_url: z.url().optional(),
+    virtual_tour_url: z.url().optional(),
+    amenities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    features: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    utilities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    agent_id: z.string().optional(),
+    owner_id: z.string().optional(),
+    is_featured: z.boolean().optional(),
+    is_new: z.boolean().optional(),
+    location_point: z.unknown().optional(),
+    created: z.string().optional(),
+    updated: z.string().optional()
+});
+
+export const PropertiesCreateSchema = baseCreateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    title: z.string(),
+    description: z.string().optional(),
+    slug: z.string().optional(),
+    listing_type: z.enum(['sale', 'rent']),
+    property_type: z.enum(['house', 'apartment', 'condo', 'townhouse', 'duplex', 'studio', 'villa', 'land', 'commercial', 'industrial', 'farm']),
+    status: z.enum(['draft', 'active', 'pending', 'sold', 'rented', 'off_market']),
+    location: z.string(),
+    street_address: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    postal_code: z.string().optional(),
+    country: z.string().optional(),
+    dimensions: z.string().optional(),
+    building_size_sqft: z.number().optional(),
+    lot_size_sqft: z.number().optional(),
+    lot_size_acres: z.number().optional(),
+    year_built: z.number().optional(),
+    floors: z.number().optional(),
+    beds: z.number().optional(),
+    baths: z.number().optional(),
+    parking_spaces: z.number().optional(),
+    parking_type: z.enum(['', 'garage', 'carport', 'street', 'covered', 'assigned', 'none']).optional(),
+    heating: z.enum(['', 'none', 'electric', 'gas', 'oil', 'heat_pump', 'solar', 'geothermal']).optional(),
+    cooling: z.enum(['', 'none', 'central', 'wall_unit', 'evaporative', 'geothermal']).optional(),
+    zoning: z.enum(['', 'residential', 'commercial', 'agricultural', 'industrial', 'mixed_use', 'recreational', 'other']).optional(),
+    currency: z.string().optional(),
+    price: z.number().optional(),
+    sale_price: z.number().optional(),
+    rental_price: z.number().optional(),
+    security_deposit: z.number().optional(),
+    hoa_fee: z.number().optional(),
+    annual_taxes: z.number().optional(),
+    available_from: z.union([z.string(), z.date()]).optional(),
+    image_url: z.union([z.url(), z.instanceof(URL)]).optional(),
+    images: z.instanceof(File).nullable().optional(),
+    video_url: z.union([z.url(), z.instanceof(URL)]).optional(),
+    virtual_tour_url: z.union([z.url(), z.instanceof(URL)]).optional(),
+    amenities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    features: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    utilities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    agent_id: z.string().optional(),
+    owner_id: z.string().optional(),
+    is_featured: z.boolean().optional(),
+    is_new: z.boolean().optional(),
+    location_point: z.unknown().optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
+export const PropertiesUpdateSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    title: z.string(),
+    description: z.string().optional(),
+    slug: z.string().optional(),
+    listing_type: z.enum(['sale', 'rent']),
+    property_type: z.enum(['house', 'apartment', 'condo', 'townhouse', 'duplex', 'studio', 'villa', 'land', 'commercial', 'industrial', 'farm']),
+    status: z.enum(['draft', 'active', 'pending', 'sold', 'rented', 'off_market']),
+    location: z.string(),
+    street_address: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    postal_code: z.string().optional(),
+    country: z.string().optional(),
+    dimensions: z.string().optional(),
+    building_size_sqft: z.number().optional(),
+    'building_size_sqft+': z.number().optional(),
+    'building_size_sqft-': z.number().optional(),
+    lot_size_sqft: z.number().optional(),
+    'lot_size_sqft+': z.number().optional(),
+    'lot_size_sqft-': z.number().optional(),
+    lot_size_acres: z.number().optional(),
+    'lot_size_acres+': z.number().optional(),
+    'lot_size_acres-': z.number().optional(),
+    year_built: z.number().optional(),
+    'year_built+': z.number().optional(),
+    'year_built-': z.number().optional(),
+    floors: z.number().optional(),
+    'floors+': z.number().optional(),
+    'floors-': z.number().optional(),
+    beds: z.number().optional(),
+    'beds+': z.number().optional(),
+    'beds-': z.number().optional(),
+    baths: z.number().optional(),
+    'baths+': z.number().optional(),
+    'baths-': z.number().optional(),
+    parking_spaces: z.number().optional(),
+    'parking_spaces+': z.number().optional(),
+    'parking_spaces-': z.number().optional(),
+    parking_type: z.enum(['', 'garage', 'carport', 'street', 'covered', 'assigned', 'none']).optional(),
+    heating: z.enum(['', 'none', 'electric', 'gas', 'oil', 'heat_pump', 'solar', 'geothermal']).optional(),
+    cooling: z.enum(['', 'none', 'central', 'wall_unit', 'evaporative', 'geothermal']).optional(),
+    zoning: z.enum(['', 'residential', 'commercial', 'agricultural', 'industrial', 'mixed_use', 'recreational', 'other']).optional(),
+    currency: z.string().optional(),
+    price: z.number().optional(),
+    'price+': z.number().optional(),
+    'price-': z.number().optional(),
+    sale_price: z.number().optional(),
+    'sale_price+': z.number().optional(),
+    'sale_price-': z.number().optional(),
+    rental_price: z.number().optional(),
+    'rental_price+': z.number().optional(),
+    'rental_price-': z.number().optional(),
+    security_deposit: z.number().optional(),
+    'security_deposit+': z.number().optional(),
+    'security_deposit-': z.number().optional(),
+    hoa_fee: z.number().optional(),
+    'hoa_fee+': z.number().optional(),
+    'hoa_fee-': z.number().optional(),
+    annual_taxes: z.number().optional(),
+    'annual_taxes+': z.number().optional(),
+    'annual_taxes-': z.number().optional(),
+    available_from: z.union([z.string(), z.date()]).optional(),
+    image_url: z.union([z.url(), z.instanceof(URL)]).optional(),
+    images: z.instanceof(File).nullable().optional(),
+    video_url: z.union([z.url(), z.instanceof(URL)]).optional(),
+    virtual_tour_url: z.union([z.url(), z.instanceof(URL)]).optional(),
+    amenities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    features: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    utilities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
+    agent_id: z.string().optional(),
+    owner_id: z.string().optional(),
+    is_featured: z.boolean().optional(),
+    is_new: z.boolean().optional(),
+    location_point: z.unknown().optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
+// ===== favorites =====
+
+export const FavoritesResponseSchema = baseResponseSchema.extend({
+    collectionName: z.literal('favorites'),
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    user_id: z.string(),
+    property_id: z.string(),
+    created: z.string().optional(),
+    updated: z.string().optional()
+});
+
+export const FavoritesCreateSchema = baseCreateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    user_id: z.string(),
+    property_id: z.string(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
+export const FavoritesUpdateSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    user_id: z.string(),
+    property_id: z.string(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -261,6 +475,16 @@ export const schemas = {
         response: UsersResponseSchema,
         create: UsersCreateSchema,
         update: UsersUpdateSchema,
+    },
+    properties: {
+        response: PropertiesResponseSchema,
+        create: PropertiesCreateSchema,
+        update: PropertiesUpdateSchema,
+    },
+    favorites: {
+        response: FavoritesResponseSchema,
+        create: FavoritesCreateSchema,
+        update: FavoritesUpdateSchema,
     },
 };
 
@@ -356,3 +580,33 @@ export const usersValidators = {
 export type UsersResponse = z.infer<typeof UsersResponseSchema>;
 export type UsersCreate = z.infer<typeof UsersCreateSchema>;
 export type UsersUpdate = z.infer<typeof UsersUpdateSchema>;
+
+// Validation helpers for properties
+export const propertiesValidators = {
+    response: (data: unknown) => PropertiesResponseSchema.parse(data),
+    safeResponse: (data: unknown) => PropertiesResponseSchema.safeParse(data),
+    create: (data: unknown) => PropertiesCreateSchema.parse(data),
+    safeCreate: (data: unknown) => PropertiesCreateSchema.safeParse(data),
+    update: (data: unknown) => PropertiesUpdateSchema.parse(data),
+    safeUpdate: (data: unknown) => PropertiesUpdateSchema.safeParse(data),
+};
+
+// Type inference helpers for properties
+export type PropertiesResponse = z.infer<typeof PropertiesResponseSchema>;
+export type PropertiesCreate = z.infer<typeof PropertiesCreateSchema>;
+export type PropertiesUpdate = z.infer<typeof PropertiesUpdateSchema>;
+
+// Validation helpers for favorites
+export const favoritesValidators = {
+    response: (data: unknown) => FavoritesResponseSchema.parse(data),
+    safeResponse: (data: unknown) => FavoritesResponseSchema.safeParse(data),
+    create: (data: unknown) => FavoritesCreateSchema.parse(data),
+    safeCreate: (data: unknown) => FavoritesCreateSchema.safeParse(data),
+    update: (data: unknown) => FavoritesUpdateSchema.parse(data),
+    safeUpdate: (data: unknown) => FavoritesUpdateSchema.safeParse(data),
+};
+
+// Type inference helpers for favorites
+export type FavoritesResponse = z.infer<typeof FavoritesResponseSchema>;
+export type FavoritesCreate = z.infer<typeof FavoritesCreateSchema>;
+export type FavoritesUpdate = z.infer<typeof FavoritesUpdateSchema>;

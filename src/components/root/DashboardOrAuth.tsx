@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { User, Settings, LogOut, LayoutDashboard, Loader2 } from "lucide-react"
-import { authClient } from "@/lib/client-side-auth"
+
 
 interface User {
   id: string
