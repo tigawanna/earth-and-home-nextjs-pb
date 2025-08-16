@@ -1,10 +1,9 @@
-import PocketBase from 'pocketbase';
-import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { TypedPocketBase } from '@tigawanna/typed-pocketbase';
+import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies';
 import { Schema } from './types/pb-types';
 
 export function createServerClient(cookieStore?: ReadonlyRequestCookies) {
-  const url = process.env.NEXT_PB_URL;
+  const url = process.env.NEXT_PUBLIC_PB_URL;
   if (!url) {
     throw new Error('Pocketbase API url not defined !');
   }

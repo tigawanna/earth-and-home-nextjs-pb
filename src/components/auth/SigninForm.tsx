@@ -12,10 +12,14 @@ import { Input } from "@/components/ui/input";
 import { signinMutationOptions } from "@/DAL/pocketbase/auth";
 import { useMutation } from "@tanstack/react-query";
 import { signinSchema, type SigninFormData } from "./auth-schemas";
+import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface SigninFormProps {}
 
 export function SigninForm({}: SigninFormProps) {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   
   const form = useForm<SigninFormData>({
@@ -26,7 +30,16 @@ export function SigninForm({}: SigninFormProps) {
     },
   });
 
-  const { mutate, isPending } = useMutation(signinMutationOptions());
+  const { mutate, isPending } = useMutation({...signinMutationOptions(),
+    onSuccess: () => {
+      toast.success("Signed in successfully!");
+      router.push("/dashboard");
+    },
+    onError: (error) => {
+     toast.error("Failed to sign in. Please check your credentials and try again.");
+    },
+  
+  });
 
   const onSubmit = (data: SigninFormData) => {
     mutate(data);
@@ -41,7 +54,11 @@ export function SigninForm({}: SigninFormProps) {
           Sign In
         </span>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" role="form" aria-label="Sign in form">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4"
+            role="form"
+            aria-label="Sign in form">
             <FormField
               control={form.control}
               name="email"
@@ -91,6 +108,20 @@ export function SigninForm({}: SigninFormProps) {
               {isPending ? "Signing in..." : "Sign In"}
             </Button>
           </form>
+
+          <FormErrorDisplay
+            form={form}
+            title="Please fix the following errors:"
+            maxErrors={5}
+            className="my-custom-class"
+          />
+
+          {/* Development Debug Info - Just pass the form! */}
+          <FormStateDebug
+            form={form}
+            title="🔧 Debug Form Errors"
+            showFullState={false} // false = errors only, true = full form state
+          />
         </Form>
 
         <div className="mt-6 text-center text-sm flex flex-col justify-center items-center gap-2">

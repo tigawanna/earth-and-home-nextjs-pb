@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -18,10 +18,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { signupSchema, type SignupFormData } from "./auth-schemas";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface SignupFormProps {}
 
 export function SignupForm({}: SignupFormProps) {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -35,7 +38,16 @@ export function SignupForm({}: SignupFormProps) {
     },
   });
 
-  const { isPending, mutate } = useMutation(signupMutationOptions());
+  const { isPending, mutate } = useMutation({
+    ...signupMutationOptions(),
+    onSuccess: () => {
+      toast.success("Account created successfully!");
+      router.push("/auth/signin");
+    },
+    onError: (error) => {
+      toast.error("Failed to create account. Please try again.");
+    },
+  });
 
   const onSubmit = (data: SignupFormData) => {
     mutate(data);

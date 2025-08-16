@@ -32,7 +32,7 @@ const PB_TYPES_DIR = "./src/lib/pocketbase/types";
 const filter_collection = "";
 
 export async function callCliDirectly() {
-  const url = process.env.NEXT_PB_URL;
+  const url = process.env.NEXT_PUBLIC_PB_URL;
 
   const email = process.env.PB_TYPEGEN_EMAIL;
   const password = process.env.PB_TYPEGEN_PASSWORD;

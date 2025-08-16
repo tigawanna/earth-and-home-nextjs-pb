@@ -1,8 +1,10 @@
-import { createBrowserClient } from "@/lib/pocketbase/browser-client";
+import { browserPB, createBrowserClient } from "@/lib/pocketbase/browser-client";
 import { UsersCreate } from "@/lib/pocketbase/types/pb-zod";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { deleteBrowserCookie } from "@/utils/browser-cookie";
 import { mutationOptions, queryOptions } from "@tanstack/react-query";
+
+
 
 export function viewerQueryOptions() {
   return queryOptions({

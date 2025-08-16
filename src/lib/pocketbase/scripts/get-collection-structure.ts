@@ -1,8 +1,8 @@
 import "dotenv/config";
-import Pocketbase from "pocketbase";
 import fs from "fs/promises";
+import Pocketbase from "pocketbase";
 
-const url = process.env.NEXT_PB_URL;
+const url = process.env.NEXT_PUBLIC_PB_URL;
 const email = process.env.PB_TYPEGEN_EMAIL;
 const password = process.env.PB_TYPEGEN_PASSWORD;
 
