@@ -18,7 +18,7 @@ async function getCollectionStructure() {
   const collections = await pb.collections.getFullList({
     sort: "created",
   });
-  fs.writeFile("./src/lib/pb/collections.json", JSON.stringify(collections, null, 2));
+  fs.writeFile("./src/lib/pocketbase/collections.json", JSON.stringify(collections, null, 2));
 }
 getCollectionStructure().catch((error) => {
   console.warn("Error fetching collections:", error);
