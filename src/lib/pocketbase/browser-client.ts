@@ -9,7 +9,7 @@ export function createBrowserClient() {
     throw new Error('Pocketbase API url not defined !');
   }
 
-  const createNewClient = () => new TypedPocketBase(url);
+  const createNewClient = () => new TypedPocketBase<Schema>(url);
 
   const _client = singletonClient ?? createNewClient();
 
