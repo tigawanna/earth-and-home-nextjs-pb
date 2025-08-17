@@ -1,4 +1,4 @@
-import { PropertyDashboard } from "@/components/old-property/PropertyDashboard";
+import { PropertyDashboard } from "@/components/property/dashboard/PropertyDashboard";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";

@@ -1,4 +1,4 @@
-import { FavoritesDashboard } from "@/components/old-property/FavoritesDashboard";
+import { FavoriteProperties } from "@/components/property/dashboard/favorites/FavoriteProperties";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
@@ -17,7 +17,7 @@ function LoadingFallback() {
 export default function FavoritesPage({}: {}) {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <FavoritesDashboard />
+      <FavoriteProperties />
     </Suspense>
   );
 }

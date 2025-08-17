@@ -4,7 +4,7 @@ import { getProperties } from "@/data-access-layer/pocketbase/property-queries";
 import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { PropertyList } from "./list/PropertyList";
+import { PropertyList } from "../../old-property/list/PropertyList";
 
 interface PropertyDashboardProps {
   searchParams: { [key: string]: string | string[] | undefined };
