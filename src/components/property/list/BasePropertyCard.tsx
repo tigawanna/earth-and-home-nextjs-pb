@@ -4,25 +4,30 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
-import { formatDistanceToNowStrict } from 'date-fns';
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { formatDistanceToNowStrict } from "date-fns";
+
+type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
+  expand?: {
+    owner_id?: UsersResponse[] | undefined;
+    agent_id?: UsersResponse[] | undefined;
+  } | undefined;
+};
 
 interface BasePropertyCardProps {
-  property: PropertiesResponse;
+  property: PropertiesResponseWithExpandedRelations;
 }
 
-// Minimal expanded user shape used when relation fields are expanded
-type ExpandedUser = { name?: string; avatar?: string };
-
 function formatPrice(currency: string | undefined, price: number | undefined) {
-  if (!price) return '—';
+  if (!price) return "—";
   try {
     return new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: currency || 'KES',
+      style: "currency",
+      currency: currency || "KES",
       maximumFractionDigits: 0,
     }).format(price);
   } catch (e) {
-    return `${currency ?? ''} ${price}`;
+    return `${currency ?? ""} ${price}`;
   }
 }
 
@@ -49,14 +54,17 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
     owner_id,
     agent_id,
     status,
-  } = property as Partial<PropertiesResponse>;
+  } = property;
 
-  const ownerExpanded = Array.isArray(owner_id) ? (owner_id as unknown as ExpandedUser[]) : undefined;
-  const agentExpanded = Array.isArray(agent_id) ? (agent_id as unknown as ExpandedUser[]) : undefined;
+  const ownerExpanded = property.expand?.owner_id;
+  const agentExpanded = property.expand?.agent_id;
 
-  const imageSrc = image_url || (Array.isArray(images) && images.length ? images[0] : undefined) || '/apple-icon.png';
+  const imageSrc =
+    image_url ||
+    (Array.isArray(images) && images.length ? images[0] : undefined) ||
+    "/apple-icon.png";
 
-  const locationLabel = [city, state, country].filter(Boolean).join(', ');
+  const locationLabel = [city, state, country].filter(Boolean).join(", ");
 
   return (
     <Card className="w-full max-w-sm">
@@ -64,9 +72,11 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
         <AspectRatio ratio={16 / 11} className="w-full overflow-hidden rounded-t-md">
           <img
             src={imageSrc}
-            alt={title ?? 'Property image'}
+            alt={title ?? "Property image"}
             className="object-cover w-full h-full"
-            onError={(e) => { (e.target as HTMLImageElement).src = '/apple-icon.png'; }}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/apple-icon.png";
+            }}
           />
         </AspectRatio>
       </CardHeader>
@@ -74,15 +84,25 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
       <CardContent className="space-y-3">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <h3 className="text-lg font-semibold truncate">{title ?? 'Untitled property'}</h3>
-            <p className="text-sm text-muted-foreground truncate">{locationLabel || 'Location not set'}</p>
+            <h3 className="text-lg font-semibold truncate">{title ?? "Untitled property"}</h3>
+            <p className="text-sm text-muted-foreground truncate">
+              {locationLabel || "Location not set"}
+            </p>
           </div>
 
           <div className="flex flex-col items-end space-y-2">
             <span className="text-lg font-semibold">{formatPrice(currency, price)}</span>
             <div className="flex items-center gap-2">
-              {listing_type && <Badge variant="secondary" className="capitalize">{listing_type}</Badge>}
-              {status && <Badge variant="outline" className="capitalize">{status}</Badge>}
+              {listing_type && (
+                <Badge variant="secondary" className="capitalize">
+                  {listing_type}
+                </Badge>
+              )}
+              {status && (
+                <Badge variant="outline" className="capitalize">
+                  {status}
+                </Badge>
+              )}
             </div>
           </div>
         </div>
@@ -97,7 +117,7 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
             <span>ba</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-medium">{building_size_sqft ?? '—'}</span>
+            <span className="font-medium">{building_size_sqft ?? "—"}</span>
             <span>sqft</span>
           </div>
         </div>
@@ -106,17 +126,31 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
           <div className="flex items-center gap-3">
             <Avatar>
               <AvatarImage src={ownerExpanded?.[0]?.avatar ?? agentExpanded?.[0]?.avatar} />
-              <AvatarFallback>{(ownerExpanded?.[0]?.name ?? agentExpanded?.[0]?.name)?.[0] ?? 'AG'}</AvatarFallback>
+              <AvatarFallback>
+                {(ownerExpanded?.[0]?.name ?? agentExpanded?.[0]?.name)?.[0] ?? "AG"}
+              </AvatarFallback>
             </Avatar>
             <div className="text-sm">
-              <div className="font-medium">{ownerExpanded?.[0]?.name ?? agentExpanded?.[0]?.name ?? 'Owner'}</div>
-              <div className="text-muted-foreground text-xs">{property_type ? String(property_type).replace('_', ' ') : 'Property'}</div>
+              <div className="font-medium">
+                {ownerExpanded?.[0]?.name ?? agentExpanded?.[0]?.name ?? "Owner"}
+              </div>
+              <div className="text-muted-foreground text-xs">
+                {property_type ? String(property_type).replace("_", " ") : "Property"}
+              </div>
             </div>
           </div>
 
           <div className="text-xs text-muted-foreground">
-            <div>Added {created ? formatDistanceToNowStrict(new Date(created), { addSuffix: true }) : '—'}</div>
-            {updated && <div>Updated {updated ? formatDistanceToNowStrict(new Date(updated), { addSuffix: true }) : '—'}</div>}
+            <div>
+              Added{" "}
+              {created ? formatDistanceToNowStrict(new Date(created), { addSuffix: true }) : "—"}
+            </div>
+            {updated && (
+              <div>
+                Updated{" "}
+                {updated ? formatDistanceToNowStrict(new Date(updated), { addSuffix: true }) : "—"}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
@@ -128,7 +162,9 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost">Save</Button>
+          <Button size="sm" variant="ghost">
+            Save
+          </Button>
           <Button size="sm">View</Button>
         </div>
       </CardFooter>

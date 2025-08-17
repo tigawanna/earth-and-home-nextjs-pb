@@ -140,12 +140,7 @@ export async function getProperties({
       sort,
       select: {
         expand: {
-          agent_id: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
-          },
+          agent_id:true,
         },
       },
     });

@@ -7,24 +7,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
-    ArrowLeft,
-    Bath,
-    Bed,
-    Building,
-    Calendar,
-    Car,
-    Mail,
-    MapPin,
-    Phone,
-    Share2,
-    Snowflake,
-    Square,
-    Thermometer
+  ArrowLeft,
+  Bath,
+  Bed,
+  Building,
+  Calendar,
+  Car,
+  Mail,
+  MapPin,
+  Phone,
+  Share2,
+  Snowflake,
+  Square,
+  Thermometer
 } from "lucide-react";
 import Link from "next/link";
+import { SinglePropertyNotFound } from "../property/query-states";
 import { FavoriteProperty } from "./form/FavoriteProperty";
 import { PropertyImageGallery } from "./list/PropertyImageGallery";
-import { SinglePropertyNotFound } from "./query-states";
 
 const sampleImages = [
   {

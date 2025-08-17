@@ -20,7 +20,7 @@ export default function Home() {
         <PropertySearch />
 
         {/* Featured */}
-        {/* <FeaturedProperties /> */}
+        <FeaturedProperties />
 
         {/* Sell */}
         <SellYourHome />

@@ -1,4 +1,4 @@
-import { PropertyFilters } from "@/components/old-property/list/PropertyFilters";
+import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { createBrowserClient } from "@/lib/pocketbase/browser-client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { PropertyList } from "./list/PropertyList";

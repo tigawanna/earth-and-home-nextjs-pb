@@ -1,5 +1,5 @@
-import { PropertyFilters } from "@/components/old-property/list/PropertyFilters";
-import { PublicPropertyListings } from "@/components/old-property/PublicPropertyListings";
+import { PropertyFilters } from "@/components/property/list/PropertyFilters";
+import { PublicPropertiesList } from "@/components/property/list/PublicPropertiesList";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
@@ -28,7 +28,7 @@ export default async function PublicPropertiesPage({
     <div className="container mx-auto py-8">
       <PropertyFilters showStatusFilter={false} />
       <Suspense fallback={<LoadingFallback />}>
-        <PublicPropertyListings searchParams={params} />
+        <PublicPropertiesList searchParams={params} />
       </Suspense>
     </div>
   );

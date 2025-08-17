@@ -1,19 +1,17 @@
-import { PublicPropertyListings } from "@/components/old-property/PublicPropertyListings";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { Card, CardContent } from "../ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { PublicPropertiesList } from "@/components/property/list/PublicPropertiesList";
+import { PropertyFilters } from "@/DAL/pocketbase/property-types";
 
 export function FeaturedProperties() {
   // Search params to get only featured properties
   const featuredSearchParams = {
-    // featured: "true",
-    // status: "active",
-    // sortBy: "createdAt",
-    // sortOrder: "desc",
-  };
-
+   isFeatured: true,
+    status: "active", // Only show active featured properties
+  } satisfies PropertyFilters;
   return (
     <section id="properties" className="py-16 bg-muted/20">
       <div className="container mx-auto px-4">
@@ -28,7 +26,7 @@ export function FeaturedProperties() {
 
         {/* Use the PublicPropertyListings component with featured filter */}
         <Suspense fallback={<LoadingFallback />}>
-          <PublicPropertyListings
+          <PublicPropertiesList
             searchParams={featuredSearchParams}
             limit={6} // Show only 6 featured properties on homepage
           />
