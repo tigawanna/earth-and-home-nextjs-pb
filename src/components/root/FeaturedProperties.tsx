@@ -1,10 +1,10 @@
+import { PublicPropertiesList } from "@/components/property/list/PublicPropertiesList";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { PropertyFilters } from "@/data-access-layer/pocketbase/property-types";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { PublicPropertiesList } from "@/components/property/list/PublicPropertiesList";
-import { PropertyFilters } from "@/DAL/pocketbase/property-types";
 
 export function FeaturedProperties() {
   // Search params to get only featured properties

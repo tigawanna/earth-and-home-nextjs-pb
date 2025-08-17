@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { viewerQueryOptions } from "@/DAL/pocketbase/auth";
+import { viewerQueryOptions } from "@/data-access-layer/pocketbase/auth";
 import { useQuery } from "@tanstack/react-query";
 
 import { ChevronRight, Loader, Pen } from "lucide-react";

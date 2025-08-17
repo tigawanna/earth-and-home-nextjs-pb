@@ -1,4 +1,4 @@
-import { getProperty } from "@/DAL/pocketbase/property-queries";
+import { getProperty } from "@/data-access-layer/pocketbase/property-queries";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

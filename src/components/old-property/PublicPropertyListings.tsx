@@ -1,7 +1,7 @@
 import { PropertyCard } from "@/components/old-property/list/PropertyCard";
 import { Card } from "@/components/ui/card";
-import { getProperties } from "@/DAL/pocketbase/property-queries";
-import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/pocketbase/property-types";
+import { getProperties } from "@/data-access-layer/pocketbase/property-queries";
+import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
 import { Home } from "lucide-react";
 
 export const dynamic = "force-dynamic";

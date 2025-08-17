@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { PropertyWithAgent } from "@/DAL/pocketbase/property-types";
+import { PropertyWithAgent } from "@/data-access-layer/pocketbase/property-types";
 import { Home } from "lucide-react";
 import Link from "next/link";
 import { ClientPropertyCard } from "./ClientPropertyCard";

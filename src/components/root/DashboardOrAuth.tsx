@@ -12,9 +12,9 @@ import {
 import {
   signoutMutationOptions,
   viewerQueryOptions
-} from "@/DAL/pocketbase/auth";
+} from "@/data-access-layer/pocketbase/auth";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { LayoutDashboard, LogOut, Settings, User } from "lucide-react";
+import { LayoutDashboard, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

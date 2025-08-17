@@ -1,22 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import {
+  BarChart3,
   Building2,
   ChevronDown,
-  Home,
   Heart,
-  Settings,
-  Users,
-  Plus,
-  BarChart3,
+  Home,
   LogOut,
-  User,
+  Plus,
+  Settings,
   Shield,
+  User,
+  Users,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -29,19 +37,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 
 import { ModeToggle } from "@/components/theme/theme-toggle";
-import { viewerQueryOptions, signoutMutationOptions } from "@/DAL/pocketbase/auth";
-import { useSuspenseQuery, useMutation } from "@tanstack/react-query";
+import { signoutMutationOptions, viewerQueryOptions } from "@/data-access-layer/pocketbase/auth";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 
 // Menu items for regular users
 const userMenuItems = [

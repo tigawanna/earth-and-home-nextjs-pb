@@ -1,20 +1,20 @@
 "use client";
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { toggleFavorite } from "@/DAL/pocketbase/favorite-mutations";
-import { deleteProperty } from "@/DAL/pocketbase/property-mutations";
-import { PropertyWithAgent } from "@/DAL/pocketbase/property-types";
+import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
+import { deleteProperty } from "@/data-access-layer/pocketbase/property-mutations";
+import { PropertyWithAgent } from "@/data-access-layer/pocketbase/property-types";
 import { Edit, Heart, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

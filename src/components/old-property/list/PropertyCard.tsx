@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PropertyWithAgent } from "@/DAL/pocketbase/property-types";
+import { PropertyWithAgent } from "@/data-access-layer/pocketbase/property-types";
 import { Bath, Bed, Heart, Home, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

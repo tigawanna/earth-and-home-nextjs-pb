@@ -1,7 +1,7 @@
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { Button } from "@/components/ui/button";
-import { getProperties } from "@/DAL/pocketbase/property-queries";
-import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/pocketbase/property-types";
+import { getProperties } from "@/data-access-layer/pocketbase/property-queries";
+import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { PropertyList } from "./list/PropertyList";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { toggleFavorite } from "@/DAL/pocketbase/favorite-mutations";
+import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
 import { Heart } from "lucide-react";
 import { useTransition } from "react";
 

@@ -6,7 +6,7 @@ import { Form } from "@/components/ui/form";
 import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
-} from "@/DAL/pocketbase/property-mutations";
+} from "@/data-access-layer/pocketbase/property-mutations";
 import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-zod";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { ImagesUploadSection } from "./files/ImagesUploadSection";
 import { PropertyFormData, PropertyFormSchema } from "./property-form-schema";
 import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { BuildingSection } from "./sections/BuildingSection";

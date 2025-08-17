@@ -10,16 +10,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signupMutationOptions } from "@/DAL/pocketbase/auth";
+import { signupMutationOptions } from "@/data-access-layer/pocketbase/auth";
 import LinkLoadingIndicator from "@/lib/next/LinkLoadingIndicator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { signupSchema, type SignupFormData } from "./auth-schemas";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { signupSchema, type SignupFormData } from "./auth-schemas";
 
 interface SignupFormProps {}
 

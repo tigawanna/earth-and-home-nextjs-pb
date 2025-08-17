@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PropertyFilters as PropertyFiltersType } from "@/DAL/pocketbase/property-types";
+import { PropertyFilters as PropertyFiltersType } from "@/data-access-layer/pocketbase/property-types";
 import { Filter, Loader2, Search, X } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { useState, useTransition } from "react";
