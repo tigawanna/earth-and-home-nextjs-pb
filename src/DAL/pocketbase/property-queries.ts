@@ -27,6 +27,7 @@ export async function getProperties({
 
   try {
     const client = createServerClient();
+    
 
     // Build filter conditions
     const conditions = [];
