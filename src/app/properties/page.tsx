@@ -1,8 +1,10 @@
-import { PropertyDashboard } from "@/components/-oldproperty/PropertyDashboard";
-
+import { PropertyFilters } from "@/components/-oldproperty/list/PropertyFilters";
+import { PublicPropertyListings } from "@/components/-oldproperty/PublicPropertyListings";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
+
+
 
 function LoadingFallback() {
   return (
@@ -15,7 +17,7 @@ function LoadingFallback() {
   );
 }
 
-export default async function PropertiesPage({
+export default async function PublicPropertiesPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -23,16 +25,11 @@ export default async function PropertiesPage({
   const params = await searchParams;
 
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <PropertyDashboard
-        searchParams={params}
-        // userId={session.user.id}
-        showActions={true}
-        showFavorite={false}
-        title="My Properties"
-        showStatusFilter={true}
-        agentFilter={true} // Filter by user's properties only
-      />
-    </Suspense>
+    <div className="container mx-auto py-8">
+      <PropertyFilters showStatusFilter={false} />
+      <Suspense fallback={<LoadingFallback />}>
+        <PublicPropertyListings searchParams={params} />
+      </Suspense>
+    </div>
   );
 }

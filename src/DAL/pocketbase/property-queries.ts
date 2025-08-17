@@ -10,8 +10,6 @@ import {
   or,
   FilterParam,
   TypedRecord,
-  Expands,
-  SelectWithExpand,
 } from "@tigawanna/typed-pocketbase";
 import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from "./property-types";
 import {

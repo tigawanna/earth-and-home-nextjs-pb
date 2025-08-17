@@ -17,7 +17,7 @@ export function PropertyCard({
   customActions
 }: PropertyCardProps) {
   const formatPrice = () => {
-    const price = property.salePrice || property.rentalPrice || property.price;
+    const price = property.sale_price || property.rental_price || property.price;
     if (!price) return "Price on request";
     
     const formatted = new Intl.NumberFormat("en-KE", {
@@ -26,18 +26,18 @@ export function PropertyCard({
       maximumFractionDigits: 0,
     }).format(price);
 
-    return property.listingType === "rent" ? `${formatted}/month` : formatted;
+    return property.listing_type === "rent" ? `${formatted}/month` : formatted;
   };
 
   const defaultActions = (
     <div className="flex gap-2 pt-2">
       <Button asChild variant="outline" size="sm" className="flex-1">
-        <Link href={`/properties/${property.slug}`}>View Details</Link>
+        <Link href={`/properties/${property.id}`}>View Details</Link>
       </Button>
       <EditPropertyLink id={property.id} />
       {property.isFavorited !== undefined && (
         <Button asChild variant="outline" size="sm">
-          <Link href={`/properties/${property.slug}`}>
+          <Link href={`/properties/${property.id}`}>
             <Heart
               className={`h-4 w-4 ${property.isFavorited ? "fill-red-500 text-red-500" : ""}`}
             />
@@ -51,9 +51,9 @@ export function PropertyCard({
     <Card className="overflow-hidden group">
       {/* Property Image */}
       <div className="aspect-video relative bg-muted">
-        {property.imageUrl ? (
+        {property.image_url ? (
           <Image
-            src={property.imageUrl}
+            src={property.image_url}
             alt={property.title}
             fill
             className="object-cover transition-transform group-hover:scale-105"
@@ -82,12 +82,12 @@ export function PropertyCard({
         {/* Listing Type Badge */}
         <div className="absolute top-2 right-2">
           <Badge variant="outline" className="bg-background/80">
-            {property.listingType === "sale" ? "For Sale" : "For Rent"}
+            {property.listing_type === "sale" ? "For Sale" : "For Rent"}
           </Badge>
         </div>
 
         {/* Featured Badge */}
-        {property.isFeatured && (
+        {property.is_featured && (
           <div className="absolute bottom-2 left-2">
             <Badge className="bg-yellow-500 text-yellow-50">
               ⭐ Featured
@@ -100,7 +100,7 @@ export function PropertyCard({
         <div className="space-y-2">
           <CardTitle className="line-clamp-1">
             <Link 
-              href={`/properties/${property.slug}`}
+              href={`/properties/${property.id}`}
               className="hover:underline"
             >
               {property.title}

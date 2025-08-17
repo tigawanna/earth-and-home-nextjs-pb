@@ -1,6 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/client-side-auth";
+import { viewerQueryOptions } from "@/DAL/pocketbase/auth";
+import { useQuery } from "@tanstack/react-query";
+
 import { ChevronRight, Loader, Pen } from "lucide-react";
 import Link from "next/link";
 
@@ -9,7 +11,8 @@ interface EditPropertyLinkProps {
 }
 
 export function EditPropertyLink({ id }: EditPropertyLinkProps) {
-  const { data, isPending } = authClient.useSession();
+  const { data, isPending } = useQuery(viewerQueryOptions())
+  const user = data?.record
   if (isPending) {
     return (
       <Button variant={"outline"} disabled className="" size={"sm"}>
@@ -19,7 +22,7 @@ export function EditPropertyLink({ id }: EditPropertyLinkProps) {
       </Button>
     );
   }
-  if (data?.user?.role !== "admin") {
+  if (user?.is_admin) {
     return (
       <Button variant={"outline"} className="" size={"sm"}>
         <Link href={`/properties/${id}`} className="">

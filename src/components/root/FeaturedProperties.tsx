@@ -1,7 +1,7 @@
+import { PublicPropertyListings } from "@/components/-oldproperty/PublicPropertyListings";
 import { Button } from "@/components/ui/button";
-import { PublicPropertyListings } from "@/components/property/PublicPropertyListings";
-import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { Suspense } from "react";
 import { Card, CardContent } from "../ui/card";
 

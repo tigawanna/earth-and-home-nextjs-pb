@@ -78,7 +78,7 @@ export function ClientPropertyCard({
   const clientActions = (
     <div className="flex gap-2 pt-2">
       <Button asChild variant="outline" size="sm" className="flex-1">
-        <Link href={`/properties/${property.slug}`}>
+        <Link href={`/properties/${property.id}`}>
           View Details
         </Link>
       </Button>

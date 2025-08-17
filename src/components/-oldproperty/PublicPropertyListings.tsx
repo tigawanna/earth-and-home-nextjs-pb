@@ -1,4 +1,4 @@
-import { PropertyCard } from "@/components/property/list/PropertyCard";
+import { PropertyCard } from "@/components/-oldproperty/list/PropertyCard";
 import { Card } from "@/components/ui/card";
 import { getProperties } from "@/DAL/pocketbase/property-queries";
 import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/pocketbase/property-types";
@@ -15,7 +15,7 @@ export async function PublicPropertyListings({
   searchParams,
   limit,
 }: PublicPropertyListingsProps) {
-  console.log("=== search params  ===== ", searchParams);
+
   // Convert search params to filters
   const filters: PropertyFiltersType = {
     search: searchParams?.search as string || "",
