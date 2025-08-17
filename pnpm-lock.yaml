@@ -93,8 +93,8 @@ importers:
         specifier: ^5.85.3
         version: 5.85.3(react@19.1.0)
       '@tigawanna/typed-pocketbase':
-        specifier: ^0.1.1
-        version: 0.1.1(pocketbase@0.26.2)
+        specifier: ^0.1.2
+        version: 0.1.2(pocketbase@0.26.2)
       babel-plugin-react-compiler:
         specifier: 19.1.0-rc.2
         version: 19.1.0-rc.2
@@ -1319,8 +1319,8 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
-  '@tigawanna/typed-pocketbase@0.1.1':
-    resolution: {integrity: sha512-LKfzCbN+9ALaPgQyKNuEUQ3fLatvUR6ofUZSKiwM+H8c//GoaPCqQgtQc5wkaB2xKTTD2PoHsPpp9wwAEZ3LyQ==}
+  '@tigawanna/typed-pocketbase@0.1.2':
+    resolution: {integrity: sha512-Xvaz9ySg+iA4vkhv+BtByGmIRTY9nR6AqdyVYaBVZlW122Cp3csV8FBcfNIlIWdfwx9yvMKGag5DwZsqEVD0hw==}
     hasBin: true
     peerDependencies:
       pocketbase: '>=0.23.0 <0.27.0'
@@ -2941,7 +2941,7 @@ snapshots:
       '@tanstack/query-core': 5.85.3
       react: 19.1.0
 
-  '@tigawanna/typed-pocketbase@0.1.1(pocketbase@0.26.2)':
+  '@tigawanna/typed-pocketbase@0.1.2(pocketbase@0.26.2)':
     dependencies:
       commander: 13.1.0
       pocketbase: 0.26.2

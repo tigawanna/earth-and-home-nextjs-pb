@@ -1,8 +1,25 @@
 import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/server-client";
-import { and, eq, gte, like, lte, or } from "@tigawanna/typed-pocketbase";
+import {
+  and,
+  eq,
+  gte,
+  like,
+  lte,
+  or,
+  FilterParam,
+  TypedRecord,
+  Expands,
+  SelectWithExpand,
+} from "@tigawanna/typed-pocketbase";
 import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from "./property-types";
+import {
+  PropertiesCollection,
+  PropertiesResponse,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
+import { FavoritesResponse } from "@/lib/pocketbase/types/pb-zod";
 
 // ====================================================
 // GET PROPERTIES (with filtering, sorting, pagination)
@@ -23,14 +40,23 @@ export async function getProperties({
   limit?: number;
   userId?: string; // For checking favorites
 } = {}) {
-  console.log("=== getProperties filters ===", filters);
+  type PropertyStatus = PropertiesResponse["status"];
+  type PropertyType = PropertiesResponse["property_type"];
+
+  type PropertyRelations = {
+    agent_id: UsersResponse;
+    owner_id: UsersResponse;
+    favorites_via_property_id: FavoritesResponse;
+  };
+
+  type PropertyRecord = TypedRecord<PropertiesResponse, PropertyRelations>;
 
   try {
     const client = createServerClient();
-    
+    const propertiesCollection = client.from("properties");
 
-    // Build filter conditions
-    const conditions = [];
+    // Build filter conditions using createFilter helper
+    const conditions: FilterParam<PropertyRecord>[] = [];
 
     if (filters.search) {
       conditions.push(
@@ -43,7 +69,7 @@ export async function getProperties({
     }
 
     if (filters.propertyType) {
-      conditions.push(eq("property_type", filters.propertyType));
+      conditions.push(eq("property_type", filters.propertyType as PropertyType));
     }
 
     if (filters.listingType) {
@@ -51,7 +77,7 @@ export async function getProperties({
     }
 
     if (filters.status) {
-      conditions.push(eq("status", filters.status));
+      conditions.push(eq("status", filters.status as PropertyStatus));
     }
 
     if (filters.minPrice) {
@@ -99,16 +125,19 @@ export async function getProperties({
       conditions.push(eq("is_featured", filters.isFeatured));
     }
 
-    // Combine all conditions with AND
-    const filter = conditions.length > 0 ? and(...conditions) : undefined;
+    // Create type-safe filter using createFilter helper
+    const filter =
+      conditions.length > 0
+        ? propertiesCollection.createFilter(and(...conditions) as any)
+        : undefined;
 
-    // Build sort string for PocketBase
+    // Create type-safe sort using createSort helper
     const sortPrefix = sortOrder === "desc" ? "-" : "+";
     const sortField = sortBy === "created" ? "created" : sortBy === "updated" ? "updated" : sortBy;
-    const sort = `${sortPrefix}${sortField}`;
+    const sort = propertiesCollection.createSort(`${sortPrefix}${sortField}`);
 
-    // Get properties with pagination
-    const propertiesResult = await client.from("properties").getList(page, limit, {
+    // Get properties with pagination using type-safe helpers
+    const propertiesResult = await propertiesCollection.getList(page, limit, {
       filter,
       sort,
       select: {
@@ -123,35 +152,9 @@ export async function getProperties({
       },
     });
 
-    // Transform properties to include agent info and favorite status
-    const transformedProperties: PropertyWithAgent[] = [];
-
-    for (const property of propertiesResult.items) {
-      let isFavorited = false;
-
-      // Check if property is favorited by user (if userId provided)
-      if (userId) {
-        try {
-          const favoriteCheck = await client.from("favorites").getFirstListItem({
-            filter: and(eq("property_id", property.id), eq("user_id", userId)),
-          });
-          isFavorited = !!favoriteCheck;
-        } catch (error) {
-          // Favorite not found, isFavorited remains false
-          isFavorited = false;
-        }
-      }
-
-      transformedProperties.push({
-        ...property,
-        agent: property.expand?.agent_id || null,
-        isFavorited,
-      } as PropertyWithAgent);
-    }
-
     return {
       success: true,
-      properties: transformedProperties,
+      properties: propertiesResult.items,
       pagination: {
         page: propertiesResult.page,
         limit: propertiesResult.perPage,
@@ -186,9 +189,13 @@ export async function getProperties({
 export async function getProperty(identifier: string, userId?: string) {
   try {
     const client = createServerClient();
+    const propertiesCollection = client.from("properties");
+
+    // Create type-safe filter using createFilter helper
+    const filter = propertiesCollection.createFilter(eq("id", identifier));
 
     // Get property with agent info
-    const property = await client.from("properties").getFirstListItem(eq("id", identifier), {
+    const property = await propertiesCollection.getFirstListItem(filter, {
       select: {
         expand: {
           agent_id: {
@@ -209,9 +216,12 @@ export async function getProperty(identifier: string, userId?: string) {
     let isFavorited = false;
     if (userId) {
       try {
-        const favoriteCheck = await client
-          .from("favorites")
-          .getFirstListItem(and(eq("property_id", property.id), eq("user_id", userId)), {});
+        const favoritesCollection = client.from("favorites");
+        const favoriteFilter = favoritesCollection.createFilter(
+          and(eq("property_id", property.id), eq("user_id", userId))
+        );
+
+        const favoriteCheck = await favoritesCollection.getFirstListItem(favoriteFilter, {});
         isFavorited = !!favoriteCheck;
       } catch (error) {
         // Favorite not found, isFavorited remains false
@@ -257,10 +267,18 @@ export async function getFavoriteProperties({
       userId = authData.record.id;
     }
 
+    const favoritesCollection = client.from("favorites");
+
+    // Create type-safe filter using createFilter helper
+    const filter = favoritesCollection.createFilter(eq("user_id", userId));
+
+    // Create type-safe sort using createSort helper
+    const sort = favoritesCollection.createSort("-created");
+
     // Get favorites with property and agent info
-    const favoritesResult = await client.from("favorites").getList(page, limit, {
-      filter: eq("user_id", userId),
-      sort: "-created",
+    const favoritesResult = await favoritesCollection.getList(page, limit, {
+      filter,
+      sort,
       select: {
         expand: {
           property_id: {
@@ -279,7 +297,7 @@ export async function getFavoriteProperties({
 
     return {
       success: true,
-      properties: favoritesResult,
+      properties: favoritesResult.items,
       pagination: {
         page: favoritesResult.page,
         limit: favoritesResult.perPage,
