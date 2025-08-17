@@ -1,4 +1,4 @@
-import PropertyForm from "@/components/-oldproperty/form/PropertyForm";
+import PropertyForm from "@/components/old-property/form/PropertyForm";
 
 export default async function NewPropertyPage() {
  return (

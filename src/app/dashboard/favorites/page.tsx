@@ -1,4 +1,4 @@
-import { FavoritesDashboard } from "@/components/-oldproperty/FavoritesDashboard";
+import { FavoritesDashboard } from "@/components/old-property/FavoritesDashboard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";

@@ -1,5 +1,5 @@
-import { EditProperty } from "@/components/-oldproperty/dashboard/EditProperty";
-import { SinglePropertyLoadingFallback } from "@/components/-oldproperty/query-states";
+import { EditProperty } from "@/components/old-property/dashboard/EditProperty";
+import { SinglePropertyLoadingFallback } from "@/components/old-property/query-states";
 import { Suspense } from "react";
 
 

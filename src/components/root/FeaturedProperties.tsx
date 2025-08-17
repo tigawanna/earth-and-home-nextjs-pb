@@ -1,4 +1,4 @@
-import { PublicPropertyListings } from "@/components/-oldproperty/PublicPropertyListings";
+import { PublicPropertyListings } from "@/components/old-property/PublicPropertyListings";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";

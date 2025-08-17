@@ -1,4 +1,4 @@
-import { PropertyCard } from "@/components/-oldproperty/list/PropertyCard";
+import { PropertyCard } from "@/components/old-property/list/PropertyCard";
 import { Card } from "@/components/ui/card";
 import { getProperties } from "@/DAL/pocketbase/property-queries";
 import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/pocketbase/property-types";

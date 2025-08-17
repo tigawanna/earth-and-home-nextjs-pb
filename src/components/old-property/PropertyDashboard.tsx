@@ -1,4 +1,4 @@
-import { PropertyFilters } from "@/components/-oldproperty/list/PropertyFilters";
+import { PropertyFilters } from "@/components/old-property/list/PropertyFilters";
 import { Button } from "@/components/ui/button";
 import { getProperties } from "@/DAL/pocketbase/property-queries";
 import { PropertyFilters as PropertyFiltersType, PropertySortBy, SortOrder } from "@/DAL/pocketbase/property-types";

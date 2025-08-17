@@ -1,5 +1,5 @@
-import { PropertyFilters } from "@/components/-oldproperty/list/PropertyFilters";
-import { PublicPropertyListings } from "@/components/-oldproperty/PublicPropertyListings";
+import { PropertyFilters } from "@/components/old-property/list/PropertyFilters";
+import { PublicPropertyListings } from "@/components/old-property/PublicPropertyListings";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
