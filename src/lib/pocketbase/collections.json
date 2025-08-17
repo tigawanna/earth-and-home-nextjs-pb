@@ -582,8 +582,8 @@
     "id": "_pb_users_auth_",
     "listRule": "id = @request.auth.id",
     "viewRule": "id = @request.auth.id",
-    "createRule": "@request.body.role:isset = false",
-    "updateRule": "id = @request.auth.id && @request.body.role:isset = false",
+    "createRule": "@request.body.is_admin:isset = false",
+    "updateRule": "id = @request.auth.id && @request.body.is_admin:isset = false",
     "deleteRule": "id = @request.auth.id",
     "name": "users",
     "type": "auth",
@@ -694,17 +694,12 @@
       },
       {
         "hidden": false,
-        "id": "select1466534506",
-        "maxSelect": 1,
-        "name": "role",
+        "id": "bool3304254982",
+        "name": "is_admin",
         "presentable": false,
         "required": false,
         "system": false,
-        "type": "select",
-        "values": [
-          "user",
-          "admin"
-        ]
+        "type": "bool"
       },
       {
         "hidden": false,
@@ -732,7 +727,7 @@
       "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
     ],
     "created": "2025-08-16 14:08:28.060Z",
-    "updated": "2025-08-16 16:44:42.889Z",
+    "updated": "2025-08-16 19:29:07.629Z",
     "system": false,
     "authRule": "",
     "manageRule": null,
@@ -849,20 +844,6 @@
         "required": false,
         "system": false,
         "type": "editor"
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": "text2560465762",
-        "max": 0,
-        "min": 0,
-        "name": "slug",
-        "pattern": "",
-        "presentable": false,
-        "primaryKey": false,
-        "required": false,
-        "system": false,
-        "type": "text"
       },
       {
         "hidden": false,
@@ -1297,7 +1278,7 @@
       {
         "hidden": false,
         "id": "file3760176746",
-        "maxSelect": 0,
+        "maxSelect": 99,
         "maxSize": 0,
         "mimeTypes": null,
         "name": "images",
@@ -1436,7 +1417,7 @@
     ],
     "indexes": [],
     "created": "2025-08-16 16:25:08.565Z",
-    "updated": "2025-08-16 16:29:44.244Z",
+    "updated": "2025-08-16 22:25:20.707Z",
     "system": false
   },
   {

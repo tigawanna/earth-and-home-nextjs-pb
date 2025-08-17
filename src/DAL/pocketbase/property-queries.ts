@@ -24,10 +24,10 @@ export async function getProperties({
   userId?: string; // For checking favorites
 } = {}) {
   console.log("=== getProperties filters ===", filters);
-  
+
   try {
     const client = createServerClient();
-    
+
     // Build filter conditions
     const conditions = [];
 
@@ -103,13 +103,11 @@ export async function getProperties({
 
     // Build sort string for PocketBase
     const sortPrefix = sortOrder === "desc" ? "-" : "+";
-    const sortField = sortBy === "createdAt" ? "created" : sortBy === "updatedAt" ? "updated" : sortBy;
+    const sortField = sortBy === "created" ? "created" : sortBy === "updated" ? "updated" : sortBy;
     const sort = `${sortPrefix}${sortField}`;
 
     // Get properties with pagination
-    const propertiesResult = await client.from("properties").getList({
-      page,
-      perPage: limit,
+    const propertiesResult = await client.from("properties").getList(page, limit, {
       filter,
       sort,
       select: {
@@ -119,25 +117,22 @@ export async function getProperties({
             name: true,
             email: true,
             avatar: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     // Transform properties to include agent info and favorite status
     const transformedProperties: PropertyWithAgent[] = [];
-    
+
     for (const property of propertiesResult.items) {
       let isFavorited = false;
-      
+
       // Check if property is favorited by user (if userId provided)
       if (userId) {
         try {
           const favoriteCheck = await client.from("favorites").getFirstListItem({
-            filter: and(
-              eq("property_id", property.id),
-              eq("user_id", userId)
-            )
+            filter: and(eq("property_id", property.id), eq("user_id", userId)),
           });
           isFavorited = !!favoriteCheck;
         } catch (error) {
@@ -190,14 +185,9 @@ export async function getProperties({
 export async function getProperty(identifier: string, userId?: string) {
   try {
     const client = createServerClient();
-    
-    // Determine if identifier is ID or slug
-    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
-    const filter = isUUID ? eq("id", identifier) : eq("slug", identifier);
 
     // Get property with agent info
-    const property = await client.from("properties").getFirstListItem({
-      filter,
+    const property = await client.from("properties").getFirstListItem(eq("id", identifier), {
       select: {
         expand: {
           agent_id: {
@@ -205,9 +195,9 @@ export async function getProperty(identifier: string, userId?: string) {
             name: true,
             email: true,
             avatar: true,
-          }
-        }
-      }
+          },
+        },
+      },
     });
 
     if (!property) {
@@ -218,12 +208,9 @@ export async function getProperty(identifier: string, userId?: string) {
     let isFavorited = false;
     if (userId) {
       try {
-        const favoriteCheck = await client.from("favorites").getFirstListItem({
-          filter: and(
-            eq("property_id", property.id),
-            eq("user_id", userId)
-          )
-        });
+        const favoriteCheck = await client
+          .from("favorites")
+          .getFirstListItem(and(eq("property_id", property.id), eq("user_id", userId)), {});
         isFavorited = !!favoriteCheck;
       } catch (error) {
         // Favorite not found, isFavorited remains false
@@ -248,23 +235,29 @@ export async function getProperty(identifier: string, userId?: string) {
   }
 }
 
-export async function getFavoriteProperties(userId?: string, page = 1, limit = 20) {
+export async function getFavoriteProperties({
+  userId,
+  page = 1,
+  limit = 20,
+}: {
+  userId?: string;
+  page?: number;
+  limit?: number;
+}) {
   try {
     const client = createServerClient();
 
     if (!userId) {
       // Get user from PocketBase auth
       const authData = client.authStore;
-      if (!authData.isValid || !authData.model?.id) {
+      if (!authData.isValid || !authData.record?.id) {
         throw new Error("Unauthorized");
       }
-      userId = authData.model.id;
+      userId = authData.record.id;
     }
 
     // Get favorites with property and agent info
-    const favoritesResult = await client.from("favorites").getList({
-      page,
-      perPage: limit,
+    const favoritesResult = await client.from("favorites").getList(page, limit, {
       filter: eq("user_id", userId),
       sort: "-created",
       select: {
@@ -276,29 +269,16 @@ export async function getFavoriteProperties(userId?: string, page = 1, limit = 2
                 name: true,
                 email: true,
                 avatar: true,
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     });
-
-    // Transform favorites to include property and agent info
-    const transformedProperties = favoritesResult.items.map((favorite) => {
-      const property = favorite.expand?.property_id;
-      if (!property) return null;
-      
-      return {
-        ...property,
-        agent: property.expand?.agent_id || null,
-        isFavorited: true,
-        favoritedAt: new Date(favorite.created),
-      } as PropertyWithAgent & { favoritedAt: Date };
-    }).filter(Boolean);
 
     return {
       success: true,
-      properties: transformedProperties,
+      properties: favoritesResult,
       pagination: {
         page: favoritesResult.page,
         limit: favoritesResult.perPage,
@@ -329,39 +309,38 @@ export async function getFavoriteProperties(userId?: string, page = 1, limit = 2
 // ====================================================
 // UTILITY ACTIONS
 // ====================================================
+// TODO implement the below as a pocketbase view
+// export async function getPropertyStats(agentId?: string) {
+//   try {
+//     const client = createServerClient();
 
-export async function getPropertyStats(agentId?: string) {
-  try {
-    const client = createServerClient();
-    
-    // Build filter condition for agent
-    const filter = agentId ? eq("agent_id", agentId) : undefined;
+//     // Build filter condition for agent
+//     const filter = agentId ? eq("agent_id", agentId) : undefined;
 
-    // Get all properties for the agent (or all if no agentId)
-    const propertiesResult = await client.from("properties").getFullList({
-      filter,
-      fields: "status,is_featured"
-    });
+//     // Get all properties for the agent (or all if no agentId)
+//     const propertiesResult = await client.from("properties").getFullList(filter,{
 
-    // Calculate stats from the results
-    const stats = {
-      totalProperties: propertiesResult.length,
-      activeProperties: propertiesResult.filter(p => p.status === "active").length,
-      soldProperties: propertiesResult.filter(p => p.status === "sold").length,
-      rentedProperties: propertiesResult.filter(p => p.status === "rented").length,
-      draftProperties: propertiesResult.filter(p => p.status === "draft").length,
-      featuredProperties: propertiesResult.filter(p => p.is_featured === true).length,
-    };
+//     });
 
-    return {
-      success: true,
-      stats,
-    };
-  } catch (error) {
-    console.error("Error fetching property stats:", error);
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Failed to fetch stats",
-    };
-  }
-}
+//     // Calculate stats from the results
+//     const stats = {
+//       totalProperties: propertiesResult.length,
+//       activeProperties: propertiesResult.filter((p) => p.status === "active").length,
+//       soldProperties: propertiesResult.filter((p) => p.status === "sold").length,
+//       rentedProperties: propertiesResult.filter((p) => p.status === "rented").length,
+//       draftProperties: propertiesResult.filter((p) => p.status === "draft").length,
+//       featuredProperties: propertiesResult.filter((p) => p.is_featured === true).length,
+//     };
+
+//     return {
+//       success: true,
+//       stats,
+//     };
+//   } catch (error) {
+//     console.error("Error fetching property stats:", error);
+//     return {
+//       success: false,
+//       message: error instanceof Error ? error.message : "Failed to fetch stats",
+//     };
+//   }
+// }
