@@ -1,6 +1,6 @@
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { cookies } from "next/headers"
-import { DashboardSidebar } from "../../components/old-property/dashboard/dashboard-sidebar"
+import { DashboardSidebar } from "../../components/property/dashboard/dashboard-sidebar"
 
 export default async function DashboardLayout({ 
   children 

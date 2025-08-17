@@ -5,7 +5,7 @@ import { PropertyWithAgent } from "@/data-access-layer/pocketbase/property-types
 import { Bath, Bed, Heart, Home, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { EditPropertyLink } from "../dashboard/EditPropertyLink";
+import { EditPropertyLink } from "../../property/dashboard/EditPropertyLink";
 
 interface PropertyCardProps {
   property: PropertyWithAgent;
