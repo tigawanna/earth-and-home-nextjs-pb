@@ -1,9 +1,17 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { SiteIcon } from "../icons/SiteIcon";
 import { ModeToggle } from "../theme/theme-toggle";
-import { DashboardOrAuth } from "./DashboardOrAuth";
+import { DashboardOrAuthLoader } from "./DashboardOrAuth";
+
 import { Header } from "./Header";
+
+const DashboardOrAuth = dynamic(() => import("./DashboardOrAuth"), {
+  ssr: false,
+  loading: () => <DashboardOrAuthLoader />,
+});
+
 
 interface ResponsiveDrawerProps {
   children: React.ReactNode;

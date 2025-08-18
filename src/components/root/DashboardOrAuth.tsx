@@ -23,11 +23,11 @@ interface DashboardOrAuthProps {
   className?: string;
 }
 
-export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
+export default function DashboardOrAuth({ className }: DashboardOrAuthProps) {
   const router = useRouter();
   const { data, isPending } = useLocalViewer()
   const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
-  const user = data.viewer
+  const user = data?.viewer
   const handleSignOut = async () => {
     try {
       await mutate();
@@ -38,24 +38,12 @@ export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
   };
 
   if (isPending) {
-    return (
-      <div className={`flex items-center gap-2 ${className}`}>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/auth/signin">Sign In</Link>
-        </Button>
-      </div>
-    );
+    return <DashboardOrAuthLoader />;
   }
 
   if (!user) {
     // Not authenticated - show login button
-    return (
-      <div className={`flex items-center gap-2 ${className}`}>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/auth/signin">Sign In</Link>
-        </Button>
-      </div>
-    );
+    return <DashboardOrAuthLoader />;
   }
 
   return (
@@ -103,6 +91,17 @@ export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+    </div>
+  );
+}
+
+
+export function DashboardOrAuthLoader(){
+  return (
+    <div className="flex items-center gap-2">
+      <Button asChild variant="outline" size="sm">
+        <Link href="/auth/signin">Sign In</Link>
+      </Button>
     </div>
   );
 }

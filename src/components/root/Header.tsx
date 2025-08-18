@@ -1,8 +1,15 @@
 import { Menu } from "lucide-react";
 import { SiteIcon } from "../icons/SiteIcon";
 import { ModeToggle } from "../theme/theme-toggle";
-import { DashboardOrAuth } from "./DashboardOrAuth";
+
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import { DashboardOrAuthLoader } from "./DashboardOrAuth";
+
+const DashboardOrAuth = dynamic(() => import("./DashboardOrAuth"), {
+  ssr: false,
+  loading: () => <DashboardOrAuthLoader />,
+});
 
 export function Header({ isLandingPage }: { isLandingPage?: boolean }) {
   return (
@@ -81,7 +88,7 @@ export function Header({ isLandingPage }: { isLandingPage?: boolean }) {
       <div className="flex-none hidden md:flex">
         <div className="flex items-center space-x-2">
           <DashboardOrAuth />
-          <ModeToggle compact/>
+          <ModeToggle compact />
         </div>
       </div>
     </header>

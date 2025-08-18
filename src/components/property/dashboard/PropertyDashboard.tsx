@@ -1,10 +1,10 @@
+"use client"
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { Button } from "@/components/ui/button";
-import { browserPB } from "@/lib/pocketbase/browser-client";
+import { useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { DashboardPropertiesList } from "./list/DashboardPropertiesList";
-import { useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 
 interface PropertyDashboardProps {}
 
