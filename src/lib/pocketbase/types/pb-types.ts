@@ -166,10 +166,10 @@ export interface MfasCreate extends BaseCollectionCreate {
 }
 
 export interface MfasUpdate extends BaseCollectionUpdate {
-	id: string;
-	collectionRef: string;
-	recordRef: string;
-	method: string;
+	id?: string;
+	collectionRef?: string;
+	recordRef?: string;
+	method?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -204,9 +204,9 @@ export interface OtpsCreate extends BaseCollectionCreate {
 }
 
 export interface OtpsUpdate extends BaseCollectionUpdate {
-	id: string;
-	collectionRef: string;
-	recordRef: string;
+	id?: string;
+	collectionRef?: string;
+	recordRef?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -245,11 +245,11 @@ export interface ExternalAuthsCreate extends BaseCollectionCreate {
 }
 
 export interface ExternalAuthsUpdate extends BaseCollectionUpdate {
-	id: string;
-	collectionRef: string;
-	recordRef: string;
-	provider: string;
-	providerId: string;
+	id?: string;
+	collectionRef?: string;
+	recordRef?: string;
+	provider?: string;
+	providerId?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -286,10 +286,10 @@ export interface AuthOriginsCreate extends BaseCollectionCreate {
 }
 
 export interface AuthOriginsUpdate extends BaseCollectionUpdate {
-	id: string;
-	collectionRef: string;
-	recordRef: string;
-	fingerprint: string;
+	id?: string;
+	collectionRef?: string;
+	recordRef?: string;
+	fingerprint?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -327,8 +327,8 @@ export interface SuperusersCreate extends AuthCollectionCreate {
 }
 
 export interface SuperusersUpdate extends AuthCollectionUpdate {
-	id: string;
-	email: string;
+	id?: string;
+	email?: string;
 	emailVisibility?: boolean;
 	verified?: boolean;
 	created?: string | Date;
@@ -376,8 +376,8 @@ export interface UsersCreate extends AuthCollectionCreate {
 }
 
 export interface UsersUpdate extends AuthCollectionUpdate {
-	id: string;
-	email: string;
+	id?: string;
+	email?: string;
 	emailVisibility?: boolean;
 	verified?: boolean;
 	name?: string;
@@ -506,13 +506,13 @@ export interface PropertiesCreate extends BaseCollectionCreate {
 }
 
 export interface PropertiesUpdate extends BaseCollectionUpdate {
-	id: string;
-	title: string;
+	id?: string;
+	title?: string;
 	description?: string;
-	listing_type: 'sale' | 'rent';
-	property_type: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
-	status: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
-	location: string;
+	listing_type?: 'sale' | 'rent';
+	property_type?: 'house' | 'apartment' | 'condo' | 'townhouse' | 'duplex' | 'studio' | 'villa' | 'land' | 'commercial' | 'industrial' | 'farm';
+	status?: 'draft' | 'active' | 'pending' | 'sold' | 'rented' | 'off_market';
+	location?: string;
 	street_address?: string;
 	city?: string;
 	state?: string;
@@ -618,9 +618,9 @@ export interface FavoritesCreate extends BaseCollectionCreate {
 }
 
 export interface FavoritesUpdate extends BaseCollectionUpdate {
-	id: string;
-	user_id: string;
-	property_id: string;
+	id?: string;
+	user_id?: string;
+	property_id?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }

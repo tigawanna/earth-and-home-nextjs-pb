@@ -45,7 +45,7 @@ const authUpdateSchema = z.object({
 
 // ===== _mfas =====
 
-export const MfasResponseSchema = baseResponseSchema.extend({
+export const MfasResponseZodSchema = baseResponseSchema.extend({
     collectionName: z.literal('_mfas'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
@@ -55,7 +55,7 @@ export const MfasResponseSchema = baseResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const MfasCreateSchema = baseCreateSchema.extend({
+export const MfasCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
     recordRef: z.string(),
@@ -64,18 +64,18 @@ export const MfasCreateSchema = baseCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const MfasUpdateSchema = baseUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    collectionRef: z.string(),
-    recordRef: z.string(),
-    method: z.string(),
+export const MfasUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    collectionRef: z.string().optional(),
+    recordRef: z.string().optional(),
+    method: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
 
 // ===== _otps =====
 
-export const OtpsResponseSchema = baseResponseSchema.extend({
+export const OtpsResponseZodSchema = baseResponseSchema.extend({
     collectionName: z.literal('_otps'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
@@ -84,7 +84,7 @@ export const OtpsResponseSchema = baseResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const OtpsCreateSchema = baseCreateSchema.extend({
+export const OtpsCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
     recordRef: z.string(),
@@ -92,17 +92,17 @@ export const OtpsCreateSchema = baseCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const OtpsUpdateSchema = baseUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    collectionRef: z.string(),
-    recordRef: z.string(),
+export const OtpsUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    collectionRef: z.string().optional(),
+    recordRef: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
 
 // ===== _externalAuths =====
 
-export const ExternalAuthsResponseSchema = baseResponseSchema.extend({
+export const ExternalAuthsResponseZodSchema = baseResponseSchema.extend({
     collectionName: z.literal('_externalAuths'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
@@ -113,7 +113,7 @@ export const ExternalAuthsResponseSchema = baseResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const ExternalAuthsCreateSchema = baseCreateSchema.extend({
+export const ExternalAuthsCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
     recordRef: z.string(),
@@ -123,19 +123,19 @@ export const ExternalAuthsCreateSchema = baseCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const ExternalAuthsUpdateSchema = baseUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    collectionRef: z.string(),
-    recordRef: z.string(),
-    provider: z.string(),
-    providerId: z.string(),
+export const ExternalAuthsUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    collectionRef: z.string().optional(),
+    recordRef: z.string().optional(),
+    provider: z.string().optional(),
+    providerId: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
 
 // ===== _authOrigins =====
 
-export const AuthOriginsResponseSchema = baseResponseSchema.extend({
+export const AuthOriginsResponseZodSchema = baseResponseSchema.extend({
     collectionName: z.literal('_authOrigins'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
@@ -145,7 +145,7 @@ export const AuthOriginsResponseSchema = baseResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const AuthOriginsCreateSchema = baseCreateSchema.extend({
+export const AuthOriginsCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     collectionRef: z.string(),
     recordRef: z.string(),
@@ -154,18 +154,18 @@ export const AuthOriginsCreateSchema = baseCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const AuthOriginsUpdateSchema = baseUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    collectionRef: z.string(),
-    recordRef: z.string(),
-    fingerprint: z.string(),
+export const AuthOriginsUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    collectionRef: z.string().optional(),
+    recordRef: z.string().optional(),
+    fingerprint: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
 
 // ===== _superusers =====
 
-export const SuperusersResponseSchema = authResponseSchema.extend({
+export const SuperusersResponseZodSchema = authResponseSchema.extend({
     collectionName: z.literal('_superusers'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     email: z.email(),
@@ -175,7 +175,7 @@ export const SuperusersResponseSchema = authResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const SuperusersCreateSchema = authCreateSchema.extend({
+export const SuperusersCreateZodSchema = authCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     email: z.email(),
     emailVisibility: z.boolean().optional(),
@@ -184,9 +184,9 @@ export const SuperusersCreateSchema = authCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const SuperusersUpdateSchema = authUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    email: z.email(),
+export const SuperusersUpdateZodSchema = authUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    email: z.email().optional(),
     emailVisibility: z.boolean().optional(),
     verified: z.boolean().optional(),
     created: z.union([z.string(), z.date()]).optional(),
@@ -195,7 +195,7 @@ export const SuperusersUpdateSchema = authUpdateSchema.extend({
 
 // ===== users =====
 
-export const UsersResponseSchema = authResponseSchema.extend({
+export const UsersResponseZodSchema = authResponseSchema.extend({
     collectionName: z.literal('users'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     email: z.email(),
@@ -209,7 +209,7 @@ export const UsersResponseSchema = authResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const UsersCreateSchema = authCreateSchema.extend({
+export const UsersCreateZodSchema = authCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     email: z.email(),
     emailVisibility: z.boolean().optional(),
@@ -222,9 +222,9 @@ export const UsersCreateSchema = authCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const UsersUpdateSchema = authUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    email: z.email(),
+export const UsersUpdateZodSchema = authUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    email: z.email().optional(),
     emailVisibility: z.boolean().optional(),
     verified: z.boolean().optional(),
     name: z.string().max(255).optional(),
@@ -237,7 +237,7 @@ export const UsersUpdateSchema = authUpdateSchema.extend({
 
 // ===== properties =====
 
-export const PropertiesResponseSchema = baseResponseSchema.extend({
+export const PropertiesResponseZodSchema = baseResponseSchema.extend({
     collectionName: z.literal('properties'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     title: z.string(),
@@ -288,7 +288,7 @@ export const PropertiesResponseSchema = baseResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const PropertiesCreateSchema = baseCreateSchema.extend({
+export const PropertiesCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     title: z.string(),
     description: z.string().optional(),
@@ -338,14 +338,14 @@ export const PropertiesCreateSchema = baseCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const PropertiesUpdateSchema = baseUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    title: z.string(),
+export const PropertiesUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    title: z.string().optional(),
     description: z.string().optional(),
-    listing_type: z.enum(['sale', 'rent']),
-    property_type: z.enum(['house', 'apartment', 'condo', 'townhouse', 'duplex', 'studio', 'villa', 'land', 'commercial', 'industrial', 'farm']),
-    status: z.enum(['draft', 'active', 'pending', 'sold', 'rented', 'off_market']),
-    location: z.string(),
+    listing_type: z.enum(['sale', 'rent']).optional(),
+    property_type: z.enum(['house', 'apartment', 'condo', 'townhouse', 'duplex', 'studio', 'villa', 'land', 'commercial', 'industrial', 'farm']).optional(),
+    status: z.enum(['draft', 'active', 'pending', 'sold', 'rented', 'off_market']).optional(),
+    location: z.string().optional(),
     street_address: z.string().optional(),
     city: z.string().optional(),
     state: z.string().optional(),
@@ -419,7 +419,7 @@ export const PropertiesUpdateSchema = baseUpdateSchema.extend({
 
 // ===== favorites =====
 
-export const FavoritesResponseSchema = baseResponseSchema.extend({
+export const FavoritesResponseZodSchema = baseResponseSchema.extend({
     collectionName: z.literal('favorites'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     user_id: z.string(),
@@ -428,7 +428,7 @@ export const FavoritesResponseSchema = baseResponseSchema.extend({
     updated: z.string().optional()
 });
 
-export const FavoritesCreateSchema = baseCreateSchema.extend({
+export const FavoritesCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     user_id: z.string(),
     property_id: z.string(),
@@ -436,10 +436,10 @@ export const FavoritesCreateSchema = baseCreateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
-export const FavoritesUpdateSchema = baseUpdateSchema.extend({
-    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    user_id: z.string(),
-    property_id: z.string(),
+export const FavoritesUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    user_id: z.string().optional(),
+    property_id: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -494,120 +494,120 @@ export type Schemas = typeof schemas;
 // Validation helpers
 // Validation helpers for _mfas
 export const _mfasValidators = {
-    response: (data: unknown) => MfasResponseSchema.parse(data),
-    safeResponse: (data: unknown) => MfasResponseSchema.safeParse(data),
-    create: (data: unknown) => MfasCreateSchema.parse(data),
-    safeCreate: (data: unknown) => MfasCreateSchema.safeParse(data),
-    update: (data: unknown) => MfasUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => MfasUpdateSchema.safeParse(data),
+    response: (data: unknown) => MfasResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => MfasResponseZodSchema.safeParse(data),
+    create: (data: unknown) => MfasCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => MfasCreateZodSchema.safeParse(data),
+    update: (data: unknown) => MfasUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => MfasUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for _mfas
-export type MfasResponse = z.infer<typeof MfasResponseSchema>;
-export type MfasCreate = z.infer<typeof MfasCreateSchema>;
-export type MfasUpdate = z.infer<typeof MfasUpdateSchema>;
+export type MfasResponseZod = z.infer<typeof MfasResponseZodSchema>;
+export type MfasCreateZod = z.infer<typeof MfasCreateZodSchema>;
+export type MfasUpdateZod = z.infer<typeof MfasUpdateZodSchema>;
 
 // Validation helpers for _otps
 export const _otpsValidators = {
-    response: (data: unknown) => OtpsResponseSchema.parse(data),
-    safeResponse: (data: unknown) => OtpsResponseSchema.safeParse(data),
-    create: (data: unknown) => OtpsCreateSchema.parse(data),
-    safeCreate: (data: unknown) => OtpsCreateSchema.safeParse(data),
-    update: (data: unknown) => OtpsUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => OtpsUpdateSchema.safeParse(data),
+    response: (data: unknown) => OtpsResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => OtpsResponseZodSchema.safeParse(data),
+    create: (data: unknown) => OtpsCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => OtpsCreateZodSchema.safeParse(data),
+    update: (data: unknown) => OtpsUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => OtpsUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for _otps
-export type OtpsResponse = z.infer<typeof OtpsResponseSchema>;
-export type OtpsCreate = z.infer<typeof OtpsCreateSchema>;
-export type OtpsUpdate = z.infer<typeof OtpsUpdateSchema>;
+export type OtpsResponseZod = z.infer<typeof OtpsResponseZodSchema>;
+export type OtpsCreateZod = z.infer<typeof OtpsCreateZodSchema>;
+export type OtpsUpdateZod = z.infer<typeof OtpsUpdateZodSchema>;
 
 // Validation helpers for _externalAuths
 export const _externalAuthsValidators = {
-    response: (data: unknown) => ExternalAuthsResponseSchema.parse(data),
-    safeResponse: (data: unknown) => ExternalAuthsResponseSchema.safeParse(data),
-    create: (data: unknown) => ExternalAuthsCreateSchema.parse(data),
-    safeCreate: (data: unknown) => ExternalAuthsCreateSchema.safeParse(data),
-    update: (data: unknown) => ExternalAuthsUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => ExternalAuthsUpdateSchema.safeParse(data),
+    response: (data: unknown) => ExternalAuthsResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => ExternalAuthsResponseZodSchema.safeParse(data),
+    create: (data: unknown) => ExternalAuthsCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => ExternalAuthsCreateZodSchema.safeParse(data),
+    update: (data: unknown) => ExternalAuthsUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => ExternalAuthsUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for _externalAuths
-export type ExternalAuthsResponse = z.infer<typeof ExternalAuthsResponseSchema>;
-export type ExternalAuthsCreate = z.infer<typeof ExternalAuthsCreateSchema>;
-export type ExternalAuthsUpdate = z.infer<typeof ExternalAuthsUpdateSchema>;
+export type ExternalAuthsResponseZod = z.infer<typeof ExternalAuthsResponseZodSchema>;
+export type ExternalAuthsCreateZod = z.infer<typeof ExternalAuthsCreateZodSchema>;
+export type ExternalAuthsUpdateZod = z.infer<typeof ExternalAuthsUpdateZodSchema>;
 
 // Validation helpers for _authOrigins
 export const _authOriginsValidators = {
-    response: (data: unknown) => AuthOriginsResponseSchema.parse(data),
-    safeResponse: (data: unknown) => AuthOriginsResponseSchema.safeParse(data),
-    create: (data: unknown) => AuthOriginsCreateSchema.parse(data),
-    safeCreate: (data: unknown) => AuthOriginsCreateSchema.safeParse(data),
-    update: (data: unknown) => AuthOriginsUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => AuthOriginsUpdateSchema.safeParse(data),
+    response: (data: unknown) => AuthOriginsResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => AuthOriginsResponseZodSchema.safeParse(data),
+    create: (data: unknown) => AuthOriginsCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => AuthOriginsCreateZodSchema.safeParse(data),
+    update: (data: unknown) => AuthOriginsUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => AuthOriginsUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for _authOrigins
-export type AuthOriginsResponse = z.infer<typeof AuthOriginsResponseSchema>;
-export type AuthOriginsCreate = z.infer<typeof AuthOriginsCreateSchema>;
-export type AuthOriginsUpdate = z.infer<typeof AuthOriginsUpdateSchema>;
+export type AuthOriginsResponseZod = z.infer<typeof AuthOriginsResponseZodSchema>;
+export type AuthOriginsCreateZod = z.infer<typeof AuthOriginsCreateZodSchema>;
+export type AuthOriginsUpdateZod = z.infer<typeof AuthOriginsUpdateZodSchema>;
 
 // Validation helpers for _superusers
 export const _superusersValidators = {
-    response: (data: unknown) => SuperusersResponseSchema.parse(data),
-    safeResponse: (data: unknown) => SuperusersResponseSchema.safeParse(data),
-    create: (data: unknown) => SuperusersCreateSchema.parse(data),
-    safeCreate: (data: unknown) => SuperusersCreateSchema.safeParse(data),
-    update: (data: unknown) => SuperusersUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => SuperusersUpdateSchema.safeParse(data),
+    response: (data: unknown) => SuperusersResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => SuperusersResponseZodSchema.safeParse(data),
+    create: (data: unknown) => SuperusersCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => SuperusersCreateZodSchema.safeParse(data),
+    update: (data: unknown) => SuperusersUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => SuperusersUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for _superusers
-export type SuperusersResponse = z.infer<typeof SuperusersResponseSchema>;
-export type SuperusersCreate = z.infer<typeof SuperusersCreateSchema>;
-export type SuperusersUpdate = z.infer<typeof SuperusersUpdateSchema>;
+export type SuperusersResponseZod = z.infer<typeof SuperusersResponseZodSchema>;
+export type SuperusersCreateZod = z.infer<typeof SuperusersCreateZodSchema>;
+export type SuperusersUpdateZod = z.infer<typeof SuperusersUpdateZodSchema>;
 
 // Validation helpers for users
 export const usersValidators = {
-    response: (data: unknown) => UsersResponseSchema.parse(data),
-    safeResponse: (data: unknown) => UsersResponseSchema.safeParse(data),
-    create: (data: unknown) => UsersCreateSchema.parse(data),
-    safeCreate: (data: unknown) => UsersCreateSchema.safeParse(data),
-    update: (data: unknown) => UsersUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => UsersUpdateSchema.safeParse(data),
+    response: (data: unknown) => UsersResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => UsersResponseZodSchema.safeParse(data),
+    create: (data: unknown) => UsersCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => UsersCreateZodSchema.safeParse(data),
+    update: (data: unknown) => UsersUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => UsersUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for users
-export type UsersResponse = z.infer<typeof UsersResponseSchema>;
-export type UsersCreate = z.infer<typeof UsersCreateSchema>;
-export type UsersUpdate = z.infer<typeof UsersUpdateSchema>;
+export type UsersResponseZod = z.infer<typeof UsersResponseZodSchema>;
+export type UsersCreateZod = z.infer<typeof UsersCreateZodSchema>;
+export type UsersUpdateZod = z.infer<typeof UsersUpdateZodSchema>;
 
 // Validation helpers for properties
 export const propertiesValidators = {
-    response: (data: unknown) => PropertiesResponseSchema.parse(data),
-    safeResponse: (data: unknown) => PropertiesResponseSchema.safeParse(data),
-    create: (data: unknown) => PropertiesCreateSchema.parse(data),
-    safeCreate: (data: unknown) => PropertiesCreateSchema.safeParse(data),
-    update: (data: unknown) => PropertiesUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => PropertiesUpdateSchema.safeParse(data),
+    response: (data: unknown) => PropertiesResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => PropertiesResponseZodSchema.safeParse(data),
+    create: (data: unknown) => PropertiesCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => PropertiesCreateZodSchema.safeParse(data),
+    update: (data: unknown) => PropertiesUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => PropertiesUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for properties
-export type PropertiesResponse = z.infer<typeof PropertiesResponseSchema>;
-export type PropertiesCreate = z.infer<typeof PropertiesCreateSchema>;
-export type PropertiesUpdate = z.infer<typeof PropertiesUpdateSchema>;
+export type PropertiesResponseZod = z.infer<typeof PropertiesResponseZodSchema>;
+export type PropertiesCreateZod = z.infer<typeof PropertiesCreateZodSchema>;
+export type PropertiesUpdateZod = z.infer<typeof PropertiesUpdateZodSchema>;
 
 // Validation helpers for favorites
 export const favoritesValidators = {
-    response: (data: unknown) => FavoritesResponseSchema.parse(data),
-    safeResponse: (data: unknown) => FavoritesResponseSchema.safeParse(data),
-    create: (data: unknown) => FavoritesCreateSchema.parse(data),
-    safeCreate: (data: unknown) => FavoritesCreateSchema.safeParse(data),
-    update: (data: unknown) => FavoritesUpdateSchema.parse(data),
-    safeUpdate: (data: unknown) => FavoritesUpdateSchema.safeParse(data),
+    response: (data: unknown) => FavoritesResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => FavoritesResponseZodSchema.safeParse(data),
+    create: (data: unknown) => FavoritesCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => FavoritesCreateZodSchema.safeParse(data),
+    update: (data: unknown) => FavoritesUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => FavoritesUpdateZodSchema.safeParse(data),
 };
 
 // Type inference helpers for favorites
-export type FavoritesResponse = z.infer<typeof FavoritesResponseSchema>;
-export type FavoritesCreate = z.infer<typeof FavoritesCreateSchema>;
-export type FavoritesUpdate = z.infer<typeof FavoritesUpdateSchema>;
+export type FavoritesResponseZod = z.infer<typeof FavoritesResponseZodSchema>;
+export type FavoritesCreateZod = z.infer<typeof FavoritesCreateZodSchema>;
+export type FavoritesUpdateZod = z.infer<typeof FavoritesUpdateZodSchema>;

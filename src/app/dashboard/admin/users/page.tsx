@@ -19,11 +19,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Users, MoreHorizontal, Shield, Ban, User } from "lucide-react";
+import { Users, MoreHorizontal, Shield, Ban, User, Loader2, Loader } from "lucide-react";
 
 import { toast } from "sonner";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { browserPB } from "@/lib/pocketbase/browser-client";
+import {
+  toggleAdminMutationOptions,
+  toggleBanUserMutationOptions,
+} from "@/data-access-layer/pocketbase/admin-user-management";
 
 interface User {
   id: string;
@@ -52,6 +56,9 @@ export default function AdminUsersPage() {
       }
     },
   });
+
+  const toggleAdminMutation = useMutation(toggleAdminMutationOptions);
+  const toggleBanUserMutation = useMutation(toggleBanUserMutationOptions);
 
   if (isPending) {
     return (
@@ -185,20 +192,36 @@ export default function AdminUsersPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleImpersonate(user.id)}>
+                          {/* <DropdownMenuItem onClick={() => handleImpersonate(user.id)}>
                             Impersonate User
-                          </DropdownMenuItem>
+                          </DropdownMenuItem> */}
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
+                            disabled={toggleAdminMutation.isPending}
                             onClick={() =>
-                              handleSetRole(user.id, user.is_admin ? "user" : "admin")
+                              toggleAdminMutation.mutate({
+                                userId: user.id,
+                                is_admin: !user.is_admin,
+                              })
                             }>
                             {user.is_admin ? "Remove Admin" : "Make Admin"}
+                            {toggleAdminMutation.isPending && (
+                              <Loader className="ml-2 h-4 w-4 animate-spin" />
+                            )}
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleBanUser(user.id, !user.is_banned)}
+                            disabled={toggleBanUserMutation.isPending}
+                            onClick={() =>
+                              toggleBanUserMutation.mutate({
+                                userId: user.id,
+                                is_banned: !user.is_banned,
+                              })
+                            }
                             className={user.is_banned ? "text-green-600" : "text-red-600"}>
                             {user.is_banned ? "Unban User" : "Ban User"}
+                            {toggleBanUserMutation.isPending && (
+                              <Loader className="ml-2 h-4 w-4 animate-spin" />
+                            )}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
