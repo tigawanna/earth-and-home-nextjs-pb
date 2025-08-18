@@ -2,7 +2,7 @@ import { browserPB } from "@/lib/pocketbase/browser-client";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { eq } from "@tigawanna/typed-pocketbase";
-import { BasePropertyCard } from "../../list/BasePropertyCard";
+import { BasePropertyCard } from "../../list/cards/BasePropertyCard";
 
 interface FavoritePropertiesListProps {}
 

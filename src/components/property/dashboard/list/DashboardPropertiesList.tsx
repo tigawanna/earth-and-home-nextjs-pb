@@ -1,7 +1,7 @@
 import { browserPB } from "@/lib/pocketbase/browser-client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
-import { BasePropertyCard } from "../../list/BasePropertyCard";
+import { BasePropertyCard } from "../../list/cards/BasePropertyCard";
 
 interface DashboardPropertiesListProps {}
 

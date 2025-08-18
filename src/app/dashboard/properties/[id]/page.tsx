@@ -1,4 +1,4 @@
-import { SingleProperty } from "@/components/old-property/SingleProperty";
+import { SingleProperty } from "@/components/property/SingleProperty";
 import { SinglePropertyLoadingFallback } from "@/components/property/query-states";
 import { Suspense } from "react";
 

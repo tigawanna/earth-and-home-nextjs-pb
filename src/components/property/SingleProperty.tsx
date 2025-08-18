@@ -21,9 +21,9 @@ import {
   Thermometer
 } from "lucide-react";
 import Link from "next/link";
-import { FavoriteProperty } from "../property/form/FavoriteProperty";
-import { PropertyImageGallery } from "../property/list/PropertyImageGallery";
-import { SinglePropertyNotFound } from "../property/query-states";
+import { FavoriteProperty } from "./form/FavoriteProperty";
+import { PropertyImageGallery } from "./list/PropertyImageGallery";
+import { SinglePropertyNotFound } from "./query-states";
 
 // const sampleImages = [
 //   {

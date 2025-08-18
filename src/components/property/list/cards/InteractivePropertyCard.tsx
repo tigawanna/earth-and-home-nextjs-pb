@@ -2,17 +2,18 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { Edit, Eye, Heart, MoreHorizontal, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { BasePropertyCard } from "./BasePropertyCard";
+import { LinkedPropertyCard } from "./LinkedPropertyCard";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
   expand?: {
@@ -166,7 +167,8 @@ export function InteractivePropertyCard({
 
   return (
     <div className={`relative ${className}`}>
-      <BasePropertyCard
+      <LinkedPropertyCard
+        href={`/dashboard/properties/${property.id}`}
         property={property}
         showFooterActions={true}
         footerActions={footerActions}

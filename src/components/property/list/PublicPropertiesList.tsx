@@ -2,7 +2,8 @@ import { Card } from "@/components/ui/card";
 import { getProperties } from "@/data-access-layer/pocketbase/property-queries";
 import { PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
 import { Home } from "lucide-react";
-import { BasePropertyCard } from "./BasePropertyCard";
+import { BasePropertyCard } from "./cards/BasePropertyCard";
+import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
 
 
 export const dynamic = "force-dynamic";
@@ -77,10 +78,10 @@ export async function PublicPropertiesList({ searchParams,limit }: PublicPropert
         </p>
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {properties.map((property) => (
-        <BasePropertyCard key={property.id} property={property} />
-      ))}
-    </div>
+        {properties.map((property) => (
+          <LinkedPropertyCard key={property.id} property={property} />
+        ))}
+      </div>
     </div>
   );
 }
