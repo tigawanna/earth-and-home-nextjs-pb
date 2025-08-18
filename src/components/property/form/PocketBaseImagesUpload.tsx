@@ -9,10 +9,15 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { Control, useFieldArray } from "react-hook-form";
 import { toast } from "sonner";
-import { PropertyFormData } from "../property-form-schema";
+
+interface PropertyFormData {
+  images?: (File | string)[];
+  [key: string]: any;
+}
 
 interface ImagesUploadSectionProps {
   control: Control<PropertyFormData>;
+  propertyTitle: string;
   existingProperty?: {
     id: string;
     collectionId: string; 
@@ -24,10 +29,10 @@ interface ImagesUploadSectionProps {
 // Type for images field - can be File[] for new uploads or string[] for existing
 type ImageItem = File | string;
 
-export function ImagesUploadSection({ control, existingProperty }: ImagesUploadSectionProps) {
+export function ImagesUploadSection({ control, propertyTitle, existingProperty }: ImagesUploadSectionProps) {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "images" as any, // Cast to any since PropertyFormData type might not have images defined yet
+    name: "images",
   });
 
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(0);
@@ -104,7 +109,6 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
     }
     return "—"; // Unknown size for existing files
   };
-
 
   return (
     <Card>
@@ -266,6 +270,3 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
     </Card>
   );
 }
-
-
-

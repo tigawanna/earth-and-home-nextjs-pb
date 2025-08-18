@@ -27,6 +27,7 @@ import { LocationSection } from "./sections/LocationSection";
 import { MediaSection } from "./sections/MediaSection";
 import { ParkingSection } from "./sections/ParkingSection";
 import { PricingSection } from "./sections/PricingSection";
+import { ImagesUploadSection } from "./files/ImagesUploadSection";
 
 // Convert Partial<T> (undefined) to nullable properties (null)
 type Nullable<T> = {
@@ -44,7 +45,6 @@ export default function PropertyForm({
   isEdit = false,
   propertyId,
 }: PropertyFormProps) {
-
   const router = useRouter();
   const [isSubmittingDraft, submitDraft] = useTransition();
   const form = useForm({
@@ -144,8 +144,16 @@ export default function PropertyForm({
 
   // React Query v5 typing can make isLoading not directly visible on the result in some cases,
   // use `status === 'loading'` which is stable and typed.
-  const isSubmitting =
-    createPropertyMutation.isPending || updatePropertyMutation.isPending;
+  const isSubmitting = createPropertyMutation.isPending || updatePropertyMutation.isPending;
+
+  const existingProperty = isEdit
+    ? {
+        id: initialData?.id || "",
+        collectionId: initialData?.collectionId || "",
+        collectionName: initialData?.collectionName || "",
+        images: initialData?.images || [],
+      }
+    : undefined;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
@@ -264,10 +272,10 @@ export default function PropertyForm({
 
             {/* Images Upload - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
-              {/* <ImagesUploadSection
+              <ImagesUploadSection
                 control={form.control as any}
-                propertyTitle={form.watch("title")}
-              /> */}
+                existingProperty={existingProperty}
+              />
             </div>
 
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
