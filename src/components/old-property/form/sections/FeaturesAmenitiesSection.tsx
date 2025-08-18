@@ -52,7 +52,7 @@ const commonUtilities = [
 ];
 
 export function FeaturesAmenitiesSection({ control }: FeaturesAmenitiesSectionProps) {
-  const propertyType = useWatch({ control, name: "propertyType" });
+  const propertyType = useWatch({ control, name: "property_type" });
   const isLand = isLandProperty(propertyType);
 
   return (
@@ -112,14 +112,14 @@ export function FeaturesAmenitiesSection({ control }: FeaturesAmenitiesSectionPr
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SwitchFieldComponent
               control={control}
-              name="isFeatured"
+              name="is_featured"
               label="Featured Listing"
               description="Highlight this property in search results"
             />
 
             <SwitchFieldComponent
               control={control}
-              name="isNew"
+              name="is_new"
               label="New Listing"
               description="Mark as a new property listing"
             />

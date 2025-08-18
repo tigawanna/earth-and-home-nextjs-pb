@@ -38,7 +38,7 @@ const coolingOptions = [
 ];
 
 export function BuildingSection({ control }: BuildingSectionProps) {
-  const propertyType = useWatch({ control, name: "propertyType" });
+  const propertyType = useWatch({ control, name: "property_type" });
   
   // Hide for land properties
   if (isLandProperty(propertyType)) {
@@ -54,7 +54,7 @@ export function BuildingSection({ control }: BuildingSectionProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <NumberFieldComponent
             control={control}
-            name="buildingSizeSqft"
+            name="building_size_sqft"
             label="Building Size (sq ft)"
             placeholder="Enter building size"
             description="Total interior floor area"
@@ -62,7 +62,7 @@ export function BuildingSection({ control }: BuildingSectionProps) {
           
           <NumberFieldComponent
             control={control}
-            name="yearBuilt"
+            name="year_built"
             label="Year Built"
             placeholder="Enter year"
             description="Year construction was completed"

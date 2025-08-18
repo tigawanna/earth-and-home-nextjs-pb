@@ -46,7 +46,7 @@ export function LocationSection({ control }: LocationSectionProps) {
           <div className="bg-muted/50 rounded-xl p-6">
             <TextFieldComponent
               control={control}
-              name="streetAddress"
+              name="street_address"
               label="Street Address"
               placeholder="Enter street address"
               description="Specific street address or plot number"
@@ -77,7 +77,7 @@ export function LocationSection({ control }: LocationSectionProps) {
             <div className="bg-muted/50 rounded-xl p-6">
               <TextFieldComponent
                 control={control}
-                name="postalCode"
+                name="postal_code"
                 label="Postal Code"
                 placeholder="Enter postal code"
               />
@@ -100,21 +100,22 @@ export function LocationSection({ control }: LocationSectionProps) {
             <span className="text-sm font-medium text-muted-foreground">📍 GPS Coordinates (Optional)</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
+            {/* TODO: Implement GPS Coordinates */}
             <NumberFieldComponent
               control={control}
-              name="latitude"
+              name="location"
               label="Latitude"
               placeholder="e.g., -1.2921"
               description="Decimal degrees (optional)"
             />
             
-            <NumberFieldComponent
+            {/* <NumberFieldComponent
               control={control}
               name="longitude"
               label="Longitude"
               placeholder="e.g., 36.8219"
               description="Decimal degrees (optional)"
-            />
+            /> */}
           </div>
         </div>
       </CardContent>

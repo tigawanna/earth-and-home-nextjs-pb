@@ -68,7 +68,7 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             <div className="space-y-2">
               <SelectFieldComponent
                 control={control}
-                name="propertyType"
+                name="property_type"
                 label="Property Type"
                 placeholder="Select property type"
                 options={propertyTypeOptions}
@@ -80,7 +80,7 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
             <div className="space-y-2">
               <SelectFieldComponent
                 control={control}
-                name="listingType"
+                name="listing_type"
                 label="Listing Type"
                 placeholder="Select listing type"
                 options={listingTypeOptions}

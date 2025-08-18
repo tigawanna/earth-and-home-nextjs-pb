@@ -36,7 +36,7 @@ interface PricingSectionProps {
 }
 
 export function PricingSection({ control }: PricingSectionProps) {
-  const listingType = useWatch({ control, name: "listingType" });
+  const listingType = useWatch({ control, name: "listing_type" });
   const selectedCurrency = useWatch({ control, name: "currency" });
   const isSale = listingType === "sale";
   const isRent = listingType === "rent";
@@ -76,7 +76,7 @@ export function PricingSection({ control }: PricingSectionProps) {
             {isSale && (
               <CurrencyFieldComponent
                 control={control}
-                name="salePrice"
+                name="sale_price"
                 label="Sale Price"
                 placeholder="Enter sale price"
                 currency={selectedCurrency || "KES"}
@@ -87,7 +87,7 @@ export function PricingSection({ control }: PricingSectionProps) {
             {isRent && (
               <CurrencyFieldComponent
                 control={control}
-                name="rentalPrice"
+                name="rental_price"
                 label="Monthly Rent"
                 placeholder="Enter monthly rental price"
                 currency={selectedCurrency || "KES"}
@@ -104,7 +104,7 @@ export function PricingSection({ control }: PricingSectionProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CurrencyFieldComponent
                 control={control}
-                name="securityDeposit"
+                name="security_deposit"
                 label="Security Deposit"
                 placeholder="Enter security deposit amount"
                 description="Typically 1-2 months rent"
@@ -113,7 +113,7 @@ export function PricingSection({ control }: PricingSectionProps) {
 
               <DateFieldComponent
                 control={control}
-                name="availableFrom"
+                name="available_from"
                 label="Available From"
                 placeholder="Select availability date"
                 description="When will the property be available for rent?"
@@ -128,7 +128,7 @@ export function PricingSection({ control }: PricingSectionProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <CurrencyFieldComponent
               control={control}
-              name="hoaFee"
+              name="hoa_fee"
               label="HOA Fee"
               placeholder="Monthly HOA fee"
               description="Homeowners Association fee (if applicable)"
@@ -137,7 +137,7 @@ export function PricingSection({ control }: PricingSectionProps) {
 
             <CurrencyFieldComponent
               control={control}
-              name="annualTaxes"
+              name="annual_taxes"
               label="Annual Property Taxes"
               placeholder="Annual tax amount"
               description="Yearly property tax amount"

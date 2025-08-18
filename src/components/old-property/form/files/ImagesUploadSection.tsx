@@ -2,7 +2,6 @@
 
 import React, { useTransition } from "react";
 import { useFieldArray, Control } from "react-hook-form";
-import { useUploadFiles } from "better-upload/client";
 import { UploadDropzoneProgress } from "@/components/ui/upload-dropzone-progress";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +11,7 @@ import { useState } from "react";
 import { PropertyFormData } from "../property-form-schema";
 import { toast } from "sonner";
 import Image from "next/image";
-import { deleteObject } from "@/DAL/r2/delete-object-action";
+
 
 
 interface ImagesUploadSectionProps {

@@ -25,7 +25,7 @@ const zoningOptions = [
 ];
 
 export function LandSection({ control }: LandSectionProps) {
-  const propertyType = useWatch({ control, name: "propertyType" });
+  const propertyType = useWatch({ control, name: "property_type" });
   
   // Only show for land properties
   if (!isLandProperty(propertyType)) {
@@ -41,7 +41,7 @@ export function LandSection({ control }: LandSectionProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <NumberFieldComponent
             control={control}
-            name="lotSizeSqft"
+            name="lot_size_sqft"
             label="Lot Size (sq ft)"
             placeholder="Enter lot size in square feet"
             required
@@ -49,7 +49,7 @@ export function LandSection({ control }: LandSectionProps) {
           
           <NumberFieldComponent
             control={control}
-            name="lotSizeAcres"
+            name="lot_size_acres"
             label="Lot Size (acres)"
             placeholder="Enter lot size in acres"
             description="Optional - will be calculated from sq ft if not provided"

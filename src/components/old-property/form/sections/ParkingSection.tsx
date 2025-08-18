@@ -41,7 +41,7 @@ const coolingOptions = [
 ];
 
 export function ParkingSection({ control }: ParkingSectionProps) {
-  const propertyType = useWatch({ control, name: "propertyType" });
+  const propertyType = useWatch({ control, name: "property_type" });
   
   // Hide for land properties
   if (isLandProperty(propertyType)) {
@@ -58,7 +58,7 @@ export function ParkingSection({ control }: ParkingSectionProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <NumberFieldComponent
             control={control}
-            name="parkingSpaces"
+            name="parking_spaces"
             label="Parking Spaces"
             placeholder="Number of parking spaces"
             description="Total number of parking spaces available"
@@ -66,7 +66,7 @@ export function ParkingSection({ control }: ParkingSectionProps) {
           
           <SelectFieldComponent
             control={control}
-            name="parkingType"
+            name="parking_type"
             label="Parking Type"
             placeholder="Select parking type"
             options={parkingTypeOptions}
