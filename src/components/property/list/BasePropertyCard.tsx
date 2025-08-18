@@ -1,11 +1,12 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
+import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { formatDistanceToNowStrict } from "date-fns";
+import { Camera } from "lucide-react";
+import Image from "next/image";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
   expand?: {
@@ -16,6 +17,9 @@ type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
 
 interface BasePropertyCardProps {
   property: PropertiesResponseWithExpandedRelations;
+  className?: string;
+  showFooterActions?: boolean;
+  footerActions?: React.ReactNode;
 }
 
 function formatPrice(currency: string | undefined, price: number | undefined) {
@@ -31,7 +35,12 @@ function formatPrice(currency: string | undefined, price: number | undefined) {
   }
 }
 
-export function BasePropertyCard({ property }: BasePropertyCardProps) {
+export function BasePropertyCard({ 
+  property, 
+  className,
+  showFooterActions = false,
+  footerActions 
+}: BasePropertyCardProps) {
   const {
     id,
     title,
@@ -59,25 +68,34 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
   const ownerExpanded = property.expand?.owner_id;
   const agentExpanded = property.expand?.agent_id;
 
-  const imageSrc =
-    image_url ||
-    (Array.isArray(images) && images.length ? images[0] : undefined) ||
-    "/apple-icon.png";
+  // Get the primary image or first gallery image
+  const primaryImageFilename = property.image_url || 
+    (Array.isArray(property.images) && property.images.length > 0 
+      ? (typeof property.images[0] === 'string' ? property.images[0] : null)
+      : null);
+
+  const imageUrl = primaryImageFilename 
+    ? getImageThumbnailUrl(property, primaryImageFilename, "400x300")
+    : null;
 
   const locationLabel = [city, state, country].filter(Boolean).join(", ");
 
   return (
-    <Card className="w-full max-w-sm">
+    <Card className={`w-full max-w-sm ${className}`}>
       <CardHeader className="p-0">
         <AspectRatio ratio={16 / 11} className="w-full overflow-hidden rounded-t-md">
-          <img
-            src={imageSrc}
-            alt={title ?? "Property image"}
-            className="object-cover w-full h-full"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/apple-icon.png";
-            }}
-          />
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={title ?? "Property image"}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-muted flex items-center justify-center">
+              <Camera className="h-12 w-12 text-muted-foreground" />
+            </div>
+          )}
         </AspectRatio>
       </CardHeader>
 
@@ -155,19 +173,20 @@ export function BasePropertyCard({ property }: BasePropertyCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {is_featured && <Badge variant="destructive">Featured</Badge>}
-          {is_new && <Badge variant="outline">New</Badge>}
-        </div>
+      {showFooterActions && (
+        <CardFooter className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {is_featured && <Badge variant="destructive">Featured</Badge>}
+            {is_new && <Badge variant="outline">New</Badge>}
+          </div>
 
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost">
-            Save
-          </Button>
-          <Button size="sm">View</Button>
-        </div>
-      </CardFooter>
+          {footerActions && (
+            <div className="flex items-center gap-2">
+              {footerActions}
+            </div>
+          )}
+        </CardFooter>
+      )}
     </Card>
   );
 }

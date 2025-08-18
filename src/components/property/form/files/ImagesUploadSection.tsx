@@ -33,8 +33,6 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
   const { images } = useWatch({ control });
   const fields: ImageItem[] = images || [];
 
- 
-
 
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);

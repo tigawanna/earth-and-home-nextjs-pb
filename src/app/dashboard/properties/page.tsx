@@ -15,24 +15,10 @@ function LoadingFallback() {
   );
 }
 
-export default async function PropertiesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const params = await searchParams;
-
+export default function PropertiesPage({}: {}) {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <PropertyDashboard
-        searchParams={params}
-        // userId={session.user.id}
-        showActions={true}
-        showFavorite={false}
-        title="My Properties"
-        showStatusFilter={true}
-        agentFilter={true} // Filter by user's properties only
-      />
+      <PropertyDashboard />
     </Suspense>
   );
 }

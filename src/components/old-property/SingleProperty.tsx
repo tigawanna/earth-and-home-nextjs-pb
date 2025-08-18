@@ -1,11 +1,10 @@
-import { getProperty } from "@/data-access-layer/pocketbase/property-queries";
-import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getProperty } from "@/data-access-layer/pocketbase/property-queries";
+import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {
   ArrowLeft,
   Bath,
@@ -23,81 +22,81 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { FavoriteProperty } from "../property/form/FavoriteProperty";
+import { PropertyImageGallery } from "../property/list/PropertyImageGallery";
 import { SinglePropertyNotFound } from "../property/query-states";
-import { PropertyImageGallery } from "./list/PropertyImageGallery";
 
-const sampleImages = [
-  {
-    url: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop",
-    key: "house-1",
-    name: "Modern House Front View",
-    size: 245760,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
-    key: "house-2",
-    name: "Living Room Interior",
-    size: 189432,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
-    key: "house-3",
-    name: "Modern Kitchen",
-    size: 312567,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
-    key: "house-4",
-    name: "Master Bedroom",
-    size: 198765,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&h=600&fit=crop",
-    key: "house-5",
-    name: "Bathroom Suite",
-    size: 167890,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop",
-    key: "house-6",
-    name: "Backyard Garden",
-    size: 278432,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1582063289852-62e3ba2747f8?w=800&h=600&fit=crop",
-    key: "house-7",
-    name: "Dining Room",
-    size: 203456,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1505873242700-f289a29e1e0f?w=800&h=600&fit=crop",
-    key: "house-8",
-    name: "Home Office",
-    size: 156789,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-    key: "house-9",
-    name: "Garage and Driveway",
-    size: 234567,
-    type: "image/jpeg",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?w=800&h=600&fit=crop",
-    key: "house-10",
-    name: "House Exterior Night View",
-    size: 289123,
-    type: "image/jpeg",
-  },
-];
+// const sampleImages = [
+//   {
+//     url: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop",
+//     key: "house-1",
+//     name: "Modern House Front View",
+//     size: 245760,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
+//     key: "house-2",
+//     name: "Living Room Interior",
+//     size: 189432,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
+//     key: "house-3",
+//     name: "Modern Kitchen",
+//     size: 312567,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
+//     key: "house-4",
+//     name: "Master Bedroom",
+//     size: 198765,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&h=600&fit=crop",
+//     key: "house-5",
+//     name: "Bathroom Suite",
+//     size: 167890,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop",
+//     key: "house-6",
+//     name: "Backyard Garden",
+//     size: 278432,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1582063289852-62e3ba2747f8?w=800&h=600&fit=crop",
+//     key: "house-7",
+//     name: "Dining Room",
+//     size: 203456,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1505873242700-f289a29e1e0f?w=800&h=600&fit=crop",
+//     key: "house-8",
+//     name: "Home Office",
+//     size: 156789,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
+//     key: "house-9",
+//     name: "Garage and Driveway",
+//     size: 234567,
+//     type: "image/jpeg",
+//   },
+//   {
+//     url: "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?w=800&h=600&fit=crop",
+//     key: "house-10",
+//     name: "House Exterior Night View",
+//     size: 289123,
+//     type: "image/jpeg",
+//   },
+// ];
 
 interface SinglePropertyProps {
   id: string; // Property ID to fetch details
@@ -124,15 +123,11 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
 
   // Get the main price based on listing type
   const mainPrice =
-    property.listingType === "sale"
-      ? property.salePrice || property.price
-      : property.rentalPrice || property.price;
+    property.listing_type === "sale"
+      ? property.sale_price || property.price
+      : property.rental_price || property.price;
 
   const rawImages = Array.isArray(property.images) ? property.images : [];
-  // Combine primary image with gallery images
-  const images = property.imageUrl
-    ? [property.imageUrl, ...rawImages.filter((img) => img !== property.imageUrl)]
-    : rawImages;
   const amenities = Array.isArray(property.amenities) ? property.amenities : [];
   const features = Array.isArray(property.features) ? property.features : [];
 
@@ -156,14 +151,9 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
             <div className="max-w-none max-h-[70vh]">
               <ReactHotKeyScopeProvider scope="property-gallery">
                 <PropertyImageGallery
-                  // images={[...images, ...sampleImages]}
-                  images={[...sampleImages]}
-                  title={property.title}
-                  videoUrl={property.videoUrl}
-                  virtualTourUrl={property.virtualTourUrl}
-                  status={property.status}
-                  isFeatured={property.isFeatured}
-                  isNew={property.isNew}
+                  property={property}
+                  videoUrl={property.video_url}
+                  virtualTourUrl={property.virtual_tour_url}
                 />
               </ReactHotKeyScopeProvider>
             </div>
@@ -182,13 +172,13 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                         <div className="text-3xl font-bold text-primary">
                           {formatPrice(mainPrice, property.currency || "KES")}
                         </div>
-                        {property.listingType === "rent" && (
+                        {property.listing_type === "rent" && (
                           <p className="text-sm text-muted-foreground">per month</p>
                         )}
-                        {property.securityDeposit && property.listingType === "rent" && (
+                        {property.security_deposit && property.listing_type === "rent" && (
                           <p className="text-sm text-muted-foreground">
                             Security deposit:{" "}
-                            {formatPrice(property.securityDeposit, property.currency || "KES")}
+                            {formatPrice(property.security_deposit, property.currency || "KES")}
                           </p>
                         )}
                       </div>
@@ -230,24 +220,24 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                         <span className="text-sm">{property.baths} Baths</span>
                       </div>
                     )}
-                    {property.buildingSizeSqft ? (
+                    {property.building_size_sqft ? (
                       <div className="flex items-center gap-2">
                         <Square className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">
-                          {property.buildingSizeSqft.toLocaleString()} sqft
+                          {property.building_size_sqft.toLocaleString()} sqft
                         </span>
                       </div>
                     ) : null}
-                    {property.parkingSpaces ? (
+                    {property.parking_spaces && property.parking_spaces > 0 ? (
                       <div className="flex items-center gap-2">
                         <Car className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{property.parkingSpaces} Parking</span>
+                        <span className="text-sm">{property.parking_spaces} Parking</span>
                       </div>
                     ) : null}
-                    {property.yearBuilt && (
+                    {property.year_built && (
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">Built {property.yearBuilt}</span>
+                        <span className="text-sm">Built {property.year_built}</span>
                       </div>
                     )}
                     {property.floors && (
@@ -276,12 +266,12 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
 
                   <div className="flex gap-2 flex-wrap">
                     <Badge variant="outline">
-                      {property.propertyType.charAt(0).toUpperCase() +
-                        property.propertyType.slice(1)}
+                      {property.property_type.charAt(0).toUpperCase() +
+                        property.property_type.slice(1)}
                     </Badge>
                     <Badge variant="outline">
                       For{" "}
-                      {property.listingType.charAt(0).toUpperCase() + property.listingType.slice(1)}
+                      {property.listing_type.charAt(0).toUpperCase() + property.listing_type.slice(1)}
                     </Badge>
                   </div>
                 </CardContent>
@@ -296,7 +286,7 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                   <CardContent>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={property.agent.image || undefined} />
+                        <AvatarImage src={property.agent.avatar || undefined} />
                         <AvatarFallback>
                           {property.agent.name?.charAt(0).toUpperCase() || "A"}
                         </AvatarFallback>
@@ -331,12 +321,12 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
           <div className="flex items-start justify-between mb-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                {property.isFeatured && (
+                {property.is_featured && (
                   <Badge className="bg-orange-500 hover:bg-orange-600">Featured</Badge>
                 )}
-                {property.isNew && <Badge className="bg-green-500 hover:bg-green-600">New</Badge>}
-                <Badge variant={property.listingType === "sale" ? "default" : "secondary"}>
-                  {property.listingType === "sale" ? "For Sale" : "For Rent"}
+                {property.is_new && <Badge className="bg-green-500 hover:bg-green-600">New</Badge>}
+                <Badge variant={property.listing_type === "sale" ? "default" : "secondary"}>
+                  {property.listing_type === "sale" ? "For Sale" : "For Rent"}
                 </Badge>
               </div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">{property.title}</h1>
@@ -387,31 +377,31 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                   </div>
                 </div>
               </div>
-              {property.parkingSpaces && property.parkingSpaces > 0 ? (
+              {property.parking_spaces && property.parking_spaces > 0 ? (
                 <div className="flex items-center">
                   <Car className="w-5 h-5 mr-3 text-primary" />
                   <div>
-                    <div className="font-semibold">{property.parkingSpaces}</div>
+                    <div className="font-semibold">{property.parking_spaces}</div>
                     <div className="text-sm text-muted-foreground">Parking</div>
                   </div>
                 </div>
               ) : null}
-              {property.buildingSizeSqft ? (
+              {property.building_size_sqft ? (
                 <div className="flex items-center">
                   <Square className="w-5 h-5 mr-3 text-primary" />
                   <div>
                     <div className="font-semibold">
-                      {property.buildingSizeSqft.toLocaleString()}
+                      {property.building_size_sqft.toLocaleString()}
                     </div>
                     <div className="text-sm text-muted-foreground">Sq Ft</div>
                   </div>
                 </div>
               ) : null}
-              {property.yearBuilt && (
+              {property.year_built && (
                 <div className="flex items-center">
                   <Building className="w-5 h-5 mr-3 text-primary" />
                   <div>
-                    <div className="font-semibold">{property.yearBuilt}</div>
+                    <div className="font-semibold">{property.year_built}</div>
                     <div className="text-sm text-muted-foreground">Year Built</div>
                   </div>
                 </div>
@@ -453,23 +443,23 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
 
             {/* Additional Property Details */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {property.lotSizeSqft && (
+              {property.lot_size_sqft && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Lot Size</p>
                   <p className="text-sm text-muted-foreground">
-                    {property.lotSizeSqft.toLocaleString()} sqft
+                    {property.lot_size_sqft.toLocaleString()} sqft
                   </p>
                 </div>
               )}
 
-              {property.parkingType && property.parkingType !== "none" && (
+              {property.parking_type && property.parking_type !== "none" && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium flex items-center gap-2">
                     <Car className="h-4 w-4" />
                     Parking Type
                   </p>
                   <p className="text-sm text-muted-foreground capitalize">
-                    {property.parkingType.replace("_", " ")}
+                    {property.parking_type.replace("_", " ")}
                   </p>
                 </div>
               )}
@@ -483,20 +473,20 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                 </div>
               )}
 
-              {property.hoaFee && (
+              {property.hoa_fee && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">HOA Fee</p>
                   <p className="text-sm text-muted-foreground">
-                    {formatPrice(property.hoaFee, property.currency || "KES")}/month
+                    {formatPrice(property.hoa_fee, property.currency || "KES")}/month
                   </p>
                 </div>
               )}
 
-              {property.annualTaxes && (
+              {property.annual_taxes && (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Annual Taxes</p>
                   <p className="text-sm text-muted-foreground">
-                    {formatPrice(property.annualTaxes, property.currency || "KES")}
+                    {formatPrice(property.annual_taxes, property.currency || "KES")}
                   </p>
                 </div>
               )}
@@ -559,7 +549,7 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                   <div>
                     <p className="text-sm font-medium">Address</p>
                     <p className="text-sm text-muted-foreground">
-                      {property.streetAddress || property.location}
+                      {property.street_address || property.location}
                     </p>
                   </div>
                   {property.city && (
@@ -576,24 +566,16 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                   )}
                 </div>
                 <div className="space-y-3">
-                  {property.postalCode && (
+                  {property.postal_code && (
                     <div>
                       <p className="text-sm font-medium">Postal Code</p>
-                      <p className="text-sm text-muted-foreground">{property.postalCode}</p>
+                      <p className="text-sm text-muted-foreground">{property.postal_code}</p>
                     </div>
                   )}
                   {property.country && (
                     <div>
                       <p className="text-sm font-medium">Country</p>
                       <p className="text-sm text-muted-foreground">{property.country}</p>
-                    </div>
-                  )}
-                  {property.latitude && property.longitude && (
-                    <div>
-                      <p className="text-sm font-medium">Coordinates</p>
-                      <p className="text-sm text-muted-foreground font-mono">
-                        {property.latitude.toFixed(6)}, {property.longitude.toFixed(6)}
-                      </p>
                     </div>
                   )}
                 </div>
