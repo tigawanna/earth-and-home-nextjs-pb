@@ -2,7 +2,6 @@ import { Card } from "@/components/ui/card";
 import { getProperties } from "@/data-access-layer/pocketbase/property-queries";
 import { PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
 import { Home } from "lucide-react";
-import { BasePropertyCard } from "./cards/BasePropertyCard";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
 
 

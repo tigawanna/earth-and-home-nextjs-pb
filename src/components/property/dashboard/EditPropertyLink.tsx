@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { viewerQueryOptions } from "@/data-access-layer/pocketbase/auth";
-import { useQuery } from "@tanstack/react-query";
+import { useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 
 import { ChevronRight, Loader, Pen } from "lucide-react";
 import Link from "next/link";
@@ -11,8 +10,8 @@ interface EditPropertyLinkProps {
 }
 
 export function EditPropertyLink({ id }: EditPropertyLinkProps) {
-  const { data, isPending } = useQuery(viewerQueryOptions())
-  const user = data?.record
+  const { data, isPending } = useLocalViewer();
+  const user = data?.viewer;
   if (isPending) {
     return (
       <Button variant={"outline"} disabled className="" size={"sm"}>

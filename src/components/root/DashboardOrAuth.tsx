@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   signoutMutationOptions,
-  viewerQueryOptions
+  useLocalViewer
 } from "@/data-access-layer/pocketbase/auth";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { LayoutDashboard, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -25,9 +25,9 @@ interface DashboardOrAuthProps {
 
 export function DashboardOrAuth({ className }: DashboardOrAuthProps) {
   const router = useRouter();
-  const { data, isPending } = useSuspenseQuery(viewerQueryOptions());
+  const { data, isPending } = useLocalViewer()
   const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
-  const user = data?.record;
+  const user = data.viewer
   const handleSignOut = async () => {
     try {
       await mutate();
