@@ -1,5 +1,5 @@
 "use client";
-import PropertyForm from "@/components/old-property/form/PropertyForm";
+import PropertyForm from "@/components/property/form/PropertyForm";
 import { createBrowserClient } from "@/lib/pocketbase/browser-client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SinglePropertyNotFound } from "../query-states";
