@@ -12,7 +12,7 @@ export const queryKeyPrefixes = {
   properties: "properties",
   property: "property",
   favorites: "favorites",
-  "user-dashboard": "user-dashboard", 
+  dashboard: "dashboard", 
   favorite: "favorite",
   users: "users",
   user: "user",
