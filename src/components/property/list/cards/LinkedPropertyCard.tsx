@@ -35,7 +35,7 @@ export function LinkedPropertyCard({
     <Link href={defaultHref} className="block">
       <BasePropertyCard
         property={property}
-        className={`transition-transform hover:scale-105 cursor-pointer ${className}`}
+        className={`transition-transform  cursor-pointer ${className}`}
         showFooterActions={showFooterActions}
         footerActions={footerActions}
       />
