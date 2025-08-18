@@ -70,14 +70,8 @@ export async function PublicPropertiesList({ searchParams,limit }: PublicPropert
     );
   }
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
-      <div>
-        <h1 className="text-3xl font-bold">Properties</h1>
-        <p className="text-muted-foreground">
-          {totalCount} {totalCount === 1 ? "property" : "properties"} available
-        </p>
-      </div>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="w-full h-full flex flex-col items-center ">
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full">
         {properties.map((property) => (
           <LinkedPropertyCard key={property.id} property={property} />
         ))}
