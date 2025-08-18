@@ -1,3 +1,4 @@
+import "dotenv/config";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -7,10 +8,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
-      // {
-      //   protocol: "https",
-      //   hostname: process.env.NEXT_PUBLIC_R2_PUBLIC_ORIGIN || "",
-      // },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
+      {
+        protocol: "https",
+        hostname: process.env.NEXT_PUBLIC_PB_ORIGIN || "",
+      },
     ],
   },
   experimental: {

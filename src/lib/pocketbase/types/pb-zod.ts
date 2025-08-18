@@ -448,44 +448,44 @@ export const FavoritesUpdateZodSchema = baseUpdateSchema.extend({
 // Export all schemas
 export const schemas = {
     _mfas: {
-        response: MfasResponseSchema,
-        create: MfasCreateSchema,
-        update: MfasUpdateSchema,
+        response: MfasResponseZodSchema,
+        create: MfasCreateZodSchema,
+        update: MfasUpdateZodSchema,
     },
     _otps: {
-        response: OtpsResponseSchema,
-        create: OtpsCreateSchema,
-        update: OtpsUpdateSchema,
+        response: OtpsResponseZodSchema,
+        create: OtpsCreateZodSchema,
+        update: OtpsUpdateZodSchema,
     },
     _externalAuths: {
-        response: ExternalAuthsResponseSchema,
-        create: ExternalAuthsCreateSchema,
-        update: ExternalAuthsUpdateSchema,
+        response: ExternalAuthsResponseZodSchema,
+        create: ExternalAuthsCreateZodSchema,
+        update: ExternalAuthsUpdateZodSchema,
     },
     _authOrigins: {
-        response: AuthOriginsResponseSchema,
-        create: AuthOriginsCreateSchema,
-        update: AuthOriginsUpdateSchema,
+        response: AuthOriginsResponseZodSchema,
+        create: AuthOriginsCreateZodSchema,
+        update: AuthOriginsUpdateZodSchema,
     },
     _superusers: {
-        response: SuperusersResponseSchema,
-        create: SuperusersCreateSchema,
-        update: SuperusersUpdateSchema,
+        response: SuperusersResponseZodSchema,
+        create: SuperusersCreateZodSchema,
+        update: SuperusersUpdateZodSchema,
     },
     users: {
-        response: UsersResponseSchema,
-        create: UsersCreateSchema,
-        update: UsersUpdateSchema,
+        response: UsersResponseZodSchema,
+        create: UsersCreateZodSchema,
+        update: UsersUpdateZodSchema,
     },
     properties: {
-        response: PropertiesResponseSchema,
-        create: PropertiesCreateSchema,
-        update: PropertiesUpdateSchema,
+        response: PropertiesResponseZodSchema,
+        create: PropertiesCreateZodSchema,
+        update: PropertiesUpdateZodSchema,
     },
     favorites: {
-        response: FavoritesResponseSchema,
-        create: FavoritesCreateSchema,
-        update: FavoritesUpdateSchema,
+        response: FavoritesResponseZodSchema,
+        create: FavoritesCreateZodSchema,
+        update: FavoritesUpdateZodSchema,
     },
 };
 

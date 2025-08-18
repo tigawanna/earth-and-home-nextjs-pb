@@ -29,7 +29,7 @@ export async function PublicPropertiesList({ searchParams,limit }: PublicPropert
     isFeatured: searchParams?.featured === "true" ? true : undefined,
   };
 
-  const sortBy = (searchParams?.sortBy as PropertySortBy) || "createdAt";
+  const sortBy = (searchParams?.sortBy as PropertySortBy) || "created";
   const sortOrder = (searchParams?.sortOrder as SortOrder) || "desc";
   const page = searchParams?.page ? Number(searchParams?.page) : 1;
 

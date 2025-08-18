@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Users, MoreHorizontal, Shield, Ban, User, Loader2, Loader } from "lucide-react";
+import { Users, MoreHorizontal, Shield, Ban, User, Loader } from "lucide-react";
 
 import { toast } from "sonner";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";

@@ -1,6 +1,6 @@
 import { browserPB } from "@/lib/pocketbase/browser-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
-import { UsersCreate } from "@/lib/pocketbase/types/pb-zod";
+import { UsersCreate } from "@/lib/pocketbase/types/pb-types";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { deleteBrowserCookie } from "@/utils/browser-cookie";
 import { mutationOptions, queryOptions, useSuspenseQuery } from "@tanstack/react-query";

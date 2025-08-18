@@ -7,8 +7,7 @@ import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
 } from "@/data-access-layer/pocketbase/property-mutations";
-import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
-import { PropertiesResponse } from "@/lib/pocketbase/types/pb-zod";
+import { PropertiesCreate, PropertiesResponse, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { isLandProperty } from "@/utils/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,6 +27,7 @@ import { MediaSection } from "./sections/MediaSection";
 import { ParkingSection } from "./sections/ParkingSection";
 import { PricingSection } from "./sections/PricingSection";
 import { ImagesUploadSection } from "./files/ImagesUploadSection";
+import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
 
 // Convert Partial<T> (undefined) to nullable properties (null)
 type Nullable<T> = {
@@ -35,7 +35,7 @@ type Nullable<T> = {
 };
 
 interface PropertyFormProps {
-  initialData?: PropertiesResponse;
+  initialData?: PropertiesResponseZod;
   isEdit?: boolean;
   propertyId?: string; // Add propertyId for editing
 }
@@ -51,7 +51,7 @@ export default function PropertyForm({
     resolver: zodResolver(PropertyFormSchema),
     defaultValues: {
       // ...defaultPropertyFormValues,
-      ...initialData,
+      ...initialData
     },
   });
 
@@ -106,7 +106,7 @@ export default function PropertyForm({
   const handleSubmit = async (values: PropertyFormData) => {
     try {
       if (isEdit && propertyId) {
-        const payload = { id: propertyId, ...values } as PropertiesUpdate;
+        const payload = { ...values } as PropertiesUpdate;
         await updatePropertyMutation.mutateAsync(payload);
       } else {
         await createPropertyMutation.mutateAsync(values as PropertiesCreate);
@@ -124,7 +124,7 @@ export default function PropertyForm({
     submitDraft(async () => {
       try {
         if (isEdit && propertyId) {
-          const payload = { id: propertyId, ...data } as PropertiesUpdate;
+          const payload = {...data } as PropertiesUpdate;
           await updatePropertyMutation.mutateAsync(payload);
         } else {
           await createPropertyMutation.mutateAsync(data as PropertiesCreate);

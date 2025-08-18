@@ -1,23 +1,14 @@
 import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/server-client";
-import {
-  and,
-  eq,
-  gte,
-  like,
-  lte,
-  or,
-  FilterParam,
-  TypedRecord,
-} from "@tigawanna/typed-pocketbase";
+import { and, eq, FilterParam, gte, like, lte, or, TypedRecord } from "@tigawanna/typed-pocketbase";
 import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from "./property-types";
 import {
   PropertiesCollection,
   PropertiesResponse,
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
-import { FavoritesResponse } from "@/lib/pocketbase/types/pb-zod";
+import { FavoritesResponse } from "@/lib/pocketbase/types/pb-types";
 
 // ====================================================
 // GET PROPERTIES (with filtering, sorting, pagination)
@@ -131,7 +122,7 @@ export async function getProperties({
 
     // Create type-safe sort using createSort helper
     const sortPrefix = sortOrder === "desc" ? "-" : "+";
-    const sortField = sortBy === "created" ? "created" : sortBy === "updated" ? "updated" : sortBy;
+    const sortField = sortBy
     const sort = propertiesCollection.createSort(`${sortPrefix}${sortField}`);
 
     // Get properties with pagination using type-safe helpers
@@ -140,7 +131,7 @@ export async function getProperties({
       sort,
       select: {
         expand: {
-          agent_id:true,
+          agent_id: true,
         },
       },
     });
