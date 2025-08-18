@@ -1,4 +1,4 @@
-import { createBrowserClient } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/browser-client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { BasePropertyCard } from "../../list/BasePropertyCard";
@@ -6,7 +6,6 @@ import { BasePropertyCard } from "../../list/BasePropertyCard";
 interface DashboardPropertiesListProps {}
 
 export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
-  const pb = createBrowserClient();
   const [queryState] = useQueryStates({
     search: parseAsString.withDefault(""),
     propertyType: parseAsString,
@@ -26,7 +25,7 @@ export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
   const { data } = useSuspenseQuery({
     queryKey: ["properties", "dashboard"],
     queryFn: async () => {
-      const response = await pb.from("properties").getList(1, 50, {});
+      const response = await browserPB.from("properties").getList(1, 50, {});
       return response;
     },
   });

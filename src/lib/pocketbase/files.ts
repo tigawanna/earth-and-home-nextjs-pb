@@ -1,4 +1,6 @@
-import { createBrowserClient } from './browser-client';
+import { browserPB } from './browser-client';
+
+
 
 /**
  * Generate a file URL for a PocketBase record file
@@ -12,24 +14,10 @@ export function getFileUrl(
   filename: string,
   queryParams?: { thumb?: string; download?: boolean; token?: string }
 ): string {
-  const pb = createBrowserClient();
-  return pb.files.getURL(record, filename, queryParams);
+
+  return browserPB.files.getURL(record, filename, queryParams);
 }
 
-/**
- * Generate file URLs for multiple files
- * @param record The record containing the files
- * @param filenames Array of filenames from the file field
- * @param queryParams Optional query parameters (thumb, download, etc.)
- * @returns Array of full URLs to the files
- */
-export function getFileUrls(
-  record: { id: string; collectionId: string; collectionName: string },
-  filenames: string[],
-  queryParams?: { thumb?: string; download?: boolean; token?: string }
-): string[] {
-  return filenames.map(filename => getFileUrl(record, filename, queryParams));
-}
 
 /**
  * Generate a thumbnail URL for an image file

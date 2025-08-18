@@ -1,12 +1,11 @@
-import { createBrowserClient } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/browser-client";
 import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
 import { mutationOptions } from "@tanstack/react-query";
 
 export const createPropertyMutationOptions = mutationOptions({
   mutationFn: async (data: PropertiesCreate) => {
     try {
-      const client = createBrowserClient();
-      const res = await client.from("properties").create(data);
+      const res = await browserPB.from("properties").create(data);
       return {
         record: res,
         success: true,
@@ -15,7 +14,7 @@ export const createPropertyMutationOptions = mutationOptions({
     } catch (error) {
       return {
         record: null,
-        success:false,
+        success: false,
         message: "Failed to create property",
         code: "property/create-failed",
       };
@@ -26,8 +25,7 @@ export const createPropertyMutationOptions = mutationOptions({
 export const updatePropertyMutationOptions = mutationOptions({
   mutationFn: async (data: PropertiesUpdate) => {
     try {
-      const client = createBrowserClient();
-      const res = await client.from("properties").update(data.id, data);
+      const res = await browserPB.from("properties").update(data.id, data);
       return {
         record: res ?? null,
         success: true,
@@ -47,8 +45,7 @@ export const updatePropertyMutationOptions = mutationOptions({
 export const deletePropertyMutationOptions = mutationOptions({
   mutationFn: async (id: string) => {
     try {
-      const client = createBrowserClient();
-      const res = await client.from("properties").delete(id);
+      const res = await browserPB.from("properties").delete(id);
       return {
         record: res ?? null,
         success: true,

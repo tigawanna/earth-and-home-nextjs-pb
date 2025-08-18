@@ -1,4 +1,4 @@
-import { createBrowserClient } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/browser-client";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { eq } from "@tigawanna/typed-pocketbase";
@@ -7,13 +7,12 @@ import { BasePropertyCard } from "../../list/BasePropertyCard";
 interface FavoritePropertiesListProps {}
 
 export function FavoritePropertiesList({}: FavoritePropertiesListProps) {
-  const client = createBrowserClient();
-  const user = client.authStore.record!;
+  const user = browserPB.authStore.record!;
   const { data } = useSuspenseQuery({
     queryKey: ["favorites", user?.id],
     queryFn: async () => {
       try {
-        const result = await client.from("favorites").getList(1, 100, {
+        const result = await browserPB.from("favorites").getList(1, 100, {
           filter: eq("user_id", user?.id),
           sort: "-created",
           select: {

@@ -1,14 +1,13 @@
 "use client";
-import { createBrowserClient } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/browser-client";
 import { FavoritePropertiesList } from "./FavoritePropertiesList";
 import { useRouter } from "next/navigation";
 
 interface FavoritePropertiesProps {}
 
 export function FavoriteProperties({}: FavoritePropertiesProps) {
-  const client = createBrowserClient();
   const router = useRouter();
-  const user = client.authStore.record;
+  const user = browserPB.authStore.record;
 
   if (!user) {
     router.push("/auth/signin");

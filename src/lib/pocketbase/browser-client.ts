@@ -3,21 +3,19 @@ import { Schema } from "./types/pb-types";
 
 let singletonClient: TypedPocketBase<Schema> | null = null;
 
-console.log("Initializing PocketBase browser client...", process.env.NEXT_PUBLIC_PB_URL);
-
-export const browserPB = new TypedPocketBase<Schema>(process.env.NEXT_PUBLIC_PB_URL);
+// export const _pb = new TypedPocketBase<Schema>(process.env.NEXT_PUBLIC_PB_URL);
 
 export function createBrowserClient() {
   const url = process.env.NEXT_PUBLIC_PB_URL;
   if (!url) {
-    throw new Error('Pocketbase API url not defined !');
+    throw new Error("Pocketbase API url not defined !");
   }
 
   const createNewClient = () => new TypedPocketBase<Schema>(url);
 
   const _client = singletonClient ?? createNewClient();
 
-  if (typeof window === 'undefined') return _client;
+  if (typeof window === "undefined") return _client;
 
   if (!singletonClient) singletonClient = _client;
 
@@ -29,3 +27,6 @@ export function createBrowserClient() {
 
   return singletonClient;
 }
+
+
+export const browserPB = createBrowserClient();

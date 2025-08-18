@@ -204,6 +204,7 @@ export const UsersResponseSchema = authResponseSchema.extend({
     name: z.string().max(255).optional(),
     avatar: z.string().optional(),
     is_admin: z.boolean().optional(),
+    is_banned: z.boolean().optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -216,6 +217,7 @@ export const UsersCreateSchema = authCreateSchema.extend({
     name: z.string().max(255).optional(),
     avatar: z.instanceof(File).nullable().optional(),
     is_admin: z.boolean().optional(),
+    is_banned: z.boolean().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -228,6 +230,7 @@ export const UsersUpdateSchema = authUpdateSchema.extend({
     name: z.string().max(255).optional(),
     avatar: z.instanceof(File).nullable().optional(),
     is_admin: z.boolean().optional(),
+    is_banned: z.boolean().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });

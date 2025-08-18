@@ -1,10 +1,10 @@
-import { browserPB, createBrowserClient } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/browser-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { UsersCreate } from "@/lib/pocketbase/types/pb-zod";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { deleteBrowserCookie } from "@/utils/browser-cookie";
-import { mutationOptions, queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { success } from "zod";
+import { mutationOptions, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+
 
 
 
@@ -13,8 +13,7 @@ export function localViewerQueryOptions() {
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async ({}) => {
       try {
-        const client = createBrowserClient();
-        const res = client.authStore.record as UsersResponse
+        const res = browserPB.authStore.record as UsersResponse
         return res;
       } catch (error) {
         return {
@@ -34,8 +33,7 @@ export const useLocalViewer = () => {
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async () => {
       try {
-        const client = createBrowserClient();
-        const res = client.authStore.record as UsersResponse;
+        const res = browserPB.authStore.record as UsersResponse;
         if (!res) {
           throw new Error("No user is currently authenticated");
         }
@@ -69,8 +67,7 @@ export function viewerQueryOptions() {
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async ({}) => {
       try {
-        const client = createBrowserClient();
-        const res = client.from("users").authRefresh();
+        const res = browserPB.from("users").authRefresh();
         return res;
       } catch (error) {
         return {
@@ -88,8 +85,7 @@ export function viewerQueryOptions() {
 export function signoutMutationOptions() {
   return mutationOptions({
     mutationFn: async () => {
-      const client = createBrowserClient();
-      await client.authStore.clear();
+      await browserPB.authStore.clear();
       deleteBrowserCookie("pb_auth");
       return true;
     },
@@ -102,8 +98,7 @@ export function signoutMutationOptions() {
 export function signinMutationOptions() {
   return mutationOptions({
     mutationFn: async (data: { email: string; password: string }) => {
-      const client = createBrowserClient();
-      const res = await client.from("users").authWithPassword(data.email, data.password);
+      const res = await browserPB.from("users").authWithPassword(data.email, data.password);
       return res;
     },
     meta: {
@@ -115,8 +110,7 @@ export function signinMutationOptions() {
 export function signupMutationOptions() {
   return mutationOptions({
     mutationFn: async (data: UsersCreate) => {
-      const client = createBrowserClient();
-      const res = await client.from("users").create(data);
+      const res = await browserPB.from("users").create(data);
       return res;
     },
     meta: {

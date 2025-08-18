@@ -1,6 +1,6 @@
 "use client";
 import PropertyForm from "@/components/property/form/PropertyForm";
-import { createBrowserClient } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/browser-client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { SinglePropertyNotFound } from "../query-states";
 
@@ -13,8 +13,7 @@ export function EditProperty({ id }: EditPropertyProps) {
     queryKey: ["properties", id],
     queryFn: async () => {
       try {
-        const client = createBrowserClient();
-        const property = await client.from("properties").getOne(id);
+        const property = await browserPB.from("properties").getOne(id);
         return {
           property,
           success: true,

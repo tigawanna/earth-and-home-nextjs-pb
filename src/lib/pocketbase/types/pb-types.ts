@@ -357,6 +357,7 @@ export interface UsersResponse extends AuthCollectionResponse {
 	name: string;
 	avatar: string;
 	is_admin: boolean;
+	is_banned: boolean;
 	created: string;
 	updated: string;
 }
@@ -369,6 +370,7 @@ export interface UsersCreate extends AuthCollectionCreate {
 	name?: string;
 	avatar?: File | null;
 	is_admin?: boolean;
+	is_banned?: boolean;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -381,6 +383,7 @@ export interface UsersUpdate extends AuthCollectionUpdate {
 	name?: string;
 	avatar?: File | null;
 	is_admin?: boolean;
+	is_banned?: boolean;
 	created?: string | Date;
 	updated?: string | Date;
 }

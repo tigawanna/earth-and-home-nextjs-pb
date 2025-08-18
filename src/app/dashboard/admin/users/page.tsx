@@ -1,112 +1,59 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table"
-import { 
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Users, MoreHorizontal, Shield, Ban, User } from "lucide-react"
-import { authClient } from "@/lib/client-side-auth"
-import { toast } from "sonner"
+} from "@/components/ui/dropdown-menu";
+import { Users, MoreHorizontal, Shield, Ban, User } from "lucide-react";
+
+import { toast } from "sonner";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { browserPB } from "@/lib/pocketbase/browser-client";
 
 interface User {
-  id: string
-  name: string
-  email: string
-  image?: string
-  role?: string
-  banned?: boolean
-  createdAt: string
+  id: string;
+  name: string;
+  email: string;
+  image?: string;
+  role?: string;
+  banned?: boolean;
+  createdAt: string;
 }
 
 export default function AdminUsersPage() {
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetchUsers()
-  }, [])
-
-  const fetchUsers = async () => {
-    try {
-      const response = await authClient.admin.listUsers({
-        query: {
-          limit: 100
-        }
-      })
-      if (response.data?.users) {
-        setUsers(response.data.users.map(user => ({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image || undefined,
-          role: user.role,
-          banned: user.banned || false,
-          createdAt: user.createdAt.toISOString()
-        })))
+  const { data, isPending } = useSuspenseQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      try {
+        const response = await browserPB.from("users").getList(1, 50, {});
+        return {
+          result: response,
+          success: true,
+        };
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        toast.error("Failed to load users");
+        return { result: null, success: false };
       }
-    } catch (error) {
-      console.error("Failed to fetch users:", error)
-      toast.error("Failed to load users")
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+  });
 
-  const handleBanUser = async (userId: string, banned: boolean) => {
-    try {
-      if (banned) {
-        await authClient.admin.banUser({ userId })
-        toast.success("User banned successfully")
-      } else {
-        await authClient.admin.unbanUser({ userId })
-        toast.success("User unbanned successfully")
-      }
-      fetchUsers() // Refresh the list
-    } catch (error) {
-      console.error("Failed to update user ban status:", error)
-      toast.error("Failed to update user status")
-    }
-  }
-
-  const handleSetRole = async (userId: string, role: "user" | "admin") => {
-    try {
-      await authClient.admin.setRole({ userId, role })
-      toast.success(`User role updated to ${role}`)
-      fetchUsers() // Refresh the list
-    } catch (error) {
-      console.error("Failed to update user role:", error)
-      toast.error("Failed to update user role")
-    }
-  }
-
-  const handleImpersonate = async (userId: string) => {
-    try {
-      await authClient.admin.impersonateUser({ userId })
-      toast.success("Now impersonating user")
-      window.location.href = "/dashboard"
-    } catch (error) {
-      console.error("Failed to impersonate user:", error)
-      toast.error("Failed to impersonate user")
-    }
-  }
-
-  if (loading) {
+  if (isPending) {
     return (
       <div className="space-y-6">
         <div>
@@ -114,17 +61,25 @@ export default function AdminUsersPage() {
           <p className="text-muted-foreground">Loading users...</p>
         </div>
       </div>
-    )
+    );
   }
-
+  const users = data?.result?.items;
+  if (!users || users.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">User Management</h2>
+          <p className="text-muted-foreground">No users found</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h2 className="text-3xl font-bold tracking-tight">User Management</h2>
-        <p className="text-muted-foreground">
-          Manage users, roles, and permissions
-        </p>
+        <p className="text-muted-foreground">Manage users, roles, and permissions</p>
       </div>
 
       {/* Stats Cards */}
@@ -145,9 +100,7 @@ export default function AdminUsersPage() {
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {users.filter(u => u.role === "admin").length}
-            </div>
+            <div className="text-2xl font-bold">{users.filter((u) => u.is_admin).length}</div>
             <p className="text-xs text-muted-foreground">Admin users</p>
           </CardContent>
         </Card>
@@ -157,9 +110,7 @@ export default function AdminUsersPage() {
             <Ban className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {users.filter(u => u.banned).length}
-            </div>
+            <div className="text-2xl font-bold">{users.filter((u) => u.is_banned).length}</div>
             <p className="text-xs text-muted-foreground">Currently banned</p>
           </CardContent>
         </Card>
@@ -169,9 +120,7 @@ export default function AdminUsersPage() {
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {users.filter(u => !u.banned).length}
-            </div>
+            <div className="text-2xl font-bold">{users.filter((u) => !u.is_banned).length}</div>
             <p className="text-xs text-muted-foreground">Active accounts</p>
           </CardContent>
         </Card>
@@ -181,9 +130,7 @@ export default function AdminUsersPage() {
       <Card>
         <CardHeader>
           <CardTitle>Users</CardTitle>
-          <CardDescription>
-            All registered users on the platform
-          </CardDescription>
+          <CardDescription>All registered users on the platform</CardDescription>
         </CardHeader>
         <CardContent>
           {users.length === 0 ? (
@@ -211,7 +158,7 @@ export default function AdminUsersPage() {
                   <TableRow key={user.id}>
                     <TableCell className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.image} alt={user.name} />
+                        <AvatarImage src={user.avatar} alt={user.name} />
                         <AvatarFallback>
                           {user.name?.charAt(0)?.toUpperCase() || "U"}
                         </AvatarFallback>
@@ -220,18 +167,16 @@ export default function AdminUsersPage() {
                     </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
-                      <Badge variant={user.role === "admin" ? "default" : "secondary"}>
-                        {user.role || "User"}
+                      <Badge variant={user.is_admin ? "default" : "secondary"}>
+                        {user.is_admin ? "Admin" : "User"}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={user.banned ? "destructive" : "default"}>
-                        {user.banned ? "Banned" : "Active"}
+                      <Badge variant={user.is_banned ? "destructive" : "default"}>
+                        {user.is_banned ? "Banned" : "Active"}
                       </Badge>
                     </TableCell>
-                    <TableCell>
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </TableCell>
+                    <TableCell>{new Date(user.created).toLocaleDateString()}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -240,25 +185,20 @@ export default function AdminUsersPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => handleImpersonate(user.id)}
-                          >
+                          <DropdownMenuItem onClick={() => handleImpersonate(user.id)}>
                             Impersonate User
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
-                            onClick={() => handleSetRole(
-                              user.id, 
-                              user.role === "admin" ? "user" : "admin"
-                            )}
-                          >
-                            {user.role === "admin" ? "Remove Admin" : "Make Admin"}
+                            onClick={() =>
+                              handleSetRole(user.id, user.is_admin ? "user" : "admin")
+                            }>
+                            {user.is_admin ? "Remove Admin" : "Make Admin"}
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleBanUser(user.id, !user.banned)}
-                            className={user.banned ? "text-green-600" : "text-red-600"}
-                          >
-                            {user.banned ? "Unban User" : "Ban User"}
+                            onClick={() => handleBanUser(user.id, !user.is_banned)}
+                            className={user.is_banned ? "text-green-600" : "text-red-600"}>
+                            {user.is_banned ? "Unban User" : "Ban User"}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -271,5 +211,5 @@ export default function AdminUsersPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
