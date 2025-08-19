@@ -34,17 +34,17 @@ export function UsersStats({}: UsersStatsProps) {
 							<div className="absolute -inset-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity bg-primary/5 blur-sm" />
 						</div>
 						<div className="flex-1 min-w-0 space-y-0.5">
-							<h3 className="text-[11px] font-medium tracking-wide text-muted-foreground group-hover:text-foreground transition-colors">
+							<h3 className="text-sm font-medium tracking-wide text-muted-foreground group-hover:text-foreground transition-colors">
 								Users
 							</h3>
 							{isPending ? (
 								<div className="h-5 w-12 rounded bg-muted motion-safe:animate-pulse" />
 							) : (
-								<p className="text-xl font-semibold leading-none text-foreground tabular-nums">
+								<p className="text-2xl font-semibold leading-none text-foreground tabular-nums">
 									{total}
 								</p>
 							)}
-							<p className="text-[10px] text-muted-foreground/80 truncate">
+							<p className="text-xs text-muted-foreground/80 truncate">
 								{isPending
 									? "Loading…"
 									: total === 1
@@ -57,7 +57,7 @@ export function UsersStats({}: UsersStatsProps) {
 						variant="ghost"
 						size="sm"
 						aria-label="Manage users"
-						className="gap-1 text-[10px] font-medium hover:bg-primary/10 hover:text-primary h-6 px-2 shrink-0"
+						className="gap-1 text-xs font-medium hover:bg-primary/10 hover:text-primary h-6 px-2 shrink-0"
 					>
 						Manage <ArrowRight className="h-3 w-3" />
 					</Button>

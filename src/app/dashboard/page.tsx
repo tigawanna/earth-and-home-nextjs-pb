@@ -3,6 +3,7 @@ import { FavoritesStats } from "@/components/property/dashboard/admin-cards/Favo
 import { PropertiesStats } from "@/components/property/dashboard/admin-cards/PropertiesStats";
 import { QuickActionsCard } from "@/components/property/dashboard/admin-cards/QuickAvtionsCard";
 import { UsersStats } from "@/components/property/dashboard/admin-cards/UsersStats";
+import { RecentPropertiesTable } from "@/components/property/dashboard/recent/RecentPropertiesTable";
 
 export default function DashboardPage() {
   return (
@@ -18,6 +19,7 @@ export default function DashboardPage() {
         <UsersStats />
         <QuickActionsCard />
       </div>
+      <RecentPropertiesTable />
     </div>
   );
 }
