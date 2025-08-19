@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_PB_ORIGIN || "",
+        hostname: process.env.PB_ORIGIN || "",
       },
     ],
   },

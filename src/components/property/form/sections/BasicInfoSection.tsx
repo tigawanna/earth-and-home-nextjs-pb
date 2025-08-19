@@ -121,6 +121,7 @@ export function BasicInfoSection({ control }: BasicInfoSectionProps) {
               label="Listing Status"
               placeholder="Select status"
               options={statusOptions}
+              required
               description="Current status of your property listing"
             />
           </div>
