@@ -14,6 +14,7 @@ This is a Next.js project that uses
 ## Frontend
 - Tailwind CSS + shadcn/ui for the UI
   - global styles: `src/app/globals.css`
+  - AVOID HARDCODING CSS COLORS use the provided css variables in `src/app/globals.css` instead unless absolutely necessary
 
 ## Backend (single source)
 - PocketBase is used as the single backend solution and will handle:
