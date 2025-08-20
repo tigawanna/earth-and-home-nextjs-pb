@@ -25,6 +25,7 @@ interface FavoriteRowProps {
 }
 
 export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
+  
   const prop = fav.expand?.property_id;
   const user = fav.expand?.user_id;
   const primary =

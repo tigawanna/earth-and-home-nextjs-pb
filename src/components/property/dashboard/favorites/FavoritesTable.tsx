@@ -31,6 +31,7 @@ import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { toast } from "sonner";
 import { FavoriteRow } from "./FavoriteMobileRow";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 
 interface FavoritesTableProps {}
 
@@ -99,7 +100,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
           <TableBody>
             {favorites.map((f) => {
               const prop = f.expand?.property_id as any as PropertiesResponse | undefined;
-              const user = f.expand?.user_id as any as UsersResponse | undefined;
+              const user = f.expand?.user_id as any as UsersResponse | undefined  ;
               const primary =
                 prop?.image_url ||
                 (Array.isArray(prop?.images) &&
@@ -108,9 +109,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
                   ? prop!.images[0]
                   : null);
               const imageUrl = primary
-                ? typeof prop === "string"
-                  ? null
-                  : (prop as any).thumbnail_url // best-effort
+                ? getImageThumbnailUrl(prop as PropertiesResponse, primary, "400x300")
                 : null;
 
               const location = prop
