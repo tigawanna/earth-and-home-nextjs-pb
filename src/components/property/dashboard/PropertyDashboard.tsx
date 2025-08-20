@@ -5,6 +5,8 @@ import { useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { DashboardPropertiesList } from "./list/DashboardPropertiesList";
+import { Suspense } from "react";
+import { PropertiesListLoading } from "../query-states/PropertiesListLoading";
 
 interface PropertyDashboardProps {}
 
@@ -27,7 +29,11 @@ export function PropertyDashboard({}: PropertyDashboardProps) {
       {/* Filters */}
       <PropertyFilters showStatusFilter={isAdmin} />
       {/* Properties List */}
-      <DashboardPropertiesList />
+      <Suspense fallback={<PropertiesListLoading/>}>
+        <DashboardPropertiesList />
+      </Suspense>
+      {/* Quick Actions Card */}
+      
     </div>
   );
 }

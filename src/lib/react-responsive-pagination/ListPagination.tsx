@@ -1,5 +1,6 @@
 "use client";
 import { parseAsIndex, useQueryState } from "nuqs";
+import { useTransition } from "react";
 import ResponsivePagination from "react-responsive-pagination";
 
 interface ListingsPaginationProps {
@@ -10,9 +11,10 @@ export function ListPagination({ totalPages }: ListingsPaginationProps) {
   // parseAsIndex encodes page as 0-based in the querystring, but
   // react-responsive-pagination expects 1-based `current` and emits 1-based values.
   // We use withOptions({ shallow: true }) so changes update the URL shallowly.
+  const [ispending, startTransition] = useTransition();
   const [pageIndex, setPageIndex] = useQueryState(
     "page",
-    parseAsIndex.withDefault(0).withOptions({ shallow: true })
+    parseAsIndex.withDefault(0).withOptions({ shallow: false, startTransition })
   );
 
   const current = (pageIndex ?? 0) + 1;

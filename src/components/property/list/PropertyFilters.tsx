@@ -44,7 +44,7 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
     },
     {
       shallow: false,
-      throttleMs: 300, // Better for search inputs
+      throttleMs: 5000, // Better for search inputs
       startTransition, // This enables the isPending state
     }
   );

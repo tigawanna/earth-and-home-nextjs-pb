@@ -1,20 +1,24 @@
 import { Card } from "@/components/ui/card";
 import { getProperties } from "@/data-access-layer/pocketbase/property-queries";
-import { PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
+import {
+  PropertyFilters,
+  PropertySortBy,
+  SortOrder,
+} from "@/data-access-layer/pocketbase/property-types";
 import { Home } from "lucide-react";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
-
+import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
+import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 
 export const dynamic = "force-dynamic";
 
 interface PublicPropertyListingsProps {
+  showPages?: boolean; // Whether to show pagination controls
   searchParams: { [key: string]: string | string[] | boolean | undefined };
   limit?: number; // Optional limit for pagination
 }
 
-
-
-export async function PublicPropertiesList({ searchParams,limit }: PublicPropertyListingsProps) {
+export async function PublicPropertiesList({ searchParams, limit,showPages=false }: PublicPropertyListingsProps) {
   // Convert search params to filters
   const filters: PropertyFilters = {
     search: (searchParams?.search as string) || "",
@@ -43,38 +47,20 @@ export async function PublicPropertiesList({ searchParams,limit }: PublicPropert
   });
 
   const properties = result.success ? result.properties : [];
-  const totalCount = result.success ? result.pagination.totalCount : 0;
+  const totalPages = result.success ? result.pagination.totalPages : 0;
 
   // Render empty state if no properties
   if (properties.length === 0) {
-    return (
-      <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <p className="text-muted-foreground">
-            {totalCount} {totalCount === 1 ? "property" : "properties"} available
-          </p>
-        </div>
-
-        <Card className="p-8 text-center">
-          <div className="space-y-4">
-            <Home className="h-12 w-12 mx-auto text-muted-foreground" />
-            <div>
-              <h3 className="text-lg font-semibold">No properties found</h3>
-              <p className="text-muted-foreground">No properties match your current filters.</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-    );
+    return <PropertiesEmpty />;
   }
   return (
-    <div className="w-full h-full flex flex-col items-center ">
+    <div className="w-full h-full flex flex-col items-center gap-6">
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full">
         {properties.map((property) => (
           <LinkedPropertyCard key={property.id} property={property} />
         ))}
       </div>
+      {showPages&&<ListPagination totalPages={totalPages} />}
     </div>
   );
 }

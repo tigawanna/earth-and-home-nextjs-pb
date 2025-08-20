@@ -1,5 +1,4 @@
 import { PropertyDashboard } from "@/components/property/dashboard/PropertyDashboard";
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
@@ -17,8 +16,8 @@ function LoadingFallback() {
 
 export default function PropertiesPage({}: {}) {
   return (
-    <Suspense fallback={<LoadingFallback />}>
+
       <PropertyDashboard />
-    </Suspense>
+
   );
 }

@@ -1,21 +1,8 @@
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { PublicPropertiesList } from "@/components/property/list/PublicPropertiesList";
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { PropertiesListLoading } from "@/components/property/query-states/PropertiesListLoading";
 import { Suspense } from "react";
 
-
-
-function LoadingFallback() {
-  return (
-    <Card>
-      <CardContent className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin mr-2" />
-        <span>Loading properties...</span>
-      </CardContent>
-    </Card>
-  );
-}
 
 export default async function PublicPropertiesPage({
   searchParams,
@@ -27,8 +14,8 @@ export default async function PublicPropertiesPage({
   return (
     <div className="container mx-auto py-8">
       <PropertyFilters showStatusFilter={false} />
-      <Suspense fallback={<LoadingFallback />}>
-        <PublicPropertiesList searchParams={params} />
+      <Suspense fallback={<PropertiesListLoading />}>
+        <PublicPropertiesList searchParams={params} showPages />
       </Suspense>
     </div>
   );
