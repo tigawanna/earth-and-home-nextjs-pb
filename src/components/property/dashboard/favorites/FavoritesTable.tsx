@@ -18,7 +18,11 @@ import {
 } from "@/components/ui/table";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
-import { FavoritesResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  FavoritesResponse,
+  PropertiesResponse,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -26,6 +30,7 @@ import Link from "next/link";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { toast } from "sonner";
 import { FavoriteRow } from "./FavoriteMobileRow";
+import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 
 interface FavoritesTableProps {}
 
@@ -61,8 +66,14 @@ export function FavoritesTable({}: FavoritesTableProps) {
   }
 
   const favorites = data?.result?.items || [];
+  const totalPages = data?.result?.totalPages || 1;
+
   if (favorites.length === 0) {
-    return <div className="text-center py-8 text-muted-foreground">No favorites found.</div>;
+    return (
+      <div className="space-y-4">
+        <div className="text-center py-8 text-muted-foreground">No favorites found.</div>
+      </div>
+    );
   }
   return (
     <div className="space-y-4">
@@ -87,8 +98,8 @@ export function FavoritesTable({}: FavoritesTableProps) {
 
           <TableBody>
             {favorites.map((f) => {
-              const prop = f.expand?.property_id?.[0];
-              const user = f.expand?.user_id?.[0];
+              const prop = f.expand?.property_id as any as PropertiesResponse | undefined;
+              const user = f.expand?.user_id as any as UsersResponse | undefined;
               const primary =
                 prop?.image_url ||
                 (Array.isArray(prop?.images) &&
@@ -97,7 +108,9 @@ export function FavoritesTable({}: FavoritesTableProps) {
                   ? prop!.images[0]
                   : null);
               const imageUrl = primary
-                ? (typeof prop === "string" ? null : (prop as any).thumbnail_url) // best-effort
+                ? typeof prop === "string"
+                  ? null
+                  : (prop as any).thumbnail_url // best-effort
                 : null;
 
               const location = prop
@@ -130,17 +143,25 @@ export function FavoritesTable({}: FavoritesTableProps) {
                   </TableCell>
 
                   <TableCell>
-                    <div className="font-medium">{(user as any)?.name || (user as any)?.email || "-"}</div>
-                    <div className="text-sm text-muted-foreground">{(user as any)?.email || "-"}</div>
+                    <div className="font-medium">
+                      {(user as any)?.name || (user as any)?.email || "-"}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {(user as any)?.email || "-"}
+                    </div>
                   </TableCell>
 
                   <TableCell>
-                    <div className="text-sm">{f.created ? new Date(f.created).toLocaleDateString() : "-"}</div>
+                    <div className="text-sm">
+                      {f.created ? new Date(f.created).toLocaleDateString() : "-"}
+                    </div>
                   </TableCell>
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={prop ? `/properties/${(prop as any).id}` : "#"} className="inline-block">
+                      <Link
+                        href={prop ? `/properties/${(prop as any).id}` : "#"}
+                        className="inline-block">
                         <Button variant="ghost" size="sm">
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -148,17 +169,14 @@ export function FavoritesTable({}: FavoritesTableProps) {
 
                       <DropdownMenu>
                         <DropdownMenuTrigger>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
+                          <MoreHorizontal className="w-4 h-4" />
                         </DropdownMenuTrigger>
 
                         <DropdownMenuContent>
                           <DropdownMenuItem>
                             <Link
                               href={prop ? `/properties/${(prop as any).id}` : "#"}
-                              className="flex items-center gap-2 w-full"
-                            >
+                              className="flex items-center gap-2 w-full">
                               <Eye className="w-4 h-4" />
                               View Property
                             </Link>
@@ -178,6 +196,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
           </TableBody>
         </Table>
       </div>
+      <ListPagination totalPages={totalPages} />
     </div>
   );
 }

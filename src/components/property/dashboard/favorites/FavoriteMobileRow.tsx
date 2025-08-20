@@ -54,7 +54,7 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
               <div className="text-xs text-muted-foreground line-clamp-1">{location}</div>
             </div>
             <div className="flex items-center gap-2">
-              <Link href={prop ? `/properties/${prop.id}` : "#"} className="inline-block">
+              <Link href={prop ? `/properties/${prop.id}` : "#"} className="inline-block" >
                 <Button variant="ghost" size="sm">
                   <Eye className="w-4 h-4" />
                 </Button>
@@ -66,9 +66,7 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
                     <MoreHorizontal className="w-4 h-4" />
-                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
