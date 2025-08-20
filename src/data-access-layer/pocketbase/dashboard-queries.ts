@@ -68,7 +68,7 @@ export function dashboardFavoritesQueryOptions({
   q = "",
 }: DashboardFavoritesQueryOptionsProps = {}) {
   return queryOptions({
-    queryKey: [queryKeyPrefixes.dashboard, "favorites", { page, limit }],
+    queryKey: [queryKeyPrefixes.dashboard, "favorites", { page, limit, q }],
     queryFn: async ({}) => {
       try {
         const res = await browserPB.from("favorites").getList(page, limit, {

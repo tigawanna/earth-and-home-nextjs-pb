@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -24,11 +23,11 @@ import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import {
   FavoritesResponse,
-  PropertiesResponse
+  PropertiesResponse,
+  UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
-import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Eye, MoreHorizontal, Search, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
@@ -37,9 +36,9 @@ import { toast } from "sonner";
 interface FavoritesTableProps {}
 
 export function FavoritesTable({}: FavoritesTableProps) {
-  const [queryStates,setQueryStats] = useQueryStates({
+  const [queryStates, setQueryStats] = useQueryStates({
     page: parseAsInteger.withDefault(1),
-    q: parseAsString.withDefault("q"),
+    q: parseAsString.withDefault(""),
   });
   const { data, error, isPending } = useSuspenseQuery(
     dashboardFavoritesQueryOptions({
@@ -67,12 +66,11 @@ export function FavoritesTable({}: FavoritesTableProps) {
     return <TablePending />;
   }
   const favorites = data?.result?.items || [];
-  if( favorites.length === 0) {
-    return <TableEmpty querykeys={getNuqsQueryParamKeys(queryStates)} />
+  if (favorites.length === 0) {
+    return <TableEmpty querykeys={getNuqsQueryParamKeys(queryStates)} />;
   }
   return (
     <div className="space-y-4">
-
       <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
@@ -86,21 +84,16 @@ export function FavoritesTable({}: FavoritesTableProps) {
 
           <TableBody>
             {favorites.map((f) => {
-              const prop = f.expand?.property_id?.[0];
-              const user = f.expand?.user_id?.[0];
-              const primary =
-                prop?.image_url ||
-                (Array.isArray(prop?.images) &&
-                prop!.images.length > 0 &&
-                typeof prop!.images[0] === "string"
-                  ? prop!.images[0]
-                  : null);
+              const property = f.expand?.property_id as any as PropertiesResponse | undefined;
+              const user = f.expand?.user_id as any as UsersResponse | undefined;
+              const primary = property?.images?.[0];
+
               const imageUrl = primary
-                ? getImageThumbnailUrl(prop as PropertiesResponse, primary, "120x90")
+                ? getImageThumbnailUrl(property as PropertiesResponse, primary, "120x90")
                 : null;
 
-              const location = prop
-                ? [prop.city, prop.state, prop.country].filter(Boolean).join(", ")
+              const location = property
+                ? [property.city, property.state, property.country].filter(Boolean).join(", ")
                 : "";
 
               return (
@@ -111,7 +104,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
                         {imageUrl ? (
                           <Image
                             src={imageUrl}
-                            alt={prop?.title || "property"}
+                            alt={property?.title || "property"}
                             fill
                             className="object-cover"
                           />
@@ -122,7 +115,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
                         )}
                       </div>
                       <div>
-                        <div className="font-medium">{prop?.title || "Untitled"}</div>
+                        <div className="font-medium">{property?.title || "Untitled"}</div>
                         <div className="text-sm text-muted-foreground line-clamp-1">{location}</div>
                       </div>
                     </div>
@@ -141,7 +134,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={prop ? `/properties/${prop.id}` : "#"} className="inline-block">
+                      <Link href={property ? `/properties/${property.id}` : "#"} className="inline-block">
                         <Button variant="ghost" size="sm">
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -160,7 +153,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem asChild>
                             <Link
-                              href={prop ? `/properties/${prop.id}` : "#"}
+                              href={property ? `/properties/${property.id}` : "#"}
                               className="flex items-center">
                               <Eye className="w-4 h-4 mr-2" />
                               View property
@@ -180,9 +173,6 @@ export function FavoritesTable({}: FavoritesTableProps) {
           </TableBody>
         </Table>
       </div>
-
-
-
     </div>
   );
 }

@@ -39,11 +39,9 @@ import {
 } from "@/components/ui/sidebar";
 
 import { ModeToggle } from "@/components/theme/theme-toggle";
-import {
-  signoutMutationOptions,
-  useLocalViewer
-} from "@/data-access-layer/pocketbase/auth";
+import { signoutMutationOptions, useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 import { useMutation } from "@tanstack/react-query";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
 // Menu items for regular users
 const userMenuItems = [
@@ -101,13 +99,13 @@ interface User {
   role?: string;
 }
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ user }: { user: UsersResponse }) {
   const pathname = usePathname();
 
   const router = useRouter();
-  const { data, isPending } = useLocalViewer();
+
   const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
-  const user = data?.viewer;
+
   const handleSignOut = async () => {
     try {
       await mutate();

@@ -5,7 +5,7 @@ import { createServerClient } from './lib/pocketbase/server-client';
 
 // Protect app routes by redirecting unauthenticated users to /auth
 export async function middleware(request: NextRequest) {
-  const redirectPath = '/auth';
+  const redirectPath = '/auth/signin';
 
   const cookieStore = await cookies();
 

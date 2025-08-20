@@ -60,7 +60,7 @@ export function ClearAllNuqsSearchParms({
       aria-label="Clear filters"
     >
       <X className="w-4 h-4 mr-2" />
-      {showLabel ? "Clear" : null}
+      {showLabel ? "Clear filters" : null}
     </Button>
   );
 }

@@ -1,5 +1,4 @@
 "use client";
-import { FavoritePropertiesList } from "@/components/property/dashboard/favorites/FavoritePropertiesList";
 import { FavoritesTable } from "@/components/property/table/FavoritesTable";
 import { TablePending } from "@/components/shared/TablePending";
 import { Input } from "@/components/ui/input";
@@ -33,7 +32,8 @@ export default function FavoritesPage({}: {}) {
   const totalPages = data?.result?.totalPages || 1;
   return (
     <div className="space-y-6">
-      <div className="relative">
+      <div className="relative flex gap-2 justify-center">
+        <h1 className="text-3xl">Favorites</h1>
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
           placeholder="Search favorites by property, location or user..."
@@ -42,7 +42,6 @@ export default function FavoritesPage({}: {}) {
           className="pl-10 mb-2"
         />
       </div>
-
       <Suspense fallback={<TablePending />}>
         <FavoritesTable />
       </Suspense>

@@ -1,18 +1,26 @@
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { cookies } from "next/headers"
-import { DashboardSidebar } from "../../components/property/dashboard/dashboard-sidebar"
 
-export default async function DashboardLayout({ 
-  children 
-}: { 
-  children: React.ReactNode 
-}) {
-  const cookieStore = await cookies()
-  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
+import { DashboardSidebar } from "@/components/property/dashboard/dashboard-sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { createServerClient } from "@/lib/pocketbase/server-client";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
+  const client = createServerClient(cookieStore);
+  const { authStore } = client;
+  const user = authStore.record as UsersResponse | null;
+  
+  if (!user) {
+    redirect("/auth/signin");
+    return 
+  }
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <DashboardSidebar />
+      <DashboardSidebar user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
@@ -21,10 +29,8 @@ export default async function DashboardLayout({
             <h1 className="text-lg font-semibold">Dashboard</h1>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
