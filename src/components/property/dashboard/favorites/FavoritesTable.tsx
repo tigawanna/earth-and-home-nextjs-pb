@@ -18,37 +18,36 @@ import {
 } from "@/components/ui/table";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
+import { useQueryPage, useTypedQueryParams } from "@/hooks/use-query-page";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import {
   FavoritesResponse,
   PropertiesResponse,
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
+import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
+import { parseAsString, useQueryStates } from "nuqs";
 import { toast } from "sonner";
 import { FavoriteRow } from "./FavoriteMobileRow";
-import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
-import { useSearchParams } from "next/navigation";
-import { useQueryPage } from "@/hooks/use-query-page";
+import z from "zod";
 
 interface FavoritesTableProps {}
 
 export default function FavoritesTable({}: FavoritesTableProps) {
-  const currentPage = useQueryPage();
-  const [queryStates, setQueryStats] = useQueryStates({
-    // page: parseAsInteger,
-    q: parseAsString.withDefault(""),
+  const { q, page } = useTypedQueryParams({
+    q: "string",
+    page: "number",
   });
 
   const { data, error, isPending } = useSuspenseQuery(
     dashboardFavoritesQueryOptions({
-      page: currentPage,
-      q: queryStates.q,
-      limit: 1,
+      page,
+      q,
+      limit: 1, // Default to 50 if no limit provided
     })
   );
 
@@ -67,9 +66,9 @@ export default function FavoritesTable({}: FavoritesTableProps) {
     }
   }
 
-  if (isPending) {
-    return <TablePending />;
-  }
+  // if (isPending) {
+  //   return <TablePending />;
+  // }
 
   const favorites = data?.result?.items || [];
   const totalPages = data?.result?.totalPages || 1;

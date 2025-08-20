@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PropertyFilters as PropertyFiltersType } from "@/data-access-layer/pocketbase/property-types";
-import { Filter, Loader2, Search, X } from "lucide-react";
+import { Filter, Loader, Loader2, Search, X } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { useState, useTransition } from "react";
 
@@ -125,7 +125,7 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
             <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             {isPending && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <Loader2 className="h-3 w-3 animate-spin text-primary" />
+                <Loader className="h-3 w-3 animate-spin text-primary" />
               </div>
             )}
             <Input

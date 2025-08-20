@@ -43,7 +43,7 @@ export function dashboardPropertyQueryOptions({
     queryKey: [
       queryKeyPrefixes.dashboard,
       "properties",
-      { page, limit, q, filters, sortBy, sortOrder },
+       page, limit, q, filters, sortBy, sortOrder ,
     ],
     queryFn: async ({}) => {
       try {

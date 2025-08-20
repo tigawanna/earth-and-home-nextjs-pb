@@ -7,12 +7,15 @@ import { Card } from "@/components/ui/card";
 import { Home } from "lucide-react";
 import { PropertiesEmpty } from "../../query-states/PropertiesEmpty";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
-import { useQueryPage } from "@/hooks/use-query-page";
+import { useQueryPage, useTypedQueryParams } from "@/hooks/use-query-page";
+import { useTransition } from "react";
 
 interface DashboardPropertiesListProps {}
 
 export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
-    const currentPage = useQueryPage();
+  const currentPage = useQueryPage();
+
+  // const [isPending, startTransition] = useTransition();
   const [queryState] = useQueryStates(
     {
       search: parseAsString.withDefault(""),
@@ -27,9 +30,6 @@ export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
       minPrice: parseAsInteger,
       sortBy: parseAsString.withDefault("created"),
       sortOrder: parseAsString.withDefault("desc"),
-    },
-    {
-      throttleMs: 5000, // Better for search inputs
     }
   );
 
@@ -38,7 +38,7 @@ export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
       page: currentPage,
       q: queryState.search,
       filters: queryState as any,
-      limit:1
+      limit: 50,
     })
   );
 
