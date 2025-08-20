@@ -1,6 +1,5 @@
 "use client";
 
-import { TableEmpty } from "@/components/shared/TableEmpty";
 import { TablePending } from "@/components/shared/TablePending";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -20,15 +18,10 @@ import {
 } from "@/components/ui/table";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
-import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
-import {
-  FavoritesResponse,
-  PropertiesResponse
-} from "@/lib/pocketbase/types/pb-types";
-import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
+import { FavoritesResponse, PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { Eye, MoreHorizontal, Search, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
@@ -37,9 +30,9 @@ import { toast } from "sonner";
 interface FavoritesTableProps {}
 
 export function FavoritesTable({}: FavoritesTableProps) {
-  const [queryStates,setQueryStats] = useQueryStates({
+  const [queryStates, setQueryStats] = useQueryStates({
     page: parseAsInteger.withDefault(1),
-    q: parseAsString.withDefault("q"),
+    q: parseAsString.withDefault(""),
   });
   const { data, error, isPending } = useSuspenseQuery(
     dashboardFavoritesQueryOptions({
@@ -66,13 +59,13 @@ export function FavoritesTable({}: FavoritesTableProps) {
   if (isPending) {
     return <TablePending />;
   }
+
   const favorites = data?.result?.items || [];
-  if( favorites.length === 0) {
-    return <TableEmpty querykeys={getNuqsQueryParamKeys(queryStates)} />
+  if (favorites.length === 0) {
+    return <div className="text-center py-8 text-muted-foreground">No favorites found.</div>;
   }
   return (
     <div className="space-y-4">
-
       <div className="border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
@@ -180,9 +173,6 @@ export function FavoritesTable({}: FavoritesTableProps) {
           </TableBody>
         </Table>
       </div>
-
-
-
     </div>
   );
 }

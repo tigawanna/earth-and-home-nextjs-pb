@@ -1,6 +1,7 @@
 import { browserPB } from "@/lib/pocketbase/browser-client";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { queryOptions } from "@tanstack/react-query";
+import { like } from "@tigawanna/typed-pocketbase";
 import { success } from "zod";
 
 export function userDashboardQueryOptions() {
@@ -57,19 +58,28 @@ export function dashboardPropertyQueryOptions({
 
 
 interface DashboardFavoritesQueryOptionsProps {
+  q?:string;
   page?: number;
   limit?: number;
 }
 export function dashboardFavoritesQueryOptions({
   page = 1,
   limit = 50,
+  q = "",
 }: DashboardFavoritesQueryOptionsProps = {}) {
   return queryOptions({
     queryKey: [queryKeyPrefixes.dashboard, "favorites", { page, limit }],
     queryFn: async ({}) => {
       try {
         const res = await browserPB.from("favorites").getList(page, limit, {
+          filter:like("property_id.title", `%${q}%`),
           sort: "-created",
+          select:{
+            expand:{
+              "property_id":true,
+              "user_id":true,
+            }
+          }
         });
         return {
           success: true,

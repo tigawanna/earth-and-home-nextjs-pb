@@ -1,23 +1,52 @@
-import { FavoriteProperties } from "@/components/property/dashboard/favorites/FavoriteProperties";
-import { Card, CardContent } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+"use client";
+import { FavoritePropertiesList } from "@/components/property/dashboard/favorites/FavoritePropertiesList";
+import { FavoritesTable } from "@/components/property/table/FavoritesTable";
+import { TablePending } from "@/components/shared/TablePending";
+import { Input } from "@/components/ui/input";
+import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
+import { browserPB } from "@/lib/pocketbase/browser-client";
+import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
+import { useQuery } from "@tanstack/react-query";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { Suspense } from "react";
 
-function LoadingFallback() {
-  return (
-    <Card>
-      <CardContent className="flex items-center justify-center py-8">
-        <Loader2 className="h-6 w-6 animate-spin mr-2" />
-        <span>Loading favorites...</span>
-      </CardContent>
-    </Card>
-  );
-}
-
 export default function FavoritesPage({}: {}) {
+  const router = useRouter();
+  const user = browserPB.authStore.record;
+  const [queryStates, setQueryStates] = useQueryStates({
+    page: parseAsInteger.withDefault(1),
+    q: parseAsString.withDefault(""),
+  });
+  const { data } = useQuery(
+    dashboardFavoritesQueryOptions({
+      page: queryStates.page,
+      q: queryStates.q,
+    })
+  );
+
+  if (!user) {
+    router.push("/auth/signin");
+    return null; // Prevent rendering if user is not authenticated
+  }
+  const totalPages = data?.result?.totalPages || 1;
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <FavoriteProperties />
-    </Suspense>
+    <div className="space-y-6">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Search favorites by property, location or user..."
+          value={queryStates.q ?? ""}
+          onChange={(e) => setQueryStates({ page: 1, q: e.target.value })}
+          className="pl-10 mb-2"
+        />
+      </div>
+
+      <Suspense fallback={<TablePending />}>
+        <FavoritesTable />
+      </Suspense>
+      <ListPagination totalPages={totalPages} />
+    </div>
   );
 }
