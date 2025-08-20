@@ -1,10 +1,8 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
-import { formatDistanceToNowStrict } from "date-fns";
-import { Bath, Bed, Home, MapPin, Square } from "lucide-react";
+import { Bath, Bed, Calendar, Car, Home, MapPin, Square } from "lucide-react";
 import Image from "next/image";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
@@ -19,6 +17,7 @@ interface BasePropertyCardProps {
   className?: string;
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;
+  showViewButton?: boolean;
 }
 
 function formatPrice(currency: string | undefined, price: number | undefined) {
@@ -38,7 +37,8 @@ export function BasePropertyCard({
   property, 
   className,
   showFooterActions = false,
-  footerActions 
+  footerActions,
+  showViewButton = true
 }: BasePropertyCardProps) {
   const {
     id,
@@ -63,10 +63,7 @@ export function BasePropertyCard({
     agent_id,
     status,
   } = property;
-
-  const ownerExpanded = property.expand?.owner_id;
-  const agentExpanded = property.expand?.agent_id;
-
+ 
   // Get the primary image or first gallery image
   const primaryImageFilename = image_url || 
     (Array.isArray(images) && images.length > 0 
@@ -86,7 +83,7 @@ export function BasePropertyCard({
 
   return (
     <Card
-      className={`group relative w-full overflow-hidden border border-border/60 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/85 shadow-sm transition-colors duration-300 ${className}`}
+      className={`group relative w-full overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}
     >
       {/* Media */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted/40">
@@ -98,10 +95,10 @@ export function BasePropertyCard({
               fill
               priority={false}
               sizes="(max-width:768px) 100vw, 400px"
-              className="object-cover select-none"
+              className="object-cover select-none group-hover:scale-105 transition-transform duration-300"
             />
             {/* Soft gradient for legibility */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/50 via-background/10 to-transparent" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground/60">
@@ -115,121 +112,101 @@ export function BasePropertyCard({
         {/* Badges */}
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start gap-2">
           <div className="flex gap-2 flex-wrap">
-            {is_featured && (
-              <Badge className="bg-primary text-primary-foreground shadow-none hover:bg-primary/90">Featured</Badge>
-            )}
-            {is_new && (
-              <Badge variant="secondary" className="shadow-none">New</Badge>
-            )}
+            {is_featured ? (
+              <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-0">Featured</Badge>
+            ) : null}
+            {is_new ? (
+              <Badge className="bg-green-500 hover:bg-green-600 text-white border-0">New</Badge>
+            ) : null}
+            <Badge variant={listing_type === "sale" ? "default" : "secondary"} className="border-0">
+              {listing_type === "sale" ? "For Sale" : "For Rent"}
+            </Badge>
           </div>
-          <Badge
-            variant={status === "active" ? "outline" : "secondary"}
-            className={`shadow-none border-border/40 text-xs font-medium ${
-              status === "active" ? "text-primary" : "text-muted-foreground"
-            }`}
-          >
-            {status === "active" ? "Active" : status || "Inactive"}
-          </Badge>
-        </div>
-
-        {/* Listing type */}
-        <div className="absolute bottom-2 left-2">
-          <Badge variant="outline" className="bg-background/60 backdrop-blur-sm border-border/40 text-[10px] uppercase tracking-wide">
-            {listing_type === "sale" ? "For Sale" : "For Rent"}
-          </Badge>
         </div>
       </div>
 
       {/* Content */}
-      <CardContent className="p-4 space-y-4">
-        <div className="space-y-1.5">
-          <h3 className="font-semibold text-base leading-tight line-clamp-2 text-foreground transition-colors group-hover:text-primary">
+      <CardContent className="p-4">
+        {/* Property Type Badge */}
+        {property_type ? (
+          <div className="mb-2">
+            <Badge
+              variant="outline"
+              className="border-border/60 bg-background/60 text-[10px] font-medium uppercase tracking-wide"
+            >
+              {property_type.replace(/_/g, " ")}
+            </Badge>
+          </div>
+        ) : null}
+        <div className="flex flex-wrap items-start justify-between mb-3">
+          <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
             {title ?? "Untitled Property"}
           </h3>
-          <div className="flex items-center gap-1.5 text-muted-foreground/90 text-xs">
-            <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-primary/70" />
-            <span className="line-clamp-1 flex-1">{locationLabel || "Location not specified"}</span>
+          <div className="text-right min-w-fit flex items-center">
+            <div className="font-bold text-xl text-primary">
+              {mainPrice ? formatPrice(currency, mainPrice) : "Price on request"}
+            </div>
+            {listing_type === "rent" ? (
+              <div className="text-sm text-muted-foreground">/month</div>
+            ) : null}
           </div>
         </div>
 
-        <div className="space-y-0.5">
-          <div className="flex items-baseline gap-2">
-            <div className="text-xl font-bold text-foreground">
-              {formatPrice(currency, mainPrice)}
-            </div>
-            {listing_type === "rent" && (
-              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">/month</div>
-            )}
-          </div>
+        <div className="flex items-center text-muted-foreground mb-3">
+          <MapPin className="w-4 h-4 mr-1" />
+          <span className="text-sm line-clamp-1">{locationLabel || "Location not specified"}</span>
         </div>
 
-        <div className="flex items-center gap-5 text-xs font-medium text-foreground/90">
-          {beds && beds > 0 && (
-            <div className="flex items-center gap-1.5">
-              <Bed className="h-4 w-4 text-primary" />
-              <span>{beds}</span>
-              <span className="text-muted-foreground">bed{beds !== 1 ? "s" : ""}</span>
+        {property.description ? (
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-1">{property.description}</p>
+        ) : null}
+
+        <div className="flex flex-wrap items-center gap-4 mb-4 text-sm">
+          { (beds && beds > 0) ? (
+            <div className="flex items-center">
+              <Bed className="w-4 h-4 mr-1" />
+              <span>
+                {beds} bed{beds !== 1 ? "s" : ""}
+              </span>
             </div>
-          )}
-          {baths && baths > 0 && (
-            <div className="flex items-center gap-1.5">
-              <Bath className="h-4 w-4 text-primary" />
-              <span>{baths}</span>
-              <span className="text-muted-foreground">bath{baths !== 1 ? "s" : ""}</span>
+          ) : null}
+          { (baths && baths > 0) ? (
+            <div className="flex items-center">
+              <Bath className="w-4 h-4 mr-1" />
+              <span>
+                {baths} bath{baths !== 1 ? "s" : ""}
+              </span>
             </div>
-          )}
-          {building_size_sqft && (
-            <div className="flex items-center gap-1.5">
-              <Square className="h-4 w-4 text-primary" />
-              <span>{building_size_sqft.toLocaleString()}</span>
-              <span className="text-muted-foreground">sqft</span>
+          ) : null}
+          { building_size_sqft ? (
+            <div className="flex items-center">
+              <Square className="w-4 h-4 mr-1" />
+              <span>{building_size_sqft.toLocaleString()} sqft</span>
             </div>
-          )}
+          ) : null}
+          {(property.parking_spaces && property.parking_spaces > 0) ? (
+            <div className="flex items-center">
+              <Car className="w-4 h-4 mr-1" />
+              <span>{property.parking_spaces} parking</span>
+            </div>
+          ) : null}
         </div>
 
-        {property_type && (
-            <Badge variant="outline" className="text-[10px] font-medium bg-muted/40 border-border/40 tracking-wide">
-              {String(property_type)
-                .replace(/_/g, " ")
-                .split(" ")
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" ")}
-            </Badge>
-        )}
-
-        {(ownerExpanded?.[0] || agentExpanded?.[0]) && (
-          <div className="flex items-center gap-3 pt-3 border-t border-border/50">
-            <Avatar className="h-8 w-8">
-              <AvatarImage
-                src={ownerExpanded?.[0]?.avatar ?? agentExpanded?.[0]?.avatar}
-                alt={ownerExpanded?.[0]?.name ?? agentExpanded?.[0]?.name ?? "Agent"}
-              />
-              <AvatarFallback className="text-[10px] font-medium">
-                {(ownerExpanded?.[0]?.name ?? agentExpanded?.[0]?.name ?? "A")?.[0]?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium truncate text-foreground group-hover:text-primary">
-                {ownerExpanded?.[0]?.name ?? agentExpanded?.[0]?.name ?? "Property Owner"}
-              </div>
-              <div className="text-[11px] text-muted-foreground leading-none mt-0.5">
-                {ownerExpanded?.[0] ? "Owner" : "Agent"}
-                {created && (
-                  <span className="ml-1">· {formatDistanceToNowStrict(new Date(created), { addSuffix: true })}</span>
-                )}
-              </div>
-            </div>
+        {property.available_from ? (
+          <div className="flex items-center text-sm text-muted-foreground mb-4">
+            <Calendar className="w-4 h-4 mr-1" />
+            <span>Available from {new Date(property.available_from).toLocaleDateString()}</span>
           </div>
-        )}
+        ) : null}
       </CardContent>
 
-      {showFooterActions && footerActions && (
+      {(showFooterActions && footerActions) ? (
         <CardFooter className="px-4 py-3 border-t border-border/60 bg-muted/20">
-          <div className="flex items-center gap-2 w-full text-sm">
+          <div className="flex items-center gap-2 w-full">
             {footerActions}
           </div>
         </CardFooter>
-      )}
+      ) : null}
     </Card>
   );
 }
