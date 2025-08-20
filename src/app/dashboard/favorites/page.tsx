@@ -1,15 +1,10 @@
 "use client";
-import { FavoritesTable } from "@/components/property/table/FavoritesTable";
-import { TablePending } from "@/components/shared/TablePending";
+import { FavoriteProperties } from "@/components/property/dashboard/favorites/FavoriteProperties";
 import { Input } from "@/components/ui/input";
-import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { browserPB } from "@/lib/pocketbase/browser-client";
-import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
-import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
-import { Suspense } from "react";
 
 export default function FavoritesPage({}: {}) {
   const router = useRouter();
@@ -18,18 +13,12 @@ export default function FavoritesPage({}: {}) {
     page: parseAsInteger.withDefault(1),
     q: parseAsString.withDefault(""),
   });
-  const { data } = useQuery(
-    dashboardFavoritesQueryOptions({
-      page: queryStates.page,
-      q: queryStates.q,
-    })
-  );
 
   if (!user) {
     router.push("/auth/signin");
     return null; // Prevent rendering if user is not authenticated
   }
-  const totalPages = data?.result?.totalPages || 1;
+
   return (
     <div className="space-y-6">
       <div className="relative flex gap-2 justify-center">
@@ -42,10 +31,8 @@ export default function FavoritesPage({}: {}) {
           className="pl-10 mb-2"
         />
       </div>
-      <Suspense fallback={<TablePending />}>
-        <FavoritesTable />
-      </Suspense>
-      <ListPagination totalPages={totalPages} />
+
+      <FavoriteProperties />
     </div>
   );
 }

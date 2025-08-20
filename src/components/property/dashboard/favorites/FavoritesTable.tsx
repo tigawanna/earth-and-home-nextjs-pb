@@ -18,14 +18,14 @@ import {
 } from "@/components/ui/table";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
-import { FavoritesResponse, PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { FavoritesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { toast } from "sonner";
+import { FavoriteRow } from "./FavoriteMobileRow";
 
 interface FavoritesTableProps {}
 
@@ -66,7 +66,15 @@ export function FavoritesTable({}: FavoritesTableProps) {
   }
   return (
     <div className="space-y-4">
-      <div className="border rounded-lg overflow-hidden">
+      {/* Mobile: render cards */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {favorites.map((f) => (
+          <FavoriteRow key={f.id} fav={f as any} onRemove={handleRemoveFavorite} />
+        ))}
+      </div>
+
+      {/* Desktop/table for md+ */}
+      <div className="hidden md:block border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow>
@@ -89,7 +97,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
                   ? prop!.images[0]
                   : null);
               const imageUrl = primary
-                ? getImageThumbnailUrl(prop as PropertiesResponse, primary, "120x90")
+                ? (typeof prop === "string" ? null : (prop as any).thumbnail_url) // best-effort
                 : null;
 
               const location = prop
@@ -104,7 +112,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
                         {imageUrl ? (
                           <Image
                             src={imageUrl}
-                            alt={prop?.title || "property"}
+                            alt={(prop as any)?.title || "property"}
                             fill
                             className="object-cover"
                           />
@@ -115,53 +123,50 @@ export function FavoritesTable({}: FavoritesTableProps) {
                         )}
                       </div>
                       <div>
-                        <div className="font-medium">{prop?.title || "Untitled"}</div>
+                        <div className="font-medium">{(prop as any)?.title || "Untitled"}</div>
                         <div className="text-sm text-muted-foreground line-clamp-1">{location}</div>
                       </div>
                     </div>
                   </TableCell>
 
                   <TableCell>
-                    <div className="font-medium">{user?.name || user?.email || "-"}</div>
-                    <div className="text-sm text-muted-foreground">{user?.email || "-"}</div>
+                    <div className="font-medium">{(user as any)?.name || (user as any)?.email || "-"}</div>
+                    <div className="text-sm text-muted-foreground">{(user as any)?.email || "-"}</div>
                   </TableCell>
 
                   <TableCell>
-                    <div className="text-sm">
-                      {f.created ? new Date(f.created).toLocaleDateString() : "-"}
-                    </div>
+                    <div className="text-sm">{f.created ? new Date(f.created).toLocaleDateString() : "-"}</div>
                   </TableCell>
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={prop ? `/properties/${prop.id}` : "#"} className="inline-block">
+                      <Link href={prop ? `/properties/${(prop as any).id}` : "#"} className="inline-block">
                         <Button variant="ghost" size="sm">
                           <Eye className="w-4 h-4" />
                         </Button>
                       </Link>
 
-                      <Button variant="ghost" size="sm" onClick={() => handleRemoveFavorite(f)}>
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
-
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                        <DropdownMenuTrigger>
                           <Button variant="ghost" size="sm">
                             <MoreHorizontal className="w-4 h-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem asChild>
+
+                        <DropdownMenuContent>
+                          <DropdownMenuItem>
                             <Link
-                              href={prop ? `/properties/${prop.id}` : "#"}
-                              className="flex items-center">
-                              <Eye className="w-4 h-4 mr-2" />
-                              View property
+                              href={prop ? `/properties/${(prop as any).id}` : "#"}
+                              className="flex items-center gap-2 w-full"
+                            >
+                              <Eye className="w-4 h-4" />
+                              View Property
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Trash2 className="w-4 h-4 mr-2 text-destructive" />
-                            Remove favorite
+
+                          <DropdownMenuItem onClick={() => handleRemoveFavorite(f)}>
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                            Remove from Favorites
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

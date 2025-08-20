@@ -1,15 +1,12 @@
 "use client";
-import { Input } from "@/components/ui/input";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { browserPB } from "@/lib/pocketbase/browser-client";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { Suspense } from "react";
 import { TablePending } from "../../../shared/TablePending";
-import { FavoritePropertiesList } from "./FavoritePropertiesList";
 import { FavoritesTable } from "./FavoritesTable";
 
 interface FavoritePropertiesProps {}
@@ -35,18 +32,6 @@ export function FavoriteProperties({}: FavoritePropertiesProps) {
   const totalPages = data?.result?.totalPages || 1;
   return (
     <div className="space-y-6">
-      <FavoritePropertiesList />
-      {/* Search bar — updates URL search param `q` via nuqs */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          placeholder="Search favorites by property, location or user..."
-          value={queryStates.q ?? ""}
-          onChange={(e) => setQueryStates({ page: 1, q: e.target.value })}
-          className="pl-10 mb-2"
-        />
-      </div>
-
       <Suspense fallback={<TablePending />}>
         <FavoritesTable />
       </Suspense>
