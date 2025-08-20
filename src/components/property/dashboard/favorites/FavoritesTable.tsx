@@ -32,18 +32,23 @@ import { toast } from "sonner";
 import { FavoriteRow } from "./FavoriteMobileRow";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
+import { useSearchParams } from "next/navigation";
+import { useQueryPage } from "@/hooks/use-query-page";
 
 interface FavoritesTableProps {}
 
-export function FavoritesTable({}: FavoritesTableProps) {
+export default function FavoritesTable({}: FavoritesTableProps) {
+  const currentPage = useQueryPage();
   const [queryStates, setQueryStats] = useQueryStates({
-    page: parseAsInteger.withDefault(1),
+    // page: parseAsInteger,
     q: parseAsString.withDefault(""),
   });
+
   const { data, error, isPending } = useSuspenseQuery(
     dashboardFavoritesQueryOptions({
-      page: queryStates.page,
+      page: currentPage,
       q: queryStates.q,
+      limit: 1,
     })
   );
 
@@ -100,7 +105,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
           <TableBody>
             {favorites.map((f) => {
               const prop = f.expand?.property_id as any as PropertiesResponse | undefined;
-              const user = f.expand?.user_id as any as UsersResponse | undefined  ;
+              const user = f.expand?.user_id as any as UsersResponse | undefined;
               const primary =
                 prop?.image_url ||
                 (Array.isArray(prop?.images) &&

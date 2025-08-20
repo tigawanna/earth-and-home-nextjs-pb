@@ -7,10 +7,12 @@ import { Card } from "@/components/ui/card";
 import { Home } from "lucide-react";
 import { PropertiesEmpty } from "../../query-states/PropertiesEmpty";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
+import { useQueryPage } from "@/hooks/use-query-page";
 
 interface DashboardPropertiesListProps {}
 
 export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
+    const currentPage = useQueryPage();
   const [queryState] = useQueryStates(
     {
       search: parseAsString.withDefault(""),
@@ -25,7 +27,6 @@ export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
       minPrice: parseAsInteger,
       sortBy: parseAsString.withDefault("created"),
       sortOrder: parseAsString.withDefault("desc"),
-      page: parseAsInteger.withDefault(1),
     },
     {
       throttleMs: 5000, // Better for search inputs
@@ -34,9 +35,10 @@ export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
 
   const { data } = useSuspenseQuery(
     dashboardPropertyQueryOptions({
-      page: queryState.page,
+      page: currentPage,
       q: queryState.search,
       filters: queryState as any,
+      limit:1
     })
   );
 

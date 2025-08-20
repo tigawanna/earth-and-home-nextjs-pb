@@ -43,7 +43,7 @@ export async function PublicPropertiesList({ searchParams, limit,showPages=false
     sortBy,
     sortOrder,
     page,
-    limit: limit || 24,
+    limit: 1,
   });
 
   const properties = result.success ? result.properties : [];
