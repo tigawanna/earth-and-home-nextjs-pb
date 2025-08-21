@@ -1,20 +1,37 @@
-import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { createServerClient } from './lib/pocketbase/server-client';
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { createServerClient } from "./lib/pocketbase/server-client";
+import { UsersResponse } from "./lib/pocketbase/types/pb-types";
 
-// Protect app routes by redirecting unauthenticated users to /auth
+
+const adminOnlyPatterns: RegExp[] = [
+  /^\/dashboard\/properties\/add$/, // add page
+  /^\/dashboard\/users(?:\/.*)?$/, // users area
+  /^\/dashboard\/properties\/[^\/]+\/edit$/, // /dashboard/properties/:id/edit
+];
+
 export async function middleware(request: NextRequest) {
-  const redirectPath = '/auth/signin';
-
   const cookieStore = await cookies();
-
   const client = createServerClient(cookieStore);
   const { authStore } = client;
+  const user = authStore?.record as UsersResponse;
+  const pathname = new URL(request.url).pathname;
 
+  // require login for dashboard area (your existing check)
   if (!authStore.isValid) {
-    const url = new URL(redirectPath, request.url);
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/auth/signin", request.url));
+  }
+  if (!user?.is_banned) {
+    return NextResponse.redirect(new URL("/banned", request.url));
+  }
+
+  // admin-only guard for any matching admin pattern
+  if (adminOnlyPatterns.some((re) => re.test(pathname))) {
+    const isAdmin = !!user?.is_admin;
+    if (!isAdmin) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
   }
 
   return NextResponse.next();

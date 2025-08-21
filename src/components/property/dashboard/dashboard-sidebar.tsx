@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BarChart3,
   Building2,
   ChevronDown,
   Heart,
@@ -9,15 +8,13 @@ import {
   LogOut,
   Plus,
   Settings,
-  Shield,
   User,
-  Users,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,9 +36,9 @@ import {
 } from "@/components/ui/sidebar";
 
 import { ModeToggle } from "@/components/theme/theme-toggle";
-import { signoutMutationOptions, useLocalViewer } from "@/data-access-layer/pocketbase/auth";
-import { useMutation } from "@tanstack/react-query";
+import { signoutMutationOptions } from "@/data-access-layer/pocketbase/auth";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { useMutation } from "@tanstack/react-query";
 
 // Menu items for regular users
 const userMenuItems = [
@@ -61,21 +58,12 @@ const userMenuItems = [
     icon: Heart,
   },
   {
-    title: "Add Property",
-    url: "/dashboard/properties/add",
-    icon: Plus,
-  },
-  {
-    title: "All Users",
-    url: "/dashboard/admin/users",
-    icon: Users,
-  },
-  {
     title: "Settings",
     url: "/dashboard/settings",
     icon: Settings,
   },
 ];
+
 
 interface User {
   id: string;
@@ -87,8 +75,22 @@ interface User {
 
 export function DashboardSidebar({ user }: { user: UsersResponse }) {
   const pathname = usePathname();
-
   const router = useRouter();
+
+  if(user?.is_admin) {
+    userMenuItems.push(
+      {
+        title: "User Management",
+        url: "/dashboard/users",
+        icon: Users,
+      },
+      {
+        title: "Add Property",
+        url: "/dashboard/properties/add",
+        icon: Plus,
+      }
+    );
+  }
 
   const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
 
