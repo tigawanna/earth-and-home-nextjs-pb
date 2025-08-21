@@ -1,14 +1,10 @@
-import { browserPB } from "@/lib/pocketbase/browser-client";
+import { dashboardPropertyQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
+import { useQueryPage } from "@/hooks/use-query-page";
+import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { BasePropertyCard } from "../../list/cards/BasePropertyCard";
-import { dashboardPropertyQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
-import { Card } from "@/components/ui/card";
-import { Home } from "lucide-react";
 import { PropertiesEmpty } from "../../query-states/PropertiesEmpty";
-import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
-import { useQueryPage, useTypedQueryParams } from "@/hooks/use-query-page";
-import { useTransition } from "react";
 
 interface DashboardPropertiesListProps {}
 

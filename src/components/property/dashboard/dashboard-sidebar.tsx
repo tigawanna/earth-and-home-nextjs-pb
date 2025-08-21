@@ -51,12 +51,12 @@ const userMenuItems = [
     icon: Home,
   },
   {
-    title: "My Properties",
+    title: "Properties",
     url: "/dashboard/properties",
     icon: Building2,
   },
   {
-    title: "Saved Properties",
+    title: "Favorites",
     url: "/dashboard/favorites",
     icon: Heart,
   },
@@ -66,28 +66,14 @@ const userMenuItems = [
     icon: Plus,
   },
   {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: Settings,
-  },
-];
-
-// Additional menu items for admins
-const adminMenuItems = [
-  {
-    title: "All Properties",
-    url: "/dashboard/admin/properties",
-    icon: Building2,
-  },
-  {
     title: "All Users",
     url: "/dashboard/admin/users",
     icon: Users,
   },
   {
-    title: "Analytics",
-    url: "/dashboard/admin/analytics",
-    icon: BarChart3,
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: Settings,
   },
 ];
 
@@ -116,7 +102,7 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
   };
 
   const isAdmin = user?.is_admin;
-  const allMenuItems = isAdmin ? [...userMenuItems, ...adminMenuItems] : userMenuItems;
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -143,55 +129,31 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {userMenuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={pathname === item.url}>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-          {/*  go to landing page */}
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link href="/">
-                <Home className="mr-2 h-4 w-4" />
-                <span>Landing Page</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarGroup>
-
-        {/* Admin Section */}
-        {isAdmin && (
-          <SidebarGroup>
-            <SidebarGroupLabel>
-              Admin Panel
-              <Badge variant="secondary" className="ml-2">
-                <Shield className="size-3 mr-1" />
-                Admin
-              </Badge>
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {adminMenuItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={pathname === item.url}>
+              {userMenuItems.map((item) => {
+                const isActive = pathname === item.url;
+                return (
+                  <SidebarMenuItem
+                    key={item.title}
+                    data-active={isActive}
+                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground">
+                    <SidebarMenuButton asChild isActive={isActive}>
                       <Link href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+                );
+              })}
+            </SidebarMenu>
+            <SidebarMenuButton asChild>
+              <Link href="/">
+                <Home className="mr-2 h-4 w-4" />
+                <span>Landing Page</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
