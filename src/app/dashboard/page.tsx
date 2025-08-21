@@ -20,7 +20,7 @@ export default function DashboardPage() {
         <PropertiesStats />
         <FavoritesStats />
         <UsersStats />
-       <QuickActionsCard />
+       <QuickActionsCard isAdmin={isAdmin} />
       </div>
       <RecentPropertiesTable />
     </div>

@@ -31,6 +31,9 @@ export default function BannedPage() {
             <Link href="/contact">
               <Button>Contact support</Button>
             </Link>
+
+            {/* Logout moved into the action group so it aligns with the other buttons */}
+            <LogoutButton />
           </div>
 
           <p className="text-xs text-muted-foreground">
@@ -41,7 +44,6 @@ export default function BannedPage() {
           <p className="text-xs text-muted-foreground">
             Tip: you may need to log out and log back in to refresh your account status.
           </p>
-          <LogoutButton />
         </CardContent>
       </Card>
     </section>
