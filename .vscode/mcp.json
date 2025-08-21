@@ -23,6 +23,10 @@
         "POCKETBASE_ADMIN_EMAIL": "${input:pocketbase-admin-email}",
         "POCKETBASE_ADMIN_PASSWORD": "${input:pocketbase-admin-password}"
       }
+    },
+    "browsermcp": {
+      "command": "npx",
+      "args": ["@browsermcp/mcp@latest"]
     }
   }
 }
