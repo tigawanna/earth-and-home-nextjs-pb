@@ -9,7 +9,7 @@ import {
   Plus,
   Settings,
   User,
-  Users
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -64,6 +64,18 @@ const userMenuItems = [
   },
 ];
 
+const adminRoutes = [
+  {
+    title: "User Management",
+    url: "/dashboard/users",
+    icon: Users,
+  },
+  {
+    title: "Add Property",
+    url: "/dashboard/properties/add",
+    icon: Plus,
+  },
+];
 
 interface User {
   id: string;
@@ -73,24 +85,10 @@ interface User {
   role?: string;
 }
 
-export function DashboardSidebar({ user }: { user: UsersResponse }) {
+export default function DashboardSidebar({ user }: { user: UsersResponse }) {
+  console.log(" === user === ",user)
   const pathname = usePathname();
   const router = useRouter();
-
-  if(user?.is_admin) {
-    userMenuItems.push(
-      {
-        title: "User Management",
-        url: "/dashboard/users",
-        icon: Users,
-      },
-      {
-        title: "Add Property",
-        url: "/dashboard/properties/add",
-        icon: Plus,
-      }
-    );
-  }
 
   const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
 
@@ -145,13 +143,47 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
                   </SidebarMenuItem>
                 );
               })}
+              {/* Landing page now matches structure */}
+              {(() => {
+                const landingIsActive = pathname === "/";
+                return (
+                  <SidebarMenuItem
+                    data-active={landingIsActive}
+                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground">
+                    <SidebarMenuButton asChild isActive={landingIsActive}>
+                      <Link href="/">
+                        <Home className="mr-2 h-4 w-4" />
+                        <span>Landing Page</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })()}
             </SidebarMenu>
-            <SidebarMenuButton asChild>
-              <Link href="/">
-                <Home className="mr-2 h-4 w-4" />
-                <span>Landing Page</span>
-              </Link>
-            </SidebarMenuButton>
+            {/* Admin section segmented */}
+            {user.is_admin && (
+              <div className="mt-4 space-y-2">
+                <SidebarGroupLabel className="text-xs font-semibold tracking-wide opacity-70">Admin</SidebarGroupLabel>
+                <SidebarMenu>
+                  {adminRoutes.map((item) => {
+                    const isActive = pathname === item.url;
+                    return (
+                      <SidebarMenuItem
+                        key={item.title}
+                        data-active={isActive}
+                        className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground">
+                        <SidebarMenuButton asChild isActive={isActive}>
+                          <Link href={item.url}>
+                            <item.icon />
+                            <span>{item.title}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    );
+                  })}
+                </SidebarMenu>
+              </div>
+            )}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

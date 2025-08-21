@@ -1,5 +1,4 @@
-
-import { DashboardSidebar } from "@/components/property/dashboard/dashboard-sidebar";
+import { LazyDashboardSidebar } from "@/components/property/dashboard/lazy-dashboard-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { createServerClient } from "@/lib/pocketbase/server-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
@@ -20,7 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <DashboardSidebar user={user} />
+      <LazyDashboardSidebar user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
