@@ -6,9 +6,10 @@ import Link from "next/link";
 
 interface QuickActionsCardProps {
   className?: string;
+  isAdmin?: boolean;
 }
 
-export function QuickActionsCard({ className }: QuickActionsCardProps) {
+export function QuickActionsCard({ className, isAdmin }: QuickActionsCardProps) {
   return (
     <Card className={`relative w-full bg-card/95 border border-border/60 shadow-sm overflow-hidden group transition-colors rounded-lg ${className || ""}`}>      
       <CardContent className="relative p-3 space-y-2">
@@ -30,6 +31,7 @@ export function QuickActionsCard({ className }: QuickActionsCardProps) {
           </Button>
         </div>
         <div className="grid gap-1.5">
+          {/* {data?.viewer?.is_admin &&  */}
           <Button asChild size="sm" className="justify-start h-7 text-[11px]">
             <Link href="/dashboard/properties/add">
               <Plus className="mr-2 h-3.5 w-3.5" /> Add Property

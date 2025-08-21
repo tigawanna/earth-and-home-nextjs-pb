@@ -101,8 +101,6 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
     }
   };
 
-  const isAdmin = user?.is_admin;
-
   return (
     <Sidebar>
       <SidebarHeader>

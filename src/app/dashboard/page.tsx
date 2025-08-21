@@ -4,8 +4,11 @@ import { PropertiesStats } from "@/components/property/dashboard/admin-cards/Pro
 import { QuickActionsCard } from "@/components/property/dashboard/admin-cards/QuickAvtionsCard";
 import { UsersStats } from "@/components/property/dashboard/admin-cards/UsersStats";
 import { RecentPropertiesTable } from "@/components/property/dashboard/recent/RecentPropertiesTable";
+import { useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 
 export default function DashboardPage() {
+  const { data } = useLocalViewer();
+  const isAdmin = data?.viewer?.is_admin;
   return (
     <div className="space-y-6 @container">
       <div>
@@ -17,7 +20,7 @@ export default function DashboardPage() {
         <PropertiesStats />
         <FavoritesStats />
         <UsersStats />
-        <QuickActionsCard />
+       <QuickActionsCard />
       </div>
       <RecentPropertiesTable />
     </div>
