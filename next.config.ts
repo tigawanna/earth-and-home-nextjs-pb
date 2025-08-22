@@ -22,6 +22,16 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     viewTransition: true,
   },
+  rewrites: async () => [
+    {
+      source: "/dashboard",
+      destination: "/dashboard/client",
+    },
+    {
+      source: "/dashboard/:path*",
+      destination: "/dashboard/client",
+    },
+  ],
 };
 
 export default nextConfig;

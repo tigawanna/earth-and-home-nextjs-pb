@@ -17,8 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
+import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";
 import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import {

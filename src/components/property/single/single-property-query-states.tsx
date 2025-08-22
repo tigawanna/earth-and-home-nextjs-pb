@@ -1,8 +1,11 @@
-import { Loader2, Home, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Loader } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+import { AlertCircle, Home } from "lucide-react";
 import Link from "next/link";
+import { Link as TSRLink } from "@tanstack/react-router";
 
 interface SinglePropertyLoadingFallbackProps {}
 
@@ -107,7 +110,7 @@ export function SinglePropertyLoadingFallback({}: SinglePropertyLoadingFallbackP
         <Card className="p-4 shadow-lg border-primary/20">
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <div className="relative">
-              <Loader2 className="h-5 w-5 animate-spin text-primary" />
+              <Loader className="h-5 w-5 animate-spin text-primary" />
               <div className="absolute inset-0 rounded-full border border-primary/20 animate-pulse"></div>
             </div>
             <div className="space-y-1">
@@ -121,7 +124,10 @@ export function SinglePropertyLoadingFallback({}: SinglePropertyLoadingFallbackP
   );
 }
 
-export function SinglePropertyNotFound() {
+interface SinglePropertyNotFoundProps {
+  tsr?: boolean;
+}
+export function SinglePropertyNotFound({ tsr }: SinglePropertyNotFoundProps) {
   return (
     <div className="container mx-auto px-4 py-16 max-w-2xl">
       <Card className="text-center p-12">
@@ -129,7 +135,7 @@ export function SinglePropertyNotFound() {
           <div className="mx-auto w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
             <AlertCircle className="h-8 w-8 text-destructive" />
           </div>
-          
+
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">Property Not Found</h1>
             <p className="text-muted-foreground text-lg">
@@ -138,9 +144,7 @@ export function SinglePropertyNotFound() {
           </div>
 
           <div className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              This could happen if:
-            </p>
+            <p className="text-sm text-muted-foreground">This could happen if:</p>
             <ul className="text-sm text-muted-foreground space-y-1 text-left max-w-md mx-auto">
               <li>• The property has been sold or rented</li>
               <li>• The listing has been removed by the owner</li>
@@ -151,15 +155,15 @@ export function SinglePropertyNotFound() {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
             <Button asChild>
-              <Link href="/properties">
-                <Home className="h-4 w-4 mr-2" />
-                Browse All Properties
-              </Link>
+              {tsr ? (
+                <Link href="/properties">
+                  <Home className="h-4 w-4 mr-2" />
+                  Browse All Properties
+                </Link>
+              ) : null}
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/">
-                Go Home
-              </Link>
+              <Link href="/">Go Home</Link>
             </Button>
           </div>
         </CardContent>

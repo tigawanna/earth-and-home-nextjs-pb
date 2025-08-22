@@ -1,4 +1,4 @@
-import { dashboardPropertyQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
+import { dashboardPropertyQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";
 import { useQueryPage } from "@/hooks/use-query-page";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { useSuspenseQuery } from "@tanstack/react-query";

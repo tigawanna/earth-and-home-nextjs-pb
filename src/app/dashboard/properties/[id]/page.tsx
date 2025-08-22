@@ -1,5 +1,6 @@
-import { SingleProperty } from "@/components/property/SingleProperty";
-import { SinglePropertyLoadingFallback } from "@/components/property/query-states";
+
+import { ServersideSingleProperty } from "@/components/property/single/ServersideSingleProperty";
+import { SinglePropertyLoadingFallback } from "@/components/property/single/single-property-query-states";
 import { Suspense } from "react";
 
 
@@ -15,7 +16,7 @@ export default async function SinglePropertyPage({ params }: PageProps) {
   return (
     <section className="w-full min-h-screen">
       <Suspense fallback={<SinglePropertyLoadingFallback />}>
-        <SingleProperty id={id} />
+        <ServersideSingleProperty propertyId={id} />
       </Suspense>
     </section>
   );

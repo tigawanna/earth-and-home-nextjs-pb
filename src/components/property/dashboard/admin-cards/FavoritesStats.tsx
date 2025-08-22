@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
+import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Heart } from "lucide-react";
 

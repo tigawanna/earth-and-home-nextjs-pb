@@ -1,20 +1,21 @@
-import "server-only";
-
-import { createServerClient } from "@/lib/pocketbase/server-client";
-import { and, eq, FilterParam, gte, like, lte, or, TypedRecord } from "@tigawanna/typed-pocketbase";
-import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from "./property-types";
+import type { Schema } from '@/lib/pocketbase/types/pb-types';
 import {
-  PropertiesCollection,
+  FavoritesResponse,
   PropertiesResponse,
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
-import { FavoritesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { TypedPocketBase } from '@tigawanna/typed-pocketbase';
+import { and, eq, FilterParam, gte, like, lte, or, TypedRecord } from "@tigawanna/typed-pocketbase";
+import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from "../property-types";
+
+
 
 // ====================================================
 // GET PROPERTIES (with filtering, sorting, pagination)
 // ====================================================
 
-export async function getProperties({
+export async function baseGetPaginatedProperties({
+  client,
   filters = {},
   sortBy = "created",
   sortOrder = "desc",
@@ -22,13 +23,14 @@ export async function getProperties({
   limit = 20,
   userId,
 }: {
+  client: TypedPocketBase<Schema>;
   filters?: PropertyFilters;
   sortBy?: PropertySortBy;
   sortOrder?: SortOrder;
   page?: number;
   limit?: number;
   userId?: string; // For checking favorites
-} = {}) {
+}) {
   type PropertyStatus = PropertiesResponse["status"];
   type PropertyType = PropertiesResponse["property_type"];
 
@@ -41,7 +43,7 @@ export async function getProperties({
   type PropertyRecord = TypedRecord<PropertiesResponse, PropertyRelations>;
 
   try {
-    const client = createServerClient();
+    // const client = createServerClient();
     const propertiesCollection = client.from("properties");
 
     // Build filter conditions using createFilter helper
@@ -166,34 +168,53 @@ export async function getProperties({
   }
 }
 
+
 // ====================================================
 // GET SINGLE PROPERTY
 // ====================================================
 
-export async function getProperty(identifier: string, userId?: string) {
+interface GetPropertyParams {
+  propertyId: string;
+  userId?: string;
+}
+
+interface GetPropertyResult {
+  success: boolean;
+  result: PropertyWithAgent | null;
+  message?: string;
+}
+
+/**
+ * Shared property fetching logic that works with both server and browser PocketBase clients
+ * @param client - PocketBase client (server or browser)
+ * @param params - Property query parameters
+ * @returns Property data with agent info and favorite status
+ */
+export async function baseGetPropertyById(
+  client: TypedPocketBase<Schema>,
+  { propertyId, userId }: GetPropertyParams
+): Promise<GetPropertyResult> {
   try {
-    const client = createServerClient();
-    const propertiesCollection = client.from("properties");
+    const collection = client.from("properties");
 
     // Create type-safe filter using createFilter helper
-    const filter = propertiesCollection.createFilter(eq("id", identifier));
+    const filter = collection.createFilter(eq("id", propertyId));
 
     // Get property with agent info
-    const property = await propertiesCollection.getFirstListItem(filter, {
+    const property = await collection.getFirstListItem(filter, {
       select: {
         expand: {
-          agent_id: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
-          },
+          agent_id: true
         },
       },
     });
 
     if (!property) {
-      return { success: false, message: "Property not found" };
+      return {
+        success: false,
+        message: "Property not found",
+        result: null,
+      };
     }
 
     // Check if property is favorited by user
@@ -215,33 +236,44 @@ export async function getProperty(identifier: string, userId?: string) {
 
     return {
       success: true,
-      property: {
+      result: {
         ...property,
-        agent: property.expand?.agent_id || null,
+        agent: Array.isArray(property.expand?.agent_id) 
+          ? property.expand.agent_id[0] || null 
+          : property.expand?.agent_id || null,
         isFavorited,
-      } as PropertyWithAgent,
+      },
     };
   } catch (error) {
     console.error("Error fetching property:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch property",
+      result: null,
     };
   }
 }
 
-export async function getFavoriteProperties({
+/**
+ * Server-side property fetching using the server PocketBase client
+ * @param params - Property query parameters
+ * @param cookieStore - Next.js cookie store for authentication
+ * @returns Property data with agent info and favorite status
+ */
+
+
+export async function baseGetFavoriteProperties({
+  client,
   userId,
   page = 1,
   limit = 20,
 }: {
+  client: TypedPocketBase<Schema>;
   userId?: string;
   page?: number;
   limit?: number;
 }) {
   try {
-    const client = createServerClient();
-
     if (!userId) {
       // Get user from PocketBase auth
       const authData = client.authStore;
@@ -267,12 +299,7 @@ export async function getFavoriteProperties({
         expand: {
           property_id: {
             expand: {
-              agent_id: {
-                id: true,
-                name: true,
-                email: true,
-                avatar: true,
-              },
+              agent_id: true,
             },
           },
         },
@@ -310,40 +337,115 @@ export async function getFavoriteProperties({
 }
 
 // ====================================================
-// UTILITY ACTIONS
+// GET USERS (for dashboard)
 // ====================================================
-// TODO implement the below as a pocketbase view
-// export async function getPropertyStats(agentId?: string) {
-//   try {
-//     const client = createServerClient();
 
-//     // Build filter condition for agent
-//     const filter = agentId ? eq("agent_id", agentId) : undefined;
+export async function baseGetAllUsers({
+  client,
+  limit = 200,
+}: {
+  client: TypedPocketBase<Schema>;
+  limit?: number;
+}) {
+  try {
+    const usersCollection = client.from("users");
+    const sort = usersCollection.createSort("-created");
 
-//     // Get all properties for the agent (or all if no agentId)
-//     const propertiesResult = await client.from("properties").getFullList(filter,{
+    const users = await usersCollection.getFullList({
+      sort,
+      limit,
+    });
 
-//     });
+    return {
+      success: true,
+      users,
+    };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch users",
+      users: [],
+    };
+  }
+}
 
-//     // Calculate stats from the results
-//     const stats = {
-//       totalProperties: propertiesResult.length,
-//       activeProperties: propertiesResult.filter((p) => p.status === "active").length,
-//       soldProperties: propertiesResult.filter((p) => p.status === "sold").length,
-//       rentedProperties: propertiesResult.filter((p) => p.status === "rented").length,
-//       draftProperties: propertiesResult.filter((p) => p.status === "draft").length,
-//       featuredProperties: propertiesResult.filter((p) => p.is_featured === true).length,
-//     };
+export async function baseGetPaginatedUsers({
+  client,
+  page = 1,
+  limit = 50,
+}: {
+  client: TypedPocketBase<Schema>;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const usersCollection = client.from("users");
+    const sort = usersCollection.createSort("-created");
 
-//     return {
-//       success: true,
-//       stats,
-//     };
-//   } catch (error) {
-//     console.error("Error fetching property stats:", error);
-//     return {
-//       success: false,
-//       message: error instanceof Error ? error.message : "Failed to fetch stats",
-//     };
-//   }
-// }
+    const usersResult = await usersCollection.getList(page, limit, {
+      sort,
+    });
+
+    return {
+      success: true,
+      result: usersResult,
+    };
+  } catch (error) {
+    console.error("Error fetching paginated users:", error);
+    return {
+      success: false,
+      result: null,
+      message: error instanceof Error ? error.message : "Failed to fetch users",
+    };
+  }
+}
+
+// ====================================================
+// GET FAVORITES WITH SEARCH (for dashboard)
+// ====================================================
+
+export async function baseGetSearchableFavorites({
+  client,
+  q = "",
+  page = 1,
+  limit = 50,
+}: {
+  client: TypedPocketBase<Schema>;
+  q?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const favoritesCollection = client.from("favorites");
+
+    // Create type-safe filter and sort
+    const filter = q 
+      ? favoritesCollection.createFilter(like("property_id.title", `%${q}%`))
+      : undefined;
+    const sort = favoritesCollection.createSort("-created");
+
+    const favoritesResult = await favoritesCollection.getList(page, limit, {
+      filter,
+      sort,
+      select: {
+        expand: {
+          property_id: true,
+          user_id: true,
+        },
+      },
+    });
+
+    return {
+      success: true,
+      result: favoritesResult,
+    };
+  } catch (error) {
+    console.error("Error fetching searchable favorites:", error);
+    return {
+      success: false,
+      result: null,
+      message: error instanceof Error ? error.message : "Failed to fetch favorites",
+    };
+  }
+}

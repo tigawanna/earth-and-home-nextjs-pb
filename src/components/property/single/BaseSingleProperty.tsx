@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { getProperty } from "@/data-access-layer/pocketbase/property-queries";
+import { PropertyWithAgent } from "@/data-access-layer/pocketbase/property-types";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {
   ArrowLeft,
@@ -18,99 +18,17 @@ import {
   Share2,
   Snowflake,
   Square,
-  Thermometer
+  Thermometer,
 } from "lucide-react";
 import Link from "next/link";
-import { FavoriteProperty } from "./form/FavoriteProperty";
-import { PropertyImageGallery } from "./list/PropertyImageGallery";
-import { SinglePropertyNotFound } from "./query-states";
-
-// const sampleImages = [
-//   {
-//     url: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=600&fit=crop",
-//     key: "house-1",
-//     name: "Modern House Front View",
-//     size: 245760,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800&h=600&fit=crop",
-//     key: "house-2",
-//     name: "Living Room Interior",
-//     size: 189432,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop",
-//     key: "house-3",
-//     name: "Modern Kitchen",
-//     size: 312567,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop",
-//     key: "house-4",
-//     name: "Master Bedroom",
-//     size: 198765,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=800&h=600&fit=crop",
-//     key: "house-5",
-//     name: "Bathroom Suite",
-//     size: 167890,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=600&fit=crop",
-//     key: "house-6",
-//     name: "Backyard Garden",
-//     size: 278432,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1582063289852-62e3ba2747f8?w=800&h=600&fit=crop",
-//     key: "house-7",
-//     name: "Dining Room",
-//     size: 203456,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1505873242700-f289a29e1e0f?w=800&h=600&fit=crop",
-//     key: "house-8",
-//     name: "Home Office",
-//     size: 156789,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-//     key: "house-9",
-//     name: "Garage and Driveway",
-//     size: 234567,
-//     type: "image/jpeg",
-//   },
-//   {
-//     url: "https://images.unsplash.com/photo-1593696140826-c58b021acf8b?w=800&h=600&fit=crop",
-//     key: "house-10",
-//     name: "House Exterior Night View",
-//     size: 289123,
-//     type: "image/jpeg",
-//   },
-// ];
+import { FavoriteProperty } from "../form/FavoriteProperty";
+import { PropertyImageGallery } from "../list/PropertyImageGallery";
 
 interface SinglePropertyProps {
-  id: string; // Property ID to fetch details
+  property: PropertyWithAgent;
 }
 
-export async function SingleProperty({ id }: SinglePropertyProps) {
-  const result = await getProperty(id);
-
-  if (!result.success || !result.property) {
-    return <SinglePropertyNotFound />;
-  }
-
-  const property = result.property;
-
+export function BaseSingleProperty({ property }: SinglePropertyProps) {
   // Format price with currency
   const formatPrice = (price: number | null, currency = "KES") => {
     if (!price) return "Price on request";
@@ -191,7 +109,7 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                         {/* <Button variant="outline" size="icon">
                           <Heart className="h-4 w-4" />
                         </Button> */}
-                        <FavoriteProperty propertyId={property.id}  />
+                        <FavoriteProperty propertyId={property.id} />
                         <Button variant="outline" size="icon">
                           <Share2 className="h-4 w-4" />
                         </Button>
@@ -271,7 +189,8 @@ export async function SingleProperty({ id }: SinglePropertyProps) {
                     </Badge>
                     <Badge variant="outline">
                       For{" "}
-                      {property.listing_type.charAt(0).toUpperCase() + property.listing_type.slice(1)}
+                      {property.listing_type.charAt(0).toUpperCase() +
+                        property.listing_type.slice(1)}
                     </Badge>
                   </div>
                 </CardContent>

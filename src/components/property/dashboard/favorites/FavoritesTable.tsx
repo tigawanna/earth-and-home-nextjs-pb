@@ -1,6 +1,5 @@
 "use client";
 
-import { TablePending } from "@/components/shared/TablePending";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,9 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/dashboard-queries";
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
-import { useQueryPage, useTypedQueryParams } from "@/hooks/use-query-page";
+import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";
+import { useTypedQueryParams } from "@/hooks/use-query-page";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import {
   FavoritesResponse,
@@ -30,10 +29,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { parseAsString, useQueryStates } from "nuqs";
 import { toast } from "sonner";
 import { FavoriteRow } from "./FavoriteMobileRow";
-import z from "zod";
 
 interface FavoritesTableProps {}
 
