@@ -24,12 +24,8 @@ const nextConfig: NextConfig = {
   },
   rewrites: async () => [
     {
-      source: "/dashboard",
-      destination: "/dashboard/client",
-    },
-    {
       source: "/dashboard/:path*",
-      destination: "/dashboard/client",
+      destination: "/dashboard",
     },
   ],
 };

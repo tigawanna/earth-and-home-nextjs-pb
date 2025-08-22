@@ -14,12 +14,13 @@ interface RouterContext {
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   loader: async ({ context }) => {
+    console.log("Root loader context:", context.pb?.authStore);
     // You can perform any async operations here if needed
-    if (!context.pb || context.pb?.authStore.record?.id) {
-      // @ts-expect-error
-      throw redirect("/auth.signin");
-    }
-    return { pb: context.pb };
+    // if (!context.pb || context.pb?.authStore.record?.id) {
+    //   // @ts-expect-error
+    //   throw redirect("/auth.signin");
+    // }
+    // return { pb: context.pb };
   },
 });
 
@@ -27,11 +28,11 @@ function RootComponent() {
   const { data } = useLocalViewer();
   const user = data?.viewer;
 
-  if (!user) {
-    // Redirect to auth page using regular navigation
-    window.location.href = "/auth/signin";
-    return null;
-  }
+  // if (!user) {
+  //   // Redirect to auth page using regular navigation
+  //   window.location.href = "/auth/signin";
+  //   return null;
+  // }
 
   return (
     <SidebarProvider defaultOpen={true}>

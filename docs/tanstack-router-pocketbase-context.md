@@ -6,27 +6,27 @@ This guide shows how to use the PocketBase instance through TanStack Router cont
 
 The router is configured with a PocketBase context that makes the client available throughout all routes:
 
-### Router Configuration (`src/app/dashboard/client/router.tsx`)
+### Router Configuration (`src/app/dashboard/router.tsx`)
 
 ```tsx
-import { createRootRouteWithContext, createRouter } from "@tanstack/react-router";
+import { createRouter } from "@tanstack/react-router";
 import { TypedPocketBase } from "@tigawanna/typed-pocketbase";
 import { Schema } from "@/lib/pocketbase/types/pb-types";
 import { routeTree } from "./routeTree.gen";
 
 // Define the router context interface
 interface RouterContext {
-  pocketbase: TypedPocketBase<Schema>;
+  pb: TypedPocketBase<Schema> | null;
 }
 
 // Create router with context
 export const router = createRouter({ 
   routeTree,
-  context: {} as RouterContext, // This will be provided when creating the router provider
+  context: { pb: null } as RouterContext, // This will be provided when creating the router provider
 });
 ```
 
-### Router Provider Setup (`src/app/dashboard/client/page.tsx`)
+### Router Provider Setup (`src/app/dashboard/page.tsx`)
 
 ```tsx
 "use client";
@@ -46,14 +46,14 @@ export default function ClientRouter() {
     <RouterProvider 
       router={router} 
       context={{
-        pocketbase: browserPB, // Pass the PocketBase instance
+        pb: browserPB, // Pass the PocketBase instance
       }}
     />
   );
 }
 ```
 
-### Root Route Setup (`src/app/dashboard/client/_routes/__root.tsx`)
+### Root Route Setup (`src/app/dashboard/_routes/__root.tsx`)
 
 ```tsx
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
@@ -62,7 +62,7 @@ import { Schema } from "@/lib/pocketbase/types/pb-types";
 
 // Define the router context interface
 interface RouterContext {
-  pocketbase: TypedPocketBase<Schema>;
+  pb: TypedPocketBase<Schema> | null;
 }
 
 export const Route = createRootRouteWithContext<RouterContext>()({
@@ -71,7 +71,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   // You can access context here if needed
-  // const { pocketbase } = Route.useRouteContext();
+  // const { pb } = Route.useRouteContext();
   
   return (
     <div>
@@ -93,11 +93,12 @@ export const Route = createFileRoute("/properties")({
 });
 
 function PropertiesPage() {
-  const { pocketbase } = Route.useRouteContext();
+  const { pb } = Route.useRouteContext();
   
   // Now you can use the pocketbase instance
   const handleFetchProperties = async () => {
-    const properties = await pocketbase.from("properties").getFullList();
+    if (!pb) return;
+    const properties = await pb.from("properties").getFullList();
     console.log(properties);
   };
 
@@ -120,7 +121,9 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/properties/$id")({
   loader: async ({ context, params }) => {
     // Access PocketBase from context in loader
-    const property = await context.pocketbase
+    if (!context.pb) throw new Error("PocketBase not available");
+    
+    const property = await context.pb
       .from("properties")
       .getOne(params.id);
     return { property };
@@ -151,11 +154,15 @@ export const Route = createFileRoute("/properties")({
 });
 
 function PropertiesPage() {
-  const { pocketbase } = Route.useRouteContext();
+  const { pb } = Route.useRouteContext();
   
   const { data: properties, isLoading } = useQuery({
     queryKey: ["properties"],
-    queryFn: () => pocketbase.from("properties").getFullList(),
+    queryFn: async () => {
+      if (!pb) throw new Error("PocketBase not available");
+      return pb.from("properties").getFullList();
+    },
+    enabled: !!pb,
   });
 
   if (isLoading) return <div>Loading...</div>;
@@ -179,11 +186,19 @@ You can create a custom hook to access the PocketBase instance:
 // hooks/usePocketbase.ts
 import { getRouteApi } from "@tanstack/react-router";
 
-const rootApi = getRouteApi("/__root");
+const rootApi = getRouteApi("__root__");
 
 export function usePocketbase() {
-  const { pocketbase } = rootApi.useRouteContext();
-  return pocketbase;
+  const { pb } = rootApi.useRouteContext();
+  return pb;
+}
+
+export function useRequiredPocketbase() {
+  const pb = usePocketbase();
+  if (!pb) {
+    throw new Error("PocketBase instance not available in router context");
+  }
+  return pb;
 }
 ```
 
@@ -193,11 +208,12 @@ Then use it in any component:
 import { usePocketbase } from "@/hooks/usePocketbase";
 
 function MyComponent() {
-  const pocketbase = usePocketbase();
+  const pb = usePocketbase();
   
   // Use pocketbase instance
   const handleAction = async () => {
-    const data = await pocketbase.from("collection").getFullList();
+    if (!pb) return;
+    const data = await pb.from("collection").getFullList();
   };
 
   return <div>...</div>;
