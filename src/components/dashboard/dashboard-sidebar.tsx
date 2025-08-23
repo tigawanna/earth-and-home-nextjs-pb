@@ -36,7 +36,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { ModeToggle } from "@/components/theme/theme-toggle";
-import { signoutMutationOptions } from "@/data-access-layer/pocketbase/auth";
+import { signoutMutationOptions } from "@/data-access-layer/pocketbase/user/auth";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { useMutation } from "@tanstack/react-query";
 

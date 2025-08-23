@@ -1,6 +1,6 @@
 "use client";
 
-import { signoutMutationOptions } from "@/data-access-layer/pocketbase/auth";
+import { signoutMutationOptions } from "@/data-access-layer/pocketbase/user/auth";
 import { useMutation } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";

@@ -1,5 +1,6 @@
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server--sideauth";
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { cookies } from "next/headers";
@@ -9,9 +10,7 @@ import { redirect } from "next/navigation";
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-  const client = createServerClient(cookieStore);
-  const { authStore } = client;
-  const user = authStore.record as UsersResponse | null;
+  const user = await getServerSideUser(cookieStore);
 
   if (!user) {
     redirect("/auth/signin");

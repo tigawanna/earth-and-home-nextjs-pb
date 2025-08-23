@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { createServerClient } from "./lib/pocketbase/clients/server-client";
 import { UsersResponse } from "./lib/pocketbase/types/pb-types";
+import { storeNextjsPocketbaseCookie,deleteNextjsPocketbaseCookie } from "./lib/pocketbase/utils/next-cookies";
 
 const adminOnlyPatterns: RegExp[] = [
   /^\/dashboard\/properties\/add$/, // add page
@@ -29,10 +30,10 @@ export async function middleware(request: NextRequest) {
   }
   if (user?.is_banned) {
     console.log("User is banned:", user.id);
-    // await storeCookie(user.id, {} as any);
+    await deleteNextjsPocketbaseCookie();
     return NextResponse.redirect(new URL("/banned", request.url));
   }
-  // await storeCookie(user.id, user);
+  // await storeNextjsPocketbaseCookie,(user.id, user);
   if (adminOnlyPatterns.some((re) => re.test(pathname))) {
     const isAdmin = !!user?.is_admin;
     if (!isAdmin) {

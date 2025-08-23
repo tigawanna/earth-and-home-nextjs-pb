@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { RecordModel } from "pocketbase";
 const auth_cookie_key = "pb_auth";
 
-export async function storeCookie(token: string, model: RecordModel) {
+export async function storeNextjsPocketbaseCookie(token: string, model: RecordModel) {
   const cookieString = JSON.stringify({
     token,
     model,
@@ -16,7 +16,7 @@ export async function storeCookie(token: string, model: RecordModel) {
   });
 }
 
-export async function deleteCookie() {
+export async function deleteNextjsPocketbaseCookie() {
   const cookie = await cookies();
   cookie.delete(auth_cookie_key);
 }
