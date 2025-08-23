@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { DashboardPropertiesList } from "./list/DashboardPropertiesList";
 import { Suspense } from "react";
-import { PropertiesListLoading } from "../query-states/PropertiesListLoading";
+import { PropertiesListLoading } from "../property/query-states/PropertiesListLoading";
+import { DashboardPropertiesList } from "./list/DashboardPropertiesList";
 
 interface PropertyDashboardProps {}
 

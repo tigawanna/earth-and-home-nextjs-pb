@@ -3,8 +3,8 @@ import { useQueryPage } from "@/hooks/use-query-page";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
-import { BasePropertyCard } from "../../list/cards/BasePropertyCard";
-import { PropertiesEmpty } from "../../query-states/PropertiesEmpty";
+import { BasePropertyCard } from "../../property/list/cards/BasePropertyCard";
+import { PropertiesEmpty } from "../../property/query-states/PropertiesEmpty";
 
 interface DashboardPropertiesListProps {}
 

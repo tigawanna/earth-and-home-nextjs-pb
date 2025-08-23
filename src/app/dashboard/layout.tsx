@@ -1,4 +1,4 @@
-import { DashboardSidebar } from "@/components/property/dashboard/dashboard-sidebar";
+import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { createServerClient } from "@/lib/pocketbase/server-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";

@@ -2,7 +2,7 @@
 import PropertyForm from "@/components/property/form/PropertyForm";
 import { browserPB } from "@/lib/pocketbase/browser-client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { SinglePropertyNotFound } from "../single/single-property-query-states";
+import { SinglePropertyNotFound } from "../property/single/single-property-query-states";
 
 interface EditPropertyProps {
   id: string;
