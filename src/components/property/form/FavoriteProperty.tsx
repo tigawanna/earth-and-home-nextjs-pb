@@ -45,7 +45,6 @@ export function FavoriteProperty({
       } catch (error) {
         // Favorite doesn't exist, so we'll create it
       }
-      
       // Create favorite
       await browserPB.from("favorites").create({ property_id, user_id });
       return { action: 'favorited', isFavorited: true };
@@ -66,7 +65,7 @@ export function FavoriteProperty({
       });
     },
   });
-console.log("Favorite state:", {is_favorited,favoriteState});
+// console.log("Favorite state:", {is_favorited,favoriteState});
   // If no user is logged in, show login link
   if (!currentUserId) {
     return (
@@ -97,7 +96,7 @@ console.log("Favorite state:", {is_favorited,favoriteState});
         data-pending={isPending} 
         className={`h-4 w-4 transition-colors ${
           favoriteState ? "fill-red-500 text-red-500" : ""
-        } ${isPending ? "animate-pulse" : ""}`}
+        } ${isPending ? "animate-spin" : ""}`}
       />
     </Button>
   );

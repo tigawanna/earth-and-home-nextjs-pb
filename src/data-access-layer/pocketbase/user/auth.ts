@@ -91,7 +91,9 @@ export function signinMutationOptions() {
   return mutationOptions({
     mutationFn: async (data: { email: string; password: string }) => {
       const res = await browserPB.from("users").authWithPassword(data.email, data.password);
-      browserPB.authStore.exportToCookie();
+      browserPB.authStore.exportToCookie({
+        httpOnly:false
+      });
       return res;
     },
     meta: {

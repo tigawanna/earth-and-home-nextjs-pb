@@ -32,7 +32,7 @@ export async function getProperties({
   userId?: string; // For checking favorites
 } = {}) {
   try {
-    const client = createServerClient();
+    const client = await createServerClient();
     
     const result = await getPaginatedProperties({
       client,
@@ -66,8 +66,8 @@ export async function getProperties({
 
 export async function getServerSidePropertyById(identifier: string, userId?: string) {
   try {
-    const client = createServerClient();
-    
+    const client = await createServerClient();
+
     const result = await getPropertyById({
       client,
       propertyId: identifier,
@@ -98,7 +98,7 @@ export async function getServerSideFavoriteProperties({
   limit?: number;
 }) {
   try {
-    const client = createServerClient();
+    const client = await createServerClient();
     return await baseGetFavoriteProperties({ client, userId, page, limit });
   } catch (error) {
     console.error("Error fetching favorite properties:", error);

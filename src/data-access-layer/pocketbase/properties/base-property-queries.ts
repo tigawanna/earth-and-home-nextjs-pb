@@ -241,7 +241,6 @@ export async function baseGetPropertyById(
         agent: Array.isArray(property.expand?.agent_id) 
           ? property.expand.agent_id[0] || null 
           : property.expand?.agent_id || null,
-        isFavorited,
       },
     };
   } catch (error) {

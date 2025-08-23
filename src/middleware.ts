@@ -13,13 +13,13 @@ const adminOnlyPatterns: RegExp[] = [
 
 export async function middleware(request: NextRequest) {
   const cookieStore = await cookies();
-  const client = createServerClient(cookieStore);
+  const client = await createServerClient(cookieStore);
   const pathname = new URL(request.url).pathname;
   try {
     client.authStore.isValid && (await client.from("users").authRefresh());
   } catch (_) {
     // clear the auth store on failed refresh
-    console.error("Failed to refresh user session, clearing auth store");
+    console.error("Failed to refresh user session, clearing auth store\n\n");
     client.authStore.clear();
   }
 
@@ -29,7 +29,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
   if (user?.is_banned) {
-    console.log("User is banned:", user.id);
+    console.log("User is banned:", user.id,"\n\n");
     await deleteNextjsPocketbaseCookie();
     return NextResponse.redirect(new URL("/banned", request.url));
   }

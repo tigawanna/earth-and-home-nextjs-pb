@@ -196,6 +196,7 @@ export async function getPaginatedProperties({
     if (filters.isFeatured !== undefined)
       queryParams.set("isFeatured", filters.isFeatured.toString());
 
+    console.log("Fetching properties with authstore :===>> ", client.authStore.record);
     // Make request to custom route
     const response = await client.send(`/api/properties-with-fav?${queryParams.toString()}`);
 
@@ -256,7 +257,6 @@ export async function getPropertyById({
 
     // Make request to custom route
     const property = await client.send(`/api/properties-with-fav/${propertyId}`);
-    console.log("Fetched property:", property);
     return {
       success: true,
       property,

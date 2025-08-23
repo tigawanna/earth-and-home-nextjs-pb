@@ -7,7 +7,7 @@ import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adap
 
 export async function getServerSideUser(nextCookies?: ReadonlyRequestCookies) {
   const cookieStore = nextCookies || (await cookies());
-  const client = createServerClient(cookieStore);
+  const client = await createServerClient(cookieStore);
   const { authStore } = client;
   const user = authStore.record as UsersResponse | null;
   return user;

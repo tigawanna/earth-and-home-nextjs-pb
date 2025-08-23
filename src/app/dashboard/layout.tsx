@@ -1,8 +1,6 @@
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server--sideauth";
-import { createServerClient } from "@/lib/pocketbase/clients/server-client";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
