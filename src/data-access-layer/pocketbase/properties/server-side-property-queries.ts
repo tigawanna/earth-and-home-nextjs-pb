@@ -1,6 +1,6 @@
 import "server-only";
 
-import { createServerClient } from "@/lib/pocketbase/server-client";
+import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import { PropertyFilters, PropertySortBy, SortOrder } from "../property-types";
 import {
   baseGetFavoriteProperties,

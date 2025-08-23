@@ -20,12 +20,12 @@ import {
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";
 import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import {
   FavoritesResponse,
   PropertiesResponse,
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";

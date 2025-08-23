@@ -1,35 +1,31 @@
-import { browserPB } from "@/lib/pocketbase/browser-client";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
-import { UsersCreate } from "@/lib/pocketbase/types/pb-types";
+import { browserPB } from "@/lib/pocketbase/clients/browser-client";
+import { UsersCreate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { deleteBrowserCookie } from "@/utils/browser-cookie";
-import { mutationOptions, queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-
-
-
+import { mutationOptions, queryOptions, useQuery } from "@tanstack/react-query";
 
 export function localViewerQueryOptions() {
   return queryOptions({
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async ({}) => {
       try {
-        const res = browserPB.authStore.record as UsersResponse
+        const res = browserPB.authStore.record as UsersResponse;
         return res;
       } catch (error) {
         return {
-            record: null,
-            error: {
-                message: "Failed to refresh user session",
-                code: "auth/refresh-failed",
-            },
-        }
+          record: null,
+          error: {
+            message: "Failed to refresh user session",
+            code: "auth/refresh-failed",
+          },
+        };
       }
     },
   });
 }
 
 export const useLocalViewer = () => {
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async () => {
       try {
@@ -40,8 +36,7 @@ export const useLocalViewer = () => {
         return {
           viewer: res,
           success: true,
-        }
-        
+        };
       } catch (error) {
         return {
           viewer: null,
@@ -59,9 +54,6 @@ export const useLocalViewer = () => {
   });
 };
 
-
-
-
 export function viewerQueryOptions() {
   return queryOptions({
     queryKey: [queryKeyPrefixes.viewer] as const,
@@ -71,12 +63,12 @@ export function viewerQueryOptions() {
         return res;
       } catch (error) {
         return {
-            record: null,
-            error: {
-                message: "Failed to refresh user session",
-                code: "auth/refresh-failed",
-            },
-        }
+          record: null,
+          error: {
+            message: "Failed to refresh user session",
+            code: "auth/refresh-failed",
+          },
+        };
       }
     },
   });
@@ -99,6 +91,7 @@ export function signinMutationOptions() {
   return mutationOptions({
     mutationFn: async (data: { email: string; password: string }) => {
       const res = await browserPB.from("users").authWithPassword(data.email, data.password);
+      browserPB.authStore.exportToCookie();
       return res;
     },
     meta: {
@@ -111,6 +104,7 @@ export function signupMutationOptions() {
   return mutationOptions({
     mutationFn: async (data: UsersCreate) => {
       const res = await browserPB.from("users").create(data);
+      browserPB.authStore.exportToCookie();
       return res;
     },
     meta: {

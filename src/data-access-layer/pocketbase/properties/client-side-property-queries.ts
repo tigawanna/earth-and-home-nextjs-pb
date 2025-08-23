@@ -1,4 +1,4 @@
-import { browserPB } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { queryOptions } from "@tanstack/react-query";
 import { PropertyFilters, PropertySortBy, SortOrder } from "../property-types";

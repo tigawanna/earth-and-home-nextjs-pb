@@ -6,8 +6,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Bath, Bed, Camera, Heart, MapPin, Square } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

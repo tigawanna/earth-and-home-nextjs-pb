@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Bath, Bed, Calendar, Car, Home, MapPin, Square } from "lucide-react";
 import Image from "next/image";
 

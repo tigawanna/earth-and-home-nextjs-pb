@@ -1,4 +1,4 @@
-import { browserPB } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
 import { mutationOptions } from "@tanstack/react-query";
 

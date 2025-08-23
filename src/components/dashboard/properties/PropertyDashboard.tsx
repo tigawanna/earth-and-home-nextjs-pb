@@ -5,13 +5,14 @@ import { useLocalViewer } from "@/data-access-layer/pocketbase/auth";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { PropertiesListLoading } from "../property/query-states/PropertiesListLoading";
-import { DashboardPropertiesList } from "./list/DashboardPropertiesList";
+import { DashboardPropertiesList } from "../../property/list/DashboardPropertiesList";
+import { PropertiesListLoading } from "../../property/query-states/PropertiesListLoading";
 
 interface PropertyDashboardProps {}
 
 export function PropertyDashboard({}: PropertyDashboardProps) {
   const { data } = useLocalViewer();
+  console.log("Viewer data:", data);
   const isAdmin = data?.viewer?.is_admin;
   return (
     <div className="space-y-6">

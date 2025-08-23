@@ -1,4 +1,4 @@
-import { browserPB } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { mutationOptions } from "@tanstack/react-query";
 
 export const toggleBanUserMutationOptions = mutationOptions({

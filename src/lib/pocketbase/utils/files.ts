@@ -1,4 +1,4 @@
-import { browserPB } from './browser-client';
+import { browserPB } from '../clients/browser-client';
 
 
 

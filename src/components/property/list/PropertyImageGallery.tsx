@@ -3,22 +3,22 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-    type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { getFileUrl, getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { getFileUrl, getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Camera, Maximize2, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";

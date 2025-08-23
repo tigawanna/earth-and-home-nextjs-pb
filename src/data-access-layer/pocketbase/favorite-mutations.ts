@@ -1,4 +1,4 @@
-import { browserPB } from "@/lib/pocketbase/browser-client";
+import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { FavoritesCreate } from "@/lib/pocketbase/types/pb-types";
 import { mutationOptions } from "@tanstack/react-query";
 import { and, eq } from "@tigawanna/typed-pocketbase";

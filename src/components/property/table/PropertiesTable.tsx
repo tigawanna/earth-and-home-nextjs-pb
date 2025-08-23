@@ -24,8 +24,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Edit, Eye, MoreHorizontal, Search, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/files";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Image as ImageIcon, Plus, Star, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
