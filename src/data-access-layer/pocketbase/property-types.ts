@@ -1,15 +1,19 @@
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
-export type PropertyWithAgent = PropertiesResponse & {
+export type PropertyWithFavorites = PropertiesResponse & {
   agent?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
   owner?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
   isFavorited?: boolean;
+  is_favorited?: boolean; // Add this for compatibility with new API
+  favorite_timestamp?: string | null; // Add this for compatibility with new API
 };
 
 export type PropertyFilters = {
   search?: string;
   propertyType?: string;
+  property_type?: string; // Add this for compatibility with new API
   listingType?: "sale" | "rent";
+  listing_type?: "sale" | "rent"; // Add this for compatibility with new API
   status?: string;
   minPrice?: number;
   maxPrice?: number;

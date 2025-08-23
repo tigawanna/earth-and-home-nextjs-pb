@@ -3,7 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { PropertyWithAgent } from "@/data-access-layer/pocketbase/property-types";
+import { PropertyWithFavorites } from "@/data-access-layer/pocketbase/property-types";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {
   ArrowLeft,
@@ -23,10 +24,9 @@ import {
 import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
 interface SinglePropertyProps {
-  property: PropertyWithAgent;
+  property: PropertyWithFavorites;
   basePath?: "/" | "/dashboard/";
   user: UsersResponse | null;
 }
@@ -111,7 +111,11 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                         {/* <Button variant="outline" size="icon">
                           <Heart className="h-4 w-4" />
                         </Button> */}
-                        <FavoriteProperty propertyId={property.id} userId={user?.id} />
+                        <FavoriteProperty 
+                          propertyId={property.id} 
+                          isFavorited={property.isFavorited}
+                          is_favorited={property.is_favorited}
+                        />
                         <Button variant="outline" size="icon">
                           <Share2 className="h-4 w-4" />
                         </Button>

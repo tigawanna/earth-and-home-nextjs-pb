@@ -6,7 +6,7 @@ import {
 } from "@/lib/pocketbase/types/pb-types";
 import type { TypedPocketBase } from '@tigawanna/typed-pocketbase';
 import { and, eq, FilterParam, gte, like, lte, or, TypedRecord } from "@tigawanna/typed-pocketbase";
-import { PropertyFilters, PropertySortBy, PropertyWithAgent, SortOrder } from "../property-types";
+import { PropertyFilters, PropertySortBy, PropertyWithFavorites, SortOrder } from "../property-types";
 
 
 
@@ -180,7 +180,7 @@ interface GetPropertyParams {
 
 interface GetPropertyResult {
   success: boolean;
-  result: PropertyWithAgent | null;
+  result: PropertyWithFavorites | null;
   message?: string;
 }
 

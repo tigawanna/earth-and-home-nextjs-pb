@@ -3,10 +3,14 @@ import "server-only";
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import { PropertyFilters, PropertySortBy, SortOrder } from "../property-types";
 import {
+  getPaginatedProperties,
+  getPropertyById,
+} from "./base-custom-property-api";
+import {
   baseGetFavoriteProperties,
-  baseGetPaginatedProperties,
-  baseGetPropertyById,
 } from "./base-property-queries";
+
+
 
 // ====================================================
 // GET PROPERTIES (with filtering, sorting, pagination)
@@ -27,26 +31,17 @@ export async function getProperties({
   limit?: number;
   userId?: string; // For checking favorites
 } = {}) {
-  // type PropertyStatus = PropertiesResponse["status"];
-  // type PropertyType = PropertiesResponse["property_type"];
-  // type PropertyRelations = {
-  //   agent_id: UsersResponse;
-  //   owner_id: UsersResponse;
-  //   favorites_via_property_id: FavoritesResponse;
-  // };
-  // type PropertyRecord = TypedRecord<PropertiesResponse, PropertyRelations>;
-
   try {
     const client = createServerClient();
-    return await baseGetPaginatedProperties({
+    
+    const result = await getPaginatedProperties({
       client,
       filters,
-      sortBy,
-      sortOrder,
       page,
       limit,
-      userId,
     });
+    
+    return result;
   } catch (error) {
     console.error("Error fetching properties:", error);
     return {
@@ -70,19 +65,25 @@ export async function getProperties({
 // ====================================================
 
 export async function getServerSidePropertyById(identifier: string, userId?: string) {
-  const client = createServerClient();
-  const result = await baseGetPropertyById(client, { propertyId: identifier, userId });
+  try {
+    const client = createServerClient();
+    
+    const result = await getPropertyById({
+      client,
+      propertyId: identifier,
+    });
 
-  // Transform the result to match the expected format for backwards compatibility
-  if (result.success) {
     return {
-      success: true,
-      property: result.result,
+      success: result.success,
+      property: result.property,
+      message: result.message,
     };
-  } else {
+  } catch (error) {
+    console.error("Error fetching property:", error);
     return {
       success: false,
-      message: result.message || "Failed to fetch property",
+      message: error instanceof Error ? error.message : "Failed to fetch property",
+      property: null,
     };
   }
 }
