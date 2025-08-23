@@ -7,10 +7,13 @@ import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
 import { BasePropertyCard } from "./cards/BasePropertyCard";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
-interface DashboardPropertiesListProps {}
+interface DashboardPropertiesListProps {
+    user: UsersResponse | null;
+}
 
-export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
+export function DashboardPropertiesList({ user }: DashboardPropertiesListProps) {
   const currentPage = useQueryPage();
 
   // const [isPending, startTransition] = useTransition();
@@ -52,6 +55,7 @@ export function DashboardPropertiesList({}: DashboardPropertiesListProps) {
             href={`/dashboard/properties/${property.id}`}
             key={property.id}
             property={property}
+            currentUserId={user?.id}
           />
         ))}
       </div>

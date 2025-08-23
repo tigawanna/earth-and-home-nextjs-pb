@@ -32,7 +32,7 @@ export function PropertyDashboard({ user }: PropertyDashboardProps) {
       <PropertyFilters showStatusFilter={isAdmin} />
       {/* Properties List */}
       <Suspense fallback={<PropertiesListLoading/>}>
-        <DashboardPropertiesList />
+        <DashboardPropertiesList user={user}/>
       </Suspense>
       {/* Quick Actions Card */}
       

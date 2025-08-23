@@ -3,7 +3,6 @@ import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-typ
 export type PropertyWithFavorites = PropertiesResponse & {
   agent?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
   owner?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
-  isFavorited?: boolean;
   is_favorited?: boolean; // Add this for compatibility with new API
   favorite_timestamp?: string | null; // Add this for compatibility with new API
 };

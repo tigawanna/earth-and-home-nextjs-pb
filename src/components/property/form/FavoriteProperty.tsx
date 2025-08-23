@@ -11,19 +11,17 @@ import { useEffect, useState } from "react";
 interface FavoritePropertyProps {
   propertyId: string;
   userId?: string;
-  isFavorited?: boolean;
-  is_favorited?: boolean; // New API field
+  is_favorited?: boolean | null; // New API field
 }
 
 export function FavoriteProperty({ 
   propertyId, 
   userId, 
-  isFavorited, 
   is_favorited 
 }: FavoritePropertyProps) {
   const queryClient = useQueryClient();
   const [currentUserId, setCurrentUserId] = useState<string | null>(userId || null);
-  const [favoriteState, setFavoriteState] = useState(isFavorited || is_favorited || false);
+  const [favoriteState, setFavoriteState] = useState( is_favorited || false);
 
   // Get current user from PocketBase auth if not provided
   useEffect(() => {

@@ -113,7 +113,6 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                         </Button> */}
                         <FavoriteProperty 
                           propertyId={property.id} 
-                          isFavorited={property.isFavorited}
                           is_favorited={property.is_favorited}
                         />
                         <Button variant="outline" size="icon">

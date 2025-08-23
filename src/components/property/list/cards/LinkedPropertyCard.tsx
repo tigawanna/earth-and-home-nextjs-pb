@@ -1,12 +1,17 @@
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import Link from "next/link";
 import { BasePropertyCard } from "./BasePropertyCard";
+import { FavoriteProperty } from "../../form/FavoriteProperty";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
-  expand?: {
-    owner_id?: UsersResponse[] | undefined;
-    agent_id?: UsersResponse[] | undefined;
-  } | undefined;
+  is_favorited?: boolean | null;
+  favorite_timestamp?: string | null;
+  expand?:
+    | {
+        owner_id?: UsersResponse[] | undefined;
+        agent_id?: UsersResponse[] | undefined;
+      }
+    | undefined;
 };
 
 interface LinkedPropertyCardProps {
@@ -15,6 +20,7 @@ interface LinkedPropertyCardProps {
   className?: string;
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;
+  currentUserId?: string
 }
 
 /**
@@ -27,19 +33,27 @@ export function LinkedPropertyCard({
   className,
   showFooterActions = false,
   footerActions,
+  currentUserId,
 }: LinkedPropertyCardProps) {
   // Default href patterns
   const defaultHref = href || `/properties/${property.id}`;
 
   return (
-    <Link href={defaultHref} className="block">
-      <BasePropertyCard
-        property={property}
-        className={`transition-transform  cursor-pointer ${className}`}
-        showFooterActions={showFooterActions}
-        footerActions={footerActions}
+    <div>
+      <Link href={defaultHref} className="block">
+        <BasePropertyCard
+          property={property}
+          className={`transition-transform  cursor-pointer ${className}`}
+          showFooterActions={showFooterActions}
+          footerActions={footerActions}
+        />
+      </Link>
+      <FavoriteProperty
+        propertyId={property.id}
+        userId={currentUserId}
+        is_favorited={property.is_favorited}
       />
-    </Link>
+    </div>
   );
 }
 
@@ -51,7 +65,7 @@ export function DashboardLinkedPropertyCard({
   className,
   showFooterActions = true,
   footerActions,
-}: Omit<LinkedPropertyCardProps, 'href'>) {
+}: Omit<LinkedPropertyCardProps, "href">) {
   return (
     <LinkedPropertyCard
       property={property}

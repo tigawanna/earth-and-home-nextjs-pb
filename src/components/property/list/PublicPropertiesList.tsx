@@ -1,12 +1,13 @@
 import { getProperties } from "@/data-access-layer/pocketbase/properties/server-side-property-queries";
 import {
-    PropertyFilters,
-    PropertySortBy,
-    SortOrder,
+  PropertyFilters,
+  PropertySortBy,
+  SortOrder,
 } from "@/data-access-layer/pocketbase/property-types";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
+import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server--sideauth";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,11 @@ interface PublicPropertyListingsProps {
   limit?: number; // Optional limit for pagination
 }
 
-export async function PublicPropertiesList({ searchParams, limit,showPages=false }: PublicPropertyListingsProps) {
+export async function PublicPropertiesList({
+  searchParams,
+  limit,
+  showPages = false,
+}: PublicPropertyListingsProps) {
   // Convert search params to filters
   const filters: PropertyFilters = {
     search: (searchParams?.search as string) || "",
@@ -43,6 +48,7 @@ export async function PublicPropertiesList({ searchParams, limit,showPages=false
     page,
     limit: limit || 50, // Default to 50 if no limit provided
   });
+  const user = await getServerSideUser();
 
   const properties = result.success ? result.properties : [];
   const totalPages = result.success ? result.pagination.totalPages : 0;
@@ -55,10 +61,10 @@ export async function PublicPropertiesList({ searchParams, limit,showPages=false
     <div className="w-full h-full flex flex-col items-center gap-6">
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full">
         {properties.map((property) => (
-          <LinkedPropertyCard key={property.id} property={property} />
+          <LinkedPropertyCard key={property.id} property={property} currentUserId={user?.id} />
         ))}
       </div>
-      {showPages&&<ListPagination totalPages={totalPages} />}
+      {showPages && <ListPagination totalPages={totalPages} />}
     </div>
   );
 }

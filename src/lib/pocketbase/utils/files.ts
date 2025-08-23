@@ -14,8 +14,10 @@ export function getFileUrl(
   filename: string,
   queryParams?: { thumb?: string; download?: boolean; token?: string }
 ): string {
+  // console.log("Generating file URL for:", record.id, filename, queryParams);
+  const fileUrl = browserPB.files.getURL(record, filename, queryParams);
 
-  return browserPB.files.getURL(record, filename, queryParams);
+  return fileUrl;
 }
 
 

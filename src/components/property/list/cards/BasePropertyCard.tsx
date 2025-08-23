@@ -6,10 +6,14 @@ import { Bath, Bed, Calendar, Car, Home, MapPin, Square } from "lucide-react";
 import Image from "next/image";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
-  expand?: {
-    owner_id?: UsersResponse[] | undefined;
-    agent_id?: UsersResponse[] | undefined;
-  } | undefined;
+  is_favorited?: boolean | null;
+  favorite_timestamp?: string | null;
+  expand?:
+    | {
+        owner_id?: UsersResponse[] | undefined;
+        agent_id?: UsersResponse[] | undefined;
+      }
+    | undefined;
 };
 
 interface BasePropertyCardProps {
@@ -33,12 +37,12 @@ function formatPrice(currency: string | undefined, price: number | undefined) {
   }
 }
 
-export function BasePropertyCard({ 
-  property, 
+export function BasePropertyCard({
+  property,
   className,
   showFooterActions = false,
   footerActions,
-  showViewButton = true
+  showViewButton = true,
 }: BasePropertyCardProps) {
   const {
     id,
@@ -63,28 +67,30 @@ export function BasePropertyCard({
     agent_id,
     status,
   } = property;
- 
+
   // Get the primary image or first gallery image
-  const primaryImageFilename = image_url || 
-    (Array.isArray(images) && images.length > 0 
-      ? (typeof images[0] === 'string' ? images[0] : null)
+  const primaryImageFilename =
+    image_url ||
+    (Array.isArray(images) && images.length > 0
+      ? typeof images[0] === "string"
+        ? images[0]
+        : null
       : null);
 
-  const imageUrl = primaryImageFilename 
+  const imageUrl = primaryImageFilename
     ? getImageThumbnailUrl(property, primaryImageFilename, "400x300")
     : null;
+  console.log("Property Card ===> ", primaryImageFilename, imageUrl);
 
   // Get main price based on listing type
-  const mainPrice = listing_type === "sale" 
-    ? (property.sale_price || price)
-    : (property.rental_price || price);
+  const mainPrice =
+    listing_type === "sale" ? property.sale_price || price : property.rental_price || price;
 
   const locationLabel = [city, state, country].filter(Boolean).join(", ");
 
   return (
     <Card
-      className={`group relative w-full overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}
-    >
+      className={`group relative w-full overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}>
       {/* Media */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted/40">
         {imageUrl ? (
@@ -113,7 +119,9 @@ export function BasePropertyCard({
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start gap-2">
           <div className="flex gap-2 flex-wrap">
             {is_featured ? (
-              <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-0">Featured</Badge>
+              <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-0">
+                Featured
+              </Badge>
             ) : null}
             {is_new ? (
               <Badge className="bg-green-500 hover:bg-green-600 text-white border-0">New</Badge>
@@ -132,8 +140,7 @@ export function BasePropertyCard({
           <div className="mb-2">
             <Badge
               variant="outline"
-              className="border-border/60 bg-background/60 text-[10px] font-medium uppercase tracking-wide"
-            >
+              className="border-border/60 bg-background/60 text-[10px] font-medium uppercase tracking-wide">
               {property_type.replace(/_/g, " ")}
             </Badge>
           </div>
@@ -162,7 +169,7 @@ export function BasePropertyCard({
         ) : null}
 
         <div className="flex flex-wrap items-center gap-4 mb-4 text-sm">
-          { (beds && beds > 0) ? (
+          {beds && beds > 0 ? (
             <div className="flex items-center">
               <Bed className="w-4 h-4 mr-1" />
               <span>
@@ -170,7 +177,7 @@ export function BasePropertyCard({
               </span>
             </div>
           ) : null}
-          { (baths && baths > 0) ? (
+          {baths && baths > 0 ? (
             <div className="flex items-center">
               <Bath className="w-4 h-4 mr-1" />
               <span>
@@ -178,13 +185,13 @@ export function BasePropertyCard({
               </span>
             </div>
           ) : null}
-          { building_size_sqft ? (
+          {building_size_sqft ? (
             <div className="flex items-center">
               <Square className="w-4 h-4 mr-1" />
               <span>{building_size_sqft.toLocaleString()} sqft</span>
             </div>
           ) : null}
-          {(property.parking_spaces && property.parking_spaces > 0) ? (
+          {property.parking_spaces && property.parking_spaces > 0 ? (
             <div className="flex items-center">
               <Car className="w-4 h-4 mr-1" />
               <span>{property.parking_spaces} parking</span>
@@ -200,11 +207,9 @@ export function BasePropertyCard({
         ) : null}
       </CardContent>
 
-      {(showFooterActions && footerActions) ? (
+      {showFooterActions && footerActions ? (
         <CardFooter className="px-4 py-3 border-t border-border/60 bg-muted/20">
-          <div className="flex items-center gap-2 w-full">
-            {footerActions}
-          </div>
+          <div className="flex items-center gap-2 w-full">{footerActions}</div>
         </CardFooter>
       ) : null}
     </Card>
