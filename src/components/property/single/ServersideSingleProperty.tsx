@@ -2,6 +2,7 @@ import { getServerSidePropertyById } from "@/data-access-layer/pocketbase/proper
 
 import { BaseSingleProperty } from "./BaseSingleProperty";
 import { SinglePropertyNotFound } from "./single-property-query-states";
+import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server--sideauth";
 
 
 interface ServersideSinglePropertyProps {
@@ -10,6 +11,7 @@ interface ServersideSinglePropertyProps {
 
 export async function ServersideSingleProperty({ propertyId }: ServersideSinglePropertyProps) {
   const result = await getServerSidePropertyById(propertyId);
+  const user = await getServerSideUser();
 
   if (!result.success || !result.property) {
     return <SinglePropertyNotFound />;
@@ -18,8 +20,8 @@ export async function ServersideSingleProperty({ propertyId }: ServersideSingleP
   const property = result.property;
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
-      <BaseSingleProperty property={property} />
+    <div className="w-full h-full">
+      <BaseSingleProperty property={property} user={user} />
     </div>
   );
 }

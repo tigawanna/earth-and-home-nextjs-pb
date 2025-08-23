@@ -23,12 +23,15 @@ import {
 import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
 interface SinglePropertyProps {
   property: PropertyWithAgent;
+  basePath?: "/" | "/dashboard/";
+  user: UsersResponse | null;
 }
 
-export function BaseSingleProperty({ property }: SinglePropertyProps) {
+export function BaseSingleProperty({ property, basePath = "/", user }: SinglePropertyProps) {
   // Format price with currency
   const formatPrice = (price: number | null, currency = "KES") => {
     if (!price) return "Price on request";
@@ -54,7 +57,7 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
       {/* Header */}
       <div className="container mx-auto px-4 py-4 border-b">
         <Button variant="ghost" asChild>
-          <Link href="/properties">
+          <Link href={`${basePath}properties`}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Properties
           </Link>
@@ -90,15 +93,14 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                         <div className="text-3xl font-bold text-primary">
                           {formatPrice(mainPrice, property.currency || "KES")}
                         </div>
-                        {property.listing_type === "rent" && (
+                        {property.listing_type === "rent" ? (
                           <p className="text-sm text-muted-foreground">per month</p>
-                        )}
-                        {property.security_deposit && property.listing_type === "rent" && (
+                        ) : null}
+                        {(property.security_deposit && property.listing_type === "rent") ? (
                           <p className="text-sm text-muted-foreground">
-                            Security deposit:{" "}
-                            {formatPrice(property.security_deposit, property.currency || "KES")}
+                            Security deposit: {formatPrice(property.security_deposit, property.currency || "KES")}
                           </p>
-                        )}
+                        ) : null}
                       </div>
 
                       <div className="flex gap-2">
@@ -109,7 +111,7 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                         {/* <Button variant="outline" size="icon">
                           <Heart className="h-4 w-4" />
                         </Button> */}
-                        <FavoriteProperty propertyId={property.id} />
+                        <FavoriteProperty propertyId={property.id} userId={user?.id} />
                         <Button variant="outline" size="icon">
                           <Share2 className="h-4 w-4" />
                         </Button>
@@ -126,44 +128,42 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
-                    {property.beds && (
+                    {property.beds && property.beds > 0 ? (
                       <div className="flex items-center gap-2">
                         <Bed className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{property.beds} Beds</span>
                       </div>
-                    )}
-                    {property.baths && (
+                    ) : null}
+                    {property.baths && property.baths > 0 ? (
                       <div className="flex items-center gap-2">
                         <Bath className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{property.baths} Baths</span>
                       </div>
-                    )}
+                    ) : null}
                     {property.building_size_sqft ? (
                       <div className="flex items-center gap-2">
                         <Square className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">
-                          {property.building_size_sqft.toLocaleString()} sqft
-                        </span>
+                        <span className="text-sm">{property.building_size_sqft.toLocaleString()} sqft</span>
                       </div>
                     ) : null}
-                    {property.parking_spaces && property.parking_spaces > 0 ? (
+                    {(property.parking_spaces && property.parking_spaces > 0) ? (
                       <div className="flex items-center gap-2">
                         <Car className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{property.parking_spaces} Parking</span>
                       </div>
                     ) : null}
-                    {property.year_built && (
+                    {property.year_built ? (
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">Built {property.year_built}</span>
                       </div>
-                    )}
-                    {property.floors && (
+                    ) : null}
+                    {property.floors ? (
                       <div className="flex items-center gap-2">
                         <Building className="h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">{property.floors} Floors</span>
                       </div>
-                    )}
+                    ) : null}
                   </div>
 
                   <Separator />
@@ -173,31 +173,26 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                       <MapPin className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">{property.location}</span>
                     </div>
-                    {property.city && (
-                      <p className="text-sm text-muted-foreground ml-6">
-                        {property.city}, {property.state}
-                      </p>
-                    )}
+                    {property.city ? (
+                      <p className="text-sm text-muted-foreground ml-6">{property.city}, {property.state}</p>
+                    ) : null}
                   </div>
 
                   <Separator />
 
                   <div className="flex gap-2 flex-wrap">
                     <Badge variant="outline">
-                      {property.property_type.charAt(0).toUpperCase() +
-                        property.property_type.slice(1)}
+                      {property.property_type.charAt(0).toUpperCase() + property.property_type.slice(1)}
                     </Badge>
                     <Badge variant="outline">
-                      For{" "}
-                      {property.listing_type.charAt(0).toUpperCase() +
-                        property.listing_type.slice(1)}
+                      For {property.listing_type.charAt(0).toUpperCase() + property.listing_type.slice(1)}
                     </Badge>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Agent Info - Takes right column on larger containers */}
-              {property.agent && (
+              {property.agent ? (
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">Listed By</CardTitle>
@@ -227,7 +222,7 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                     </div>
                   </CardContent>
                 </Card>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
@@ -240,10 +235,12 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
           <div className="flex items-start justify-between mb-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                {property.is_featured && (
+                {property.is_featured ? (
                   <Badge className="bg-orange-500 hover:bg-orange-600">Featured</Badge>
-                )}
-                {property.is_new && <Badge className="bg-green-500 hover:bg-green-600">New</Badge>}
+                ) : null}
+                {property.is_new ? (
+                  <Badge className="bg-green-500 hover:bg-green-600">New</Badge>
+                ) : null}
                 <Badge variant={property.listing_type === "sale" ? "default" : "secondary"}>
                   {property.listing_type === "sale" ? "For Sale" : "For Rent"}
                 </Badge>
@@ -258,13 +255,9 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
 
           <div className="prose prose-sm max-w-none">
             {property.description ? (
-              <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                {property.description}
-              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap">{property.description}</p>
             ) : (
-              <p className="text-muted-foreground italic">
-                No description provided for this property.
-              </p>
+              <p className="text-muted-foreground italic">No description provided for this property.</p>
             )}
           </div>
         </div>
@@ -276,26 +269,24 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {property.beds && property.beds > 0 && (
+              {property.beds && property.beds > 0 ? (
                 <div className="flex items-center">
                   <Bed className="w-5 h-5 mr-3 text-primary" />
                   <div>
                     <div className="font-semibold">{property.beds}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Bedroom{property.beds !== 1 ? "s" : ""}
-                    </div>
+                    <div className="text-sm text-muted-foreground">Bedroom{property.beds !== 1 ? "s" : ""}</div>
                   </div>
                 </div>
-              )}
-              <div className="flex items-center">
-                <Bath className="w-5 h-5 mr-3 text-primary" />
-                <div>
-                  <div className="font-semibold">{property.baths}</div>
-                  <div className="text-sm text-muted-foreground">
-                    Bathroom{property.baths !== 1 ? "s" : ""}
+              ) : null}
+              {property.baths && property.baths > 0 ? (
+                <div className="flex items-center">
+                  <Bath className="w-5 h-5 mr-3 text-primary" />
+                  <div>
+                    <div className="font-semibold">{property.baths}</div>
+                    <div className="text-sm text-muted-foreground">Bathroom{property.baths !== 1 ? "s" : ""}</div>
                   </div>
                 </div>
-              </div>
+              ) : null}
               {property.parking_spaces && property.parking_spaces > 0 ? (
                 <div className="flex items-center">
                   <Car className="w-5 h-5 mr-3 text-primary" />
@@ -309,14 +300,12 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                 <div className="flex items-center">
                   <Square className="w-5 h-5 mr-3 text-primary" />
                   <div>
-                    <div className="font-semibold">
-                      {property.building_size_sqft.toLocaleString()}
-                    </div>
+                    <div className="font-semibold">{property.building_size_sqft.toLocaleString()}</div>
                     <div className="text-sm text-muted-foreground">Sq Ft</div>
                   </div>
                 </div>
               ) : null}
-              {property.year_built && (
+              {property.year_built ? (
                 <div className="flex items-center">
                   <Building className="w-5 h-5 mr-3 text-primary" />
                   <div>
@@ -324,100 +313,84 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                     <div className="text-sm text-muted-foreground">Year Built</div>
                   </div>
                 </div>
-              )}
-              {property.floors && (
+              ) : null}
+              {property.floors ? (
                 <div className="flex items-center">
                   <Building className="w-5 h-5 mr-3 text-primary" />
                   <div>
                     <div className="font-semibold">{property.floors}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Floor{property.floors !== 1 ? "s" : ""}
-                    </div>
+                    <div className="text-sm text-muted-foreground">Floor{property.floors !== 1 ? "s" : ""}</div>
                   </div>
                 </div>
-              )}
-              {property.heating && property.heating !== "none" && (
+              ) : null}
+              {(property.heating && property.heating !== "none") ? (
                 <div className="flex items-center">
                   <Thermometer className="w-5 h-5 mr-3 text-primary" />
                   <div>
-                    <div className="font-semibold capitalize">
-                      {property.heating.replace("_", " ")}
-                    </div>
+                    <div className="font-semibold capitalize">{property.heating.replace("_", " ")}</div>
                     <div className="text-sm text-muted-foreground">Heating</div>
                   </div>
                 </div>
-              )}
-              {property.cooling && property.cooling !== "none" && (
+              ) : null}
+              {(property.cooling && property.cooling !== "none") ? (
                 <div className="flex items-center">
                   <Snowflake className="w-5 h-5 mr-3 text-primary" />
                   <div>
-                    <div className="font-semibold capitalize">
-                      {property.cooling.replace("_", " ")}
-                    </div>
+                    <div className="font-semibold capitalize">{property.cooling.replace("_", " ")}</div>
                     <div className="text-sm text-muted-foreground">Cooling</div>
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
 
             {/* Additional Property Details */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {property.lot_size_sqft && (
+              {property.lot_size_sqft ? (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Lot Size</p>
-                  <p className="text-sm text-muted-foreground">
-                    {property.lot_size_sqft.toLocaleString()} sqft
-                  </p>
+                  <p className="text-sm text-muted-foreground">{property.lot_size_sqft.toLocaleString()} sqft</p>
                 </div>
-              )}
+              ) : null}
 
-              {property.parking_type && property.parking_type !== "none" && (
+              {(property.parking_type && property.parking_type !== "none") ? (
                 <div className="space-y-1">
                   <p className="text-sm font-medium flex items-center gap-2">
                     <Car className="h-4 w-4" />
                     Parking Type
                   </p>
-                  <p className="text-sm text-muted-foreground capitalize">
-                    {property.parking_type.replace("_", " ")}
-                  </p>
+                  <p className="text-sm text-muted-foreground capitalize">{property.parking_type.replace("_", " ")}</p>
                 </div>
-              )}
+              ) : null}
 
-              {property.zoning && (
+              {property.zoning ? (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Zoning</p>
-                  <p className="text-sm text-muted-foreground capitalize">
-                    {property.zoning.replace("_", " ")}
-                  </p>
+                  <p className="text-sm text-muted-foreground capitalize">{property.zoning.replace("_", " ")}</p>
                 </div>
-              )}
+              ) : null}
 
-              {property.hoa_fee && (
+              {property.hoa_fee ? (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">HOA Fee</p>
-                  <p className="text-sm text-muted-foreground">
-                    {formatPrice(property.hoa_fee, property.currency || "KES")}/month
-                  </p>
+                  <p className="text-sm text-muted-foreground">{formatPrice(property.hoa_fee, property.currency || "KES")}/month</p>
                 </div>
-              )}
+              ) : null}
 
-              {property.annual_taxes && (
+              {property.annual_taxes ? (
                 <div className="space-y-1">
                   <p className="text-sm font-medium">Annual Taxes</p>
-                  <p className="text-sm text-muted-foreground">
-                    {formatPrice(property.annual_taxes, property.currency || "KES")}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{formatPrice(property.annual_taxes, property.currency || "KES")}</p>
                 </div>
-              )}
+              ) : null}
             </div>
           </CardContent>
         </Card>
 
         {/* Amenities and Features - Flattened Layout */}
-        {(amenities.length > 0 || features.length > 0) && (
+        {(amenities.length > 0 || features.length > 0) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             {/* Amenities */}
-            {amenities.length > 0 && (
+            {amenities.length > 0 ? (
               <Card>
                 <CardHeader>
                   <CardTitle>Amenities</CardTitle>
@@ -433,10 +406,10 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                   </div>
                 </CardContent>
               </Card>
-            )}
+            ) : null}
 
             {/* Features */}
-            {features.length > 0 && (
+            {features.length > 0 ? (
               <Card>
                 <CardHeader>
                   <CardTitle>Features</CardTitle>
@@ -452,9 +425,9 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                   </div>
                 </CardContent>
               </Card>
-            )}
+            ) : null}
           </div>
-        )}
+        ) : null}
 
         {/* Location Details */}
         <Card>
@@ -467,36 +440,34 @@ export function BaseSingleProperty({ property }: SinglePropertyProps) {
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm font-medium">Address</p>
-                    <p className="text-sm text-muted-foreground">
-                      {property.street_address || property.location}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{property.street_address || property.location}</p>
                   </div>
-                  {property.city && (
+                  {property.city ? (
                     <div>
                       <p className="text-sm font-medium">City</p>
                       <p className="text-sm text-muted-foreground">{property.city}</p>
                     </div>
-                  )}
-                  {property.state && (
+                  ) : null}
+                  {property.state ? (
                     <div>
                       <p className="text-sm font-medium">State/Province</p>
                       <p className="text-sm text-muted-foreground">{property.state}</p>
                     </div>
-                  )}
+                  ) : null}
                 </div>
                 <div className="space-y-3">
-                  {property.postal_code && (
+                  {property.postal_code ? (
                     <div>
                       <p className="text-sm font-medium">Postal Code</p>
                       <p className="text-sm text-muted-foreground">{property.postal_code}</p>
                     </div>
-                  )}
-                  {property.country && (
+                  ) : null}
+                  {property.country ? (
                     <div>
                       <p className="text-sm font-medium">Country</p>
                       <p className="text-sm text-muted-foreground">{property.country}</p>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
 
