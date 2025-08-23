@@ -66,7 +66,7 @@ export function FavoriteProperty({
       });
     },
   });
-
+console.log("Favorite state:", {is_favorited,favoriteState});
   // If no user is logged in, show login link
   if (!currentUserId) {
     return (

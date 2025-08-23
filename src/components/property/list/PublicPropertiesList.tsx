@@ -53,6 +53,10 @@ export async function PublicPropertiesList({
   const properties = result.success ? result.properties : [];
   const totalPages = result.success ? result.pagination.totalPages : 0;
 
+  console.log("PublicPropertiesList render:===>> ", 
+    properties,
+  );
+
   // Render empty state if no properties
   if (properties.length === 0) {
     return <PropertiesEmpty />;

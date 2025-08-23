@@ -81,7 +81,7 @@ export function BasePropertyCard({
   const imageUrl = primaryImageFilename
     ? getImageThumbnailUrl(property, primaryImageFilename, "400x300")
     : null;
-  console.log("Property Card ===> ", primaryImageFilename, imageUrl);
+
 
   // Get main price based on listing type
   const mainPrice =
