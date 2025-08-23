@@ -63,7 +63,7 @@ export async function PublicPropertiesList({
     <div className="w-full h-full flex flex-col items-center gap-6">
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full">
         {properties.map((property) => (
-          <LinkedPropertyCard key={property.id} property={property} currentUserId={user?.id} />
+          <LinkedPropertyCard basePath="/" key={property.id} property={property} currentUserId={user?.id} />
         ))}
       </div>
       {showPages && <ListPagination totalPages={totalPages} />}

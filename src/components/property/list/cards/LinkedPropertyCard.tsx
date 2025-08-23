@@ -21,6 +21,7 @@ interface LinkedPropertyCardProps {
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;
   currentUserId?: string
+  basePath?: "/" | "/dashboard/"
 }
 
 /**
@@ -34,9 +35,10 @@ export function LinkedPropertyCard({
   showFooterActions = false,
   footerActions,
   currentUserId,
+  basePath,
 }: LinkedPropertyCardProps) {
   // Default href patterns
-  const defaultHref = href || `/properties/${property.id}`;
+  const defaultHref = href || `${basePath || "/"}properties/${property.id}`;
 
   return (
     <div>

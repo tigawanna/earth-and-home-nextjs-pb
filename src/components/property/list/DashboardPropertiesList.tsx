@@ -5,7 +5,6 @@ import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
-import { BasePropertyCard } from "./cards/BasePropertyCard";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
@@ -52,7 +51,7 @@ export function DashboardPropertiesList({ user }: DashboardPropertiesListProps) 
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full">
         {properties.map((property) => (
           <LinkedPropertyCard
-            href={`/dashboard/properties/${property.id}`}
+            basePath="/dashboard/"
             key={property.id}
             property={property}
             currentUserId={user?.id}
