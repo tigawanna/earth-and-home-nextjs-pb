@@ -84,7 +84,10 @@ export function FavoriteProperty({
 
   return (
     <Button
-      onClick={() => toggleFavorite({ user_id: currentUserId, property_id: propertyId })}
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleFavorite({ user_id: currentUserId, property_id: propertyId });
+      }}
       disabled={isPending}
       variant="outline"
       size="icon"

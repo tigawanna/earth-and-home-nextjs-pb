@@ -4,6 +4,7 @@ import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-typ
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Bath, Bed, Calendar, Car, Home, MapPin, Square } from "lucide-react";
 import Image from "next/image";
+import { FavoriteProperty } from "../../form/FavoriteProperty";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
   is_favorited?: boolean | null;
@@ -205,6 +206,7 @@ export function BasePropertyCard({
             <span>Available from {new Date(property.available_from).toLocaleDateString()}</span>
           </div>
         ) : null}
+
       </CardContent>
 
       {showFooterActions && footerActions ? (
