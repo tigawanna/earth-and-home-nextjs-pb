@@ -85,8 +85,7 @@ interface User {
   role?: string;
 }
 
-export default function DashboardSidebar({ user }: { user: UsersResponse }) {
-  console.log(" === user === ",user)
+export function DashboardSidebar({ user }: { user: UsersResponse }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -215,7 +214,7 @@ export default function DashboardSidebar({ user }: { user: UsersResponse }) {
                 align="end"
                 sideOffset={4}>
                 <DropdownMenuItem asChild>
-                  <ModeToggle compact />
+                  <ModeToggle  />
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

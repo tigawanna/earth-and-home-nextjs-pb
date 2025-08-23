@@ -1,9 +1,10 @@
-import { LazyDashboardSidebar } from "@/components/property/dashboard/lazy-dashboard-sidebar";
+import { DashboardSidebar } from "@/components/property/dashboard/dashboard-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { createServerClient } from "@/lib/pocketbase/server-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -18,7 +19,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <LazyDashboardSidebar user={user} />
+      {/* <LazyDashboardSidebar user={user} /> */}
+      <DashboardSidebar user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
