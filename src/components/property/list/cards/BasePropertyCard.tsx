@@ -2,9 +2,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
-import { Bath, Bed, Calendar, Car, Home, MapPin, Square } from "lucide-react";
+import { Calendar, Home, MapPin } from "lucide-react";
 import Image from "next/image";
-import { FavoriteProperty } from "../../form/FavoriteProperty";
+import Link from "next/link";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
   is_favorited?: boolean | null;
@@ -23,6 +23,12 @@ interface BasePropertyCardProps {
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;
   showViewButton?: boolean;
+  href?: string;
+  /**
+   * When true, wraps the main card content (excluding footer) with a Link
+   * The footer remains outside the link for interactive elements
+   */
+  wrapWithLink?: boolean;
 }
 
 function formatPrice(currency: string | undefined, price: number | undefined) {
@@ -44,6 +50,8 @@ export function BasePropertyCard({
   showFooterActions = false,
   footerActions,
   showViewButton = true,
+  href,
+  wrapWithLink = false,
 }: BasePropertyCardProps) {
   const {
     id,
@@ -82,16 +90,15 @@ export function BasePropertyCard({
     ? getImageThumbnailUrl(property, primaryImageFilename, "400x300")
     : null;
 
-
   // Get main price based on listing type
   const mainPrice =
     listing_type === "sale" ? property.sale_price || price : property.rental_price || price;
 
   const locationLabel = [city, state, country].filter(Boolean).join(", ");
 
-  return (
-    <Card
-      className={`group relative w-full overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}>
+  // Card content that should be clickable (wrapped in Link)
+  const cardContent = (
+    <div className="flex flex-col h-full" >
       {/* Media */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted/40">
         {imageUrl ? (
@@ -116,7 +123,7 @@ export function BasePropertyCard({
           </div>
         )}
 
-        {/* Badges */}
+        {/* Status Badges - Keep these in the image for visual hierarchy */}
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start gap-2">
           <div className="flex gap-2 flex-wrap">
             {is_featured ? (
@@ -135,7 +142,7 @@ export function BasePropertyCard({
       </div>
 
       {/* Content */}
-      <CardContent className="p-4">
+      <CardContent className="p-1">
         {/* Property Type Badge */}
         {property_type ? (
           <div className="mb-2">
@@ -146,6 +153,7 @@ export function BasePropertyCard({
             </Badge>
           </div>
         ) : null}
+
         <div className="flex flex-wrap items-start justify-between mb-3">
           <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
             {title ?? "Untitled Property"}
@@ -169,49 +177,32 @@ export function BasePropertyCard({
           <p className="text-sm text-muted-foreground mb-4 line-clamp-1">{property.description}</p>
         ) : null}
 
-        <div className="flex flex-wrap items-center gap-4 mb-4 text-sm">
-          {beds && beds > 0 ? (
-            <div className="flex items-center">
-              <Bed className="w-4 h-4 mr-1" />
-              <span>
-                {beds} bed{beds !== 1 ? "s" : ""}
-              </span>
-            </div>
-          ) : null}
-          {baths && baths > 0 ? (
-            <div className="flex items-center">
-              <Bath className="w-4 h-4 mr-1" />
-              <span>
-                {baths} bath{baths !== 1 ? "s" : ""}
-              </span>
-            </div>
-          ) : null}
-          {building_size_sqft ? (
-            <div className="flex items-center">
-              <Square className="w-4 h-4 mr-1" />
-              <span>{building_size_sqft.toLocaleString()} sqft</span>
-            </div>
-          ) : null}
-          {property.parking_spaces && property.parking_spaces > 0 ? (
-            <div className="flex items-center">
-              <Car className="w-4 h-4 mr-1" />
-              <span>{property.parking_spaces} parking</span>
-            </div>
-          ) : null}
-        </div>
-
         {property.available_from ? (
           <div className="flex items-center text-sm text-muted-foreground mb-4">
             <Calendar className="w-4 h-4 mr-1" />
             <span>Available from {new Date(property.available_from).toLocaleDateString()}</span>
           </div>
         ) : null}
-
       </CardContent>
+    </div>
+  );
 
+  return (
+    <Card
+      className={`group relative py-0 w-full justify-between gap-2 overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}>
+      {/* Main card content - optionally wrapped with Link */}
+      {wrapWithLink && href ? (
+        <Link href={href} className="block">
+          {cardContent}
+        </Link>
+      ) : (
+        cardContent
+      )}
+
+      {/* Footer - Always outside the link for interactive elements */}
       {showFooterActions && footerActions ? (
-        <CardFooter className="px-4 py-3 border-t border-border/60 bg-muted/20">
-          <div className="flex items-center gap-2 w-full">{footerActions}</div>
+        <CardFooter className="border-t py-2 border-border/60 bg-muted/20 ">
+          {footerActions}
         </CardFooter>
       ) : null}
     </Card>

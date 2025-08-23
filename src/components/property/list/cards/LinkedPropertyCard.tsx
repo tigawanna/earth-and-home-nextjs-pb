@@ -1,7 +1,7 @@
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
-import Link from "next/link";
-import { BasePropertyCard } from "./BasePropertyCard";
+import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
+import { BasePropertyCard } from "./BasePropertyCard";
 
 type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
   is_favorited?: boolean | null;
@@ -25,14 +25,14 @@ interface LinkedPropertyCardProps {
 }
 
 /**
- * Server-side property card component that wraps BasePropertyCard with a Link
+ * Server-side property card component that uses BasePropertyCard with built-in Link
  * Use this in server components for property listings
  */
 export function LinkedPropertyCard({
   property,
   href,
   className,
-  showFooterActions = false,
+  showFooterActions = true, // Enable footer by default for stats and interactions
   footerActions,
   currentUserId,
   basePath,
@@ -40,22 +40,51 @@ export function LinkedPropertyCard({
   // Default href patterns
   const defaultHref = href || `${basePath || "/"}properties/${property.id}`;
 
-  return (
-    <div>
-      <Link href={defaultHref} className="block">
-        <BasePropertyCard
-          property={property}
-          className={`transition-transform  cursor-pointer ${className}`}
-          showFooterActions={showFooterActions}
-          footerActions={footerActions}
+  // Default footer actions include stats and favorite button
+  const defaultFooterActions = footerActions || (
+    <div className="flex items-center justify-between w-full">
+      {/* Property stats */}
+      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        {property.beds && property.beds > 0 ? (
+          <div className="flex items-center">
+            <Bed className="w-4 h-4 mr-1" />
+            <span>{property.beds}</span>
+          </div>
+        ) : null}
+        {property.baths && property.baths > 0 ? (
+          <div className="flex items-center">
+            <Bath className="w-4 h-4 mr-1" />
+            <span>{property.baths}</span>
+          </div>
+        ) : null}
+        {property.building_size_sqft ? (
+          <div className="flex items-center">
+            <Square className="w-4 h-4 mr-1" />
+            <span>{property.building_size_sqft.toLocaleString()} sqft</span>
+          </div>
+        ) : null}
+      </div>
+      
+      {/* Interactive elements */}
+      <div className="flex items-center gap-2">
+        <FavoriteProperty
+          propertyId={property.id}
+          userId={currentUserId}
+          is_favorited={property.is_favorited}
         />
-      </Link>
-      <FavoriteProperty
-        propertyId={property.id}
-        userId={currentUserId}
-        is_favorited={property.is_favorited}
-      />
+      </div>
     </div>
+  );
+
+  return (
+    <BasePropertyCard
+      property={property}
+      className={`transition-transform cursor-pointer ${className}`}
+      showFooterActions={showFooterActions}
+      footerActions={defaultFooterActions}
+      href={defaultHref}
+      wrapWithLink={true}
+    />
   );
 }
 
@@ -67,7 +96,8 @@ export function DashboardLinkedPropertyCard({
   className,
   showFooterActions = true,
   footerActions,
-}: Omit<LinkedPropertyCardProps, "href">) {
+  currentUserId,
+}: Omit<LinkedPropertyCardProps, "href" | "basePath">) {
   return (
     <LinkedPropertyCard
       property={property}
@@ -75,6 +105,7 @@ export function DashboardLinkedPropertyCard({
       className={className}
       showFooterActions={showFooterActions}
       footerActions={footerActions}
+      currentUserId={currentUserId}
     />
   );
 }
