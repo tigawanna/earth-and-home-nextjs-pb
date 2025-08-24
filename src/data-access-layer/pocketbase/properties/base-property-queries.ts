@@ -72,24 +72,13 @@ export async function baseGetPaginatedProperties({
     }
 
     if (filters.minPrice) {
-      // PocketBase doesn't have COALESCE, so we'll use OR conditions
-      conditions.push(
-        or(
-          gte("sale_price", filters.minPrice),
-          gte("rental_price", filters.minPrice),
-          gte("price", filters.minPrice)
-        )
-      );
+      // Now using unified price field
+      conditions.push(gte("price", filters.minPrice));
     }
 
     if (filters.maxPrice) {
-      conditions.push(
-        or(
-          lte("sale_price", filters.maxPrice),
-          lte("rental_price", filters.maxPrice),
-          lte("price", filters.maxPrice)
-        )
-      );
+      // Now using unified price field
+      conditions.push(lte("price", filters.maxPrice));
     }
 
     if (filters.beds) {

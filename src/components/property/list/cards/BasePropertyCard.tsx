@@ -90,9 +90,8 @@ export function BasePropertyCard({
     ? getImageThumbnailUrl(property, primaryImageFilename, "400x300")
     : null;
 
-  // Get main price based on listing type
-  const mainPrice =
-    listing_type === "sale" ? property.sale_price || price : property.rental_price || price;
+  // Get main price from the unified price field (previously sale_price/rental_price are now merged into price)
+  const mainPrice = price;
 
   const locationLabel = [city, state, country].filter(Boolean).join(", ");
 

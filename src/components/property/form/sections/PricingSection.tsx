@@ -1,14 +1,13 @@
 "use client";
 
-import { Control, useWatch } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PropertyFormData } from "../property-form-schema";
-import { 
-  NumberFieldComponent, 
-  CurrencyFieldComponent,
-  DateFieldComponent,
-  SelectFieldComponent
+import { Control, useWatch } from "react-hook-form";
+import {
+    CurrencyFieldComponent,
+    DateFieldComponent,
+    SelectFieldComponent
 } from "../form-fields";
+import { PropertyFormData } from "../property-form-schema";
 
 // Common currencies with their symbols and names
 const CURRENCIES = [
@@ -73,27 +72,15 @@ export function PricingSection({ control }: PricingSectionProps) {
               required
             />
 
-            {isSale && (
-              <CurrencyFieldComponent
-                control={control}
-                name="sale_price"
-                label="Sale Price"
-                placeholder="Enter sale price"
-                currency={selectedCurrency || "KES"}
-                required
-              />
-            )}
-
-            {isRent && (
-              <CurrencyFieldComponent
-                control={control}
-                name="rental_price"
-                label="Monthly Rent"
-                placeholder="Enter monthly rental price"
-                currency={selectedCurrency || "KES"}
-                required
-              />
-            )}
+            {/* Universal Price Field */}
+            <CurrencyFieldComponent
+              control={control}
+              name="price"
+              label={isSale ? "Sale Price" : "Monthly Rent"}
+              placeholder={isSale ? "Enter sale price" : "Enter monthly rental price"}
+              currency={selectedCurrency || "KES"}
+              required
+            />
           </div>
         </div>
 

@@ -57,9 +57,7 @@ export interface PropertyWithRelations {
   location: string; // Location
   city: string; // City
   state: string; // State
-  price: number; // Price
-  sale_price: number; // Sale price
-  rental_price: number; // Rental price
+  price: number; // Unified price field (replaces sale_price/rental_price)
   beds: number; // Number of bedrooms
   baths: number; // Number of bathrooms
   building_size_sqft: number; // Building size in square feet

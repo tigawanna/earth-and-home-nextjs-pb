@@ -42,11 +42,8 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
     }).format(price);
   };
 
-  // Get the main price based on listing type
-  const mainPrice =
-    property.listing_type === "sale"
-      ? property.sale_price || property.price
-      : property.rental_price || property.price;
+  // Get the main price from unified price field
+  const mainPrice = property.price;
 
   const rawImages = Array.isArray(property.images) ? property.images : [];
   const amenities = Array.isArray(property.amenities) ? property.amenities : [];

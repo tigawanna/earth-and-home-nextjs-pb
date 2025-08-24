@@ -150,8 +150,7 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
               const imageUrl = primary
                 ? getImageThumbnailUrl(p as PropertiesResponse, primary, "120x90")
                 : null;
-              const mainPrice =
-                p.listing_type === "sale" ? (p.sale_price || p.price) : (p.rental_price || p.price);
+              const mainPrice = p.price; // Using unified price field
               const location = [p.city, p.state, p.country].filter(Boolean).join(", ");
 
               return (
@@ -210,12 +209,8 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
 
                   <TableCell>
                     <div className="font-medium">
-                      {p.listing_type === "sale" && p.sale_price
-                        ? formatPrice(p.sale_price, p.currency)
-                        : p.rental_price
-                        ? `${formatPrice(p.rental_price, p.currency)}/mo`
-                        : p.price
-                        ? formatPrice(p.price, p.currency)
+                      {p.price
+                        ? `${formatPrice(p.price, p.currency)}${p.listing_type === "rent" ? "/mo" : ""}`
                         : "Price on request"}
                     </div>
                   </TableCell>
