@@ -1,48 +1,51 @@
-"use client";
-import { dashboardPropertyQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";
-import { useQueryPage } from "@/hooks/use-query-page";
+
+import { getProperties } from "@/data-access-layer/pocketbase/properties/server-side-property-queries";
+import { PropertiesResponseWithExpandedRelations, PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
-import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/pocketbase/property-types";
 
 interface DashboardPropertiesListProps {
-    user: UsersResponse | null;
+  user: UsersResponse | null;
+  limit?: number; // Optional limit for pagination
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
 }
 
-export function DashboardPropertiesList({ user }: DashboardPropertiesListProps) {
-  const currentPage = useQueryPage();
+export async function DashboardPropertiesList({ user, limit, searchParams }: DashboardPropertiesListProps) {
+  // Convert search params to filters
+  const filters: PropertyFilters = {
+    search: (searchParams?.search as string) || "",
+    propertyType: searchParams?.propertyType as string,
+    listingType: searchParams?.listingType as "sale" | "rent",
+    status: "active", // Only show active properties in public view
+    minPrice: searchParams?.minPrice ? Number(searchParams?.minPrice) : undefined,
+    maxPrice: searchParams?.maxPrice ? Number(searchParams?.maxPrice) : undefined,
+    beds: searchParams?.beds ? Number(searchParams?.beds) : undefined,
+    baths: searchParams?.baths ? Number(searchParams?.baths) : undefined,
+    city: searchParams?.city as string,
+    isFeatured: searchParams?.featured === "true" ? true : undefined,
+  };
 
-  // const [isPending, startTransition] = useTransition();
-  const [queryState] = useQueryStates({
-    search: parseAsString.withDefault(""),
-    propertyType: parseAsString,
-    listingType: parseAsString,
-    status: parseAsString,
-    maxPrice: parseAsInteger,
-    beds: parseAsInteger,
-    baths: parseAsInteger,
-    city: parseAsString,
-    featured: parseAsString,
-    minPrice: parseAsInteger,
-    sortBy: parseAsString.withDefault("created"),
-    sortOrder: parseAsString.withDefault("desc"),
+  const sortBy = (searchParams?.sortBy as PropertySortBy) || "created";
+  const sortOrder = (searchParams?.sortOrder as SortOrder) || "desc";
+  const page = searchParams?.page ? Number(searchParams?.page) : 1;
+
+  // Get properties with filters
+  const result = await getProperties({
+    filters,
+    sortBy,
+    sortOrder,
+    page,
+    limit: limit || 50, // Default to 50 if no limit provided
   });
 
-  const { data } = useSuspenseQuery(
-    dashboardPropertyQueryOptions({
-      page: currentPage,
-      q: queryState.search,
-      filters: queryState as any,
-      limit: 50,
-    })
-  );
 
-  const properties = data?.result?.items || [];
-  const totalPages = data?.result?.totalPages || 0;
+  const properties = result.success ? result.properties : [];
+  const totalPages = result.success ? result.pagination.totalPages : 0;
+
   // Render empty state if no properties
   if (properties.length === 0) {
     return <PropertiesEmpty />;

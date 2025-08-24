@@ -3,7 +3,6 @@ import { PublicPropertiesList } from "@/components/property/list/PublicPropertie
 import { PropertiesListLoading } from "@/components/property/query-states/PropertiesListLoading";
 import { Suspense } from "react";
 
-
 export default async function PublicPropertiesPage({
   searchParams,
 }: {

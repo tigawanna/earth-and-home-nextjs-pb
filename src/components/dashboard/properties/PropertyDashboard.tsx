@@ -10,9 +10,12 @@ import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
 interface PropertyDashboardProps {
   user: UsersResponse | null;
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
 }
 
-export function PropertyDashboard({ user }: PropertyDashboardProps) {
+export function PropertyDashboard({ user, searchParams }: PropertyDashboardProps) {
   const isAdmin = user?.is_admin;
 
   return (
@@ -32,7 +35,7 @@ export function PropertyDashboard({ user }: PropertyDashboardProps) {
       <PropertyFilters showStatusFilter={isAdmin} />
       {/* Properties List */}
       <Suspense fallback={<PropertiesListLoading/>}>
-        <DashboardPropertiesList user={user}/>
+        <DashboardPropertiesList user={user} searchParams={searchParams} />
       </Suspense>
       {/* Quick Actions Card */}
       
