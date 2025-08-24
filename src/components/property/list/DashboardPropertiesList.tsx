@@ -7,6 +7,7 @@ import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/pocketbase/property-types";
 
 interface DashboardPropertiesListProps {
     user: UsersResponse | null;
@@ -53,7 +54,7 @@ export function DashboardPropertiesList({ user }: DashboardPropertiesListProps) 
           <LinkedPropertyCard
             basePath="/dashboard/"
             key={property.id}
-            property={property}
+            property={property as PropertiesResponseWithExpandedRelations}
             currentUserId={user?.id}
           />
         ))}

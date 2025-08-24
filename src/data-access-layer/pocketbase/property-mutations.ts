@@ -25,6 +25,9 @@ export const createPropertyMutationOptions = mutationOptions({
 export const updatePropertyMutationOptions = mutationOptions({
   mutationFn: async (data: PropertiesUpdate) => {
     try {
+      if(!data.id){
+        throw new Error("Property ID is required for update");
+      }
       const res = await browserPB.from("properties").update(data.id, data);
       return {
         record: res ?? null,

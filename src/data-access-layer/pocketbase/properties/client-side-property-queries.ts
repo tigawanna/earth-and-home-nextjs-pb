@@ -2,10 +2,12 @@ import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { queryOptions } from "@tanstack/react-query";
 import { PropertyFilters, PropertySortBy, SortOrder } from "../property-types";
-import { getPaginatedProperties, getPropertyById } from "./base-custom-property-api";
+
 import {
   baseGetAllUsers,
+  baseGetPaginatedProperties,
   baseGetPaginatedUsers,
+  baseGetPropertyById,
   baseGetSearchableFavorites,
 } from "./base-property-queries";
 
@@ -62,13 +64,18 @@ export function dashboardPropertyQueryOptions({
       };
 
       try {
-        // Try the new custom API first
-        const result = await getPaginatedProperties({
-          client: browserPB,
-          filters: mergedFilters,
-          page,
-          limit,
-        });
+      const result = await baseGetPaginatedProperties({
+        client: browserPB,
+        filters: mergedFilters,
+        page,
+        limit,
+      });
+        // const result = await getPaginatedProperties({
+        //   client: browserPB,
+        //   filters: mergedFilters,
+        //   page,
+        //   limit,
+        // });
 
         return {
           success: result.success,
@@ -162,15 +169,14 @@ export function dashboardPropertyByIdQueryOptions({
     queryKey: [queryKeyPrefixes.dashboard, "property", propertyId, userId],
     queryFn: async ({}) => {
       try {
-        // Try the new custom API first
-        const result = await getPropertyById({
+        const { result, success, message } = await baseGetPropertyById({
           client: browserPB,
           propertyId,
         });
         return {
-          success: result.success,
-          result: result.property,
-          message: result.message,
+          success,
+          property: result,
+          message,
         };
       } catch (error) {
         return {

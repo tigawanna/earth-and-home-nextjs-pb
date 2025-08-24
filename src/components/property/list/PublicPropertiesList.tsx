@@ -1,5 +1,6 @@
 import { getProperties } from "@/data-access-layer/pocketbase/properties/server-side-property-queries";
 import {
+  PropertiesResponseWithExpandedRelations,
   PropertyFilters,
   PropertySortBy,
   SortOrder,
@@ -50,10 +51,8 @@ export async function PublicPropertiesList({
   });
   const user = await getServerSideUser();
 
-
   const properties = result.success ? result.properties : [];
   const totalPages = result.success ? result.pagination.totalPages : 0;
-
 
   // Render empty state if no properties
   if (properties.length === 0) {
@@ -63,7 +62,12 @@ export async function PublicPropertiesList({
     <div className="w-full h-full flex flex-col items-center gap-6">
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 w-full">
         {properties.map((property) => (
-          <LinkedPropertyCard basePath="/" key={property.id} property={property} currentUserId={user?.id} />
+          <LinkedPropertyCard
+            basePath="/"
+            key={property.id}
+            property={property as PropertiesResponseWithExpandedRelations}
+            currentUserId={user?.id}
+          />
         ))}
       </div>
       {showPages && <ListPagination totalPages={totalPages} />}
