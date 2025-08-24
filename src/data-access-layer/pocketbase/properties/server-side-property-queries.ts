@@ -3,11 +3,9 @@ import "server-only";
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import { PropertyFilters, PropertySortBy, SortOrder } from "../property-types";
 import {
-  getPaginatedProperties,
-  getPropertyById,
-} from "./base-custom-property-api";
-import {
   baseGetFavoriteProperties,
+  baseGetPaginatedProperties,
+  baseGetPropertyById,
 } from "./base-property-queries";
 
 
@@ -34,11 +32,14 @@ export async function getProperties({
   try {
     const client = await createServerClient();
     
-    const result = await getPaginatedProperties({
+    const result = await baseGetPaginatedProperties({
       client,
       filters,
+      sortBy,
+      sortOrder,
       page,
       limit,
+      userId,
     });
     
     return result;
@@ -68,15 +69,15 @@ export async function getServerSidePropertyById(identifier: string, userId?: str
   try {
     const client = await createServerClient();
 
-    const result = await getPropertyById({
+    const {result,success,message} = await baseGetPropertyById({
       client,
       propertyId: identifier,
     });
 
     return {
-      success: result.success,
-      property: result.property,
-      message: result.message,
+      success,
+      property: result,
+      message,
     };
   } catch (error) {
     console.error("Error fetching property:", error);

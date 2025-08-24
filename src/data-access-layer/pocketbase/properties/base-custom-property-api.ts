@@ -1,3 +1,5 @@
+// Custom Property API using PocketBase custom routes with joins : WE're not sung this for now
+
 /**
  * Property API methods using custom PocketBase routes with joins
  * This file provides a clean interface to access property data with agent, owner, and favorite information
@@ -53,70 +55,70 @@ export interface GetPaginatedPropertiesParams {
 /**
  * Get paginated properties with agent, owner, and favorite information
  */
-export async function getPaginatedProperties({
-  client,
-  filters = {},
-  page = 1,
-  limit = 20,
-}: GetPaginatedPropertiesParams): Promise<PropertiesResponse> {
-  try {
-    // Build query parameters
-    const queryParams = new URLSearchParams({
-      page: page.toString(),
-      limit: Math.min(limit, 100).toString(),
-    });
+// export async function getPaginatedProperties({
+//   client,
+//   filters = {},
+//   page = 1,
+//   limit = 20,
+// }: GetPaginatedPropertiesParams): Promise<PropertiesResponse> {
+//   try {
+//     // Build query parameters
+//     const queryParams = new URLSearchParams({
+//       page: page.toString(),
+//       limit: Math.min(limit, 100).toString(),
+//     });
 
-    // Add filter parameters
-    if (filters.search) queryParams.set("search", filters.search);
-    if (filters.status) queryParams.set("status", filters.status);
-    if (filters.propertyType) queryParams.set("property_type", filters.propertyType);
-    if (filters.listingType) queryParams.set("listing_type", filters.listingType);
-    if (filters.minPrice) queryParams.set("minPrice", filters.minPrice.toString());
-    if (filters.maxPrice) queryParams.set("maxPrice", filters.maxPrice.toString());
-    if (filters.beds) queryParams.set("beds", filters.beds.toString());
-    if (filters.baths) queryParams.set("baths", filters.baths.toString());
-    if (filters.city) queryParams.set("city", filters.city);
-    if (filters.agentId) queryParams.set("agentId", filters.agentId);
-    if (filters.ownerId) queryParams.set("ownerId", filters.ownerId);
-    // sort params
-    if (filters.sortBy) queryParams.set("sortBy", filters.sortBy);
-    if (filters.sortOrder) queryParams.set("sortOrder", filters.sortOrder);
-    if (filters.isFeatured !== undefined)
-      queryParams.set("isFeatured", filters.isFeatured.toString());
+//     // Add filter parameters
+//     if (filters.search) queryParams.set("search", filters.search);
+//     if (filters.status) queryParams.set("status", filters.status);
+//     if (filters.propertyType) queryParams.set("property_type", filters.propertyType);
+//     if (filters.listingType) queryParams.set("listing_type", filters.listingType);
+//     if (filters.minPrice) queryParams.set("minPrice", filters.minPrice.toString());
+//     if (filters.maxPrice) queryParams.set("maxPrice", filters.maxPrice.toString());
+//     if (filters.beds) queryParams.set("beds", filters.beds.toString());
+//     if (filters.baths) queryParams.set("baths", filters.baths.toString());
+//     if (filters.city) queryParams.set("city", filters.city);
+//     if (filters.agentId) queryParams.set("agentId", filters.agentId);
+//     if (filters.ownerId) queryParams.set("ownerId", filters.ownerId);
+//     // sort params
+//     if (filters.sortBy) queryParams.set("sortBy", filters.sortBy);
+//     if (filters.sortOrder) queryParams.set("sortOrder", filters.sortOrder);
+//     if (filters.isFeatured !== undefined)
+//       queryParams.set("isFeatured", filters.isFeatured.toString());
 
 
-    // Make request to custom route
-    const response = await client.send(`/api/properties-with-fav?${queryParams.toString()}`);
+//     // Make request to custom route
+//     const response = await client.send(`/api/properties-with-fav?${queryParams.toString()}`);
 
-    return {
-      success: true,
-      properties: response.items,
-      pagination: {
-        page: response.page,
-        limit: response.limit,
-        totalCount: response.totalCount,
-        totalPages: response.totalPages,
-        hasNextPage: page < response.totalPages,
-        hasPrevPage: page > 1,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching properties:", error);
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Failed to fetch properties",
-      properties: [],
-      pagination: {
-        page: 1,
-        limit,
-        totalCount: 0,
-        totalPages: 0,
-        hasNextPage: false,
-        hasPrevPage: false,
-      },
-    };
-  }
-}
+//     return {
+//       success: true,
+//       properties: response.items,
+//       pagination: {
+//         page: response.page,
+//         limit: response.limit,
+//         totalCount: response.totalCount,
+//         totalPages: response.totalPages,
+//         hasNextPage: page < response.totalPages,
+//         hasPrevPage: page > 1,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching properties:", error);
+//     return {
+//       success: false,
+//       message: error instanceof Error ? error.message : "Failed to fetch properties",
+//       properties: [],
+//       pagination: {
+//         page: 1,
+//         limit,
+//         totalCount: 0,
+//         totalPages: 0,
+//         hasNextPage: false,
+//         hasPrevPage: false,
+//       },
+//     };
+//   }
+// }
 
 // ====================================================
 // GET SINGLE PROPERTY
@@ -130,44 +132,44 @@ export interface GetPropertyByIdParams {
 /**
  * Get a single property by ID with agent, owner, and favorite information
  */
-export async function getPropertyById({
-  client,
-  propertyId,
-}: GetPropertyByIdParams): Promise<PropertyResponse> {
-  try {
-    if (!propertyId) {
-      return {
-        success: false,
-        message: "Property ID is required",
-        property: null,
-      };
-    }
+// export async function getPropertyById({
+//   client,
+//   propertyId,
+// }: GetPropertyByIdParams): Promise<PropertyResponse> {
+//   try {
+//     if (!propertyId) {
+//       return {
+//         success: false,
+//         message: "Property ID is required",
+//         property: null,
+//       };
+//     }
 
-    // Make request to custom route
-    const property = await client.send(`/api/properties-with-fav/${propertyId}`);
-    return {
-      success: true,
-      property,
-    };
-  } catch (error: any) {
-    console.error("Error fetching property:", error);
+//     // Make request to custom route
+//     const property = await client.send(`/api/properties-with-fav/${propertyId}`);
+//     return {
+//       success: true,
+//       property,
+//     };
+//   } catch (error: any) {
+//     console.error("Error fetching property:", error);
 
-    // Handle 404 specifically
-    if (error.status === 404) {
-      return {
-        success: false,
-        message: "Property not found",
-        property: null,
-      };
-    }
+//     // Handle 404 specifically
+//     if (error.status === 404) {
+//       return {
+//         success: false,
+//         message: "Property not found",
+//         property: null,
+//       };
+//     }
 
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Failed to fetch property",
-      property: null,
-    };
-  }
-}
+//     return {
+//       success: false,
+//       message: error instanceof Error ? error.message : "Failed to fetch property",
+//       property: null,
+//     };
+//   }
+// }
 
 // ====================================================
 // USAGE EXAMPLES

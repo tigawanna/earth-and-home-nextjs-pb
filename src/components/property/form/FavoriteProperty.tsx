@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/pocketbase/property-types";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { and, eq } from "@tigawanna/typed-pocketbase";
@@ -9,19 +10,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface FavoritePropertyProps {
-  propertyId: string;
   userId?: string;
-  is_favorited?: boolean | null; // New API field
+  property: PropertiesResponseWithExpandedRelations;
 }
 
-export function FavoriteProperty({ 
-  propertyId, 
-  userId, 
-  is_favorited 
-}: FavoritePropertyProps) {
+export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
+  const propertyId = property.id;
+  const is_favorited =
+    property.expand?.favorites_via_property_id?.some((fav) => fav.user_id === userId) ||
+    property.is_favorited ||
+    false;
   const queryClient = useQueryClient();
   const [currentUserId, setCurrentUserId] = useState<string | null>(userId || null);
-  const [favoriteState, setFavoriteState] = useState( is_favorited || false);
+  const [favoriteState, setFavoriteState] = useState(is_favorited || false);
 
   // Get current user from PocketBase auth if not provided
   useEffect(() => {
@@ -36,45 +37,41 @@ export function FavoriteProperty({
         const existingFavorite = await browserPB
           .from("favorites")
           .getFirstListItem(and(eq("property_id", property_id), eq("user_id", user_id)));
-        
+
         if (existingFavorite) {
           // If favorite exists, delete it (unfavorite)
           await browserPB.from("favorites").delete(existingFavorite.id);
-          return { action: 'unfavorited', isFavorited: false };
+          return { action: "unfavorited", isFavorited: false };
         }
       } catch (error) {
         // Favorite doesn't exist, so we'll create it
       }
       // Create favorite
       await browserPB.from("favorites").create({ property_id, user_id });
-      return { action: 'favorited', isFavorited: true };
+      return { action: "favorited", isFavorited: true };
     },
     onSuccess: (result) => {
       // Update local state
       setFavoriteState(result.isFavorited);
-      
+
       // Invalidate relevant queries to refetch data
-      queryClient.invalidateQueries({ 
-        queryKey: ["dashboard", "property", propertyId] 
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "property", propertyId],
       });
-      queryClient.invalidateQueries({ 
-        queryKey: ["dashboard", "properties"] 
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "properties"],
       });
-      queryClient.invalidateQueries({ 
-        queryKey: ["dashboard", "favorites"] 
+      queryClient.invalidateQueries({
+        queryKey: ["dashboard", "favorites"],
       });
     },
   });
-// console.log("Favorite state:", {is_favorited,favoriteState});
+  // console.log("Favorite state:", {is_favorited,favoriteState});
   // If no user is logged in, show login link
   if (!currentUserId) {
     return (
       <Link href="/auth/signin">
-        <Button
-          variant="outline"
-          size="icon"
-          title="Sign in to favorite properties"
-        >
+        <Button variant="outline" size="icon" title="Sign in to favorite properties">
           <Heart className="h-4 w-4" />
         </Button>
       </Link>
@@ -90,13 +87,12 @@ export function FavoriteProperty({
       disabled={isPending}
       variant="outline"
       size="icon"
-      title={favoriteState ? "Remove from favorites" : "Add to favorites"}
-    >
-      <Heart 
-        data-pending={isPending} 
-        className={`h-4 w-4 transition-colors ${
-          favoriteState ? "fill-red-500 text-red-500" : ""
-        } ${isPending ? "animate-spin" : ""}`}
+      title={favoriteState ? "Remove from favorites" : "Add to favorites"}>
+      <Heart
+        data-pending={isPending}
+        className={`h-4 w-4 transition-colors ${favoriteState ? "fill-red-500 text-red-500" : ""} ${
+          isPending ? "animate-spin" : ""
+        }`}
       />
     </Button>
   );

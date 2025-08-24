@@ -1,21 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/pocketbase/property-types";
 import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Calendar, Home, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
-  is_favorited?: boolean | null;
-  favorite_timestamp?: string | null;
-  expand?:
-    | {
-        owner_id?: UsersResponse[] | undefined;
-        agent_id?: UsersResponse[] | undefined;
-      }
-    | undefined;
-};
+
 
 interface BasePropertyCardProps {
   property: PropertiesResponseWithExpandedRelations;

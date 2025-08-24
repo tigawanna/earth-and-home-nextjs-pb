@@ -122,6 +122,7 @@ export async function baseGetPaginatedProperties({
       sort,
       select: {
         expand: {
+          favorites_via_property_id: true,
           agent_id: true,
         },
       },
@@ -163,6 +164,7 @@ export async function baseGetPaginatedProperties({
 // ====================================================
 
 interface GetPropertyParams {
+  client: TypedPocketBase<Schema>;
   propertyId: string;
   userId?: string;
 }
@@ -180,8 +182,7 @@ interface GetPropertyResult {
  * @returns Property data with agent info and favorite status
  */
 export async function baseGetPropertyById(
-  client: TypedPocketBase<Schema>,
-  { propertyId, userId }: GetPropertyParams
+  { client, propertyId, userId }: GetPropertyParams
 ): Promise<GetPropertyResult> {
   try {
     const collection = client.from("properties");
@@ -193,7 +194,8 @@ export async function baseGetPropertyById(
     const property = await collection.getFirstListItem(filter, {
       select: {
         expand: {
-          agent_id: true
+          favorites_via_property_id: true,
+          agent_id: true,
         },
       },
     });

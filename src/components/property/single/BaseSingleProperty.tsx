@@ -108,9 +108,9 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                         {/* <Button variant="outline" size="icon">
                           <Heart className="h-4 w-4" />
                         </Button> */}
-                        <FavoriteProperty 
-                          propertyId={property.id} 
-                          is_favorited={property.is_favorited}
+                        <FavoriteProperty
+                          userId={user?.id}
+                          property={property}
                         />
                         <Button variant="outline" size="icon">
                           <Share2 className="h-4 w-4" />

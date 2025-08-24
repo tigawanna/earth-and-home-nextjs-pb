@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PropertyFilters as PropertyFiltersType } from "@/data-access-layer/pocketbase/property-types";
-import { Filter, Loader, Loader2, Search, X } from "lucide-react";
+import { Filter, Loader, Search, X } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { useState, useTransition } from "react";
 
@@ -81,12 +81,19 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
     isFeatured: isFeatured === "true" ? true : undefined,
   };
 
-  const hasActiveFilters = Object.values(filters).some(
+  // Include sort parameters in active filters check
+  const allFilters = {
+    ...filters,
+    sortBy: sortBy !== "created" ? sortBy : undefined,
+    sortOrder: sortOrder !== "desc" ? sortOrder : undefined,
+  };
+
+  const hasActiveFilters = Object.values(allFilters).some(
     (value) => value !== undefined && value !== "" && value !== null
   );
 
   const getActiveFilterCount = () => {
-    return Object.values(filters).filter(
+    return Object.values(allFilters).filter(
       (value) => value !== undefined && value !== "" && value !== null
     ).length;
   };
@@ -104,6 +111,9 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
       baths: null,
       city: null,
       featured: null,
+      // Also clear sort parameters
+      sortBy: "created",
+      sortOrder: "desc",
       page: 1,
     }));
   };
@@ -258,6 +268,41 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
           </div>
         </div>
 
+        {/* Sort Filters Row */}
+        <div className="flex flex-wrap gap-3 mb-3">
+          {/* Sort By */}
+          <div className="space-y-1 min-w-[140px] flex-1">
+            <Select
+              value={sortBy}
+              onValueChange={(value) => handleSortChange("sortBy", value)}>
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
+                <SelectItem value="created">Date Created</SelectItem>
+                <SelectItem value="updated">Last Updated</SelectItem>
+                <SelectItem value="price">Price</SelectItem>
+                <SelectItem value="title">Title</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Sort Order */}
+          <div className="space-y-1 min-w-[120px] flex-1">
+            <Select
+              value={sortOrder}
+              onValueChange={(value) => handleSortChange("sortOrder", value)}>
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md">
+                <SelectValue placeholder="Order" />
+              </SelectTrigger>
+              <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
+                <SelectItem value="desc">Descending</SelectItem>
+                <SelectItem value="asc">Ascending</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
         {/* Advanced Filters Toggle - Smaller */}
         <div className="flex justify-center pt-1">
           <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -309,46 +354,7 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Sort Section */}
-              <div className="space-y-3">
-                <h4 className="font-medium text-foreground text-xs uppercase tracking-wide border-b border-border/50 pb-1">
-                  Sort & Order
-                </h4>
-                <div className="space-y-2">
-                  <div className="space-y-1">
-      
-                    <Select
-                      value={sortBy}
-                      onValueChange={(value) => handleSortChange("sortBy", value)}>
-                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                        <SelectItem value="created">Date Created</SelectItem>
-                        <SelectItem value="updated">Last Updated</SelectItem>
-                        <SelectItem value="price">Price</SelectItem>
-                        <SelectItem value="title">Title</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1">
-             
-                    <Select
-                      value={sortOrder}
-                      onValueChange={(value) => handleSortChange("sortOrder", value)}>
-                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                        <SelectItem value="desc">Desc</SelectItem>
-                        <SelectItem value="asc">Asc</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Property Details */}
               <div className="space-y-3">
                 <h4 className="font-medium text-foreground text-xs uppercase tracking-wide border-b border-border/50 pb-1">

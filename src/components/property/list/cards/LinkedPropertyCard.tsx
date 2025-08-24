@@ -1,18 +1,10 @@
-import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
 import { BasePropertyCard } from "./BasePropertyCard";
+import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/pocketbase/property-types";
 
-type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
-  is_favorited?: boolean | null;
-  favorite_timestamp?: string | null;
-  expand?:
-    | {
-        owner_id?: UsersResponse[] | undefined;
-        agent_id?: UsersResponse[] | undefined;
-      }
-    | undefined;
-};
+
 
 interface LinkedPropertyCardProps {
   property: PropertiesResponseWithExpandedRelations;
@@ -68,9 +60,8 @@ export function LinkedPropertyCard({
       {/* Interactive elements */}
       <div className="flex items-center gap-2">
         <FavoriteProperty
-          propertyId={property.id}
           userId={currentUserId}
-          is_favorited={property.is_favorited}
+          property={property}
         />
       </div>
     </div>
