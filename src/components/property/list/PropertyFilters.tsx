@@ -38,9 +38,10 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
       baths: parseAsInteger,
       city: parseAsString,
       featured: parseAsString,
+      page: parseAsInteger.withDefault(1),
+      // Sort parameters
       sortBy: parseAsString.withDefault("created"),
       sortOrder: parseAsString.withDefault("desc"),
-      page: parseAsInteger.withDefault(1),
     },
     {
       shallow: false,
@@ -340,8 +341,8 @@ export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProp
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                        <SelectItem value="desc">Newest First</SelectItem>
-                        <SelectItem value="asc">Oldest First</SelectItem>
+                        <SelectItem value="desc">Desc</SelectItem>
+                        <SelectItem value="asc">Asc</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

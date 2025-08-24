@@ -10,9 +10,7 @@ export type PropertyWithFavorites = PropertiesResponse & {
 export type PropertyFilters = {
   search?: string;
   propertyType?: string;
-  property_type?: string; // Add this for compatibility with new API
   listingType?: "sale" | "rent";
-  listing_type?: "sale" | "rent"; // Add this for compatibility with new API
   status?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -22,6 +20,8 @@ export type PropertyFilters = {
   agentId?: string;
   ownerId?: string;
   isFeatured?: boolean;
+  sortBy?: PropertySortBy;
+  sortOrder?: SortOrder;
 };
 
 export type PropertySortBy = "created" | "updated" | "price" | "title";

@@ -5,122 +5,7 @@
 
 import { PropertyFilters, PropertyWithFavorites } from "../property-types";
 
-// ====================================================
-// TYPES AND INTERFACES
-// ====================================================
 
-// export type PropertyStatus = "draft" | "active" | "pending" | "sold" | "rented" | "off_market";
-// export type PropertyType =
-//   | "house"
-//   | "apartment"
-//   | "condo"
-//   | "townhouse"
-//   | "duplex"
-//   | "studio"
-//   | "villa"
-//   | "land"
-//   | "commercial"
-//   | "industrial"
-//   | "farm";
-// export type ListingType = "sale" | "rent";
-// export type ParkingType = "garage" | "carport" | "street" | "covered" | "assigned" | "none";
-// export type HeatingType =
-//   | "none"
-//   | "electric"
-//   | "gas"
-//   | "oil"
-//   | "heat_pump"
-//   | "solar"
-//   | "geothermal";
-// export type CoolingType = "none" | "central" | "wall_unit" | "evaporative" | "geothermal";
-// export type ZoningType =
-//   | "residential"
-//   | "commercial"
-//   | "agricultural"
-//   | "industrial"
-//   | "mixed_use"
-//   | "recreational"
-//   | "other";
-
-// export interface PropertyFilters {
-//   search?: string; // Search in title, description, location
-//   status?: PropertyStatus; // Property status
-//   property_type?: PropertyType; // Type of property
-//   listing_type?: ListingType; // Listing type
-//   minPrice?: number; // Minimum price
-//   maxPrice?: number; // Maximum price
-//   beds?: number; // Minimum number of bedrooms
-//   baths?: number; // Minimum number of bathrooms
-//   city?: string; // City filter
-//   agentId?: string; // Filter by agent ID
-//   ownerId?: string; // Filter by owner ID
-//   isFeatured?: boolean; // Filter featured properties
-// }
-
-
-// export interface Agent {
-//   id: string; // Agent ID
-//   name: string; // Agent name
-//   email: string; // Agent email
-// }
-
-// export interface Owner {
-//   id: string; // Owner ID
-//   name: string; // Owner name
-//   email: string; // Owner email
-// }
-
-// export interface PropertyWithRelations {
-//   id: string; // Property ID
-//   title: string; // Property title
-//   description: string; // Property description
-//   status: PropertyStatus; // Property status
-//   listing_type: ListingType; // Listing type
-//   property_type: PropertyType; // Property type
-//   location: string; // Location
-//   street_address: string; // Street address
-//   city: string; // City
-//   state: string; // State
-//   postal_code: string; // Postal code
-//   country: string; // Country
-//   dimensions: string; // Dimensions
-//   building_size_sqft: number; // Building size in square feet
-//   lot_size_sqft: number; // Lot size in square feet
-//   lot_size_acres: number; // Lot size in acres
-//   year_built: number; // Year built
-//   floors: number; // Number of floors
-//   beds: number; // Number of bedrooms
-//   baths: number; // Number of bathrooms
-//   parking_spaces: number; // Number of parking spaces
-//   parking_type: ParkingType; // Parking type
-//   heating: HeatingType; // Heating type
-//   cooling: CoolingType; // Cooling type
-//   zoning: ZoningType; // Zoning
-//   currency: string; // Currency
-//   price: number; // Price
-//   sale_price: number; // Sale price
-//   rental_price: number; // Rental price
-//   security_deposit: number; // Security deposit
-//   hoa_fee: number; // HOA fee
-//   annual_taxes: number; // Annual taxes
-//   available_from: string; // Available from date
-//   image_url: string; // Main image URL
-//   images: string; // Images (JSON string or file references)
-//   video_url: string; // Video URL
-//   virtual_tour_url: string; // Virtual tour URL
-//   amenities: any; // Amenities (JSON)
-//   features: any; // Features (JSON)
-//   utilities: any; // Utilities (JSON)
-//   is_featured: boolean; // Whether property is featured
-//   is_new: boolean; // Whether property is new
-//   location_point: any; // Location point (geo coordinates)
-//   created: string; // Creation timestamp
-//   updated: string; // Update timestamp
-//   agent: Agent | null; // Agent information
-//   owner: Owner | null; // Owner information
-//   is_favorited: boolean; // Whether current user has favorited this property
-//   favorite_timestamp: string | null; // When the property was favorited
-// }
 
 
 export interface PaginationInfo {
@@ -184,8 +69,8 @@ export async function getPaginatedProperties({
     // Add filter parameters
     if (filters.search) queryParams.set("search", filters.search);
     if (filters.status) queryParams.set("status", filters.status);
-    if (filters.property_type) queryParams.set("property_type", filters.property_type);
-    if (filters.listing_type) queryParams.set("listing_type", filters.listing_type);
+    if (filters.propertyType) queryParams.set("property_type", filters.propertyType);
+    if (filters.listingType) queryParams.set("listing_type", filters.listingType);
     if (filters.minPrice) queryParams.set("minPrice", filters.minPrice.toString());
     if (filters.maxPrice) queryParams.set("maxPrice", filters.maxPrice.toString());
     if (filters.beds) queryParams.set("beds", filters.beds.toString());
@@ -193,6 +78,9 @@ export async function getPaginatedProperties({
     if (filters.city) queryParams.set("city", filters.city);
     if (filters.agentId) queryParams.set("agentId", filters.agentId);
     if (filters.ownerId) queryParams.set("ownerId", filters.ownerId);
+    // sort params
+    if (filters.sortBy) queryParams.set("sortBy", filters.sortBy);
+    if (filters.sortOrder) queryParams.set("sortOrder", filters.sortOrder);
     if (filters.isFeatured !== undefined)
       queryParams.set("isFeatured", filters.isFeatured.toString());
 
