@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader, Search } from "lucide-react";
-import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { Input } from "@/components/ui/input";
+import { Loader, Search } from "lucide-react";
+import { parseAsString, useQueryStates } from "nuqs";
 import { useTransition } from "react";
 interface SearchbarProps {
     label: string;

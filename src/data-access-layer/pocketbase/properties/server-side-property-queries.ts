@@ -6,6 +6,7 @@ import {
   baseGetFavoriteProperties,
   baseGetPaginatedProperties,
   baseGetPropertyById,
+  baseGetSearchableFavorites,
 } from "./base-property-queries";
 
 
@@ -118,6 +119,37 @@ export async function getServerSideFavoriteProperties({
     };
   }
 }
+
+// ====================================================
+// GET SEARCHABLE FAVORITES (for dashboard)
+// ====================================================
+
+export async function getServerSideSearchableFavorites({
+  q = "",
+  page = 1,
+  limit = 50,
+}: {
+  q?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const client = await createServerClient();
+    return await baseGetSearchableFavorites({ client, q, page, limit });
+  } catch (error) {
+    console.error("Error fetching searchable favorites:", error);
+    return {
+      success: false,
+      result: null,
+      message: error instanceof Error ? error.message : "Failed to fetch searchable favorites",
+    };
+  }
+}
+
+
+
+
+
 
 // ====================================================
 // UTILITY ACTIONS

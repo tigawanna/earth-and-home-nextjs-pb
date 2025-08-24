@@ -16,8 +16,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
-import { dashboardFavoritesQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";
-import { useTypedQueryParams } from "@/hooks/use-query-page";
 import {
   FavoritesResponse,
   PropertiesResponse,
@@ -25,28 +23,43 @@ import {
 } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ListResult } from "pocketbase";
 import { toast } from "sonner";
 import { FavoriteRow } from "./FavoriteMobileRow";
 
-interface FavoritesTableProps {}
+interface FavoritesTableProps {
+  data:
+    | {
+        success: boolean;
+        result: ListResult<{
+          collectionName: "favorites";
+          id: string;
+          user_id: string;
+          property_id: string;
+          created: string;
+          updated: string;
+          collectionId: string;
+          expand?:
+            | {
+                user_id?: UsersResponse[] | undefined;
+                property_id?: PropertiesResponse[] | undefined;
+              }
+            | undefined;
+        }>;
+        message?: undefined;
+      }
+    | {
+        success: boolean;
+        result: null;
+        message: string;
+      };
+}
 
-export default function FavoritesTable({}: FavoritesTableProps) {
-  const { q, page } = useTypedQueryParams({
-    q: "string",
-    page: "number",
-  });
-
-  const { data, error, isPending } = useSuspenseQuery(
-    dashboardFavoritesQueryOptions({
-      page,
-      q,
-      limit: 1, // Default to 50 if no limit provided
-    })
-  );
+export function FavoritesTable({ data }: FavoritesTableProps) {
+  if (!data) return null;
 
   async function handleRemoveFavorite(fav: FavoritesResponse) {
     const propertyId =
