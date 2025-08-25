@@ -96,8 +96,8 @@ importers:
         specifier: ^1.131.27
         version: 1.131.27(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@tigawanna/typed-pocketbase':
-        specifier: ^0.1.5
-        version: 0.1.5(pocketbase@0.26.2)
+        specifier: link:/home/dennis/Desktop/code/npm/typed-pocketbase
+        version: link:../../npm/typed-pocketbase
       babel-plugin-react-compiler:
         specifier: 19.1.0-rc.2
         version: 19.1.0-rc.2
@@ -1528,12 +1528,6 @@ packages:
     resolution: {integrity: sha512-VEEOxc4mvyu67O+Bl0APtYjwcNRcL9it9B4HKbNgcBTIOEalhk+ufBl4kiqc8WP1sx1+NAaiS+3CcJBhrqaSRg==}
     engines: {node: '>=12'}
 
-  '@tigawanna/typed-pocketbase@0.1.5':
-    resolution: {integrity: sha512-y6QuNP3MYDpiGWcEHHo28SZmn2fokkUu2tnNJOTN4+C1gWzwmdF+NDG26IcKEyFfweqfWnpjmDVeATRfFDiIUA==}
-    hasBin: true
-    peerDependencies:
-      pocketbase: '>=0.23.0 <0.27.0'
-
   '@types/d3-array@3.2.1':
     resolution: {integrity: sha512-Y2Jn2idRrLzUfAKV2LyRImR+y4oa2AntrgID95SHJxuMUrkNXmanDSed71sRNZysveJVt1hLLemQZIady0FpEg==}
 
@@ -1664,10 +1658,6 @@ packages:
   color@4.2.3:
     resolution: {integrity: sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==}
     engines: {node: '>=12.5.0'}
-
-  commander@13.1.0:
-    resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
-    engines: {node: '>=18'}
 
   concurrently@9.2.0:
     resolution: {integrity: sha512-IsB/fiXTupmagMW4MNp2lx2cdSN2FfZq78vF90LBB+zZHArbIQZjQtzXCiXnvTxCZSvXanTqFLWBjw2UkLx1SQ==}
@@ -3705,11 +3695,6 @@ snapshots:
 
   '@tanstack/virtual-file-routes@1.131.2': {}
 
-  '@tigawanna/typed-pocketbase@0.1.5(pocketbase@0.26.2)':
-    dependencies:
-      commander: 13.1.0
-      pocketbase: 0.26.2
-
   '@types/d3-array@3.2.1': {}
 
   '@types/d3-color@3.1.3': {}
@@ -3850,8 +3835,6 @@ snapshots:
       color-convert: 2.0.1
       color-string: 1.9.1
     optional: true
-
-  commander@13.1.0: {}
 
   concurrently@9.2.0:
     dependencies:

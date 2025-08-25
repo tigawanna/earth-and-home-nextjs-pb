@@ -595,6 +595,7 @@ export interface PropertiesCollection {
 		agent_id: UsersCollection[];
 		owner_id: UsersCollection[];
 		favorites_via_property_id: FavoritesCollection[];
+		favorites_via_properties_ids: FavoritesCollection[];
 	};
 }
 
@@ -605,6 +606,7 @@ export interface FavoritesResponse extends BaseCollectionResponse {
 	id: string;
 	user_id: string;
 	property_id: string;
+	properties_ids: Array<string>;
 	created: string;
 	updated: string;
 }
@@ -613,6 +615,7 @@ export interface FavoritesCreate extends BaseCollectionCreate {
 	id?: string;
 	user_id: string;
 	property_id: string;
+	properties_ids?: MaybeArray<string>;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -621,6 +624,9 @@ export interface FavoritesUpdate extends BaseCollectionUpdate {
 	id?: string;
 	user_id?: string;
 	property_id?: string;
+	properties_ids?: MaybeArray<string>;
+	'properties_ids+'?: MaybeArray<string>;
+	'properties_ids-'?: MaybeArray<string>;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -635,6 +641,7 @@ export interface FavoritesCollection {
 	relations: {
 		user_id: UsersCollection[];
 		property_id: PropertiesCollection[];
+		properties_ids: PropertiesCollection[];
 	};
 }
 
