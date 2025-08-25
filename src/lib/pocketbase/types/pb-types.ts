@@ -450,7 +450,7 @@ export interface PropertiesResponse extends BaseCollectionResponse {
 	owner_id: string;
 	is_featured: boolean;
 	is_new: boolean;
-	location_point: unknown;
+	location_point: { lat: number; lon: number } | null;
 	created: string;
 	updated: string;
 }
@@ -500,7 +500,7 @@ export interface PropertiesCreate extends BaseCollectionCreate {
 	owner_id?: string;
 	is_featured?: boolean;
 	is_new?: boolean;
-	location_point?: unknown;
+	location_point?: { lat: number; lon: number } | null;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -579,7 +579,7 @@ export interface PropertiesUpdate extends BaseCollectionUpdate {
 	owner_id?: string;
 	is_featured?: boolean;
 	is_new?: boolean;
-	location_point?: unknown;
+	location_point?: { lat: number; lon: number } | null;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -592,10 +592,9 @@ export interface PropertiesCollection {
 	create: PropertiesCreate;
 	update: PropertiesUpdate;
 	relations: {
-		agent_id: UsersCollection[];
-		owner_id: UsersCollection[];
+		agent_id: UsersCollection;
+		owner_id: UsersCollection;
 		favorites_via_property_id: FavoritesCollection[];
-		favorites_via_properties_ids: FavoritesCollection[];
 	};
 }
 
@@ -606,7 +605,6 @@ export interface FavoritesResponse extends BaseCollectionResponse {
 	id: string;
 	user_id: string;
 	property_id: string;
-	properties_ids: Array<string>;
 	created: string;
 	updated: string;
 }
@@ -615,7 +613,6 @@ export interface FavoritesCreate extends BaseCollectionCreate {
 	id?: string;
 	user_id: string;
 	property_id: string;
-	properties_ids?: MaybeArray<string>;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -624,9 +621,6 @@ export interface FavoritesUpdate extends BaseCollectionUpdate {
 	id?: string;
 	user_id?: string;
 	property_id?: string;
-	properties_ids?: MaybeArray<string>;
-	'properties_ids+'?: MaybeArray<string>;
-	'properties_ids-'?: MaybeArray<string>;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -639,9 +633,8 @@ export interface FavoritesCollection {
 	create: FavoritesCreate;
 	update: FavoritesUpdate;
 	relations: {
-		user_id: UsersCollection[];
-		property_id: PropertiesCollection[];
-		properties_ids: PropertiesCollection[];
+		user_id: UsersCollection;
+		property_id: PropertiesCollection;
 	};
 }
 

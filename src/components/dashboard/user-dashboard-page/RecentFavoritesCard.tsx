@@ -5,7 +5,7 @@ import Link from "next/link";
 
 interface RecentFavorite {
   id: string;
-  property: PropertiesResponse[];
+  property: PropertiesResponse
   created: string;
 }
 

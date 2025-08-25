@@ -283,7 +283,7 @@ export const PropertiesResponseZodSchema = baseResponseSchema.extend({
     owner_id: z.string().optional(),
     is_featured: z.boolean().optional(),
     is_new: z.boolean().optional(),
-    location_point: z.unknown().optional(),
+    location_point: z.object({ lat: z.number(), lon: z.number() }).nullable().optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -333,7 +333,7 @@ export const PropertiesCreateZodSchema = baseCreateSchema.extend({
     owner_id: z.string().optional(),
     is_featured: z.boolean().optional(),
     is_new: z.boolean().optional(),
-    location_point: z.unknown().optional(),
+    location_point: z.object({ lat: z.number(), lon: z.number() }).nullable().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -412,7 +412,7 @@ export const PropertiesUpdateZodSchema = baseUpdateSchema.extend({
     owner_id: z.string().optional(),
     is_featured: z.boolean().optional(),
     is_new: z.boolean().optional(),
-    location_point: z.unknown().optional(),
+    location_point: z.object({ lat: z.number(), lon: z.number() }).nullable().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -424,7 +424,6 @@ export const FavoritesResponseZodSchema = baseResponseSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     user_id: z.string(),
     property_id: z.string(),
-    properties_ids: z.array(z.string()).optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -433,7 +432,6 @@ export const FavoritesCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     user_id: z.string(),
     property_id: z.string(),
-    properties_ids: z.union([z.string(), z.array(z.string())]).optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -442,9 +440,6 @@ export const FavoritesUpdateZodSchema = baseUpdateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
     user_id: z.string().optional(),
     property_id: z.string().optional(),
-    properties_ids: z.union([z.string(), z.array(z.string())]).optional(),
-    'properties_ids+': z.union([z.string(), z.array(z.string())]).optional(),
-    'properties_ids-': z.union([z.string(), z.array(z.string())]).optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
