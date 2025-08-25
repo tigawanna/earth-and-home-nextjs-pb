@@ -6,11 +6,11 @@ import { Clock, Users } from "lucide-react";
 import Link from "next/link";
 
 interface RecentUsersCardProps {
-  users: UsersResponse[];
+  users?: UsersResponse[];
   className?: string;
 }
 
-export function RecentUsersCard({ users, className }: RecentUsersCardProps) {
+export function RecentUsersCard({ users = [], className }: RecentUsersCardProps) {
   return (
     <Card className={`${className || ""}`}>
       <CardHeader className="pb-3">

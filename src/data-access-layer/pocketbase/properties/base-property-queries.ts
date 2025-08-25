@@ -1,14 +1,17 @@
-import type { Schema } from '@/lib/pocketbase/types/pb-types';
+import type { Schema } from "@/lib/pocketbase/types/pb-types";
 import {
   FavoritesResponse,
   PropertiesResponse,
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
-import type { TypedPocketBase } from '@tigawanna/typed-pocketbase';
+import type { TypedPocketBase } from "@tigawanna/typed-pocketbase";
 import { and, eq, FilterParam, gte, like, lte, or, TypedRecord } from "@tigawanna/typed-pocketbase";
-import { PropertyFilters, PropertySortBy, PropertyWithFavorites, SortOrder } from "../property-types";
-
-
+import {
+  PropertyFilters,
+  PropertySortBy,
+  PropertyWithFavorites,
+  SortOrder,
+} from "../property-types";
 
 // ====================================================
 // GET PROPERTIES (with filtering, sorting, pagination)
@@ -113,7 +116,7 @@ export async function baseGetPaginatedProperties({
 
     // Create type-safe sort using createSort helper
     const sortPrefix = sortOrder === "desc" ? "-" : "+";
-    const sortField = sortBy
+    const sortField = sortBy;
     const sort = propertiesCollection.createSort(`${sortPrefix}${sortField}`);
 
     // Get properties with pagination using type-safe helpers
@@ -158,7 +161,6 @@ export async function baseGetPaginatedProperties({
   }
 }
 
-
 // ====================================================
 // GET SINGLE PROPERTY
 // ====================================================
@@ -181,9 +183,11 @@ interface GetPropertyResult {
  * @param params - Property query parameters
  * @returns Property data with agent info and favorite status
  */
-export async function baseGetPropertyById(
-  { client, propertyId, userId }: GetPropertyParams
-): Promise<GetPropertyResult> {
+export async function baseGetPropertyById({
+  client,
+  propertyId,
+  userId,
+}: GetPropertyParams): Promise<GetPropertyResult> {
   try {
     const collection = client.from("properties");
 
@@ -229,8 +233,8 @@ export async function baseGetPropertyById(
       success: true,
       result: {
         ...property,
-        agent: Array.isArray(property.expand?.agent_id) 
-          ? property.expand.agent_id[0] || null 
+        agent: Array.isArray(property.expand?.agent_id)
+          ? property.expand.agent_id[0] || null
           : property.expand?.agent_id || null,
       },
     };
@@ -250,7 +254,6 @@ export async function baseGetPropertyById(
  * @param cookieStore - Next.js cookie store for authentication
  * @returns Property data with agent info and favorite status
  */
-
 
 export async function baseGetFavoriteProperties({
   client,
@@ -326,40 +329,6 @@ export async function baseGetFavoriteProperties({
   }
 }
 
-// ====================================================
-// GET USERS (for dashboard)
-// ====================================================
-
-export async function baseGetAllUsers({
-  client,
-  limit = 200,
-}: {
-  client: TypedPocketBase<Schema>;
-  limit?: number;
-}) {
-  try {
-    const usersCollection = client.from("users");
-    const sort = usersCollection.createSort("-created");
-
-    const users = await usersCollection.getFullList({
-      sort,
-      limit,
-    });
-
-    return {
-      success: true,
-      users,
-    };
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Failed to fetch users",
-      users: [],
-    };
-  }
-}
-
 export async function baseGetPaginatedUsers({
   client,
   page = 1,
@@ -410,7 +379,7 @@ export async function baseGetSearchableFavorites({
     const favoritesCollection = client.from("favorites");
 
     // Create type-safe filter and sort
-    const filter = q 
+    const filter = q
       ? favoritesCollection.createFilter(like("property_id.title", `%${q}%`))
       : undefined;
     const sort = favoritesCollection.createSort("-created");
@@ -436,6 +405,71 @@ export async function baseGetSearchableFavorites({
       success: false,
       result: null,
       message: error instanceof Error ? error.message : "Failed to fetch favorites",
+    };
+  }
+}
+
+// const propertyStats = {
+//   total: propertiesResult.pagination.totalCount,
+//   active: properties.filter((p: PropertiesResponse) => p.status === "active").length,
+//   sold: properties.filter((p: PropertiesResponse) => p.status === "sold").length,
+//   rented: properties.filter((p: PropertiesResponse) => p.status === "rented").length,
+//   draft: properties.filter((p: PropertiesResponse) => p.status === "draft").length,
+//   featured: properties.filter((p: PropertiesResponse) => p.is_featured).length,
+// };
+
+export async function baseGetPropertyStats({
+  client,
+  page = 1,
+  limit = 50,
+}: {
+  client: TypedPocketBase<Schema>;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    client.autoCancellation(false)
+    const propertiesCollection = client.from("properties");
+
+    const totalPropertiesResult = await propertiesCollection.getList(1, 50, {
+      sort: "-created",
+    });
+    const activePropertiesResult = await propertiesCollection.getList(1, 1, {
+      filter: eq("status", "active"),
+    });
+    const soldPropertiesResult = await propertiesCollection.getList(1, 1, {
+      filter: eq("status", "sold"),
+    });
+    const rentedPropertiesResult = await propertiesCollection.getList(1, 1, {
+      filter: eq("status", "rented"),
+    });
+    const draftPropertiesResult = await propertiesCollection.getList(1, 1, {
+      filter: eq("status", "draft"),
+    });
+    const featuredPropertiesResult = await propertiesCollection.getList(1, 1, {
+      filter: eq("is_featured", true),
+    });
+
+    const result = {
+      recent: totalPropertiesResult,
+      total: totalPropertiesResult.totalItems,
+      active: activePropertiesResult.totalItems,
+      sold: soldPropertiesResult.totalItems,
+      rented: rentedPropertiesResult.totalItems,
+      draft: draftPropertiesResult.totalItems,
+      featured: featuredPropertiesResult.totalItems,
+    };
+
+    return {
+      success: true,
+      result,
+    };
+  } catch (error) {
+    console.error("Error fetching property stats:", error);
+    return {
+      success: false,
+      result: null,
+      message: error instanceof Error ? error.message : "Failed to fetch properties",
     };
   }
 }

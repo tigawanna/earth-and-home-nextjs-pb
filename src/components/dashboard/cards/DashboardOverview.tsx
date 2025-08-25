@@ -13,7 +13,6 @@ interface DashboardOverviewProps {
   };
   userStats: {
     total: number;
-    verified: number;
     admins: number;
     banned: number;
   };
@@ -33,9 +32,7 @@ export function DashboardOverview({
     ? (propertyStats.active / propertyStats.total) * 100 
     : 0;
     
-  const verifiedUserPercentage = userStats.total > 0 
-    ? (userStats.verified / userStats.total) * 100 
-    : 0;
+
 
   return (
     <Card className={`${className || ""}`}>
@@ -79,12 +76,7 @@ export function DashboardOverview({
             <span className="text-sm font-medium">Users</span>
             <span className="text-sm text-muted-foreground">{userStats.total} total</span>
           </div>
-          <Progress value={verifiedUserPercentage} className="h-2" />
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Verified:</span>
-              <span className="font-medium">{userStats.verified}</span>
-            </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Admins:</span>
               <span className="font-medium">{userStats.admins}</span>

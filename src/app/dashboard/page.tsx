@@ -44,17 +44,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         favoritesStats={favoritesStats}
       />
 
-      {/* Main Dashboard Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <AdminActionsCard isAdmin={user?.is_admin || false} />
-        <DashboardOverview 
-          propertyStats={propertyStats}
-          userStats={userStats}
-          favoritesStats={favoritesStats}
-        />
         <RecentPropertiesCard properties={recentProperties} />
-      </div>
-
       {/* Recent Users Section (Admin Only) */}
       {user?.is_admin && (
         <RecentUsersCard users={recentUsers} />

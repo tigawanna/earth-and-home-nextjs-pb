@@ -57,7 +57,7 @@ export async function UsersList({ searchParams }: UsersListProps) {
         />
         <div className="text-center py-12">
           <p className="text-muted-foreground">
-            {usersResult.message || "Failed to load users"}
+            {"Failed to load users"}
           </p>
         </div>
       </div>
