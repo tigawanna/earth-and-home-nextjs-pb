@@ -11,7 +11,7 @@ import {
 // DASHBOARD STATS & OVERVIEW DATA
 // ====================================================
 
-export async function getDashboardStats() {
+export async function getAdminDashboardStats() {
   try {
     const client = await createServerClient();
 

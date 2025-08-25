@@ -12,7 +12,7 @@ interface RecentUsersCardProps {
 
 export function RecentUsersCard({ users = [], className }: RecentUsersCardProps) {
   return (
-    <Card className={`${className || ""}`}>
+    <Card className={`${className || "w-full"}`}>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           <Users className="h-4 w-4" />
