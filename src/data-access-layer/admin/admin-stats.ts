@@ -1,7 +1,6 @@
 import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
-import type { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import {
   baseGetPaginatedProperties,
   baseGetPaginatedUsers,

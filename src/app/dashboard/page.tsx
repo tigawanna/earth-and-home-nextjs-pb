@@ -24,13 +24,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     );
   }
 
-  const { 
-    propertyStats, 
-    userStats, 
-    favoritesStats, 
-    recentProperties, 
-    recentUsers 
-  } = dashboardData.data;
+  const { propertyStats, userStats, favoritesStats, recentProperties, recentUsers } =
+    dashboardData.data;
 
   return (
     <section className="w-full h-full p-6 space-y-6">
@@ -38,17 +33,15 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       <DashboardWelcome user={user} />
 
       {/* Stats Grid */}
-      <DashboardStatsGrid 
+      <DashboardStatsGrid
         propertyStats={propertyStats}
         userStats={userStats}
         favoritesStats={favoritesStats}
       />
 
-        <RecentPropertiesCard properties={recentProperties} />
+      <RecentPropertiesCard properties={recentProperties} />
       {/* Recent Users Section (Admin Only) */}
-      {user?.is_admin && (
-        <RecentUsersCard users={recentUsers} />
-      )}
+      {user?.is_admin && <RecentUsersCard users={recentUsers} />}
     </section>
   );
 }

@@ -1,10 +1,14 @@
-import { Activity, Building2, Heart, Users } from "lucide-react";
+import { Activity, Building2, CheckCircle, FileText, Heart, Home, Star, Users } from "lucide-react";
 import { StatsCard } from "./StatsCard";
 
 interface DashboardStatsGridProps {
   propertyStats: {
     total: number;
     active: number;
+    sold: number;
+    rented: number;
+    draft: number;
+    featured: number;
   };
   userStats: {
     total: number;
@@ -30,10 +34,28 @@ export function DashboardStatsGrid({
         icon={<Building2 className="h-4 w-4" />}
       />
       <StatsCard
-        title="Active Properties"
-        value={propertyStats.active}
-        description="Currently available"
-        icon={<Activity className="h-4 w-4" />}
+        title="Sold Properties"
+        value={propertyStats.sold}
+        description="Successfully sold"
+        icon={<CheckCircle className="h-4 w-4" />}
+      />
+      <StatsCard
+        title="Rented Properties"
+        value={propertyStats.rented}
+        description="Currently rented"
+        icon={<Home className="h-4 w-4" />}
+      />
+      <StatsCard
+        title="Draft Properties"
+        value={propertyStats.draft}
+        description="Pending publication"
+        icon={<FileText className="h-4 w-4" />}
+      />
+      <StatsCard
+        title="Featured Properties"
+        value={propertyStats.featured}
+        description="Highlighted listings"
+        icon={<Star className="h-4 w-4" />}
       />
       <StatsCard
         title="Total Users"

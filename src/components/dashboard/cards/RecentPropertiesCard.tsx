@@ -1,7 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Building2, Clock, MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface RecentPropertiesCardProps {
@@ -22,8 +24,32 @@ export function RecentPropertiesCard({ properties, className }: RecentProperties
         {properties.length === 0 ? (
           <p className="text-sm text-muted-foreground">No recent properties</p>
         ) : (
-          properties.map((property) => (
-            <div key={property.id} className="flex items-start justify-between gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors">
+          properties.map((property) => {
+            // Get the first available image for thumbnail
+            const primaryImage = property.image_url || (Array.isArray(property.images) && property.images.length > 0 ? property.images[0] : null);
+            const imageUrl = primaryImage && typeof primaryImage === 'string' 
+              ? getImageThumbnailUrl(property, primaryImage, "80x80")
+              : null;
+           
+            return (
+            <div key={property.id} className="flex items-start gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors">
+              {/* Property Image */}
+              <div className="relative w-20 h-20 rounded-md overflow-hidden bg-muted flex-shrink-0">
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={property.title}
+                    fill
+                    className="object-cover"
+                    sizes="80px"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+              
               <div className="flex-1 min-w-0">
                 <Link 
                   href={`/properties/${property.id}`}
@@ -58,7 +84,8 @@ export function RecentPropertiesCard({ properties, className }: RecentProperties
                 )}
               </div>
             </div>
-          ))
+            );
+          })
         )}
         {properties.length > 0 && (
           <Link 
