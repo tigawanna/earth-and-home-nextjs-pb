@@ -1,9 +1,9 @@
 import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
-import { baseGetPaginatedUsers } from "../pocketbase/properties/base-property-queries";
-import {Sort} from "@tigawanna/typed-pocketbase"
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { Sort } from "@tigawanna/typed-pocketbase";
+import { baseGetPaginatedUsers } from "../properties/base-property-queries";
 // ====================================================
 // GET USERS WITH SEARCH AND PAGINATION
 // ====================================================

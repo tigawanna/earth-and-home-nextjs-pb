@@ -2,7 +2,7 @@ import { AdminDashboardPage } from "@/components/dashboard/admin-dashboard-page/
 import { DashboardWelcome } from "@/components/dashboard/cards/DashboardWelcome";
 import { UserDashboardPage } from "@/components/dashboard/user-dashboard-page/UserDashboardPage";
 
-import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
+import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 
 interface DashboardPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

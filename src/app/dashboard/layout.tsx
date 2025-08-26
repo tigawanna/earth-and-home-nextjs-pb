@@ -1,6 +1,6 @@
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
+import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 

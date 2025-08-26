@@ -1,4 +1,4 @@
-import { getServerSideSearchableFavorites } from "@/data-access-layer/pocketbase/properties/server-side-property-queries";
+import { getServerSideSearchableFavorites } from "@/data-access-layer/properties/server-side-property-queries";
 import { FavoritesTable } from "./FavoritesTable";
 
 interface FavoritePropertiesProps {
@@ -15,7 +15,7 @@ export async function FavoriteProperties({ searchParams }: FavoritePropertiesPro
     page: typeof searchParams?.page === "string" ? parseInt(searchParams.page, 10) : 1,
     limit: 50,
   });
-  console.log("FavoriteProperties result:", searchParams);
+ 
   return (
     <div className="space-y-6">
       <FavoritesTable data={result} />

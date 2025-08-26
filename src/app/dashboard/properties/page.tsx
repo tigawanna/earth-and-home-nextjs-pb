@@ -1,5 +1,6 @@
-import { PropertyDashboard } from "@/components/dashboard/properties/PropertyDashboard";
-import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
+
+import { PropertyDashboard } from "@/components/property/PropertyDashboard";
+import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 
 export default async function PropertiesPage({
   searchParams,

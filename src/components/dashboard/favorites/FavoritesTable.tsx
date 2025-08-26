@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toggleFavorite } from "@/data-access-layer/pocketbase/favorite-mutations";
+import { toggleFavorite } from "@/data-access-layer/favorite-mutations";
 import {
   FavoritesResponse,
   PropertiesResponse,
@@ -44,8 +44,8 @@ interface FavoritesTableProps {
           collectionId: string;
           expand?:
             | {
-                user_id?: UsersResponse[] | undefined;
-                property_id?: PropertiesResponse[] | undefined;
+                user_id?: UsersResponse | undefined;
+                property_id?: PropertiesResponse | undefined;
               }
             | undefined;
         }>;

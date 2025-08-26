@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useLocalViewer } from "@/data-access-layer/pocketbase/user/auth";
+import { useLocalViewer } from "@/data-access-layer/user/auth";
 
 import { ChevronRight, Loader, Pen } from "lucide-react";
 import Link from "next/link";

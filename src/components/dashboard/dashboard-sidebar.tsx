@@ -1,43 +1,43 @@
 "use client";
 
 import {
-    Building2,
-    ChevronDown,
-    Heart,
-    Home,
-    LogOut,
-    MessageSquare,
-    Plus,
-    Settings,
-    User,
-    Users,
+  Building2,
+  ChevronDown,
+  Heart,
+  Home,
+  LogOut,
+  MessageSquare,
+  Plus,
+  Settings,
+  User,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 import { ModeToggle } from "@/components/theme/theme-toggle";
-import { signoutMutationOptions } from "@/data-access-layer/pocketbase/user/auth";
+import { signoutMutationOptions } from "@/data-access-layer/user/auth";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { useMutation } from "@tanstack/react-query";
 

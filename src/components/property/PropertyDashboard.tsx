@@ -1,12 +1,11 @@
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { Button } from "@/components/ui/button";
-import { useLocalViewer } from "@/data-access-layer/pocketbase/user/auth";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { DashboardPropertiesList } from "../../property/list/DashboardPropertiesList";
-import { PropertiesListLoading } from "../../property/query-states/PropertiesListLoading";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { DashboardPropertiesList } from "@/components/property/list/DashboardPropertiesList";
+import { PropertiesListLoading } from "@/components/property/query-states/PropertiesListLoading";
 
 interface PropertyDashboardProps {
   user: UsersResponse | null;
@@ -34,11 +33,10 @@ export function PropertyDashboard({ user, searchParams }: PropertyDashboardProps
       {/* Filters */}
       <PropertyFilters showStatusFilter={isAdmin} />
       {/* Properties List */}
-      <Suspense fallback={<PropertiesListLoading/>}>
+      <Suspense fallback={<PropertiesListLoading />}>
         <DashboardPropertiesList user={user} searchParams={searchParams} />
       </Suspense>
       {/* Quick Actions Card */}
-      
     </div>
   );
 }

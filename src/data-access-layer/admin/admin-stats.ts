@@ -5,7 +5,7 @@ import {
   baseGetPaginatedProperties,
   baseGetPaginatedUsers,
   baseGetPropertyStats,
-} from "../pocketbase/properties/base-property-queries";
+} from "../properties/base-property-queries";
 
 // ====================================================
 // DASHBOARD STATS & OVERVIEW DATA

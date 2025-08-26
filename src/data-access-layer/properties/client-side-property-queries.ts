@@ -4,30 +4,13 @@ import { queryOptions } from "@tanstack/react-query";
 import { PropertyFilters, PropertySortBy, SortOrder } from "../property-types";
 
 import {
-  baseGetAllUsers,
   baseGetPaginatedProperties,
   baseGetPaginatedUsers,
   baseGetPropertyById,
   baseGetSearchableFavorites,
 } from "./base-property-queries";
 
-// import {
-//   getPublicProperties,
-//   getPublicPropertyById,
-// } from "./public-property-queries";
 
-export function userDashboardQueryOptions() {
-  return queryOptions({
-    queryKey: [queryKeyPrefixes.admin, "stats"] as const,
-    queryFn: async ({}) => {
-      const result = await baseGetAllUsers({ client: browserPB, limit: 200 });
-      return result.success ? result.users : [];
-    },
-    meta: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-    },
-  });
-}
 
 interface DashboardPropertyQueryOptionsProps {
   page?: number;

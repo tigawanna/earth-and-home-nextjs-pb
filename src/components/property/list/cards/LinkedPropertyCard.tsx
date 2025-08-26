@@ -1,8 +1,7 @@
-import { FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/property-types";
 import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
 import { BasePropertyCard } from "./BasePropertyCard";
-import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/pocketbase/property-types";
 
 
 

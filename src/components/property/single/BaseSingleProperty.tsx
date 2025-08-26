@@ -3,28 +3,28 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { PropertyWithFavorites } from "@/data-access-layer/pocketbase/property-types";
+import { PropertyWithFavorites } from "@/data-access-layer/property-types";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {
-    ArrowLeft,
-    Bath,
-    Bed,
-    Building,
-    Calendar,
-    Car,
-    Mail,
-    MapPin,
-    Phone,
-    Share2,
-    Snowflake,
-    Square,
-    Thermometer,
+  ArrowLeft,
+  Bath,
+  Bed,
+  Building,
+  Calendar,
+  Car,
+  Mail,
+  MapPin,
+  Phone,
+  Share2,
+  Snowflake,
+  Square,
+  Thermometer,
 } from "lucide-react";
 import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
-import { PropertyImageGallery } from "../list/PropertyImageGallery";
 import { PropertyContactForm } from "../form/PropertyContactForm";
+import { PropertyImageGallery } from "../list/PropertyImageGallery";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;

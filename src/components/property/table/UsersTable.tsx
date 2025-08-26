@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { toggleAdminMutationOptions, toggleBanUserMutationOptions } from "@/data-access-layer/pocketbase/user/admin-user-management";
+import { toggleAdminMutationOptions, toggleBanUserMutationOptions } from "@/data-access-layer/user/admin-user-management";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { useMutation } from "@tanstack/react-query";
 import { Ban, Eye, Loader, MoreHorizontal, Shield, Users as UsersIcon } from "lucide-react";

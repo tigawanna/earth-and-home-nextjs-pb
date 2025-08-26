@@ -1,7 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/pocketbase/property-types";
-import { PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/property-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Calendar, Home, MapPin } from "lucide-react";
 import Image from "next/image";

@@ -6,8 +6,9 @@ import { Form } from "@/components/ui/form";
 import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
-} from "@/data-access-layer/pocketbase/property-mutations";
-import { PropertiesCreate, PropertiesResponse, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
+} from "@/data-access-layer/property-mutations";
+import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
+import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { isLandProperty } from "@/utils/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
+import { ImagesUploadSection } from "./files/ImagesUploadSection";
 import { PropertyFormData, PropertyFormSchema } from "./property-form-schema";
 import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { BuildingSection } from "./sections/BuildingSection";
@@ -26,8 +28,6 @@ import { LocationSection } from "./sections/LocationSection";
 import { MediaSection } from "./sections/MediaSection";
 import { ParkingSection } from "./sections/ParkingSection";
 import { PricingSection } from "./sections/PricingSection";
-import { ImagesUploadSection } from "./files/ImagesUploadSection";
-import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
 
 // Convert Partial<T> (undefined) to nullable properties (null)
 type Nullable<T> = {

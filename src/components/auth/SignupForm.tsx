@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signupMutationOptions } from "@/data-access-layer/pocketbase/user/auth";
+import { signupMutationOptions } from "@/data-access-layer/user/auth";
 import LinkLoadingIndicator from "@/lib/next/LinkLoadingIndicator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";

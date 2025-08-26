@@ -1,6 +1,6 @@
 
-import { getProperties } from "@/data-access-layer/pocketbase/properties/server-side-property-queries";
-import { PropertiesResponseWithExpandedRelations, PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/pocketbase/property-types";
+import { getProperties } from "@/data-access-layer/properties/server-side-property-queries";
+import { PropertiesResponseWithExpandedRelations, PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/property-types";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";

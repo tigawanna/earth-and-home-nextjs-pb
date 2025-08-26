@@ -1,6 +1,6 @@
 import { TablePending } from "@/components/shared/TablePending";
 import { getServerSideUsers } from "@/data-access-layer/admin/user-management";
-import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
+import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { Suspense } from "react";
 import { UsersHeader } from "./UsersHeader";
 import { UsersTable } from "./UsersTable";

@@ -1,7 +1,7 @@
 import { getAdminDashboardStats } from "@/data-access-layer/admin/admin-stats";
+import { AdminDashboardStatsGrid } from "./AdminDashboardStatsGrid";
 import { RecentPropertiesCard } from "./RecentPropertiesCard";
 import { RecentUsersCard } from "./RecentUsersCard";
-import { AdminDashboardStatsGrid } from "./AdminDashboardStatsGrid";
 
 interface AdminDashboardPageProps {
   

@@ -1,6 +1,6 @@
-import { getServerSidePropertyById } from "@/data-access-layer/pocketbase/properties/server-side-property-queries";
+import { getServerSidePropertyById } from "@/data-access-layer/properties/server-side-property-queries";
 
-import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
+import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { BaseSingleProperty } from "./BaseSingleProperty";
 import { SinglePropertyNotFound } from "./single-property-query-states";
 
