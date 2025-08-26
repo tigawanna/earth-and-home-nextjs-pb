@@ -14,6 +14,7 @@ export const queryKeyPrefixes = {
   favorites: "favorites",
   dashboard: "dashboard", 
   favorite: "favorite",
+  messages: "messages",
   users: "users",
   user: "user",
   admin: "admin",

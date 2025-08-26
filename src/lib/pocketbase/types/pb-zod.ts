@@ -451,7 +451,8 @@ export const PropertyMessagesResponseZodSchema = baseResponseSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     user_id: z.string(),
     property_id: z.string(),
-    message: z.string(),
+    type: z.enum(['', 'parent', 'reply']).optional(),
+    body: z.string(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -460,7 +461,8 @@ export const PropertyMessagesCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
     user_id: z.string(),
     property_id: z.string(),
-    message: z.string(),
+    type: z.enum(['', 'parent', 'reply']).optional(),
+    body: z.string(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -469,7 +471,8 @@ export const PropertyMessagesUpdateZodSchema = baseUpdateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
     user_id: z.string().optional(),
     property_id: z.string().optional(),
-    message: z.string().optional(),
+    type: z.enum(['', 'parent', 'reply']).optional(),
+    body: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
