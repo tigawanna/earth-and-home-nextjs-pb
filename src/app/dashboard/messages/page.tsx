@@ -1,4 +1,3 @@
-import { PropertyChatInterface } from "@/components/dashboard/messages/PropertyChatInterface";
 import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
 import { MessageSquare } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -24,7 +23,7 @@ export default async function MessagesPage() {
         </p>
       </div>
       
-      <PropertyChatInterface currentUser={user} />
+
     </div>
   );
 }

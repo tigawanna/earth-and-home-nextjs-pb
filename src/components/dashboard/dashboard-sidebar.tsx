@@ -60,7 +60,7 @@ const userMenuItems = [
   },
   {
     title: "My Messages",
-    url: "/dashboard/my-messages",
+    url: "/dashboard/messages",
     icon: MessageSquare,
   },
   {
@@ -80,12 +80,7 @@ const adminRoutes = [
     title: "Add Property",
     url: "/dashboard/properties/add",
     icon: Plus,
-  },
-  {
-    title: "Messages",
-    url: "/dashboard/messages",
-    icon: MessageSquare,
-  },
+  }
 ];
 
 interface User {

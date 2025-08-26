@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { dashboardPropertyQueryOptions } from "@/data-access-layer/pocketbase/properties/client-side-property-queries";

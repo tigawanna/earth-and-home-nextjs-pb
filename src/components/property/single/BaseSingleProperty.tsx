@@ -24,7 +24,7 @@ import {
 import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
-import { PropertyContactForm } from "../PropertyContactForm";
+import { PropertyContactForm } from "../form/PropertyContactForm";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;
