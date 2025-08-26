@@ -399,6 +399,7 @@ export interface UsersCollection {
 		properties_via_agent_id: PropertiesCollection[];
 		properties_via_owner_id: PropertiesCollection[];
 		favorites_via_user_id: FavoritesCollection[];
+		property_messages_via_user_id: PropertyMessagesCollection[];
 	};
 }
 
@@ -595,6 +596,7 @@ export interface PropertiesCollection {
 		agent_id: UsersCollection;
 		owner_id: UsersCollection;
 		favorites_via_property_id: FavoritesCollection[];
+		property_messages_via_property_id: PropertyMessagesCollection[];
 	};
 }
 
@@ -638,6 +640,49 @@ export interface FavoritesCollection {
 	};
 }
 
+// ===== property_messages =====
+
+export interface PropertyMessagesResponse extends BaseCollectionResponse {
+	collectionName: 'property_messages';
+	id: string;
+	user_id: string;
+	property_id: string;
+	message: string;
+	created: string;
+	updated: string;
+}
+
+export interface PropertyMessagesCreate extends BaseCollectionCreate {
+	id?: string;
+	user_id: string;
+	property_id: string;
+	message: string;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface PropertyMessagesUpdate extends BaseCollectionUpdate {
+	id?: string;
+	user_id?: string;
+	property_id?: string;
+	message?: string;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface PropertyMessagesCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'property_messages';
+	response: PropertyMessagesResponse;
+	create: PropertyMessagesCreate;
+	update: PropertyMessagesUpdate;
+	relations: {
+		user_id: UsersCollection;
+		property_id: PropertiesCollection;
+	};
+}
+
 // ===== Schema =====
 
 export type Schema = {
@@ -649,4 +694,5 @@ export type Schema = {
 	users: UsersCollection;
 	properties: PropertiesCollection;
 	favorites: FavoritesCollection;
+	property_messages: PropertyMessagesCollection;
 };

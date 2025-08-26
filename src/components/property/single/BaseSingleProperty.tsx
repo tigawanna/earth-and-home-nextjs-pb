@@ -7,23 +7,24 @@ import { PropertyWithFavorites } from "@/data-access-layer/pocketbase/property-t
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {
-  ArrowLeft,
-  Bath,
-  Bed,
-  Building,
-  Calendar,
-  Car,
-  Mail,
-  MapPin,
-  Phone,
-  Share2,
-  Snowflake,
-  Square,
-  Thermometer,
+    ArrowLeft,
+    Bath,
+    Bed,
+    Building,
+    Calendar,
+    Car,
+    Mail,
+    MapPin,
+    Phone,
+    Share2,
+    Snowflake,
+    Square,
+    Thermometer,
 } from "lucide-react";
 import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
+import { PropertyContactForm } from "../PropertyContactForm";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;
@@ -101,10 +102,15 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                       </div>
 
                       <div className="flex gap-2">
-                        <Button className="flex-1">
-                          <Phone className="h-4 w-4 mr-2" />
-                          Contact Agent
-                        </Button>
+                        <PropertyContactForm
+                          propertyId={property.id}
+                          propertyTitle={property.title}
+                        >
+                          <Button className="flex-1">
+                            <Phone className="h-4 w-4 mr-2" />
+                            Contact About Property
+                          </Button>
+                        </PropertyContactForm>
                         {/* <Button variant="outline" size="icon">
                           <Heart className="h-4 w-4" />
                         </Button> */}

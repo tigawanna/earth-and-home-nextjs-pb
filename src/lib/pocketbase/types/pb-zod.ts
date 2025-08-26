@@ -444,6 +444,36 @@ export const FavoritesUpdateZodSchema = baseUpdateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
+// ===== property_messages =====
+
+export const PropertyMessagesResponseZodSchema = baseResponseSchema.extend({
+    collectionName: z.literal('property_messages'),
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    user_id: z.string(),
+    property_id: z.string(),
+    message: z.string(),
+    created: z.string().optional(),
+    updated: z.string().optional()
+});
+
+export const PropertyMessagesCreateZodSchema = baseCreateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    user_id: z.string(),
+    property_id: z.string(),
+    message: z.string(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
+export const PropertyMessagesUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    user_id: z.string().optional(),
+    property_id: z.string().optional(),
+    message: z.string().optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
 
 // Export all schemas
 export const schemas = {
@@ -486,6 +516,11 @@ export const schemas = {
         response: FavoritesResponseZodSchema,
         create: FavoritesCreateZodSchema,
         update: FavoritesUpdateZodSchema,
+    },
+    property_messages: {
+        response: PropertyMessagesResponseZodSchema,
+        create: PropertyMessagesCreateZodSchema,
+        update: PropertyMessagesUpdateZodSchema,
     },
 };
 
@@ -611,3 +646,18 @@ export const favoritesValidators = {
 export type FavoritesResponseZod = z.infer<typeof FavoritesResponseZodSchema>;
 export type FavoritesCreateZod = z.infer<typeof FavoritesCreateZodSchema>;
 export type FavoritesUpdateZod = z.infer<typeof FavoritesUpdateZodSchema>;
+
+// Validation helpers for property_messages
+export const property_messagesValidators = {
+    response: (data: unknown) => PropertyMessagesResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => PropertyMessagesResponseZodSchema.safeParse(data),
+    create: (data: unknown) => PropertyMessagesCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => PropertyMessagesCreateZodSchema.safeParse(data),
+    update: (data: unknown) => PropertyMessagesUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => PropertyMessagesUpdateZodSchema.safeParse(data),
+};
+
+// Type inference helpers for property_messages
+export type PropertyMessagesResponseZod = z.infer<typeof PropertyMessagesResponseZodSchema>;
+export type PropertyMessagesCreateZod = z.infer<typeof PropertyMessagesCreateZodSchema>;
+export type PropertyMessagesUpdateZod = z.infer<typeof PropertyMessagesUpdateZodSchema>;

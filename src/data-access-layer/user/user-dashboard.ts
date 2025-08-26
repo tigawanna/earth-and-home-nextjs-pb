@@ -12,7 +12,13 @@ export interface UserDashboardStats {
   }[];
 }
 
-export async function getUserDashboardStats(userId: string) {
+interface QueryProps {
+  userId: string;
+  page?: number;
+  limit?: number;
+}
+
+export async function getUserDashboardStats({ userId }: QueryProps) {
   if (!userId) {
     return {
       totalFavorites: 0,
@@ -65,7 +71,7 @@ export async function getUserDashboardStats(userId: string) {
   }
 }
 
-export async function getUserFavoriteProperties(userId: string, page = 1, limit = 10) {
+export async function getUserFavoriteProperties({ userId, page = 1, limit = 10 }: QueryProps) {
   if (!userId) {
     return {
       items: [],
@@ -115,5 +121,26 @@ export async function getUserFavoriteProperties(userId: string, page = 1, limit 
       totalPages: 0,
       page: 1,
     };
+  }
+}
+
+export async function getUserMessages({ userId, limit = 50, page = 1 }: QueryProps) {
+  if (!userId) {
+    return [];
+  }
+
+  try {
+    const client = await createServerClient();
+
+    const result = await client.from("property_messages").getList(page, limit, {
+      filter: `user_id = "${userId}"`,
+      sort: "-created",
+      expand: "property_id",
+    });
+
+    return result.items;
+  } catch (error) {
+    console.error("Error fetching user messages:", error);
+    return [];
   }
 }

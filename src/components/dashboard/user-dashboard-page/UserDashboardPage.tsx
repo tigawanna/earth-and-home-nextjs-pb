@@ -1,5 +1,5 @@
 import { getServerSideUser } from "@/data-access-layer/pocketbase/user/server-side-auth";
-import { getUserDashboardStats } from "@/data-access-layer/user/user-dashboard-stats";
+import { getUserDashboardStats } from "@/data-access-layer/user/user-dashboard";
 import { Calendar, Heart, Home, TrendingUp } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -16,7 +16,7 @@ async function DashboardContent() {
     redirect("/auth/signin");
   }
 
-  const stats = await getUserDashboardStats(user.id);
+  const stats = await getUserDashboardStats({ userId: user.id });
 
   return (
     <div className="space-y-6">
