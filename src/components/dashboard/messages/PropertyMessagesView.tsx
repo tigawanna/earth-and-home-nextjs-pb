@@ -24,7 +24,7 @@ interface PropertyMessagesViewProps {
   onBack?: () => void;
 }
 
-export default function PropertyMessagesView({
+export  function PropertyMessagesView({
   propertyId,
   property,
   onBack,
@@ -48,27 +48,27 @@ export default function PropertyMessagesView({
   });
 
   // Real-time message updates
-  useEffect(() => {
-    const filter = pbMessagesCollection.createFilter(pBeq("property_id", propertyId));
+  // useEffect(() => {
+  //   const filter = pbMessagesCollection.createFilter(pBeq("property_id", propertyId));
 
-    const unsubscribe = pbMessagesCollection.subscribe(
-      "*",
-      function (e) {
-        if (e.action === "create" || e.action === "update") {
-          refetch(); // Refetch when new messages arrive
-        }
-      },
-      {
-        filter,
-        select: pbMessagesCollectionSelect,
-      }
-    );
+  //   const unsubscribe = pbMessagesCollection.subscribe(
+  //     "*",
+  //     function (e) {
+  //       if (e.action === "create" || e.action === "update") {
+  //         refetch(); // Refetch when new messages arrive
+  //       }
+  //     },
+  //     {
+  //       filter,
+  //       select: pbMessagesCollectionSelect,
+  //     }
+  //   );
 
-    return () => {
-      // @ts-expect-error TODO fix this in typed pocketbase
-      pbMessagesCollection.unsubscribe();
-    };
-  }, [propertyId, refetch]);
+  //   return () => {
+  //     // @ts-expect-error TODO fix this in typed pocketbase
+  //     pbMessagesCollection.unsubscribe();
+  //   };
+  // }, [propertyId, refetch]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {

@@ -25,8 +25,9 @@ export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({
 });
 
 // Messages for a specific property
-export const createPropertySpecificMessagesCollection = ({ propertyId }: { propertyId: string }) =>
-  createCollection(
+export const createSinglePropertyMessagesCollection = ({ propertyId }: { propertyId: string }) => {
+  console.log("Creating collection for propertyId:", propertyId);
+  return createCollection(
     queryCollectionOptions({
       queryKey: ["property_messages", propertyId],
       queryFn: async () => {
@@ -52,18 +53,14 @@ export const createPropertySpecificMessagesCollection = ({ propertyId }: { prope
       },
       queryClient: queryClient!,
     })
- );
+  );
+};
 
+// Create the factory using our new utility.
+export const singlePropertyMessagesCollection = createCollectionFactory(
+  createSinglePropertyMessagesCollection
+);
 
-
-
-
- // Create the factory using our new utility.
- export const getSourceCollectionByDate = createCollectionFactory(
-   createPropertySpecificMessagesCollection
- );
-
-
-   // CRITICAL: Memoize the params object so its reference is stable across re-renders.
-  // This ensures the WeakMap factory returns the same collection instance.
+// CRITICAL: Memoize the params object so its reference is stable across re-renders.
+// This ensures the WeakMap factory returns the same collection instance.
 //   const sourceParams = useMemo(() => ({ date: dateString }), [dateString]);

@@ -19,7 +19,7 @@ export default function AllPropertiesMessages({
 }: AllPropertiesMessagesProps) {
   // Use TanStack Query for better caching and state management
   const {
-    data: messageSummaries,
+    data,
     isLoading,
     error,
   } = useQuery({
@@ -27,64 +27,37 @@ export default function AllPropertiesMessages({
     queryFn: getPropertyMessageSummaries,
     refetchInterval: 30000, // Refetch every 30 seconds
   });
-
-  // Real-time updates using TanStack DB
-//   const { data: liveMessages } = useLiveQuery((q) =>
-//     q.from({ messages: propertyMessagesCollection })
-//   );
-
-//   useEffect(() => {
-//     pbMessagesCollection.subscribe(
-//       "*",
-//       function (e) {
-//         if (e.action === "create") {
-//           propertyMessagesCollection.utils.writeInsert(e.record);
-//         }
-//         if (e.action === "delete") {
-//           propertyMessagesCollection.utils.writeDelete(e.record.id);
-//         }
-//         if (e.action === "update") {
-//           propertyMessagesCollection.utils.writeUpdate(e.record);
-//         }
-//       },
-//       {
-//         filter: pbMessagesCollectionFilter,
-//         select: pbMessagesCollectionSelect,
-//       }
-//     );
-
-//     return () => {
-//       // @ts-expect-error TODO fix this in typed pocketbase
-//       pbMessagesCollection.unsubscribe();
-//     };
-//   }, []);
-
+  
   if (isLoading) {
     return <AllPropertiesMessagesLoading />;
   }
-
+  
   if (error) {
     return <PropertyMessagesError />;
   }
 
-  if (!messageSummaries || messageSummaries.length === 0) {
+  const messages = data?.result?.items || [];
+
+  if (!messages || messages.length === 0) {
     return <NoPropertyMessages />;
   }
+
 
   return (
     <div className="w-full h-full space-y-4">
       <div className="grid gap-4">
-        {messageSummaries.map((summary: PropertyMessageSummary) => (
-          <Link href={`/dashboard/messages/${summary.property.id}`} key={summary.property.id}>
+        {messages.map((msg) => {
+          const property = msg.expand?.property_id;
+          if(!property) return null;
+          return(
+          <Link href={`/dashboard/messages/${msg.id}`} key={msg.id}>
             <PropertyMessageCard
-              key={summary.property.id}
-              property={summary.property}
-              latestMessage={summary.latestMessage}
-              messageCount={summary.messageCount}
-              onViewMessages={() => onViewPropertyMessages?.(summary.property.id)}
+              key={msg.id}
+              message={msg}
+              onViewMessages={() => onViewPropertyMessages?.(property.id)}
             />
           </Link>
-        ))}
+        )})}
       </div>
     </div>
   );

@@ -1,5 +1,9 @@
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { PropertiesResponse, PropertyMessagesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  PropertiesResponse,
+  PropertyMessagesResponse,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/react-db";
@@ -55,8 +59,6 @@ export const propertyMessagesCollection = createCollection(
   })
 );
 
-
-
 // ====================================================
 // HELPER FUNCTIONS
 // ====================================================
@@ -68,6 +70,17 @@ export type PropertyMessageWithExpansion = PropertyMessagesResponse & {
   };
 };
 
+
+
+
+export type MessageWithProperty = PropertyMessagesResponse & {
+  expand?: {
+    user_id?: UsersResponse | undefined;
+    property_id?: PropertiesResponse | undefined;
+} | undefined;
+};
+
+
 export type PropertyMessageSummary = {
   property: PropertiesResponse;
   latestMessage: PropertyMessageWithExpansion;
@@ -75,56 +88,32 @@ export type PropertyMessageSummary = {
   lastActivity: string;
 };
 
-
-
 // Get message summaries grouped by property
-export async function getPropertyMessageSummaries(): Promise<PropertyMessageSummary[]> {
+export async function getPropertyMessageSummaries(){
   try {
-    const messages = await pbMessagesCollection.getFullList({
+    const response = await pbMessagesCollection.getList(1, 50, {
       sort: "-created",
       filter: pbMessagesCollectionFilter,
       select: pbMessagesCollectionSelect,
     });
-
-    // Group messages by property
-    const propertyGroups = messages.reduce((acc, message) => {
-      const propertyId = message.property_id;
-      if (!acc[propertyId]) {
-        acc[propertyId] = [];
-      }
-      acc[propertyId].push(message as PropertyMessageWithExpansion);
-      return acc;
-    }, {} as Record<string, PropertyMessageWithExpansion[]>);
-
-    // Create summaries
-    const summaries: PropertyMessageSummary[] = [];
-    
-    for (const [propertyId, propertyMessages] of Object.entries(propertyGroups)) {
-      const latestMessage = propertyMessages[0]; // Already sorted by -created
-      const property = latestMessage.expand?.property_id;
-      
-      if (property) {
-        summaries.push({
-          property,
-          latestMessage,
-          messageCount: propertyMessages.length,
-          lastActivity: latestMessage.created,
-        });
-      }
+    return {
+      result:response,
+      success:true,
     }
-
-    // Sort by last activity
-    return summaries.sort((a, b) => 
-      new Date(b.lastActivity).getTime() - new Date(a.lastActivity).getTime()
-    );
   } catch (error) {
     console.error("Error fetching property message summaries:", error);
-    return [];
+    return {
+      result: null,
+      success: false,
+      error: "Failed to fetch property message summaries",
+    };
   }
 }
 
 // Get all messages for a specific property (including replies)
-export async function getPropertyMessages(propertyId: string): Promise<PropertyMessageWithExpansion[]> {
+export async function getPropertyMessages(
+  propertyId: string
+): Promise<PropertyMessageWithExpansion[]> {
   try {
     const filter = pbMessagesCollection.createFilter(pBeq("property_id", propertyId));
     const result = await pbMessagesCollection.getFullList({
