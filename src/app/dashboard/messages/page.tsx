@@ -1,4 +1,4 @@
-import { LazyAllPropertiesMessages } from "@/components/dashboard/messages/LazyAllPropertiesMessages";
+import { LazyAllPropertiesMessages } from "@/components/dashboard/messages/all-properties/LazyAllPropertiesMessages";
 import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { MessageSquare } from "lucide-react";
 import { redirect } from "next/navigation";

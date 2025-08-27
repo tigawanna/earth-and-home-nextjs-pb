@@ -43,7 +43,7 @@ export function PropertyMessagesLoading() {
   );
 }
 
-function PropertyMessageCardSkeleton() {
+export function PropertyMessageCardSkeleton() {
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -68,7 +68,7 @@ function PropertyMessageCardSkeleton() {
   );
 }
 
-function ChatMessageSkeleton({ isCurrentUser }: { isCurrentUser: boolean }) {
+export function ChatMessageSkeleton({ isCurrentUser }: { isCurrentUser: boolean }) {
   return (
     <div className={cn("flex gap-3", isCurrentUser && "justify-end")}>
       {!isCurrentUser && <Skeleton className="h-8 w-8 rounded-full" />}
