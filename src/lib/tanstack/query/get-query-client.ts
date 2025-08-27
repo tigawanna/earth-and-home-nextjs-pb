@@ -104,7 +104,7 @@ export function getQueryClient() {
 // Export a default browser singleton for convenience (matches many codebases' expectations)
 export const queryClient = ((): QueryClient | undefined => {
   try {
-    if (typeof window === "undefined") return undefined;
+    if (typeof window === "undefined") return getQueryClientForServer();
     return getQueryClient();
   } catch {
     return undefined;

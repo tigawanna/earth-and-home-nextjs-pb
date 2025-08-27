@@ -1,4 +1,4 @@
-import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/property-types";
+import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/properties/property-types";
 import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
 import { BasePropertyCard } from "./BasePropertyCard";

@@ -5,7 +5,7 @@
  * This file provides a clean interface to access property data with agent, owner, and favorite information
  */
 
-import { PropertyFilters, PropertyWithFavorites } from "../property-types";
+import { PropertyFilters, PropertyWithFavorites } from "./property-types";
 
 
 

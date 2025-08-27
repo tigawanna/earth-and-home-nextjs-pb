@@ -1,10 +1,10 @@
-import { getProperties } from "@/data-access-layer/properties/server-side-property-queries";
 import {
   PropertiesResponseWithExpandedRelations,
   PropertyFilters,
   PropertySortBy,
   SortOrder,
-} from "@/data-access-layer/property-types";
+} from "@/data-access-layer/properties/property-types";
+import { getProperties } from "@/data-access-layer/properties/server-side-property-queries";
 import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";

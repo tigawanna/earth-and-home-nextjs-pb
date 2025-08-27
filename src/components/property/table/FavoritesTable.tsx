@@ -17,8 +17,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toggleFavorite } from "@/data-access-layer/favorite-mutations";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/properties/client-side-property-queries";
+import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
 import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
 import {
   FavoritesResponse,

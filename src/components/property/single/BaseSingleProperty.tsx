@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { PropertyWithFavorites } from "@/data-access-layer/property-types";
+import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {

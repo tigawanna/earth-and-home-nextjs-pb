@@ -11,7 +11,7 @@ import {
   PropertySortBy,
   PropertyWithFavorites,
   SortOrder,
-} from "../property-types";
+} from "./property-types";
 
 // ====================================================
 // GET PROPERTIES (with filtering, sorting, pagination)

@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { toggleFavorite } from "@/data-access-layer/favorite-mutations";
+import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
 import {
   FavoritesResponse,
   PropertiesResponse,

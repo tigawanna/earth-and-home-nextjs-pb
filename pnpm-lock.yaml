@@ -89,6 +89,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.8
         version: 1.2.8(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@tanstack/db':
+        specifier: ^0.1.7
+        version: 0.1.7(typescript@5.9.2)
       '@tanstack/query-db-collection':
         specifier: ^0.2.6
         version: 0.2.6(@tanstack/query-core@5.85.3)(typescript@5.9.2)

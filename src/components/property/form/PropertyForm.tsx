@@ -6,7 +6,7 @@ import { Form } from "@/components/ui/form";
 import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
-} from "@/data-access-layer/property-mutations";
+} from "@/data-access-layer/properties/property-mutations";
 import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
 import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
