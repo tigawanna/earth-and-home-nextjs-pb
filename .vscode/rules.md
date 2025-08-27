@@ -61,4 +61,49 @@
 
 ## Notes
 - Migrating from previous backend libraries: remove or ignore Drizzle / Better Auth / AWS-specific code now that PocketBase covers DB/auth/files
-- If you want, I can add a typed `src/lib/pocketbase/client.ts` that exports both `createBrowserClient` and `createServerClient`, and update examples for common operations (listings fetch, bookmarks, auth flows)
+
+## Image Handling Rules
+
+### PocketBase Property Images
+
+#### ✅ Correct Pattern:
+```tsx
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import Image from "next/image";
+
+// Get the first available image
+const primaryImage = property.image_url || (Array.isArray(property.images) && property.images.length > 0 ? property.images[0] : null);
+const imageUrl = primaryImage && typeof primaryImage === 'string' 
+  ? getImageThumbnailUrl(property, primaryImage, "80x80")
+  : null;
+
+// Use Next.js Image component with relative container
+<div className="relative w-20 h-20 rounded-md overflow-hidden bg-muted">
+  {imageUrl ? (
+    <Image
+      src={imageUrl}
+      alt={property.title}
+      fill
+      className="object-cover"
+      sizes="80px"
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center">
+      <Building2 className="h-5 w-5 text-muted-foreground" />
+    </div>
+  )}
+</div>
+```
+
+#### ❌ Avoid:
+- Direct PocketBase URL construction: `${process.env.NEXT_PUBLIC_POCKETBASE_API_URL}/api/files/...`
+- Using `<img>` tag instead of Next.js `<Image>`
+- Not handling fallback cases
+- Missing `relative` positioning on container
+
+#### ✅ Always:
+- Use `getImageThumbnailUrl()` utility function
+- Use Next.js `<Image>` component with `fill` prop
+- Set appropriate `sizes` attribute
+- Include fallback UI with icons
+- Use `relative` positioning on container div

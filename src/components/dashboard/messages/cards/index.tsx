@@ -6,9 +6,11 @@ import {
   PropertyMessagesResponse,
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, Home, MessageCircle, User } from "lucide-react";
+import Image from "next/image";
 
 // ====================================================
 // PROPERTY MESSAGE CARDS WITH LATEST MESSAGE PREVIEW
@@ -31,16 +33,40 @@ export function PropertyMessageCard({
   messageCount,
   onViewMessages,
 }: PropertyMessageCardProps) {
+  const primaryImage =
+    property.image_url ||
+    (Array.isArray(property.images) && property.images.length > 0 ? property.images[0] : null);
+  const imageUrl =
+    primaryImage && typeof primaryImage === "string"
+      ? getImageThumbnailUrl(property, primaryImage, "48x48")
+      : null;
   return (
     <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={onViewMessages}>
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-lg line-clamp-1">{property.title}</CardTitle>
-            <CardDescription className="flex items-center gap-2">
-              <Home className="w-4 h-4" />
-              {property.city}, {property.state}
-            </CardDescription>
+          <div className="flex items-start gap-3">
+            <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={property.title}
+                  fill
+                  className="object-cover"
+                  sizes="48px"
+                />
+              ) : (
+                <div className="h-full w-full flex items-center justify-center">
+                  <Home className="w-5 h-5 text-muted-foreground" />
+                </div>
+              )}
+            </div>
+            <div>
+              <CardTitle className="text-lg line-clamp-1">{property.title}</CardTitle>
+              <CardDescription className="flex items-center gap-2">
+                <Home className="w-4 h-4" />
+                {property.city}, {property.state}
+              </CardDescription>
+            </div>
           </div>
           <Badge variant="secondary" className="shrink-0">
             {messageCount} {messageCount === 1 ? "message" : "messages"}
@@ -48,25 +74,14 @@ export function PropertyMessageCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex items-start gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={latestMessage.expand?.user_id?.avatar} />
-            <AvatarFallback>
-              <User className="w-4 h-4" />
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="font-medium text-sm">
-                {latestMessage.expand?.user_id?.name || "Anonymous User"}
-              </span>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {formatDistanceToNow(new Date(latestMessage.created), { addSuffix: true })}
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground line-clamp-2">{latestMessage.body}</p>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {formatDistanceToNow(new Date(latestMessage.created), { addSuffix: true })}
+            </span>
           </div>
+          <p className="text-sm text-muted-foreground line-clamp-3">{latestMessage.body}</p>
         </div>
       </CardContent>
     </Card>
