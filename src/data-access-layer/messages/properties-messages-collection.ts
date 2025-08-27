@@ -55,38 +55,7 @@ export const propertyMessagesCollection = createCollection(
   })
 );
 
-// Messages for a specific property
-export const createPropertySpecificMessagesCollection = (propertyId: string) => 
-  createCollection(
-    queryCollectionOptions({
-      queryKey: ["property_messages", propertyId],
-      queryFn: async () => {
-        const filter = pbMessagesCollection.createFilter(
-          and(pBeq("property_id", propertyId), pBeq("type", "parent"))
-        );
-        const result = await pbMessagesCollection.getList(1, 100, {
-          sort: "-created",
-          filter,
-          select: pbMessagesCollectionSelect,
-        });
-        return result.items;
-      },
-      getKey: (item) => item.id,
-      onInsert: async ({ transaction }) => {
-        const { modified } = transaction.mutations[0];
-        await pbMessagesCollection.create(modified);
-      },
-      onUpdate: async ({ transaction }) => {
-        const { original, modified } = transaction.mutations[0];
-        await pbMessagesCollection.update(original.id, modified);
-      },
-      onDelete: async ({ transaction }) => {
-        const { original } = transaction.mutations[0];
-        await pbMessagesCollection.delete(original.id);
-      },
-      queryClient: queryClient!,
-    })
-  );
+
 
 // ====================================================
 // HELPER FUNCTIONS
@@ -105,6 +74,8 @@ export type PropertyMessageSummary = {
   messageCount: number;
   lastActivity: string;
 };
+
+
 
 // Get message summaries grouped by property
 export async function getPropertyMessageSummaries(): Promise<PropertyMessageSummary[]> {

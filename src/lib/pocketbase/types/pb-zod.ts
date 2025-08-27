@@ -453,6 +453,7 @@ export const PropertyMessagesResponseZodSchema = baseResponseSchema.extend({
     property_id: z.string(),
     type: z.enum(['', 'parent', 'reply']).optional(),
     body: z.string(),
+    parent: z.string().optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -463,6 +464,7 @@ export const PropertyMessagesCreateZodSchema = baseCreateSchema.extend({
     property_id: z.string(),
     type: z.enum(['', 'parent', 'reply']).optional(),
     body: z.string(),
+    parent: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -473,6 +475,7 @@ export const PropertyMessagesUpdateZodSchema = baseUpdateSchema.extend({
     property_id: z.string().optional(),
     type: z.enum(['', 'parent', 'reply']).optional(),
     body: z.string().optional(),
+    parent: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });

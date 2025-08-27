@@ -649,6 +649,7 @@ export interface PropertyMessagesResponse extends BaseCollectionResponse {
 	property_id: string;
 	type: '' | 'parent' | 'reply';
 	body: string;
+	parent: string;
 	created: string;
 	updated: string;
 }
@@ -659,6 +660,7 @@ export interface PropertyMessagesCreate extends BaseCollectionCreate {
 	property_id: string;
 	type?: '' | 'parent' | 'reply';
 	body: string;
+	parent?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -669,6 +671,7 @@ export interface PropertyMessagesUpdate extends BaseCollectionUpdate {
 	property_id?: string;
 	type?: '' | 'parent' | 'reply';
 	body?: string;
+	parent?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -683,6 +686,8 @@ export interface PropertyMessagesCollection {
 	relations: {
 		user_id: UsersCollection;
 		property_id: PropertiesCollection;
+		parent: PropertyMessagesCollection;
+		property_messages_via_parent: PropertyMessagesCollection[];
 	};
 }
 

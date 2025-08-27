@@ -6,8 +6,8 @@ import {
     createPropertyMessage,
     getPropertyMessages,
     pbMessagesCollection,
-    pbMessagesCollectionSelect
-} from "@/data-access-layer/messages/messages-collection";
+    pbMessagesCollectionSelect,
+} from "@/data-access-layer/messages/properties-messages-collection";
 import { useLocalViewer } from "@/data-access-layer/user/auth";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useQuery } from "@tanstack/react-query";
@@ -16,9 +16,7 @@ import { ArrowLeft, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { ConversationThread } from "./cards";
-import {
-    PropertyMessagesLoading
-} from "./query-states/loading-states";
+import { PropertyMessagesLoading } from "./query-states/loading-states";
 
 interface PropertyMessagesViewProps {
   propertyId: string;
@@ -26,20 +24,24 @@ interface PropertyMessagesViewProps {
   onBack?: () => void;
 }
 
-export default function PropertyMessagesView({ 
-  propertyId, 
+export default function PropertyMessagesView({
+  propertyId,
   property,
-  onBack 
+  onBack,
 }: PropertyMessagesViewProps) {
   const [newMessage, setNewMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const { data: viewerData } = useLocalViewer();
   const currentUser = viewerData?.viewer;
 
   // Fetch messages for this property
-  const { data: messages, isLoading, refetch } = useQuery({
+  const {
+    data: messages,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["property_messages", propertyId],
     queryFn: () => getPropertyMessages(propertyId),
     refetchInterval: 10000, // Refetch every 10 seconds for real-time feel
@@ -48,7 +50,7 @@ export default function PropertyMessagesView({
   // Real-time message updates
   useEffect(() => {
     const filter = pbMessagesCollection.createFilter(pBeq("property_id", propertyId));
-    
+
     const unsubscribe = pbMessagesCollection.subscribe(
       "*",
       function (e) {
@@ -81,7 +83,7 @@ export default function PropertyMessagesView({
     }
 
     setIsSubmitting(true);
-    
+
     try {
       const message = await createPropertyMessage({
         property_id: propertyId,
@@ -123,12 +125,7 @@ export default function PropertyMessagesView({
         <CardHeader className="pb-3">
           <div className="flex items-center gap-3">
             {onBack && (
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={onBack}
-                className="shrink-0"
-              >
+              <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             )}
@@ -178,8 +175,7 @@ export default function PropertyMessagesView({
                 onClick={handleSendMessage}
                 disabled={!newMessage.trim() || isSubmitting}
                 size="icon"
-                className="self-end"
-              >
+                className="self-end">
                 <Send className="w-4 h-4" />
               </Button>
             </div>
