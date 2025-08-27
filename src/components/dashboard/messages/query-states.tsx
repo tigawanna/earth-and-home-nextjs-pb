@@ -5,7 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PropertiesResponse, PropertyMessagesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  PropertiesResponse,
+  PropertyMessagesResponse,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, Home, MessageCircle, User } from "lucide-react";
@@ -80,7 +84,9 @@ function ChatMessageSkeleton({ isCurrentUser }: { isCurrentUser: boolean }) {
       {!isCurrentUser && <Skeleton className="h-8 w-8 rounded-full" />}
       <div className={cn("max-w-[70%] space-y-2", isCurrentUser && "order-first")}>
         <Skeleton className="h-4 w-20" />
-        <Skeleton className={cn("h-16 w-full rounded-lg", isCurrentUser ? "bg-primary/20" : "bg-muted")} />
+        <Skeleton
+          className={cn("h-16 w-full rounded-lg", isCurrentUser ? "bg-primary/20" : "bg-muted")}
+        />
         <Skeleton className="h-3 w-16" />
       </div>
       {isCurrentUser && <Skeleton className="h-8 w-8 rounded-full" />}
@@ -117,7 +123,8 @@ export function NoMessagesForProperty({ propertyTitle }: { propertyTitle?: strin
       <div className="text-center space-y-2">
         <h3 className="text-lg font-semibold">No Messages Yet</h3>
         <p className="text-muted-foreground max-w-md">
-          No messages for {propertyTitle || "this property"} yet. Messages from interested users will appear here.
+          No messages for {propertyTitle || "this property"} yet. Messages from interested users
+          will appear here.
         </p>
       </div>
       <Button variant="outline" size="sm">
@@ -143,11 +150,11 @@ interface PropertyMessageCardProps {
   onViewMessages?: () => void;
 }
 
-export function PropertyMessageCard({ 
-  property, 
-  latestMessage, 
+export function PropertyMessageCard({
+  property,
+  latestMessage,
   messageCount,
-  onViewMessages 
+  onViewMessages,
 }: PropertyMessageCardProps) {
   return (
     <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={onViewMessages}>
@@ -183,9 +190,7 @@ export function PropertyMessageCard({
                 {formatDistanceToNow(new Date(latestMessage.created), { addSuffix: true })}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {latestMessage.body}
-            </p>
+            <p className="text-sm text-muted-foreground line-clamp-2">{latestMessage.body}</p>
           </div>
         </div>
       </CardContent>
@@ -220,34 +225,32 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
           </AvatarFallback>
         </Avatar>
       )}
-      
+
       <div className={cn("max-w-[70%] space-y-1", isCurrentUser && "order-first")}>
         {!isCurrentUser && (
           <div className="text-sm font-medium text-muted-foreground">
             {user?.name || "Anonymous User"}
           </div>
         )}
-        
+
         <div
           className={cn(
             "rounded-lg px-3 py-2 text-sm",
-            isCurrentUser 
-              ? "bg-primary text-primary-foreground ml-auto" 
-              : "bg-muted"
-          )}
-        >
+            isCurrentUser ? "bg-primary text-primary-foreground ml-auto" : "bg-muted"
+          )}>
           {message.body}
         </div>
-        
-        <div className={cn(
-          "text-xs text-muted-foreground flex items-center gap-1",
-          isCurrentUser && "justify-end"
-        )}>
+
+        <div
+          className={cn(
+            "text-xs text-muted-foreground flex items-center gap-1",
+            isCurrentUser && "justify-end"
+          )}>
           <Clock className="w-3 h-3" />
           {formatDistanceToNow(new Date(message.created), { addSuffix: true })}
         </div>
       </div>
-      
+
       {isCurrentUser && (
         <Avatar className="h-8 w-8">
           <AvatarImage src={user?.avatar} />
@@ -292,13 +295,9 @@ export function ConversationThread({ messages, currentUserId, property }: Conver
           </p>
         </div>
       )}
-      
+
       {messages.map((message) => (
-        <ChatMessage 
-          key={message.id} 
-          message={message} 
-          currentUserId={currentUserId} 
-        />
+        <ChatMessage key={message.id} message={message} currentUserId={currentUserId} />
       ))}
     </div>
   );
