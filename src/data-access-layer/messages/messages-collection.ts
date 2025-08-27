@@ -2,16 +2,25 @@ import { createCollection, eq, useLiveQuery } from "@tanstack/react-db";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import z from "zod";
+import { eq as pBeq } from "@tigawanna/typed-pocketbase";
 
-const pbMessagesCollection = browserPB.from("property_messages");
+export const pbMessagesCollection = browserPB.from("property_messages");
+export const pbMessagesCollectionFilter = pbMessagesCollection.createFilter(pBeq("type", "parent"));
+export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({
+  expand: {
+    property_id: true,
+  },
+});
+
 // Define a collection that loads data using TanStack Query
-export const messageCollection = createCollection(
+export const propertiesMessageCollection = createCollection(
   queryCollectionOptions({
-    queryKey: ["messages"],
+    queryKey: ["property_messages"],
     queryFn: async () => {
       const result = await pbMessagesCollection.getList(1, 100, {
         sort: "+created",
+        filter: pbMessagesCollectionFilter,
+        select: pbMessagesCollectionSelect,
       });
       return result.items;
     },

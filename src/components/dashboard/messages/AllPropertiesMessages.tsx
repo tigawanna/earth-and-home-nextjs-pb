@@ -1,19 +1,22 @@
 "use client";
-
-import { propertiesMessageCollection } from "@/data-access-layer/messages/messages-collection";
+import {
+  pbMessagesCollection,
+  pbMessagesCollectionFilter,
+  pbMessagesCollectionSelect,
+  propertiesMessageCollection,
+} from "@/data-access-layer/messages/messages-collection";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { createCollection, eq, liveQueryCollectionOptions } from "@tanstack/db";
 import { useLiveQuery } from "@tanstack/react-db";
 import { useEffect } from "react";
 
-interface RealtimeMessagesProps {}
+interface AllPropertiesMessagesProps {}
 
-export default function RealtimeMessages({}: RealtimeMessagesProps) {
-  const messagesCollection = browserPB.from("property_messages");
-
-  const { data: messages } = useLiveQuery((q) => q.from({ todo: propertiesMessageCollection }));
+export default function AllPropertiesMessages({}: AllPropertiesMessagesProps) {
+  const { data: messages, isLoading } = useLiveQuery((q) =>
+    q.from({ messages: propertiesMessageCollection })
+  );
   useEffect(() => {
-    messagesCollection.subscribe(
+    pbMessagesCollection.subscribe(
       "*",
       function (e) {
         if (e.action === "create") {
@@ -28,6 +31,8 @@ export default function RealtimeMessages({}: RealtimeMessagesProps) {
       },
       {
         /* other options like: filter, expand, custom headers, etc. */
+        filter: pbMessagesCollectionFilter,
+        select: pbMessagesCollectionSelect,
       }
     );
     return () => {
@@ -35,15 +40,15 @@ export default function RealtimeMessages({}: RealtimeMessagesProps) {
       messagesCollection.unsubscribe();
     };
   }, []);
-  console.log("messages", messages);
+
   if (!messages.length) {
-    return <p>No messages found.</p>;
+    return <p>No interactions found.</p>;
   }
   return (
     <div className="w-full h-full gap-2 flex flex-col items-center justify-center">
       {messages.map((msg) => (
         <div key={msg.id} className="p-2 bg-muted border-b w-full">
-          {msg.body}
+          <div>{msg.expand?.property_id?.title}</div>
         </div>
       ))}
     </div>

@@ -1,3 +1,4 @@
+import { AllPropertyMessagesShell } from "@/components/dashboard/messages/LazyAllMessageShell";
 import { PropertyMessages } from "@/components/dashboard/messages/PropertyMessages";
 import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { MessageSquare } from "lucide-react";
@@ -16,7 +17,7 @@ export default async function MessagesPage() {
         <h1 className="text-2xl font-bold">Property Messages</h1>
         <p className="text-muted-foreground ml-4">Manage conversations about properties</p>
       </div>
-      <PropertyMessages />
+      <AllPropertyMessagesShell />
     </div>
   );
 }
