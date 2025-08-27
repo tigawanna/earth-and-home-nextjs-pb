@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  createPropertyMessage,
-  getPropertyMessages,
-  pbMessagesCollection,
-  pbMessagesCollectionSelect
+    createPropertyMessage,
+    getPropertyMessages,
+    pbMessagesCollection,
+    pbMessagesCollectionSelect
 } from "@/data-access-layer/messages/messages-collection";
 import { useLocalViewer } from "@/data-access-layer/user/auth";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
@@ -15,10 +15,10 @@ import { eq as pBeq } from "@tigawanna/typed-pocketbase";
 import { ArrowLeft, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { ConversationThread } from "./cards";
 import {
-  ConversationThread,
-  PropertyMessagesLoading
-} from "./query-states";
+    PropertyMessagesLoading
+} from "./query-states/loading-states";
 
 interface PropertyMessagesViewProps {
   propertyId: string;
