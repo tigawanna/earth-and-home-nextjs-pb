@@ -4,6 +4,7 @@ import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/react-db";
 import { and, eq as pBeq } from "@tigawanna/typed-pocketbase";
+import {mutationOptions} from "@tanstack/react-query"
 
 // ====================================================
 // TANSTACK COLLECTIONS
@@ -26,7 +27,6 @@ export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({
 
 // Messages for a specific property
 export const createSinglePropertyMessagesCollection = ({ propertyId }: { propertyId: string }) => {
-  console.log("Creating collection for propertyId:", propertyId);
   return createCollection(
     queryCollectionOptions({
       queryKey: ["property_messages", propertyId],
@@ -57,10 +57,31 @@ export const createSinglePropertyMessagesCollection = ({ propertyId }: { propert
 };
 
 // Create the factory using our new utility.
-export const singlePropertyMessagesCollection = createCollectionFactory(
+export const singlePropertyMessagesCollection = createCollectionFactory<
+  ReturnType<typeof createSinglePropertyMessagesCollection>,
+  Parameters<typeof createSinglePropertyMessagesCollection>[0]
+>(
   createSinglePropertyMessagesCollection
 );
 
-// CRITICAL: Memoize the params object so its reference is stable across re-renders.
-// This ensures the WeakMap factory returns the same collection instance.
-//   const sourceParams = useMemo(() => ({ date: dateString }), [dateString]);
+
+type AddNewChatProps={
+chat:PropertyMessagesResponse
+}
+export const addNewChatMessageMutationOption = mutationOptions({
+  mutationFn:({chat}:AddNewChatProps)=>{
+    try{
+      const result = await pbMessagesCollection.create(chat)
+        return{
+          success:true,
+          message:"Message sent"
+        }
+
+    }catch(e){
+      return {
+        succes:false,
+        message:e.message
+      }
+    }
+  }
+})

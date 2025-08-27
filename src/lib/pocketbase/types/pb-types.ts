@@ -400,6 +400,7 @@ export interface UsersCollection {
 		properties_via_owner_id: PropertiesCollection[];
 		favorites_via_user_id: FavoritesCollection[];
 		property_messages_via_user_id: PropertyMessagesCollection[];
+		property_messages_via_admin_id: PropertyMessagesCollection[];
 	};
 }
 
@@ -650,6 +651,7 @@ export interface PropertyMessagesResponse extends BaseCollectionResponse {
 	type: '' | 'parent' | 'reply';
 	body: string;
 	parent: string;
+	admin_id: string;
 	created: string;
 	updated: string;
 }
@@ -661,6 +663,7 @@ export interface PropertyMessagesCreate extends BaseCollectionCreate {
 	type?: '' | 'parent' | 'reply';
 	body: string;
 	parent?: string;
+	admin_id?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -672,6 +675,7 @@ export interface PropertyMessagesUpdate extends BaseCollectionUpdate {
 	type?: '' | 'parent' | 'reply';
 	body?: string;
 	parent?: string;
+	admin_id?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -688,6 +692,7 @@ export interface PropertyMessagesCollection {
 		property_id: PropertiesCollection;
 		parent: PropertyMessagesCollection;
 		property_messages_via_parent: PropertyMessagesCollection[];
+		admin_id: UsersCollection;
 	};
 }
 
