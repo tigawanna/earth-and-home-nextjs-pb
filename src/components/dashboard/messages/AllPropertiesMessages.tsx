@@ -1,11 +1,10 @@
 "use client";
 import {
-  pbMessagesCollection,
-  pbMessagesCollectionFilter,
-  pbMessagesCollectionSelect,
-  propertiesMessageCollection,
+    pbMessagesCollection,
+    pbMessagesCollectionFilter,
+    pbMessagesCollectionSelect,
+    propertiesMessageCollection,
 } from "@/data-access-layer/messages/messages-collection";
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { useLiveQuery } from "@tanstack/react-db";
 import { useEffect } from "react";
 
@@ -37,7 +36,7 @@ export default function AllPropertiesMessages({}: AllPropertiesMessagesProps) {
     );
     return () => {
       // @ts-expect-error TODO fix this in typed pocketbase
-      messagesCollection.unsubscribe();
+      pbMessagesCollection.unsubscribe();
     };
   }, []);
 
