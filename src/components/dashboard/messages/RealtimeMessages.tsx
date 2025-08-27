@@ -1,6 +1,7 @@
 "use client";
 
-import { propertiesMessageCollection } from "@/data-access-layer/messages/messages-collection";
+
+import { propertyMessagesCollection } from "@/data-access-layer/messages/enhanced-messages-collection";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { createCollection, eq, liveQueryCollectionOptions } from "@tanstack/db";
 import { useLiveQuery } from "@tanstack/react-db";
@@ -11,19 +12,19 @@ interface RealtimeMessagesProps {}
 export default function RealtimeMessages({}: RealtimeMessagesProps) {
   const messagesCollection = browserPB.from("property_messages");
 
-  const { data: messages } = useLiveQuery((q) => q.from({ todo: propertiesMessageCollection }));
+  const { data: messages } = useLiveQuery((q) => q.from({ todo: propertyMessagesCollection }));
   useEffect(() => {
     messagesCollection.subscribe(
       "*",
       function (e) {
         if (e.action === "create") {
-          propertiesMessageCollection.utils.writeInsert(e.record);
+          propertyMessagesCollection.utils.writeInsert(e.record);
         }
         if (e.action === "delete") {
-          propertiesMessageCollection.utils.writeDelete(e.record.id);
+          propertyMessagesCollection.utils.writeDelete(e.record.id);
         }
         if (e.action === "update") {
-          propertiesMessageCollection.utils.writeUpdate(e.record);
+          propertyMessagesCollection.utils.writeUpdate(e.record);
         }
       },
       {
