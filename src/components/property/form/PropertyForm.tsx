@@ -7,7 +7,7 @@ import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
 } from "@/data-access-layer/properties/property-mutations";
-import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
+import { PropertiesCreate, PropertiesUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { isLandProperty } from "@/utils/forms";
@@ -38,7 +38,7 @@ interface PropertyFormProps {
   initialData?: PropertiesResponseZod;
   isEdit?: boolean;
   propertyId?: string; // Add propertyId for editing
-  user: UsersResponse | null;
+  user: UsersResponse;
 }
 
 export default function PropertyForm({
@@ -47,13 +47,15 @@ export default function PropertyForm({
   propertyId,
   user,
 }: PropertyFormProps) {
+  const agentId = user.id;
   const router = useRouter();
   const [isSubmittingDraft, submitDraft] = useTransition();
   const form = useForm({
     resolver: zodResolver(PropertyFormSchema),
     defaultValues: {
       // ...defaultPropertyFormValues,
-      ...initialData
+      agent_id: agentId,
+      ...initialData,
     },
   });
 
@@ -126,7 +128,7 @@ export default function PropertyForm({
     submitDraft(async () => {
       try {
         if (isEdit && propertyId) {
-          const payload = {...data } as PropertiesUpdate;
+          const payload = { ...data } as PropertiesUpdate;
           await updatePropertyMutation.mutateAsync(payload);
         } else {
           await createPropertyMutation.mutateAsync(data as PropertiesCreate);

@@ -105,7 +105,7 @@ export function signinMutationOptions() {
 export function signupMutationOptions() {
   return mutationOptions({
     mutationFn: async (data: UsersCreate) => {
-      const res = await browserPB.from("users").create(data);
+      const res = await browserPB.from("users").create({...data,emailVisibility:true});
       browserPB.authStore.exportToCookie();
       return res;
     },
