@@ -22,7 +22,7 @@ export default function AllPropertiesMessages({
     isLoading,
     error,
   } = useQuery({
-    queryKey: [queryKeyPrefixes.property_messages, "summaries"] as const,
+    queryKey: [queryKeyPrefixes.property_messages] as const,
     queryFn: getPropertyMessageSummaries,
     refetchInterval: 30000, // Refetch every 30 seconds
   });

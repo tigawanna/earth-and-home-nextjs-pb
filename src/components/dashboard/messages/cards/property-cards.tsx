@@ -2,15 +2,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageWithProperty } from "@/data-access-layer/messages/properties-messages-collection";
-import {
-  PropertiesResponse,
-  PropertyMessagesResponse,
-  UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
-import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
-import { Clock, Home, MessageCircle, User } from "lucide-react";
+import { Clock, Home, User } from "lucide-react";
 import Image from "next/image";
 
 // ====================================================
@@ -36,8 +30,9 @@ const user = message.expand?.user_id;
   return (
     <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={onViewMessages}>
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-3">
+        <div className="flex items-start justify-between gap-4">
+          {/* Property Information */}
+          <div className="flex items-start gap-3 flex-1">
             <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
               {property && imageUrl ? (
                 <Image
@@ -53,7 +48,7 @@ const user = message.expand?.user_id;
                 </div>
               )}
             </div>
-            <div>
+            <div className="flex-1 min-w-0">
               <CardTitle className="text-lg line-clamp-1">{property?.title}</CardTitle>
               <CardDescription className="flex items-center gap-2">
                 <Home className="w-4 h-4" />
@@ -61,20 +56,11 @@ const user = message.expand?.user_id;
               </CardDescription>
             </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
+
           {/* User Information */}
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
-              <AvatarFallback>
-                <User className="w-5 h-5" />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="text-right min-w-0">
+              <div className="flex items-center justify-end gap-2">
                 <h4 className="font-medium text-sm truncate">
                   {user?.name || "Anonymous User"}
                 </h4>
@@ -88,18 +74,24 @@ const user = message.expand?.user_id;
                 {user?.email || "No email provided"}
               </p>
             </div>
+            <Avatar className="h-10 w-10 flex-shrink-0">
+              <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
+              <AvatarFallback>
+                <User className="w-5 h-5" />
+              </AvatarFallback>
+            </Avatar>
           </div>
-
-          {/* Message Content */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                {formatDistanceToNow(new Date(message.created), { addSuffix: true })}
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground line-clamp-3">{message.body}</p>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <Clock className="w-3 h-3" />
+              {formatDistanceToNow(new Date(message.created), { addSuffix: true })}
+            </span>
           </div>
+          <p className="text-sm text-muted-foreground line-clamp-3">{message.body}</p>
         </div>
       </CardContent>
     </Card>
