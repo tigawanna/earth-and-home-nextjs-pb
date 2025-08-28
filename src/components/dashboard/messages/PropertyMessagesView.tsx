@@ -3,19 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import {
-    createPropertyMessage,
-    getPropertyMessages,
-    pbMessagesCollection,
-    pbMessagesCollectionSelect,
+  createPropertyMessage,
+  getPropertyMessages
 } from "@/data-access-layer/messages/properties-messages-collection";
 import { useLocalViewer } from "@/data-access-layer/user/auth";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useQuery } from "@tanstack/react-query";
-import { eq as pBeq } from "@tigawanna/typed-pocketbase";
 import { ArrowLeft, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ConversationThread } from "./cards";
+import { ConversationThread } from "./cards/PropertyMessageCard";
 import { PropertyMessagesLoading } from "./query-states/loading-states";
 
 interface PropertyMessagesViewProps {

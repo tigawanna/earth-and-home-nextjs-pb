@@ -1,12 +1,11 @@
 "use client";
 import {
-  getPropertyMessageSummaries,
-  PropertyMessageSummary
+  getPropertyMessageSummaries
 } from "@/data-access-layer/messages/properties-messages-collection";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { PropertyMessageCard } from "../cards";
+import { PropertyMessageCard } from "../cards/PropertyMessageCard";
 import { PropertyMessagesError } from "../query-states/error-states";
 import { AllPropertiesMessagesLoading, NoPropertyMessages } from "../query-states/loading-states";
 
