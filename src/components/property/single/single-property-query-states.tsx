@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import { AlertCircle, Home } from "lucide-react";
 import Link from "next/link";
-import { Link as TSRLink } from "@tanstack/react-router";
+
 
 interface SinglePropertyLoadingFallbackProps {}
 

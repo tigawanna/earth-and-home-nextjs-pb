@@ -60,6 +60,7 @@ export function PropertyContactForm({
         message: data.message,
         property_id: propertyId,
         user_id: user.id,
+        type:"parent"
       });
 
       toast.success("Message sent successfully! We'll get back to you soon.");
@@ -88,8 +89,8 @@ export function PropertyContactForm({
           <DialogTitle>Message About Property</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <Label htmlFor="message">Your Message</Label>
+          <div className="space-y-2">
+            {/* <Label htmlFor="message" className="text-muted-foreground">Your Message</Label> */}
             <Textarea
               id="message"
               {...register("message")}

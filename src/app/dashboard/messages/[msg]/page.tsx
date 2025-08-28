@@ -28,14 +28,30 @@ export default async function SinglePropertyMessagesPage({
   if (!messageParent) {
     return redirect("/dashboard");
   }
-  console.log({ messageParent, messageId });
+
   return (
-    <section className="w-full h-full  flex flex-col items-center justify-center">
-      <LazySinglePropertyMessagesShell
-        propertyId={messageParent.property_id}
-        user={user}
-        messageParent={messageParent}
-      />
+    <section className="w-full h-full flex flex-col">
+      {/* Chat Header */}
+      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-lg font-semibold">
+            {messageParent.expand?.property_id?.title || "Property Message Thread"}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Message from {messageParent.expand?.user_id?.name || messageParent.expand?.user_id?.username || "User"} • 
+            {messageParent.type === "parent" ? " Original Message" : " Reply Thread"}
+          </p>
+        </div>
+      </div>
+      
+      {/* Chat Content */}
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <LazySinglePropertyMessagesShell
+          propertyId={messageParent.property_id}
+          user={user}
+          messageParent={messageParent}
+        />
+      </div>
     </section>
   );
 }

@@ -7,7 +7,7 @@ import {
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/react-db";
-import { and, eq as pBeq } from "@tigawanna/typed-pocketbase";
+import { and, eq as pBeq,lte } from "@tigawanna/typed-pocketbase";
 
 // ====================================================
 // POCKETBASE COLLECTIONS
@@ -16,7 +16,11 @@ import { and, eq as pBeq } from "@tigawanna/typed-pocketbase";
 export const pbMessagesCollection = browserPB.from("property_messages");
 
 // Filter for parent messages (main conversations, not replies)
-export const pbMessagesCollectionFilter = pbMessagesCollection.createFilter(pBeq("type", "parent"));
+export const pbMessagesCollectionFilter = pbMessagesCollection.createFilter(
+  and(
+    pBeq("type", "parent")
+  )
+);
 
 // Select with expanded relations
 export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({

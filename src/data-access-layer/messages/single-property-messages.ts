@@ -3,7 +3,7 @@ import { createCollectionFactory } from "@/lib/tanstack/db/query-collection-fact
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/react-db";
-import { and, eq as pBeq } from "@tigawanna/typed-pocketbase";
+import { and, eq as pBeq, or } from "@tigawanna/typed-pocketbase";
 import { mutationOptions } from "@tanstack/react-query";
 import { PropertyMessagesResponse } from "@/lib/pocketbase/types/pb-types";
 
@@ -16,7 +16,7 @@ export const pbMessagesCollection = browserPB.from("property_messages");
 // Filter for parent messages (main conversations, not replies)
 
 export const pbMessagesCollectionFilter = (parentId: string) =>
-  pbMessagesCollection.createFilter(and(pBeq("parent", parentId)));
+  pbMessagesCollection.createFilter(or(pBeq("parent", parentId), pBeq("id", parentId)));
 
 // Select with expanded relations
 export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({
@@ -68,7 +68,7 @@ type AddNewChatProps = {
 };
 
 export const addNewChatMessageMutationOption = mutationOptions({
-  mutationFn: async({ chat }: AddNewChatProps) => {
+  mutationFn: async ({ chat }: AddNewChatProps) => {
     try {
       const result = await pbMessagesCollection.create(chat);
       return {

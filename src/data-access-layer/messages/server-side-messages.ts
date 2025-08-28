@@ -1,6 +1,5 @@
-import "server-only";
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
-import { and, eq } from "@tigawanna/typed-pocketbase";
+import "server-only";
 
 interface GetSinglePropertyMessageprops {
   msgId:string
@@ -12,7 +11,9 @@ export async function getSinglePropertyMessage({
     const client = await createServerClient();
     const response = await client
       .from("property_messages")
-      .getOne(msgId);
+      .getOne(msgId, {
+        expand: "user_id,property_id"
+      });
       // .getFirstListItem(and(eq("parent", propertyId), eq("user_id", userId)));
     return {
       success: true,
