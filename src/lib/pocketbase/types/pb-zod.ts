@@ -205,6 +205,7 @@ export const UsersResponseZodSchema = authResponseSchema.extend({
     avatar: z.string().optional(),
     is_admin: z.boolean().optional(),
     is_banned: z.boolean().optional(),
+    phone: z.string().optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -218,6 +219,7 @@ export const UsersCreateZodSchema = authCreateSchema.extend({
     avatar: z.instanceof(File).nullable().optional(),
     is_admin: z.boolean().optional(),
     is_banned: z.boolean().optional(),
+    phone: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -231,6 +233,7 @@ export const UsersUpdateZodSchema = authUpdateSchema.extend({
     avatar: z.instanceof(File).nullable().optional(),
     is_admin: z.boolean().optional(),
     is_banned: z.boolean().optional(),
+    phone: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -279,11 +282,11 @@ export const PropertiesResponseZodSchema = baseResponseSchema.extend({
     amenities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
     features: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
     utilities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
-    agent_id: z.string(),
     owner_id: z.string().optional(),
     is_featured: z.boolean().optional(),
     is_new: z.boolean().optional(),
     location_point: z.object({ lat: z.number(), lon: z.number() }).nullable().optional(),
+    agent_id: z.string(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -329,11 +332,11 @@ export const PropertiesCreateZodSchema = baseCreateSchema.extend({
     amenities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
     features: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
     utilities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
-    agent_id: z.string(),
     owner_id: z.string().optional(),
     is_featured: z.boolean().optional(),
     is_new: z.boolean().optional(),
     location_point: z.object({ lat: z.number(), lon: z.number() }).nullable().optional(),
+    agent_id: z.string(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -408,11 +411,11 @@ export const PropertiesUpdateZodSchema = baseUpdateSchema.extend({
     amenities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
     features: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
     utilities: z.union([z.record(z.string(), z.any()), z.array(z.any()), z.null()]).optional(),
-    agent_id: z.string().optional(),
     owner_id: z.string().optional(),
     is_featured: z.boolean().optional(),
     is_new: z.boolean().optional(),
     location_point: z.object({ lat: z.number(), lon: z.number() }).nullable().optional(),
+    agent_id: z.string().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -483,6 +486,39 @@ export const PropertyMessagesUpdateZodSchema = baseUpdateSchema.extend({
     updated: z.union([z.string(), z.date()]).optional()
 });
 
+// ===== agents =====
+
+export const AgentsResponseZodSchema = baseResponseSchema.extend({
+    collectionName: z.literal('agents'),
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    name: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+    user_id: z.string().optional(),
+    created: z.string().optional(),
+    updated: z.string().optional()
+});
+
+export const AgentsCreateZodSchema = baseCreateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
+    name: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+    user_id: z.string().optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
+export const AgentsUpdateZodSchema = baseUpdateSchema.extend({
+    id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
+    name: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+    user_id: z.string().optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
+});
+
 
 // Export all schemas
 export const schemas = {
@@ -530,6 +566,11 @@ export const schemas = {
         response: PropertyMessagesResponseZodSchema,
         create: PropertyMessagesCreateZodSchema,
         update: PropertyMessagesUpdateZodSchema,
+    },
+    agents: {
+        response: AgentsResponseZodSchema,
+        create: AgentsCreateZodSchema,
+        update: AgentsUpdateZodSchema,
     },
 };
 
@@ -670,3 +711,18 @@ export const property_messagesValidators = {
 export type PropertyMessagesResponseZod = z.infer<typeof PropertyMessagesResponseZodSchema>;
 export type PropertyMessagesCreateZod = z.infer<typeof PropertyMessagesCreateZodSchema>;
 export type PropertyMessagesUpdateZod = z.infer<typeof PropertyMessagesUpdateZodSchema>;
+
+// Validation helpers for agents
+export const agentsValidators = {
+    response: (data: unknown) => AgentsResponseZodSchema.parse(data),
+    safeResponse: (data: unknown) => AgentsResponseZodSchema.safeParse(data),
+    create: (data: unknown) => AgentsCreateZodSchema.parse(data),
+    safeCreate: (data: unknown) => AgentsCreateZodSchema.safeParse(data),
+    update: (data: unknown) => AgentsUpdateZodSchema.parse(data),
+    safeUpdate: (data: unknown) => AgentsUpdateZodSchema.safeParse(data),
+};
+
+// Type inference helpers for agents
+export type AgentsResponseZod = z.infer<typeof AgentsResponseZodSchema>;
+export type AgentsCreateZod = z.infer<typeof AgentsCreateZodSchema>;
+export type AgentsUpdateZod = z.infer<typeof AgentsUpdateZodSchema>;

@@ -358,6 +358,7 @@ export interface UsersResponse extends AuthCollectionResponse {
 	avatar: string;
 	is_admin: boolean;
 	is_banned: boolean;
+	phone: string;
 	created: string;
 	updated: string;
 }
@@ -371,6 +372,7 @@ export interface UsersCreate extends AuthCollectionCreate {
 	avatar?: File | null;
 	is_admin?: boolean;
 	is_banned?: boolean;
+	phone?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -384,6 +386,7 @@ export interface UsersUpdate extends AuthCollectionUpdate {
 	avatar?: File | null;
 	is_admin?: boolean;
 	is_banned?: boolean;
+	phone?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -396,11 +399,11 @@ export interface UsersCollection {
 	create: UsersCreate;
 	update: UsersUpdate;
 	relations: {
-		properties_via_agent_id: PropertiesCollection[];
 		properties_via_owner_id: PropertiesCollection[];
 		favorites_via_user_id: FavoritesCollection[];
 		property_messages_via_user_id: PropertyMessagesCollection[];
 		property_messages_via_admin_id: PropertyMessagesCollection[];
+		agents_via_user_id: AgentsCollection[];
 	};
 }
 
@@ -448,11 +451,11 @@ export interface PropertiesResponse extends BaseCollectionResponse {
 	amenities?: PropertiesAmenities
 	features: Record<string, any> | Array<any> | null;
 	utilities: Record<string, any> | Array<any> | null;
-	agent_id: string;
 	owner_id: string;
 	is_featured: boolean;
 	is_new: boolean;
 	location_point: { lat: number; lon: number } | null;
+	agent_id: string;
 	created: string;
 	updated: string;
 }
@@ -498,11 +501,11 @@ export interface PropertiesCreate extends BaseCollectionCreate {
 	amenities?: PropertiesAmenities
 	features?: Record<string, any> | Array<any> | null;
 	utilities?: Record<string, any> | Array<any> | null;
-	agent_id: string;
 	owner_id?: string;
 	is_featured?: boolean;
 	is_new?: boolean;
 	location_point?: { lat: number; lon: number } | null;
+	agent_id: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -577,11 +580,11 @@ export interface PropertiesUpdate extends BaseCollectionUpdate {
 	amenities?: PropertiesAmenities
 	features?: Record<string, any> | Array<any> | null;
 	utilities?: Record<string, any> | Array<any> | null;
-	agent_id?: string;
 	owner_id?: string;
 	is_featured?: boolean;
 	is_new?: boolean;
 	location_point?: { lat: number; lon: number } | null;
+	agent_id?: string;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -594,8 +597,8 @@ export interface PropertiesCollection {
 	create: PropertiesCreate;
 	update: PropertiesUpdate;
 	relations: {
-		agent_id: UsersCollection;
 		owner_id: UsersCollection;
+		agent_id: AgentsCollection;
 		favorites_via_property_id: FavoritesCollection[];
 		property_messages_via_property_id: PropertyMessagesCollection[];
 	};
@@ -696,6 +699,52 @@ export interface PropertyMessagesCollection {
 	};
 }
 
+// ===== agents =====
+
+export interface AgentsResponse extends BaseCollectionResponse {
+	collectionName: 'agents';
+	id: string;
+	name: string;
+	phone: string;
+	email: string;
+	user_id: string;
+	created: string;
+	updated: string;
+}
+
+export interface AgentsCreate extends BaseCollectionCreate {
+	id?: string;
+	name?: string;
+	phone?: string;
+	email?: string;
+	user_id?: string;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface AgentsUpdate extends BaseCollectionUpdate {
+	id?: string;
+	name?: string;
+	phone?: string;
+	email?: string;
+	user_id?: string;
+	created?: string | Date;
+	updated?: string | Date;
+}
+
+export interface AgentsCollection {
+	type: 'base';
+	collectionId: string;
+	collectionName: 'agents';
+	response: AgentsResponse;
+	create: AgentsCreate;
+	update: AgentsUpdate;
+	relations: {
+		properties_via_agent_id: PropertiesCollection[];
+		user_id: UsersCollection;
+	};
+}
+
 // ===== Schema =====
 
 export type Schema = {
@@ -708,4 +757,5 @@ export type Schema = {
 	properties: PropertiesCollection;
 	favorites: FavoritesCollection;
 	property_messages: PropertyMessagesCollection;
+	agents: AgentsCollection;
 };

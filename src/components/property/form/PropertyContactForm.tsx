@@ -8,10 +8,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { CopyButton } from "@/components/shared/CopyButton";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loader2, MessageSquare, Send, MessageCircle } from "lucide-react";
+import { Loader2, MessageSquare, Send, MessageCircle, Phone, Mail, User } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -31,6 +32,7 @@ interface PropertyContactFormProps {
   propertyTitle: string;
   children?: React.ReactNode;
   user: UsersResponse
+  agent: UsersResponse
 }
 
 interface SendMessagePayload {
@@ -54,6 +56,7 @@ export function PropertyContactForm({
   propertyTitle,
   children,
   user,
+  agent
 }: PropertyContactFormProps) {
   const userId = user.id;
   const router = useRouter();
@@ -148,6 +151,55 @@ export function PropertyContactForm({
         <DialogHeader>
           <DialogTitle>Message About Property</DialogTitle>
         </DialogHeader>
+
+        {/* Agent Contact Banner */}
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-4 mb-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <User className="w-5 h-5 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-medium text-sm mb-1">Property Agent</h3>
+              <p className="text-sm font-semibold mb-2">
+                {agent.name || agent.username || "Agent"}
+              </p>
+              
+              <div className="space-y-1">
+                {/* Phone Number */}
+                {agent.phone && (
+                  <div className="flex items-center gap-2 text-xs">
+                    <Phone className="w-3 h-3 text-muted-foreground" />
+                    <span className="flex-1 font-mono">{agent.phone}</span>
+                    <CopyButton
+                      text={agent.phone}
+                      label="Phone number"
+                      className="h-6 w-6 p-0"
+                    />
+                  </div>
+                )}
+                
+                {/* Email */}
+                {agent.email && (
+                  <div className="flex items-center gap-2 text-xs">
+                    <Mail className="w-3 h-3 text-muted-foreground" />
+                    <span className="flex-1 font-mono truncate">{agent.email}</span>
+                    <CopyButton
+                      text={agent.email}
+                      label="Email"
+                      className="h-6 w-6 p-0"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              {(!agent.phone && !agent.email) && (
+                <p className="text-xs text-muted-foreground">
+                  Contact information not available
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
         
         {/* Loading state while checking for existing messages */}
         {isCheckingExistingMessage && (

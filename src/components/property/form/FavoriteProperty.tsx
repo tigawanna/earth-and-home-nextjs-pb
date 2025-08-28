@@ -1,7 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/properties/property-types";
+import {
+  PropertiesResponseWithExpandedRelations,
+  PropertyWithFavorites,
+} from "@/data-access-layer/properties/property-types";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { and, eq } from "@tigawanna/typed-pocketbase";
@@ -11,7 +14,7 @@ import { useEffect, useState } from "react";
 
 interface FavoritePropertyProps {
   userId?: string;
-  property: PropertiesResponseWithExpandedRelations;
+  property: PropertyWithFavorites;
 }
 
 export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {

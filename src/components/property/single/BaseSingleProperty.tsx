@@ -49,7 +49,9 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
   const rawImages = Array.isArray(property.images) ? property.images : [];
   const amenities = Array.isArray(property.amenities) ? property.amenities : [];
   const features = Array.isArray(property.features) ? property.features : [];
+  const agent = property.expand?.agent_id 
 
+  console.log("propery ===",property)
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -103,11 +105,13 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                       </div>
 
                       <div className="flex gap-2">
-                        {user ? (
+                        {(user && agent) ? (
                           <PropertyContactForm
                             user={user}
                             propertyId={property.id}
-                            propertyTitle={property.title}>
+                            propertyTitle={property.title}
+                            agent={agent}
+                            >
                             <Button className="flex-1">
                               <Phone className="h-4 w-4 mr-2" />
                               Contact About Property
@@ -212,7 +216,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
               </Card>
 
               {/* Agent Info - Takes right column on larger containers */}
-              {property.agent ? (
+              {agent ? (
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-lg">Listed By</CardTitle>
@@ -220,14 +224,14 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                   <CardContent>
                     <div className="flex items-center gap-3">
                       <Avatar>
-                        <AvatarImage src={property.agent.avatar || undefined} />
+                        <AvatarImage src={agent.avatar || undefined} />
                         <AvatarFallback>
-                          {property.agent.name?.charAt(0).toUpperCase() || "A"}
+                          {agent.name?.charAt(0).toUpperCase() || "A"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <p className="font-medium">{property.agent.name}</p>
-                        <p className="text-sm text-muted-foreground">{property.agent.email}</p>
+                        <p className="font-medium">{agent.name}</p>
+                        <p className="text-sm text-muted-foreground">{agent.email}</p>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-4">

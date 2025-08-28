@@ -1,8 +1,12 @@
 import { FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
 export type PropertyWithFavorites = PropertiesResponse & {
-  agent?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
-  owner?: Pick<UsersResponse, "id" | "name" | "email" | "avatar"> | null;
+  expand?:
+    | {
+        favorites_via_property_id: FavoritesResponse[] | undefined;
+        agent_id?: UsersResponse | undefined;
+      }
+    | undefined;
   is_favorited?: boolean; // Add this for compatibility with new API
   favorite_timestamp?: string | null; // Add this for compatibility with new API
 };
@@ -48,7 +52,7 @@ export type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
   expand?:
     | {
         favorites_via_property_id:FavoritesResponse[] | undefined;
-        agent_id?: UsersResponse[] | undefined;
+        agent_id?: UsersResponse | undefined;
       }
     | undefined;
 };
