@@ -11,7 +11,7 @@ export default async function SinglePropertyMessagesPage({
 }: SinglePropertyMessagesPageProps) {
   const messageId = (await params).msg;
 
-  console.log({ messageId });
+
 
   const user = await getServerSideUser();
   if (!messageId) {
@@ -28,7 +28,7 @@ export default async function SinglePropertyMessagesPage({
   if (!messageParent) {
     return redirect("/dashboard");
   }
-
+  console.log({ messageParent, messageId });
   return (
     <section className="w-full h-full  flex flex-col items-center justify-center">
       <LazySinglePropertyMessagesShell

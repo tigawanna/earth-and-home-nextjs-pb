@@ -15,8 +15,8 @@ export const pbMessagesCollection = browserPB.from("property_messages");
 
 // Filter for parent messages (main conversations, not replies)
 
-export const pbMessagesCollectionFilter = (propertyId: string) =>
-  pbMessagesCollection.createFilter(and(pBeq("parent", propertyId)));
+export const pbMessagesCollectionFilter = (parentId: string) =>
+  pbMessagesCollection.createFilter(and(pBeq("parent", parentId)));
 
 // Select with expanded relations
 export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({
@@ -27,14 +27,14 @@ export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({
 });
 
 // Messages for a specific property
-export const createSinglePropertyMessagesCollection = ({ propertyId }: { propertyId: string }) => {
+export const createSinglePropertyMessagesCollection = ({ parentId }: { parentId: string }) => {
   return createCollection(
     queryCollectionOptions({
-      queryKey: ["property_messages", propertyId],
+      queryKey: ["property_messages", parentId],
       queryFn: async () => {
         const result = await pbMessagesCollection.getList(1, 50, {
           sort: "-created",
-          filter: pbMessagesCollectionFilter(propertyId),
+          filter: pbMessagesCollectionFilter(parentId),
           select: pbMessagesCollectionSelect,
         });
         return result.items;

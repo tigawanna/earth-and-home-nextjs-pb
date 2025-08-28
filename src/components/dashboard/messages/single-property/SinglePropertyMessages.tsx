@@ -6,11 +6,15 @@ import {
   pbMessagesCollectionSelect,
   singlePropertyMessagesCollection,
 } from "@/data-access-layer/messages/single-property-messages";
-import { PropertyMessagesCreate, PropertyMessagesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  PropertyMessagesCreate,
+  PropertyMessagesResponse,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 import { addLocalfirstPocketbaseMetadata } from "@/lib/pocketbase/utils/local-first";
 import { useLiveQuery } from "@tanstack/react-db";
 import { formatDistanceToNow } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface SinglePropertyMessagesProps {
   propertyId: string;
@@ -18,18 +22,38 @@ interface SinglePropertyMessagesProps {
   messageParent: PropertyMessagesResponse;
 }
 
-export default function SinglePropertyMessages({ propertyId, user, messageParent }: SinglePropertyMessagesProps) {
-  
-  const parentMsgId = messageParent.property_id;
-  const [newMessage, setNewMessage] = useState("");
+export default function SinglePropertyMessages({
+  propertyId,
+  user,
+  messageParent,
+}: SinglePropertyMessagesProps) {
+  const parentId = messageParent.id
 
-  const sourceParams = useMemo(() => ({ propertyId }), [propertyId]);
+  const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLUListElement>(null);
+
+  const sourceParams = useMemo(() => ({ parentId }), [parentId]);
   const propertyMessagesCollection = singlePropertyMessagesCollection(sourceParams);
   const { data: liveMessages } = useLiveQuery((q) =>
-    q.from({
-      messages: propertyMessagesCollection,
-    })
+    q
+      .from({
+        messages: propertyMessagesCollection,
+      })
+      .orderBy(({ messages }) => messages.created, "desc")
   );
+
+  // Auto-scroll to bottom when new messages arrive
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (liveMessages && liveMessages.length > 0) {
+      scrollToBottom();
+    }
+  }, [liveMessages?.length]);
 
   useEffect(() => {
     pbMessagesCollection.subscribe(
@@ -46,7 +70,7 @@ export default function SinglePropertyMessages({ propertyId, user, messageParent
         }
       },
       {
-        filter: pbMessagesCollectionFilter(propertyId),
+        filter: pbMessagesCollectionFilter(parentId),
         select: pbMessagesCollectionSelect,
       }
     );
@@ -59,7 +83,6 @@ export default function SinglePropertyMessages({ propertyId, user, messageParent
   const mostPreviousMessage = liveMessages?.[liveMessages.length - 1];
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Creating message:", newMessage);
     const parentId = mostPreviousMessage
       ? mostPreviousMessage.parent || mostPreviousMessage.id
       : undefined;
@@ -75,11 +98,17 @@ export default function SinglePropertyMessages({ propertyId, user, messageParent
     propertyMessagesCollection.insert(addLocalfirstPocketbaseMetadata(messagePayload) as any);
 
     setNewMessage("");
+    
+    // Scroll to bottom after sending message
+    setTimeout(scrollToBottom, 100);
   };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <ul className="w-full flex flex-col gap-">
+      <ul 
+        ref={messagesContainerRef}
+        className="w-full flex flex-col gap-2 max-h-[80vh] overflow-y-auto mb-4 px-2"
+      >
         {liveMessages?.toReversed().map((message) => (
           <div
             data-admin={!!message?.admin_id}
@@ -97,6 +126,8 @@ export default function SinglePropertyMessages({ propertyId, user, messageParent
             </div>
           </div>
         ))}
+        {/* Invisible div to scroll to */}
+        <div ref={messagesEndRef} />
       </ul>
 
       <form onSubmit={handleSubmit} className="w-full mt-4 flex gap-2">
