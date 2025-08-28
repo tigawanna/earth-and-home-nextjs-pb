@@ -27,7 +27,7 @@ export default function SinglePropertyMessages({
   user,
   messageParent,
 }: SinglePropertyMessagesProps) {
-  const parentId = messageParent.id
+  const parentId = messageParent.id;
 
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -90,7 +90,7 @@ export default function SinglePropertyMessages({
       body: newMessage,
       property_id: propertyId,
       parent: parentId,
-      user_id: user.id,
+      user_id: user.is_admin ? messageParent.user_id : user.id,
       admin_id: user.is_admin ? user.id : undefined,
       type: mostPreviousMessage?.type === "reply" ? "reply" : "parent",
     } satisfies PropertyMessagesCreate;
@@ -98,17 +98,16 @@ export default function SinglePropertyMessages({
     propertyMessagesCollection.insert(addLocalfirstPocketbaseMetadata(messagePayload) as any);
 
     setNewMessage("");
-    
+
     // Scroll to bottom after sending message
     setTimeout(scrollToBottom, 100);
   };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
-      <ul 
+      <ul
         ref={messagesContainerRef}
-        className="w-full flex flex-col gap-2 max-h-[80vh] overflow-y-auto mb-4 px-2"
-      >
+        className="w-full flex flex-col gap-2 max-h-[80vh] overflow-y-auto mb-4 px-2">
         {liveMessages?.toReversed().map((message) => (
           <div
             data-admin={!!message?.admin_id}
