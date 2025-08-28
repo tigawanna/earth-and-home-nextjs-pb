@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { ConversationThread } from "./cards/PropertyMessageCard";
+import { ConversationThread } from "./cards/chat-cards";
 import { PropertyMessagesLoading } from "./query-states/loading-states";
 
 interface PropertyMessagesViewProps {

@@ -5,7 +5,7 @@ import {
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { PropertyMessageCard } from "../cards/PropertyMessageCard";
+import { PropertyMessageCard } from "../cards/property-cards";
 import { PropertyMessagesError } from "../query-states/error-states";
 import { AllPropertiesMessagesLoading, NoPropertyMessages } from "../query-states/loading-states";
 
