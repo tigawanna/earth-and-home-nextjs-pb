@@ -4,7 +4,8 @@ import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/react-db";
 import { and, eq as pBeq } from "@tigawanna/typed-pocketbase";
-import {mutationOptions} from "@tanstack/react-query"
+import { mutationOptions } from "@tanstack/react-query";
+import { PropertyMessagesResponse } from "@/lib/pocketbase/types/pb-types";
 
 // ====================================================
 // TANSTACK COLLECTIONS
@@ -60,28 +61,25 @@ export const createSinglePropertyMessagesCollection = ({ propertyId }: { propert
 export const singlePropertyMessagesCollection = createCollectionFactory<
   ReturnType<typeof createSinglePropertyMessagesCollection>,
   Parameters<typeof createSinglePropertyMessagesCollection>[0]
->(
-  createSinglePropertyMessagesCollection
-);
+>(createSinglePropertyMessagesCollection);
 
+type AddNewChatProps = {
+  chat: PropertyMessagesResponse;
+};
 
-type AddNewChatProps={
-chat:PropertyMessagesResponse
-}
 export const addNewChatMessageMutationOption = mutationOptions({
-  mutationFn:({chat}:AddNewChatProps)=>{
-    try{
-      const result = await pbMessagesCollection.create(chat)
-        return{
-          success:true,
-          message:"Message sent"
-        }
-
-    }catch(e){
+  mutationFn: async({ chat }: AddNewChatProps) => {
+    try {
+      const result = await pbMessagesCollection.create(chat);
       return {
-        succes:false,
-        message:e.message
-      }
+        success: true,
+        message: "Message sent",
+      };
+    } catch (e: any) {
+      return {
+        success: false,
+        message: e.message,
+      };
     }
-  }
-})
+  },
+});

@@ -1,13 +1,24 @@
-import { pbMessagesCollection, pbMessagesCollectionFilter, pbMessagesCollectionSelect, singlePropertyMessagesCollection } from "@/data-access-layer/messages/single-property-messages";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  pbMessagesCollection,
+  pbMessagesCollectionFilter,
+  pbMessagesCollectionSelect,
+  singlePropertyMessagesCollection,
+} from "@/data-access-layer/messages/single-property-messages";
+import { PropertyMessagesCreate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { addLocalfirstPocketbaseMetadata } from "@/lib/pocketbase/utils/local-first";
 import { useLiveQuery } from "@tanstack/react-db";
-import { useMemo,useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 
 interface SinglePropertyMessagesProps {
   propertyId: string;
+  user: UsersResponse;
 }
 
-export default function SinglePropertyMessages({ propertyId }: SinglePropertyMessagesProps) {
+export default function SinglePropertyMessages({ propertyId, user }: SinglePropertyMessagesProps) {
+  const [newMessage, setNewMessage] = useState("");
 
   const sourceParams = useMemo(() => ({ propertyId }), [propertyId]);
   const propertyMessagesCollection = singlePropertyMessagesCollection(sourceParams);
@@ -17,31 +28,51 @@ export default function SinglePropertyMessages({ propertyId }: SinglePropertyMes
     })
   );
 
-    useEffect(() => {
-      pbMessagesCollection.subscribe(
-        "*",
-        function (e) {
-          if (e.action === "create") {
-            propertyMessagesCollection.utils.writeInsert(e.record);
-          }
-          if (e.action === "delete") {
-            propertyMessagesCollection.utils.writeDelete(e.record.id);
-          }
-          if (e.action === "update") {
-            propertyMessagesCollection.utils.writeUpdate(e.record);
-          }
-        },
-        {
-          filter: pbMessagesCollectionFilter(propertyId),
-          select: pbMessagesCollectionSelect,
+  useEffect(() => {
+    pbMessagesCollection.subscribe(
+      "*",
+      function (e) {
+        if (e.action === "create") {
+          propertyMessagesCollection.utils.writeInsert(e.record);
         }
-      );
+        if (e.action === "delete") {
+          propertyMessagesCollection.utils.writeDelete(e.record.id);
+        }
+        if (e.action === "update") {
+          propertyMessagesCollection.utils.writeUpdate(e.record);
+        }
+      },
+      {
+        filter: pbMessagesCollectionFilter(propertyId),
+        select: pbMessagesCollectionSelect,
+      }
+    );
 
-      return () => {
-        // @ts-expect-error TODO fix this in typed pocketbase
-        pbMessagesCollection.unsubscribe();
-      };
-    }, []);
+    return () => {
+      // @ts-expect-error TODO fix this in typed pocketbase
+      pbMessagesCollection.unsubscribe();
+    };
+  }, []);
+  const mostPreviousMessage = liveMessages?.[liveMessages.length - 1];
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Creating message:", newMessage);
+    const parentId = mostPreviousMessage
+      ? mostPreviousMessage.parent || mostPreviousMessage.id
+      : undefined;
+    const messagePayload = {
+      body: newMessage,
+      property_id: propertyId,
+      parent: parentId,
+      user_id: user.id,
+      admin_id: user.is_admin ? user.id : undefined,
+      type: mostPreviousMessage?.type === "reply" ? "reply" : "parent",
+    } satisfies PropertyMessagesCreate;
+
+    propertyMessagesCollection.insert(addLocalfirstPocketbaseMetadata(messagePayload) as any);
+
+    setNewMessage("");
+  };
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
@@ -56,13 +87,26 @@ export default function SinglePropertyMessages({ propertyId }: SinglePropertyMes
                 {formatDistanceToNow(new Date(message?.created), { addSuffix: true })}
               </time>
             </div>
-            <div data-admin={!!message?.admin_id} 
-            className="chat-bubble bg-primary/30 p-4 data-[admin=true]:bg-accent/30">
+            <div
+              data-admin={!!message?.admin_id}
+              className="chat-bubble bg-primary/30 p-4 data-[admin=true]:bg-accent/30">
               {message?.body}
             </div>
           </div>
         ))}
       </ul>
+
+      <form onSubmit={handleSubmit} className="w-full mt-4 flex gap-2">
+        <Input
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Type your message..."
+          className="flex-1"
+        />
+        <Button type="submit" disabled={!newMessage.trim()}>
+          Send
+        </Button>
+      </form>
     </div>
   );
 }
