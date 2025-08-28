@@ -7,7 +7,7 @@ import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
 } from "@/data-access-layer/properties/property-mutations";
-import { PropertiesCreate, PropertiesUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { AgentsResponse, PropertiesCreate, PropertiesUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { isLandProperty } from "@/utils/forms";
@@ -39,6 +39,7 @@ interface PropertyFormProps {
   isEdit?: boolean;
   propertyId?: string; // Add propertyId for editing
   user: UsersResponse;
+  agent:AgentsResponse;
 }
 
 export default function PropertyForm({
@@ -46,8 +47,9 @@ export default function PropertyForm({
   isEdit = false,
   propertyId,
   user,
+  agent,
 }: PropertyFormProps) {
-  const agentId = user.id;
+  const agentId = agent.id;
   const router = useRouter();
   const [isSubmittingDraft, submitDraft] = useTransition();
   const form = useForm({

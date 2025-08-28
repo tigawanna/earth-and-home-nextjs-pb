@@ -12,3 +12,12 @@ export async function getServerSideUser(nextCookies?: ReadonlyRequestCookies) {
   const user = authStore.record as UsersResponse | null;
   return user;
 }
+
+export async function getServerSideUserwithAgent(nextCookies?: ReadonlyRequestCookies) {
+  const cookieStore = nextCookies || (await cookies());
+  const client = await createServerClient(cookieStore);
+  const { authStore } = client;
+  const user = authStore.record as UsersResponse | null;
+  const agent = user?.id ? await client.from("agents").getOne(user?.id) : null;
+  return { user, agent };
+}
