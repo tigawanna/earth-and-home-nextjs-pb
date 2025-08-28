@@ -11,7 +11,8 @@
     "lint": "next lint",
     "pb-types": "tsx src/lib/pocketbase/scripts/typegen.ts",
     "pb-collections": "tsx src/lib/pocketbase/scripts/get-collection-structure.ts",
-    "predev": "npm run pb-types && npm run pb-collections"
+    "predev": "npm run pb-types && npm run pb-collections",
+    "npm": "pnpm"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

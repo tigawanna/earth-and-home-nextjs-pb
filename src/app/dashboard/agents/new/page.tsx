@@ -1,4 +1,4 @@
-import { AgentForm } from "@/components/dashboard/agents/AgentsForm";
+import { AgentForm } from "@/components/dashboard/agents/AgentForm";
 import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { redirect } from "next/navigation";
 
@@ -14,7 +14,7 @@ export default async function NewAgentPage() {
   return (
     <section className="w-full h-full flex flex-col">
       <AgentForm 
-        currentUser={{ is_admin: user.is_admin, id: user.id }}
+        currentUser={user}
       />
     </section>
   );
