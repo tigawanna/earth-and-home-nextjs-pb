@@ -38,12 +38,14 @@ interface PropertyFormProps {
   initialData?: PropertiesResponseZod;
   isEdit?: boolean;
   propertyId?: string; // Add propertyId for editing
+  user: UsersResponse | null;
 }
 
 export default function PropertyForm({
   initialData,
   isEdit = false,
   propertyId,
+  user,
 }: PropertyFormProps) {
   const router = useRouter();
   const [isSubmittingDraft, submitDraft] = useTransition();

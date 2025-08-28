@@ -498,7 +498,7 @@ export interface PropertiesCreate extends BaseCollectionCreate {
 	amenities?: PropertiesAmenities
 	features?: Record<string, any> | Array<any> | null;
 	utilities?: Record<string, any> | Array<any> | null;
-	agent_id?: string;
+	agent_id: string;
 	owner_id?: string;
 	is_featured?: boolean;
 	is_new?: boolean;

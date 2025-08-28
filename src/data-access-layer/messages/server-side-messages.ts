@@ -12,7 +12,13 @@ export async function getSinglePropertyMessage({
     const response = await client
       .from("property_messages")
       .getOne(msgId, {
-        expand: "user_id,property_id"
+        // expand: "user_id,property_id",
+        select:{
+          expand:{
+            user_id: true,
+            property_id: true
+          }
+        }
       });
       // .getFirstListItem(and(eq("parent", propertyId), eq("user_id", userId)));
     return {
