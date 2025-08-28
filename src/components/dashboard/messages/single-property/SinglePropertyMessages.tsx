@@ -6,7 +6,7 @@ import {
   pbMessagesCollectionSelect,
   singlePropertyMessagesCollection,
 } from "@/data-access-layer/messages/single-property-messages";
-import { PropertyMessagesCreate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { PropertyMessagesCreate, PropertyMessagesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { addLocalfirstPocketbaseMetadata } from "@/lib/pocketbase/utils/local-first";
 import { useLiveQuery } from "@tanstack/react-db";
 import { formatDistanceToNow } from "date-fns";
@@ -15,9 +15,12 @@ import { useEffect, useMemo, useState } from "react";
 interface SinglePropertyMessagesProps {
   propertyId: string;
   user: UsersResponse;
+  messageParent: PropertyMessagesResponse;
 }
 
-export default function SinglePropertyMessages({ propertyId, user }: SinglePropertyMessagesProps) {
+export default function SinglePropertyMessages({ propertyId, user, messageParent }: SinglePropertyMessagesProps) {
+  
+  const parentMsgId = messageParent.property_id;
   const [newMessage, setNewMessage] = useState("");
 
   const sourceParams = useMemo(() => ({ propertyId }), [propertyId]);
