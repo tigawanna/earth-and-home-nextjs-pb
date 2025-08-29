@@ -15,6 +15,7 @@ interface CopyButtonProps {
   showToast?: boolean;
   toastMessage?: string;
   children?: React.ReactNode;
+  title?: string;
 }
 
 export function CopyButton({
@@ -26,6 +27,7 @@ export function CopyButton({
   showToast = true,
   toastMessage,
   children,
+  title
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
@@ -56,7 +58,7 @@ export function CopyButton({
       variant={variant}
       className={cn("transition-all duration-200", className)}
       onClick={copyToClipboard}
-      title={`Copy ${label.toLowerCase()}`}
+      title={title || `Copy ${label.toLowerCase()}`}
     >
       {children || (
         <>

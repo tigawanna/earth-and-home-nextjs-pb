@@ -25,6 +25,7 @@ import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyContactForm } from "../form/PropertyContactForm";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
+import { TailwindContainerIndicator } from "@/components/shared/tailwind-indicator";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;
@@ -49,8 +50,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
   const rawImages = Array.isArray(property.images) ? property.images : [];
   const amenities = Array.isArray(property.amenities) ? property.amenities : [];
   const features = Array.isArray(property.features) ? property.features : [];
-  const agent = property.expand?.agent_id 
-
+  const agent = property.expand?.agent_id;
 
   return (
     <div className="min-h-screen bg-background">
@@ -66,10 +66,10 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
 
       {/* Main Content - Edge to Edge */}
       <div className="w-full px-4">
-        <div className="grid grid-cols-1  lg:grid-cols-4 gap-0">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Image Gallery - Full Width */}
-          <div className="lg:col-span-3 bg-black">
-            <div className="max-w-none max-h-[70vh]">
+          <div className="lg:col-span-3 bg-background">
+            <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto max-h-[70vh]">
               <ReactHotKeyScopeProvider scope="property-gallery">
                 <PropertyImageGallery
                   property={property}
@@ -81,11 +81,12 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
           </div>
 
           {/* Property Details Sidebar with Container Queries */}
-          <div className="p-6 bg-background @container">
+          <div className="p-6 bg-background @container mt-6 lg:mt-0 lg:sticky lg:top-20 lg:self-start">
             {/* Container for responsive layout - stacks on small, side-by-side on larger containers */}
             <div className="grid grid-cols-1 @2xl:grid-cols-2 gap-6">
+
               {/* Price and Action Buttons - Spans full width */}
-              <div className="@2xl:col-span-2">
+              <div className="@3xl:col-span-2">
                 <Card>
                   <CardContent className="p-6">
                     <div className="space-y-4">
@@ -105,21 +106,20 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                       </div>
 
                       <div className="flex flex-wrap gap-2">
-                        {(user && agent) ? (
+                        {user && agent ? (
                           <PropertyContactForm
                             user={user}
                             propertyId={property.id}
                             propertyTitle={property.title}
-                            agent={agent}
-                            >
-                            <Button className="">
+                            agent={agent}>
+                            <Button className="w-full sm:w-auto">
                               <Phone className="h-4 w-4 mr-2" />
                               Contact About Property
                             </Button>
                           </PropertyContactForm>
                         ) : (
                           <Link href="/auth/signin">
-                            <Button className="">
+                            <Button className="w-full sm:w-auto">
                               <Phone className="h-4 w-4 mr-2" />
                               Contact About Property
                             </Button>
@@ -144,7 +144,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                   <CardTitle className="text-lg">Property Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {property.beds && property.beds > 0 ? (
                       <div className="flex items-center gap-2">
                         <Bed className="h-4 w-4 text-muted-foreground" />
@@ -234,7 +234,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                         <p className="text-sm text-muted-foreground">{agent.email}</p>
                       </div>
                     </div>
-                    <div className="flex gap-2 mt-4">
+                    <div className="flex flex-col sm:flex-row gap-2 mt-4">
                       <Button size="sm" className="flex-1">
                         <Mail className="h-4 w-4 mr-2" />
                         Email
@@ -296,7 +296,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
             <CardTitle>Property Details</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               {property.beds && property.beds > 0 ? (
                 <div className="flex items-center">
                   <Bed className="w-5 h-5 mr-3 text-primary" />
