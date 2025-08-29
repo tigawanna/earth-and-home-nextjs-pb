@@ -30,34 +30,44 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
   );
 
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
       {/* Overview */}
       <div className="lg:col-span-2">
-        <Card className="animate-in fade-in-50">
-          <CardHeader className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="size-16">
-                {avatarSrc ? (
-                  <AvatarImage src={avatarSrc} alt={agent.name ?? "Agent avatar"} />
-                ) : (
-                  <AvatarFallback className="text-sm">{agent.name?.[0]?.toUpperCase() ?? "A"}</AvatarFallback>
-                )}
-              </Avatar>
-              <div className="min-w-0">
-                <CardTitle className="flex items-center gap-2 text-xl">
+        <Card className="animate-in fade-in-50 border-0 shadow-lg bg-gradient-to-br from-background to-muted/20">
+          <CardHeader className="pb-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="relative">
+                <Avatar className="size-20 ring-4 ring-background shadow-xl">
+                  {avatarSrc ? (
+                    <AvatarImage src={avatarSrc} alt={agent.name ?? "Agent avatar"} />
+                  ) : (
+                    <AvatarFallback className="text-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+                      {agent.name?.[0]?.toUpperCase() ?? "A"}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-full border-2 border-background shadow-sm" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
                   {agent.name || "Unnamed Agent"}
-                  <Badge variant="secondary" className="ml-1">
+                </CardTitle>
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
+                    <User className="w-3 h-3 mr-1" />
                     Agent Profile
                   </Badge>
-                </CardTitle>
-                <CardDescription className="truncate">
+                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                    Active
+                  </Badge>
+                </div>
+                <CardDescription className="mt-2 text-base">
                   {associatedUser?.email || associatedUser?.name || "No linked user"}
                 </CardDescription>
               </div>
-              {/* actions reduced: moved to Quick contact card */}
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <InfoItem icon={User} label="Full Name" value={agent.name} />
               <InfoItem
@@ -70,25 +80,32 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               <InfoItem icon={Mail} label="Email Address" value={agent.email} />
               <InfoItem icon={Phone} label="Phone Number" value={agent.phone} />
             </div>
-            <Separator />
+            <Separator className="bg-gradient-to-r from-transparent via-border to-transparent" />
           </CardContent>
         </Card>
       </div>
 
       {/* Quick Actions & Summary */}
-      <div className="space-y-4">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Quick contact</CardTitle>
-            <CardDescription>Reach this agent fast</CardDescription>
+      <div className="space-y-6">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-accent/5 overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-accent to-primary"></div>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              Quick Contact
+            </CardTitle>
+            <CardDescription>Reach this agent instantly</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3">
+          <CardContent className="flex flex-col gap-4">
             {agent.email && (
-              <div className="flex items-center gap-2">
-                <Button asChild variant="outline" className="justify-between grow">
+              <div className="flex items-center gap-3">
+                <Button asChild variant="outline" className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
                   <a href={`mailto:${agent.email}`}>
-                    <span className="flex items-center gap-2"><Mail className="size-4" /> Email</span>
-                    <span className="text-muted-foreground">Open</span>
+                    <span className="flex items-center gap-2">
+                      <Mail className="size-4 group-hover:text-primary transition-colors" /> 
+                      Email
+                    </span>
+                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">Open</span>
                   </a>
                 </Button>
                 <CopyButton
@@ -101,11 +118,14 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               </div>
             )}
             {agent.phone && (
-              <div className="flex items-center gap-2">
-                <Button asChild variant="outline" className="justify-between grow">
+              <div className="flex items-center gap-3">
+                <Button asChild variant="outline" className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
                   <a href={`tel:${agent.phone}`}>
-                    <span className="flex items-center gap-2"><Phone className="size-4" /> Phone</span>
-                    <span className="text-muted-foreground">Open</span>
+                    <span className="flex items-center gap-2">
+                      <Phone className="size-4 group-hover:text-primary transition-colors" /> 
+                      Phone
+                    </span>
+                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">Open</span>
                   </a>
                 </Button>
                 <CopyButton
@@ -120,25 +140,33 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Profile summary</CardTitle>
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-background to-muted/10">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Calendar className="size-4 text-primary" />
+              Profile Summary
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Status</span>
-              <Badge className="bg-primary/15 text-primary border-transparent">Active</Badge>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
+              <span className="text-sm font-medium text-primary">Status</span>
+              <Badge className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-sm">
+                Active
+              </Badge>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Contact methods</span>
-              <span className="text-sm font-medium">{contactMethods} of 2</span>
+            <div className="flex items-center justify-between p-3 bg-accent/10 rounded-lg border border-accent/20">
+              <span className="text-sm font-medium text-accent-foreground">Contact methods</span>
+              <span className="text-sm font-bold text-accent-foreground">{contactMethods} of 2</span>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3 p-3 bg-secondary/50 rounded-lg border border-secondary">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Profile complete</span>
-                <span className="text-sm font-medium">{profilePercent}%</span>
+                <span className="text-sm font-medium text-secondary-foreground">Profile complete</span>
+                <span className="text-sm font-bold text-secondary-foreground">{profilePercent}%</span>
               </div>
-              <Progress value={profilePercent} />
+              <Progress 
+                value={profilePercent} 
+                className="h-2 bg-secondary"
+              />
             </div>
           </CardContent>
         </Card>
@@ -159,12 +187,14 @@ function InfoItem({
   value?: string | null;
 }) {
   return (
-    <div className="space-y-1.5">
-      <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-        <Icon className="size-4" />
+    <div className="space-y-3 p-4 rounded-xl bg-gradient-to-br from-accent/5 to-accent/10 border border-accent/20 hover:shadow-md transition-all duration-200 group">
+      <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+        <Icon className="size-4 text-primary group-hover:scale-110 transition-transform" />
         {label}
       </label>
-      <p className="truncate text-lg font-semibold">{value || "Not provided"}</p>
+      <p className="text-lg font-semibold truncate bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+        {value || "Not provided"}
+      </p>
     </div>
   );
 }
