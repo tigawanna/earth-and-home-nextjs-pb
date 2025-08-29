@@ -121,7 +121,7 @@ export function PropertyImageGallery({
   useHotkeys("left", () => mainApi?.scrollPrev(), { scopes: ["property-gallery"] });
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       {/* Main Image with Carousel */}
       <div className="relative w-full bg-muted group">
         {/* Property badges */}

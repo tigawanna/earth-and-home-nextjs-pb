@@ -15,12 +15,19 @@ export function TailwindIndicator() {
 export function TailwindContainerIndicator() {
   if (process.env.NODE_ENV !== "development") return null;
   return (
-    <div className="flex gap-2 z-50 bg-primary">
+    <div className="flex gap-2 z-50 ">
       <div className="@sm:flex @md:hidden hidden">SM</div>
       <div className="@sm:hidden @md:flex @lg:hidden hidden">MD</div>
       <div className="@md:hidden @lg:flex @xl:hidden hidden">LG</div>
       <div className="@md:hidden @lg:hidden @xl:flex hidden">XL</div>
       <div className="@md:hidden @lg:hidden @xl:hidden @2xl:flex hidden">2XL</div>
+      <div className="@md:hidden @lg:hidden @xl:hidden @2xl:hidden @3xl:flex hidden">3XL</div>
+      <div className="@md:hidden @lg:hidden @xl:hidden @2xl:hidden @3xl:hidden @4xl:flex hidden">4XL</div>
+      <div className="@md:hidden @lg:hidden @xl:hidden @2xl:hidden @3xl:hidden @4xl:hidden @5xl:flex hidden">5XL</div>
+      <div className="@md:hidden @lg:hidden @xl:hidden @2xl:hidden @3xl:hidden @4xl:hidden @5xl:hidden @6xl:flex hidden">6XL</div>
+      <div className="@md:hidden @lg:hidden @xl:hidden @2xl:hidden @3xl:hidden @4xl:hidden @5xl:hidden @6xl:hidden @7xl:flex hidden">7XL</div>
+      <div className="@md:hidden @lg:hidden @xl:hidden @2xl:hidden @3xl:hidden @4xl:hidden @5xl:hidden @6xl:hidden @7xl:hidden @8xl:flex hidden">8XL</div>
+      <div className="@md:hidden @lg:hidden @xl:hidden @2xl:hidden @3xl:hidden @4xl:hidden @5xl:hidden @6xl:hidden @7xl:hidden @8xl:hidden @9xl:flex hidden">9XL</div>
       
     </div>
   );

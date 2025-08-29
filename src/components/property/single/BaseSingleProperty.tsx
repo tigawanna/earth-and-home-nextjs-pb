@@ -25,6 +25,7 @@ import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyContactForm } from "../form/PropertyContactForm";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
+import { TailwindContainerIndicator } from "@/components/shared/tailwind-indicator";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;
@@ -64,10 +65,10 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
       </div>
 
       {/* Main Content - Edge to Edge */}
-      <div className="w-full px-4">
-        <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
+      <div className="w-full px-4  ">
+        <div className="grid grid-cols-1 xl:grid-cols-6 gap-6 ">
           {/* Image Gallery - Full Width on lg and below */}
-          <div className="xl:col-span-3 bg-background">
+          <div className="xl:col-span-4  ">
             <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto max-h-[70vh]">
               <ReactHotKeyScopeProvider scope="property-gallery">
                 <PropertyImageGallery
@@ -80,9 +81,9 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
           </div>
 
           {/* Property Details Sidebar with Container Queries */}
-          <div className="xl:col-span-2 p-6 w-full bg-background @container mt-6 lg:mt-0 lg:sticky lg:top-20 lg:self-start xl:grid-cols-3">
+          <div className="xl:col-span-2   p-2 w-full bg-background @container  xl:grid-cols-3">
             {/* Container for responsive layout - stacks on small, side-by-side on larger containers */}
-            <div className="space-y-6 w-full">
+            <div className="space-y-6 w-full ">
               {/* Property Title and Info Card */}
               <Card>
                 <CardContent className="p-6">
@@ -103,7 +104,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                       <MapPin className="w-4 h-4 mr-2" />
                       <span className="text-base">{property.location}</span>
                     </div>
-                    
+
                     <div className="prose prose-sm max-w-none">
                       {property.description ? (
                         <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
@@ -169,162 +170,126 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Bottom Cards - Full Width */}
-              <div className="grid grid-cols-1 @xl:grid-cols-2 gap-6">
-                {/* Key Details - Takes full width or left column */}
-                <Card className="h-full">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Property Details</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {property.beds && property.beds > 0 ? (
-                        <div className="flex items-center gap-2">
-                          <Bed className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{property.beds} Beds</span>
-                        </div>
-                      ) : null}
-                      {property.baths && property.baths > 0 ? (
-                        <div className="flex items-center gap-2">
-                          <Bath className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{property.baths} Baths</span>
-                        </div>
-                      ) : null}
-                      {property.building_size_sqft ? (
-                        <div className="flex items-center gap-2">
-                          <Square className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {property.building_size_sqft.toLocaleString()} sqft
-                          </span>
-                        </div>
-                      ) : null}
-                      {property.parking_spaces && property.parking_spaces > 0 ? (
-                        <div className="flex items-center gap-2">
-                          <Car className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{property.parking_spaces} Parking</span>
-                        </div>
-                      ) : null}
-                      {property.year_built ? (
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">Built {property.year_built}</span>
-                        </div>
-                      ) : null}
-                      {property.floors ? (
-                        <div className="flex items-center gap-2">
-                          <Building className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{property.floors} Floors</span>
-                        </div>
-                      ) : null}
-                    </div>
-
-                    <Separator />
-
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{property.location}</span>
-                      </div>
-                      {property.city ? (
-                        <p className="text-sm text-muted-foreground ml-6">
-                          {property.city}, {property.state}
-                        </p>
-                      ) : null}
-                    </div>
-
-                    <Separator />
-
-                    <div className="flex gap-2 flex-wrap">
-                      <Badge variant="outline">
-                        {property.property_type.charAt(0).toUpperCase() +
-                          property.property_type.slice(1)}
-                      </Badge>
-                      <Badge variant="outline">
-                        For{" "}
-                        {property.listing_type.charAt(0).toUpperCase() +
-                          property.listing_type.slice(1)}
-                      </Badge>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Agent Info - Takes full width or right column */}
-                {agent ? (
-                  <Card className="h-full">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Listed By</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage src={agent.avatar || undefined} />
-                          <AvatarFallback>
-                            {agent.name?.charAt(0).toUpperCase() || "A"}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                          <p className="font-medium">{agent.name}</p>
-                          <p className="text-sm text-muted-foreground">{agent.email}</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col sm:flex-row gap-2 mt-4">
-                        <Button size="sm" className="flex-1">
-                          <Mail className="h-4 w-4 mr-2" />
-                          Email
-                        </Button>
-                        <Button size="sm" variant="outline" className="flex-1">
-                          <Phone className="h-4 w-4 mr-2" />
-                          Call
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ) : null}
-              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Property Details and Agent Info - Below Image Gallery */}
+        <div className=" @container mx-auto px-4 py-2 max-w-7xl ">
+          {/* <TailwindContainerIndicator/> */}
+          <div className="@5xl:mt-[10px]  @6xl:mt-[120px] grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Property Details Card */}
+            <Card className="h-full">
+              <CardHeader>
+                <CardTitle className="text-lg">Property Details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {property.beds && property.beds > 0 ? (
+                    <div className="flex items-center gap-2">
+                      <Bed className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">{property.beds} Beds</span>
+                    </div>
+                  ) : null}
+                  {property.baths && property.baths > 0 ? (
+                    <div className="flex items-center gap-2">
+                      <Bath className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">{property.baths} Baths</span>
+                    </div>
+                  ) : null}
+                  {property.building_size_sqft ? (
+                    <div className="flex items-center gap-2">
+                      <Square className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">
+                        {property.building_size_sqft.toLocaleString()} sqft
+                      </span>
+                    </div>
+                  ) : null}
+                  {property.parking_spaces && property.parking_spaces > 0 ? (
+                    <div className="flex items-center gap-2">
+                      <Car className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">{property.parking_spaces} Parking</span>
+                    </div>
+                  ) : null}
+                  {property.year_built ? (
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">Built {property.year_built}</span>
+                    </div>
+                  ) : null}
+                  {property.floors ? (
+                    <div className="flex items-center gap-2">
+                      <Building className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">{property.floors} Floors</span>
+                    </div>
+                  ) : null}
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">{property.location}</span>
+                  </div>
+                  {property.city ? (
+                    <p className="text-sm text-muted-foreground ml-6">
+                      {property.city}, {property.state}
+                    </p>
+                  ) : null}
+                </div>
+
+                <Separator />
+
+                <div className="flex gap-2 flex-wrap">
+                  <Badge variant="outline">
+                    {property.property_type.charAt(0).toUpperCase() +
+                      property.property_type.slice(1)}
+                  </Badge>
+                  <Badge variant="outline">
+                    For{" "}
+                    {property.listing_type.charAt(0).toUpperCase() + property.listing_type.slice(1)}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Agent Info Card */}
+            {agent ? (
+              <Card className="h-full">
+                <CardHeader>
+                  <CardTitle className="text-lg">Listed By</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage src={agent.avatar || undefined} />
+                      <AvatarFallback>{agent.name?.charAt(0).toUpperCase() || "A"}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="font-medium">{agent.name}</p>
+                      <p className="text-sm text-muted-foreground">{agent.email}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                    <Button size="sm" className="flex-1">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Email
+                    </Button>
+                    <Button size="sm" variant="outline" className="flex-1">
+                      <Phone className="h-4 w-4 mr-2" />
+                      Call
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
         </div>
       </div>
 
       {/* Property Information - Full Width Container */}
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Property Title and Info */}
-        <div className="mb-8">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                {property.is_featured ? (
-                  <Badge className="bg-orange-500 hover:bg-orange-600">Featured</Badge>
-                ) : null}
-                {property.is_new ? (
-                  <Badge className="bg-green-500 hover:bg-green-600">New</Badge>
-                ) : null}
-                <Badge variant={property.listing_type === "sale" ? "default" : "secondary"}>
-                  {property.listing_type === "sale" ? "For Sale" : "For Rent"}
-                </Badge>
-              </div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">{property.title}</h1>
-              <div className="flex items-center text-muted-foreground">
-                <MapPin className="w-5 h-5 mr-2" />
-                <span className="text-lg">{property.location}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="prose prose-sm max-w-none">
-            {property.description ? (
-              <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                {property.description}
-              </p>
-            ) : (
-              <p className="text-muted-foreground italic">
-                No description provided for this property.
-              </p>
-            )}
-          </div>
-        </div>
-
         {/* Property Details Grid */}
         <Card className="mb-8">
           <CardHeader>
