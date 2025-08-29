@@ -25,7 +25,6 @@ import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyContactForm } from "../form/PropertyContactForm";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
-import { TailwindContainerIndicator } from "@/components/shared/tailwind-indicator";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;
@@ -66,9 +65,9 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
 
       {/* Main Content - Edge to Edge */}
       <div className="w-full px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Image Gallery - Full Width */}
-          <div className="lg:col-span-3 bg-background">
+        <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
+          {/* Image Gallery - Full Width on lg and below */}
+          <div className="xl:col-span-3 bg-background">
             <div className="relative aspect-[4/3] sm:aspect-[16/9] lg:aspect-auto max-h-[70vh]">
               <ReactHotKeyScopeProvider scope="property-gallery">
                 <PropertyImageGallery
@@ -81,172 +80,208 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
           </div>
 
           {/* Property Details Sidebar with Container Queries */}
-          <div className="p-6 bg-background @container mt-6 lg:mt-0 lg:sticky lg:top-20 lg:self-start">
+          <div className="xl:col-span-2 p-6 w-full bg-background @container mt-6 lg:mt-0 lg:sticky lg:top-20 lg:self-start xl:grid-cols-3">
             {/* Container for responsive layout - stacks on small, side-by-side on larger containers */}
-            <div className="grid grid-cols-1 @2xl:grid-cols-2 gap-6">
-
-              {/* Price and Action Buttons - Spans full width */}
-              <div className="@3xl:col-span-2">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div>
-                        <div className="text-3xl font-bold text-primary">
-                          {formatPrice(mainPrice, property.currency || "KES")}
-                        </div>
-                        {property.listing_type === "rent" ? (
-                          <p className="text-sm text-muted-foreground">per month</p>
-                        ) : null}
-                        {property.security_deposit && property.listing_type === "rent" ? (
-                          <p className="text-sm text-muted-foreground">
-                            Security deposit:{" "}
-                            {formatPrice(property.security_deposit, property.currency || "KES")}
-                          </p>
-                        ) : null}
-                      </div>
-
-                      <div className="flex flex-wrap gap-2">
-                        {user && agent ? (
-                          <PropertyContactForm
-                            user={user}
-                            propertyId={property.id}
-                            propertyTitle={property.title}
-                            agent={agent}>
-                            <Button className="w-full sm:w-auto">
-                              <Phone className="h-4 w-4 mr-2" />
-                              Contact About Property
-                            </Button>
-                          </PropertyContactForm>
-                        ) : (
-                          <Link href="/auth/signin">
-                            <Button className="w-full sm:w-auto">
-                              <Phone className="h-4 w-4 mr-2" />
-                              Contact About Property
-                            </Button>
-                          </Link>
-                        )}
-                        {/* <Button variant="outline" size="icon">
-                          <Heart className="h-4 w-4" />
-                        </Button> */}
-                        <FavoriteProperty userId={user?.id} property={property} />
-                        <Button variant="outline" size="icon">
-                          <Share2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Key Details - Takes left column on larger containers */}
+            <div className="space-y-6 w-full">
+              {/* Property Title and Info Card */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Property Details</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {property.beds && property.beds > 0 ? (
-                      <div className="flex items-center gap-2">
-                        <Bed className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{property.beds} Beds</span>
-                      </div>
-                    ) : null}
-                    {property.baths && property.baths > 0 ? (
-                      <div className="flex items-center gap-2">
-                        <Bath className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{property.baths} Baths</span>
-                      </div>
-                    ) : null}
-                    {property.building_size_sqft ? (
-                      <div className="flex items-center gap-2">
-                        <Square className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">
-                          {property.building_size_sqft.toLocaleString()} sqft
-                        </span>
-                      </div>
-                    ) : null}
-                    {property.parking_spaces && property.parking_spaces > 0 ? (
-                      <div className="flex items-center gap-2">
-                        <Car className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{property.parking_spaces} Parking</span>
-                      </div>
-                    ) : null}
-                    {property.year_built ? (
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">Built {property.year_built}</span>
-                      </div>
-                    ) : null}
-                    {property.floors ? (
-                      <div className="flex items-center gap-2">
-                        <Building className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{property.floors} Floors</span>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm">{property.location}</span>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      {property.is_featured ? (
+                        <Badge className="bg-orange-500 hover:bg-orange-600">Featured</Badge>
+                      ) : null}
+                      {property.is_new ? (
+                        <Badge className="bg-green-500 hover:bg-green-600">New</Badge>
+                      ) : null}
+                      <Badge variant={property.listing_type === "sale" ? "default" : "secondary"}>
+                        {property.listing_type === "sale" ? "For Sale" : "For Rent"}
+                      </Badge>
                     </div>
-                    {property.city ? (
-                      <p className="text-sm text-muted-foreground ml-6">
-                        {property.city}, {property.state}
-                      </p>
-                    ) : null}
-                  </div>
-
-                  <Separator />
-
-                  <div className="flex gap-2 flex-wrap">
-                    <Badge variant="outline">
-                      {property.property_type.charAt(0).toUpperCase() +
-                        property.property_type.slice(1)}
-                    </Badge>
-                    <Badge variant="outline">
-                      For{" "}
-                      {property.listing_type.charAt(0).toUpperCase() +
-                        property.listing_type.slice(1)}
-                    </Badge>
+                    <h1 className="text-2xl md:text-3xl font-bold mb-2">{property.title}</h1>
+                    <div className="flex items-center text-muted-foreground mb-4">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      <span className="text-base">{property.location}</span>
+                    </div>
+                    
+                    <div className="prose prose-sm max-w-none">
+                      {property.description ? (
+                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                          {property.description}
+                        </p>
+                      ) : (
+                        <p className="text-muted-foreground italic text-sm">
+                          No description provided for this property.
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Agent Info - Takes right column on larger containers */}
-              {agent ? (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg">Listed By</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={agent.avatar || undefined} />
-                        <AvatarFallback>
-                          {agent.name?.charAt(0).toUpperCase() || "A"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <p className="font-medium">{agent.name}</p>
-                        <p className="text-sm text-muted-foreground">{agent.email}</p>
+              {/* Price and Action Buttons - Spans full width */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    <div>
+                      <div className="text-3xl font-bold text-primary">
+                        {formatPrice(mainPrice, property.currency || "KES")}
                       </div>
+                      {property.listing_type === "rent" ? (
+                        <p className="text-sm text-muted-foreground">per month</p>
+                      ) : null}
+                      {property.security_deposit && property.listing_type === "rent" ? (
+                        <p className="text-sm text-muted-foreground">
+                          Security deposit:{" "}
+                          {formatPrice(property.security_deposit, property.currency || "KES")}
+                        </p>
+                      ) : null}
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 mt-4">
-                      <Button size="sm" className="flex-1">
-                        <Mail className="h-4 w-4 mr-2" />
-                        Email
+
+                    <div className="flex flex-wrap gap-2">
+                      {user && agent ? (
+                        <PropertyContactForm
+                          user={user}
+                          propertyId={property.id}
+                          propertyTitle={property.title}
+                          agent={agent}>
+                          <Button className="w-full sm:w-auto">
+                            <Phone className="h-4 w-4 mr-2" />
+                            Contact About Property
+                          </Button>
+                        </PropertyContactForm>
+                      ) : (
+                        <Link href="/auth/signin">
+                          <Button className="w-full sm:w-auto">
+                            <Phone className="h-4 w-4 mr-2" />
+                            Contact About Property
+                          </Button>
+                        </Link>
+                      )}
+                      {/* <Button variant="outline" size="icon">
+                        <Heart className="h-4 w-4" />
+                      </Button> */}
+                      <FavoriteProperty userId={user?.id} property={property} />
+                      <Button variant="outline" size="icon">
+                        <Share2 className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="outline" className="flex-1">
-                        <Phone className="h-4 w-4 mr-2" />
-                        Call
-                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Bottom Cards - Full Width */}
+              <div className="grid grid-cols-1 @xl:grid-cols-2 gap-6">
+                {/* Key Details - Takes full width or left column */}
+                <Card className="h-full">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Property Details</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {property.beds && property.beds > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <Bed className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{property.beds} Beds</span>
+                        </div>
+                      ) : null}
+                      {property.baths && property.baths > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <Bath className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{property.baths} Baths</span>
+                        </div>
+                      ) : null}
+                      {property.building_size_sqft ? (
+                        <div className="flex items-center gap-2">
+                          <Square className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">
+                            {property.building_size_sqft.toLocaleString()} sqft
+                          </span>
+                        </div>
+                      ) : null}
+                      {property.parking_spaces && property.parking_spaces > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <Car className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{property.parking_spaces} Parking</span>
+                        </div>
+                      ) : null}
+                      {property.year_built ? (
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">Built {property.year_built}</span>
+                        </div>
+                      ) : null}
+                      {property.floors ? (
+                        <div className="flex items-center gap-2">
+                          <Building className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{property.floors} Floors</span>
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{property.location}</span>
+                      </div>
+                      {property.city ? (
+                        <p className="text-sm text-muted-foreground ml-6">
+                          {property.city}, {property.state}
+                        </p>
+                      ) : null}
+                    </div>
+
+                    <Separator />
+
+                    <div className="flex gap-2 flex-wrap">
+                      <Badge variant="outline">
+                        {property.property_type.charAt(0).toUpperCase() +
+                          property.property_type.slice(1)}
+                      </Badge>
+                      <Badge variant="outline">
+                        For{" "}
+                        {property.listing_type.charAt(0).toUpperCase() +
+                          property.listing_type.slice(1)}
+                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
-              ) : null}
+
+                {/* Agent Info - Takes full width or right column */}
+                {agent ? (
+                  <Card className="h-full">
+                    <CardHeader>
+                      <CardTitle className="text-lg">Listed By</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage src={agent.avatar || undefined} />
+                          <AvatarFallback>
+                            {agent.name?.charAt(0).toUpperCase() || "A"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <p className="font-medium">{agent.name}</p>
+                          <p className="text-sm text-muted-foreground">{agent.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2 mt-4">
+                        <Button size="sm" className="flex-1">
+                          <Mail className="h-4 w-4 mr-2" />
+                          Email
+                        </Button>
+                        <Button size="sm" variant="outline" className="flex-1">
+                          <Phone className="h-4 w-4 mr-2" />
+                          Call
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>
