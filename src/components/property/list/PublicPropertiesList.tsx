@@ -1,5 +1,5 @@
 import {
-  PropertiesResponseWithExpandedRelations,
+  PropertyWithFavorites,
   PropertyFilters,
   PropertySortBy,
   SortOrder,
@@ -65,7 +65,7 @@ export async function PublicPropertiesList({
           <LinkedPropertyCard
             basePath="/"
             key={property.id}
-            property={property as PropertiesResponseWithExpandedRelations}
+            property={property as PropertyWithFavorites}
             currentUserId={user?.id}
           />
         ))}

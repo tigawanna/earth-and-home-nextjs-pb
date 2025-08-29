@@ -25,6 +25,7 @@ export async function baseGetPaginatedProperties({
   page = 1,
   limit = 20,
   userId,
+  agentId,
 }: {
   client: TypedPocketBase<Schema>;
   filters?: PropertyFilters;
@@ -33,6 +34,7 @@ export async function baseGetPaginatedProperties({
   page?: number;
   limit?: number;
   userId?: string; // For checking favorites
+  agentId?: string; // For filtering by agent
 }) {
   type PropertyStatus = PropertiesResponse["status"];
   type PropertyType = PropertiesResponse["property_type"];
@@ -61,7 +63,9 @@ export async function baseGetPaginatedProperties({
         )
       );
     }
-
+    if (agentId) {
+      conditions.push(eq("agent_id", agentId));
+    }
     if (filters.propertyType) {
       conditions.push(eq("property_type", filters.propertyType as PropertyType));
     }
@@ -197,6 +201,7 @@ export async function baseGetPropertyById({
     // Get property with agent info
     const property = await collection.getFirstListItem(filter, {
       select: {
+        // title: true,
         expand: {
           favorites_via_property_id: true,
           agent_id: true,
@@ -212,31 +217,10 @@ export async function baseGetPropertyById({
       };
     }
 
-    // Check if property is favorited by user
-    let isFavorited = false;
-    if (userId) {
-      try {
-        const favoritesCollection = client.from("favorites");
-        const favoriteFilter = favoritesCollection.createFilter(
-          and(eq("property_id", property.id), eq("user_id", userId))
-        );
-
-        const favoriteCheck = await favoritesCollection.getFirstListItem(favoriteFilter, {});
-        isFavorited = !!favoriteCheck;
-      } catch (error) {
-        // Favorite not found, isFavorited remains false
-        isFavorited = false;
-      }
-    }
 
     return {
       success: true,
-      result: {
-        ...property,
-        agent: Array.isArray(property.expand?.agent_id)
-          ? property.expand.agent_id[0] || null
-          : property.expand?.agent_id || null,
-      },
+      result: property,
     };
   } catch (error) {
     console.error("Error fetching property:", error);

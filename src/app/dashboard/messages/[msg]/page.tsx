@@ -15,10 +15,10 @@ export default async function SinglePropertyMessagesPage({
 
   const user = await getServerSideUser();
   if (!messageId) {
-    return redirect("/dashboard");
+    throw redirect("/dashboard");
   }
   if (!user) {
-    return redirect("/auth/signin");
+    throw redirect("/auth/signin");
   }
   const messageParentRResponse = await getSinglePropertyMessage({
     msgId: messageId,
@@ -26,7 +26,7 @@ export default async function SinglePropertyMessagesPage({
 
   const messageParent = messageParentRResponse.result;
   if (!messageParent) {
-    return redirect("/dashboard");
+    throw redirect("/dashboard");
   }
 
   return (

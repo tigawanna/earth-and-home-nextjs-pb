@@ -1,4 +1,4 @@
-import "server-only"
+import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
@@ -18,6 +18,12 @@ export async function getServerSideUserwithAgent(nextCookies?: ReadonlyRequestCo
   const client = await createServerClient(cookieStore);
   const { authStore } = client;
   const user = authStore.record as UsersResponse | null;
-  const agent = user?.id ? await client.from("agents").getOne(user?.id) : null;
-  return { user, agent };
+  const agent = user?.id
+    ? await client
+        .from("agents")
+        .getOne(user?.id)
+        .then((res) => res)
+        .catch(() => null)
+    : null;
+  return { user, agent, client };
 }

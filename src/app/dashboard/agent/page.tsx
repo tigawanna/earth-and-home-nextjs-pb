@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 export default async function AgentProfilePage() {
   const user = await getServerSideUser();
   if (!user) {
-    return redirect("/auth/signin");
+    throw redirect("/auth/signin");
   }
 
   // Try to find agent profile for this user
@@ -24,7 +24,7 @@ export default async function AgentProfilePage() {
   }
 
   if (userAgent) {
-    return redirect(`/dashboard/agents/${userAgent.id}`);
+    throw redirect(`/dashboard/agents/${userAgent.id}`);
   }
 
   return (

@@ -1,14 +1,12 @@
-import { FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { AgentsResponse, FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
 export type PropertyWithFavorites = PropertiesResponse & {
   expand?:
     | {
-        favorites_via_property_id: FavoritesResponse[] | undefined;
-        agent_id?: UsersResponse | undefined;
+        agent_id?: AgentsResponse | undefined;
+        favorites_via_property_id?: FavoritesResponse[] | undefined;
       }
     | undefined;
-  is_favorited?: boolean; // Add this for compatibility with new API
-  favorite_timestamp?: string | null; // Add this for compatibility with new API
 };
 
 export type PropertyFilters = {
@@ -46,13 +44,4 @@ export type PropertySortBy = typeof allowedSortFields[number];
 export type SortOrder = "asc" | "desc";
 
 
-export type PropertiesResponseWithExpandedRelations = PropertiesResponse & {
-  is_favorited?: boolean | null;
-  favorite_timestamp?: string | null;
-  expand?:
-    | {
-        favorites_via_property_id:FavoritesResponse[] | undefined;
-        agent_id?: UsersResponse | undefined;
-      }
-    | undefined;
-};
+

@@ -1,4 +1,4 @@
-import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/properties/property-types";
+import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
 import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
 import { BasePropertyCard } from "./BasePropertyCard";
@@ -6,13 +6,13 @@ import { BasePropertyCard } from "./BasePropertyCard";
 
 
 interface LinkedPropertyCardProps {
-  property: PropertiesResponseWithExpandedRelations;
+  property: PropertyWithFavorites;
   href?: string;
   className?: string;
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;
-  currentUserId?: string
-  basePath?: "/" | "/dashboard/"
+  currentUserId?: string;
+  basePath?: "/" | "/dashboard/";
 }
 
 /**

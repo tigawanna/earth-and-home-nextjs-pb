@@ -22,6 +22,7 @@ export async function getProperties({
   page = 1,
   limit = 20,
   userId,
+  agentId
 }: {
   filters?: PropertyFilters;
   sortBy?: PropertySortBy;
@@ -29,6 +30,7 @@ export async function getProperties({
   page?: number;
   limit?: number;
   userId?: string; // For checking favorites
+  agentId?: string; // For filtering by agent
 } = {}) {
   try {
     const client = await createServerClient();
@@ -41,6 +43,7 @@ export async function getProperties({
       page,
       limit,
       userId,
+      agentId
     });
     
     return result;

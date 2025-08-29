@@ -1,5 +1,5 @@
 
-import { PropertiesResponseWithExpandedRelations, PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/properties/property-types";
+import { PropertyWithFavorites, PropertyFilters, PropertySortBy, SortOrder } from "@/data-access-layer/properties/property-types";
 import { getProperties } from "@/data-access-layer/properties/server-side-property-queries";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
@@ -7,6 +7,7 @@ import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
 
 interface DashboardPropertiesListProps {
+  agentId?: string;
   user: UsersResponse | null;
   limit?: number; // Optional limit for pagination
   searchParams: {
@@ -14,7 +15,7 @@ interface DashboardPropertiesListProps {
   };
 }
 
-export async function DashboardPropertiesList({ user, limit, searchParams }: DashboardPropertiesListProps) {
+export async function DashboardPropertiesList({ user, limit, searchParams, agentId }: DashboardPropertiesListProps) {
   // Convert search params to filters
   const filters: PropertyFilters = {
     search: (searchParams?.search as string) || "",
@@ -40,6 +41,7 @@ export async function DashboardPropertiesList({ user, limit, searchParams }: Das
     sortOrder,
     page,
     limit: limit || 50, // Default to 50 if no limit provided
+    agentId
   });
 
 
@@ -57,7 +59,7 @@ export async function DashboardPropertiesList({ user, limit, searchParams }: Das
           <LinkedPropertyCard
             basePath="/dashboard/"
             key={property.id}
-            property={property as PropertiesResponseWithExpandedRelations}
+            property={property as PropertyWithFavorites}
             currentUserId={user?.id}
           />
         ))}

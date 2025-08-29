@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { eq, and } from "@tigawanna/typed-pocketbase";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse,AgentsResponse } from "@/lib/pocketbase/types/pb-types";
 import { useRouter } from "next/navigation";
 
 const messageSchema = z.object({
@@ -32,7 +32,7 @@ interface PropertyContactFormProps {
   propertyTitle: string;
   children?: React.ReactNode;
   user: UsersResponse
-  agent: UsersResponse
+  agent: AgentsResponse
 }
 
 interface SendMessagePayload {
@@ -161,7 +161,7 @@ export function PropertyContactForm({
             <div className="flex-1 min-w-0">
               <h3 className="font-medium text-sm mb-1">Property Agent</h3>
               <p className="text-sm font-semibold mb-2">
-                {agent.name || agent.username || "Agent"}
+                {agent.name || agent.name || "Agent"}
               </p>
               
               <div className="space-y-1">

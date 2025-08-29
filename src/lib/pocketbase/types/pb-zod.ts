@@ -495,6 +495,7 @@ export const AgentsResponseZodSchema = baseResponseSchema.extend({
     phone: z.string().optional(),
     email: z.string().optional(),
     user_id: z.string().optional(),
+    avatar: z.string().optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -505,6 +506,7 @@ export const AgentsCreateZodSchema = baseCreateSchema.extend({
     phone: z.string().optional(),
     email: z.string().optional(),
     user_id: z.string().optional(),
+    avatar: z.instanceof(File).nullable().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -515,6 +517,7 @@ export const AgentsUpdateZodSchema = baseUpdateSchema.extend({
     phone: z.string().optional(),
     email: z.string().optional(),
     user_id: z.string().optional(),
+    avatar: z.instanceof(File).nullable().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });

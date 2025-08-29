@@ -708,6 +708,7 @@ export interface AgentsResponse extends BaseCollectionResponse {
 	phone: string;
 	email: string;
 	user_id: string;
+	avatar: string;
 	created: string;
 	updated: string;
 }
@@ -718,6 +719,7 @@ export interface AgentsCreate extends BaseCollectionCreate {
 	phone?: string;
 	email?: string;
 	user_id?: string;
+	avatar?: File | null;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -728,6 +730,7 @@ export interface AgentsUpdate extends BaseCollectionUpdate {
 	phone?: string;
 	email?: string;
 	user_id?: string;
+	avatar?: File | null;
 	created?: string | Date;
 	updated?: string | Date;
 }

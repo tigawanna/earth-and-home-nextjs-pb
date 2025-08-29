@@ -1,4 +1,4 @@
-import { AgentsGridSkeleton, AgentsList } from "@/components/dashboard/agents/AgentsList";
+import { AgentsGridSkeleton, AgentsList } from "@/components/dashboard/agents/list/AgentsList";
 import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -10,10 +10,10 @@ interface AgentsPageProps {
 export default async function AgentsPage({ searchParams }: AgentsPageProps) {
   const user = await getServerSideUser();
   if (!user) {
-    return redirect("/auth/signin");
+    throw redirect("/auth/signin");
   }
   if (!user.is_admin) {
-    return redirect("/dashboard");
+    throw redirect("/dashboard");
   }
 
   const { q: searchQuery } = await searchParams;

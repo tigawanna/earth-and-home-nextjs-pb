@@ -8,13 +8,14 @@ import { DashboardPropertiesList } from "@/components/property/list/DashboardPro
 import { PropertiesListLoading } from "@/components/property/query-states/PropertiesListLoading";
 
 interface PropertyDashboardProps {
+  agentId?: string;
   user: UsersResponse | null;
   searchParams: {
     [key: string]: string | string[] | undefined;
   };
 }
 
-export function PropertyDashboard({ user, searchParams }: PropertyDashboardProps) {
+export function PropertyDashboard({ user, searchParams, agentId }: PropertyDashboardProps) {
   const isAdmin = user?.is_admin;
 
   return (
@@ -34,7 +35,8 @@ export function PropertyDashboard({ user, searchParams }: PropertyDashboardProps
       <PropertyFilters showStatusFilter={isAdmin} />
       {/* Properties List */}
       <Suspense fallback={<PropertiesListLoading />}>
-        <DashboardPropertiesList user={user} searchParams={searchParams} />
+        <DashboardPropertiesList 
+        user={user} searchParams={searchParams} agentId={agentId} />
       </Suspense>
       {/* Quick Actions Card */}
     </div>

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { PropertiesResponseWithExpandedRelations } from "@/data-access-layer/properties/property-types";
+import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Calendar, Home, MapPin } from "lucide-react";
 import Image from "next/image";
@@ -9,7 +9,7 @@ import Link from "next/link";
 
 
 interface BasePropertyCardProps {
-  property: PropertiesResponseWithExpandedRelations;
+  property: PropertyWithFavorites;
   className?: string;
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;

@@ -1,14 +1,14 @@
-import { AgentForm } from "@/components/dashboard/agents/AgentForm";
+import { AgentForm } from "@/components/dashboard/agents/forms/AgentForm";
 import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { redirect } from "next/navigation";
 
 export default async function NewAgentPage() {
   const user = await getServerSideUser();
   if (!user) {
-    return redirect("/auth/signin");
+    throw redirect("/auth/signin");
   }
   if (!user.is_admin) {
-    return redirect("/dashboard");
+    throw redirect("/dashboard");
   }
 
   return (

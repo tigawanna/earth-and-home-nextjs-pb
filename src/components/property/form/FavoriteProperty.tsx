@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  PropertiesResponseWithExpandedRelations,
-  PropertyWithFavorites,
+  PropertyWithFavorites
 } from "@/data-access-layer/properties/property-types";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -20,9 +19,7 @@ interface FavoritePropertyProps {
 export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
   const propertyId = property.id;
   const is_favorited =
-    property.expand?.favorites_via_property_id?.some((fav) => fav.user_id === userId) ||
-    property.is_favorited ||
-    false;
+    property.expand?.favorites_via_property_id?.some((fav) => fav.user_id === userId) || false;
   const queryClient = useQueryClient();
   const [currentUserId, setCurrentUserId] = useState<string | null>(userId || null);
   const [favoriteState, setFavoriteState] = useState(is_favorited || false);

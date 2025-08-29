@@ -1,37 +1,39 @@
-import { EditAgentModal } from "@/components/dashboard/agents/EditAgentModal";
-import { Badge } from "@/components/ui/badge";
+import { EditAgentModal } from "@/components/dashboard/agents/forms/EditAgentModal";
+import { PropertyDashboard } from "@/components/property/PropertyDashboard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSingleAgent } from "@/data-access-layer/admin/agents-management";
 import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
-import { ArrowLeft, Calendar, Mail, Phone, User } from "lucide-react";
+import { ArrowLeft, Mail, Phone, User } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 interface SingleAgentPageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function SingleAgentPage({ params }: SingleAgentPageProps) {
+export default async function SingleAgentPage({ params, searchParams }: SingleAgentPageProps) {
   const { user, agent: userAgent } = await getServerSideUserwithAgent();
   if (!user) {
-    return redirect("/auth/signin");
+    throw redirect("/auth/signin");
   }
 
   const agentId = (await params).id;
-  
+  const sp = await searchParams;
+
   // Fetch the specific agent
   const agentResult = await getSingleAgent(agentId);
-  
+
   if (!agentResult.success || !agentResult.result) {
-    return redirect("/dashboard/agents");
+    throw redirect("/dashboard/agents");
   }
 
   const agent = agentResult.result;
-  
+
   // Check if user has permission to view this agent
   if (!user.is_admin && user.id !== agent.user_id) {
-    return redirect("/dashboard/agents");
+    throw redirect("/dashboard/agents");
   }
 
   return (
@@ -51,9 +53,9 @@ export default async function SingleAgentPage({ params }: SingleAgentPageProps) 
               <p className="text-muted-foreground">Agent Profile Details</p>
             </div>
           </div>
-          
+
           {(user.is_admin || user.id === agent.user_id) && (
-            <EditAgentModal agent={agent} />
+            <EditAgentModal agent={agent} currentUser={user} />
           )}
         </div>
 
@@ -67,9 +69,7 @@ export default async function SingleAgentPage({ params }: SingleAgentPageProps) 
                   <User className="h-5 w-5" />
                   Agent Information
                 </CardTitle>
-                <CardDescription>
-                  Complete profile details for this agent
-                </CardDescription>
+                <CardDescription>Complete profile details for this agent</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -77,26 +77,34 @@ export default async function SingleAgentPage({ params }: SingleAgentPageProps) 
                     <label className="text-sm font-medium text-muted-foreground">Full Name</label>
                     <p className="text-lg font-medium">{agent.name || "Not provided"}</p>
                   </div>
-                  
+
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Associated User</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Associated User
+                    </label>
                     <p className="text-lg font-medium">
-                      {agent.expand?.user_id?.name || agent.expand?.user_id?.email || "Unknown User"}
+                      {agent.expand?.user_id?.name ||
+                        agent.expand?.user_id?.email ||
+                        "Unknown User"}
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Email Address</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Email Address
+                    </label>
                     <div className="flex items-center gap-2 mt-1">
                       <Mail className="h-4 w-4 text-muted-foreground" />
                       <p className="text-lg">{agent.email || "Not provided"}</p>
                     </div>
                   </div>
-                  
+
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Phone Number</label>
+                    <label className="text-sm font-medium text-muted-foreground">
+                      Phone Number
+                    </label>
                     <div className="flex items-center gap-2 mt-1">
                       <Phone className="h-4 w-4 text-muted-foreground" />
                       <p className="text-lg">{agent.phone || "Not provided"}</p>
@@ -106,64 +114,9 @@ export default async function SingleAgentPage({ params }: SingleAgentPageProps) 
               </CardContent>
             </Card>
           </div>
-
-          {/* Sidebar Info */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Status</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Agent Status</span>
-                  <Badge variant="secondary">Active</Badge>
-                </div>
-                
-                {agent.expand?.user_id?.is_admin && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">User Type</span>
-                    <Badge variant="outline">Admin User</Badge>
-                  </div>
-                )}
-                
-                {agent.expand?.user_id?.verified && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">User Verified</span>
-                    <Badge variant="default">Verified</Badge>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Timeline
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Created</label>
-                  <p className="text-sm">{new Date(agent.created).toLocaleString()}</p>
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Last Updated</label>
-                  <p className="text-sm">{new Date(agent.updated).toLocaleString()}</p>
-                </div>
-                
-                {agent.expand?.user_id && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">User Registered</label>
-                    <p className="text-sm">{new Date(agent.expand.user_id.created).toLocaleString()}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
+      <PropertyDashboard user={user} searchParams={sp} agentId={agentId} />
     </section>
   );
 }

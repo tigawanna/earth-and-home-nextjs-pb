@@ -51,7 +51,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
   const features = Array.isArray(property.features) ? property.features : [];
   const agent = property.expand?.agent_id 
 
-  console.log("propery ===",property)
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -104,7 +104,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                         ) : null}
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-2">
                         {(user && agent) ? (
                           <PropertyContactForm
                             user={user}
@@ -112,14 +112,14 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                             propertyTitle={property.title}
                             agent={agent}
                             >
-                            <Button className="flex-1">
+                            <Button className="">
                               <Phone className="h-4 w-4 mr-2" />
                               Contact About Property
                             </Button>
                           </PropertyContactForm>
                         ) : (
                           <Link href="/auth/signin">
-                            <Button className="flex-1">
+                            <Button className="">
                               <Phone className="h-4 w-4 mr-2" />
                               Contact About Property
                             </Button>
