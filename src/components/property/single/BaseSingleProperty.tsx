@@ -25,7 +25,6 @@ import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyContactForm } from "../form/PropertyContactForm";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
-import { TailwindContainerIndicator } from "@/components/shared/tailwind-indicator";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;
@@ -267,7 +266,10 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                       <AvatarFallback>{agent.name?.charAt(0).toUpperCase() || "A"}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <p className="font-medium">{agent.name}</p>
+                      <Link href={`/dashboard/agents/${agent.id}`} className="hover:underline flex items-center gap-1 group">
+                        <p className="font-medium">{agent.name}</p>
+                        <ArrowLeft className="h-3 w-3 rotate-180 text-muted-foreground group-hover:text-foreground transition-colors" />
+                      </Link>
                       <p className="text-sm text-muted-foreground">{agent.email}</p>
                     </div>
                   </div>

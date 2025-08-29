@@ -31,10 +31,10 @@ export default async function SingleAgentPage({ params, searchParams }: SingleAg
 
   const agent = agentResult.result;
 
-  // Check if user has permission to view this agent
-  if (!user.is_admin && user.id !== agent.user_id) {
-    throw redirect("/dashboard/agents");
-  }
+  // // Check if user has permission to view this agent
+  // if (!user.is_admin && user.id !== agent.user_id) {
+  //   throw redirect("/dashboard/agents");
+  // }
 
   return (
     <section className="w-full h-full flex flex-col p-6">
