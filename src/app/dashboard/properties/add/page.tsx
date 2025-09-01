@@ -5,8 +5,6 @@ import { redirect } from "next/navigation";
 
 export default async function NewPropertyPage() {
   const { user, agent } = await getServerSideUserwithAgent();
-  // console.log("User:", user);
-  // console.log("Agent:", agent);
   if (!user) {
     throw redirect("/auth/signin");
   }
