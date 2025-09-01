@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "@/components/ui/sonner";
 import { TanstackQueryProvider } from "@/lib/tanstack/query/tsq-provider";
+import { Footer } from "@/components/root/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -76,6 +77,7 @@ export default function RootLayout({
               <div>
                 <div className="fixed inset-0 bg-gradient-to-b from-background to-background/80 z-[-1]" />
                 {children}
+                <Footer/>
               </div>
               <Toaster />
             </ThemeProvider>

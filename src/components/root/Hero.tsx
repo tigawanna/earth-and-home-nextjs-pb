@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { siteinfo } from "@/config/siteinfo";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { HeroSectionProperty } from "./HeroSectionProperty";
@@ -13,27 +14,26 @@ export function Hero() {
           {/* Left content */}
           <div className="animate-fade-in">
             <h1 className="text-5xl lg:text-6xl font-playfair font-bold text-foreground leading-tight mb-6">
-              Find Your Perfect
-              <span className="text-primary block">Dream Home</span>
+              {siteinfo.hero.title}
+              <span className="text-primary block">{siteinfo.hero.subtitle}</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-              Discover exceptional properties with Earth & Home. From luxury estates to cozy family homes,
-              we connect you with the perfect place to call home.
+              {siteinfo.hero.description}
             </p>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 mb-8">
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">24/7</div>
-                <div className="text-sm text-muted-foreground">Support Available</div>
+                <div className="text-3xl font-bold text-primary">{siteinfo.stats.support.value}</div>
+                <div className="text-sm text-muted-foreground">{siteinfo.stats.support.label}</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent-foreground">100%</div>
-                <div className="text-sm text-muted-foreground">Satisfaction Focus</div>
+                <div className="text-3xl font-bold text-accent-foreground">{siteinfo.stats.satisfaction.value}</div>
+                <div className="text-sm text-muted-foreground">{siteinfo.stats.satisfaction.label}</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">Local</div>
-                <div className="text-sm text-muted-foreground">Market Expertise</div>
+                <div className="text-3xl font-bold text-primary">{siteinfo.stats.expertise.value}</div>
+                <div className="text-sm text-muted-foreground">{siteinfo.stats.expertise.label}</div>
               </div>
             </div>
 
