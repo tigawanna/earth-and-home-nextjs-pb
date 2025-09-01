@@ -1,11 +1,10 @@
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
+import { PropertyMessagesResponse } from "@/lib/pocketbase/types/pb-types";
 import { createCollectionFactory } from "@/lib/tanstack/db/query-collection-factory";
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/react-db";
-import { and, eq as pBeq, or } from "@tigawanna/typed-pocketbase";
-import { mutationOptions } from "@tanstack/react-query";
-import { PropertyMessagesResponse } from "@/lib/pocketbase/types/pb-types";
+import { or, eq as pBeq } from "@tigawanna/typed-pocketbase";
 
 // ====================================================
 // TANSTACK COLLECTIONS

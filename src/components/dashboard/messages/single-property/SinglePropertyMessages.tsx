@@ -27,6 +27,7 @@ export default function SinglePropertyMessages({
   user,
   messageParent,
 }: SinglePropertyMessagesProps) {
+
   const parentId = messageParent.id;
 
   const [newMessage, setNewMessage] = useState("");
@@ -46,6 +47,13 @@ export default function SinglePropertyMessages({
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(() => {
+    if (messageParent) {
+      // propertyMessagesCollection.utils.writeInsert(messageParent);
+      propertyMessagesCollection.utils.writeUpsert(messageParent);
+    }
+  }, [messageParent.id]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -85,13 +93,14 @@ export default function SinglePropertyMessages({
     const parentId = mostPreviousMessage
       ? mostPreviousMessage.parent || mostPreviousMessage.id
       : undefined;
+    const messageType = mostPreviousMessage?.type === "parent" ? "reply" : "parent";
     const messagePayload = {
       body: newMessage,
       property_id: propertyId,
       parent: parentId,
       user_id: user.is_admin ? messageParent.user_id : user.id,
       admin_id: user.is_admin ? user.id : undefined,
-      type: mostPreviousMessage?.type === "reply" ? "reply" : "parent",
+      type: messageType,
     } satisfies PropertyMessagesCreate;
 
     propertyMessagesCollection.insert(addLocalfirstPocketbaseMetadata(messagePayload) as any);
