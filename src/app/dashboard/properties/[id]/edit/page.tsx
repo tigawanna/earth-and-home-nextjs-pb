@@ -1,15 +1,15 @@
 import { EditProperty } from "@/components/dashboard/EditProperty";
 import {
-  SinglePropertyLoadingFallback,
-  SinglePropertyNotFound,
+    SinglePropertyLoadingFallback,
+    SinglePropertyNotFound,
 } from "@/components/property/single/single-property-query-states";
 import { baseGetPropertyById } from "@/data-access-layer/properties/base-property-queries";
 import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 interface EditPropertyPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function EditPropertyPage({ params }: EditPropertyPageProps) {

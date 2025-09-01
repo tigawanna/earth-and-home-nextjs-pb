@@ -4,11 +4,11 @@ import { TablePending } from "@/components/shared/TablePending";
 import { Suspense } from "react";
 
 interface FavoritesPageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     [key: string]: string | string[] | undefined;
     page?: string;
     q?: string;
-  };
+  }>;
 }
 
 export default async function FavoritesPage({ searchParams }: FavoritesPageProps) {

@@ -3,20 +3,21 @@ import { TablePending } from "@/components/shared/TablePending";
 import { Suspense } from "react";
 
 interface UsersPageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     [key: string]: string | string[] | undefined;
     q?: string;
     page?: string;
     sortBy?: string;
     sortOrder?: string;
-  };
+  }>;
 }
 
-export default function UsersPage({ searchParams }: UsersPageProps) {
+export default async function UsersPage({ searchParams }: UsersPageProps) {
+  const sp = await searchParams;
   return (
     <section className="w-full h-full p-6">
       <Suspense fallback={<TablePending />}>
-        <UsersList searchParams={searchParams} />
+        <UsersList searchParams={sp} />
       </Suspense>
     </section>
   );
