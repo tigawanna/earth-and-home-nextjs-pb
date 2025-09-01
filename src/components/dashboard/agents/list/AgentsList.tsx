@@ -16,7 +16,7 @@ interface AgentsListProps {
 async function AgentsGrid({ searchQuery }: { searchQuery?: string }) {
   const agentsResult = await getServerSideAgents({
     q: searchQuery,
-    limit: 50
+    limit: 50,
   });
 
   const agents = agentsResult.success ? agentsResult.result?.items || [] : [];
@@ -30,9 +30,7 @@ async function AgentsGrid({ searchQuery }: { searchQuery?: string }) {
             {searchQuery ? "No matching agents found" : "No Agents Found"}
           </h3>
           <p className="text-muted-foreground text-center">
-            {searchQuery
-              ? "Try adjusting your search terms."
-              : "No agents have been created yet."}
+            {searchQuery ? "Try adjusting your search terms." : "No agents have been created yet."}
           </p>
         </CardContent>
       </Card>
@@ -68,25 +66,8 @@ export function AgentsGridSkeleton() {
 
 export function AgentsList({ currentUser, searchQuery }: AgentsListProps) {
   return (
-    <div className="w-full max-w-6xl mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <Users className="h-6 w-6" />
-          <h1 className="text-2xl font-bold">Agents</h1>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {currentUser.is_admin && (
-            <Link href="/dashboard/agents/new">
-              <Button>Create Agent</Button>
-            </Link>
-          )}
-        </div>
-      </div>
-
-      {/* Search */}
-      <AgentsSearch />
+    <div className="w-full max-w-6xl mx-auto p-6 space-y-6 @container">
+      <AgentsSearch currentUser={currentUser} />
 
       {/* Agents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

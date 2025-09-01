@@ -6,11 +6,11 @@ import { Heart, Loader, Search } from "lucide-react";
 import { parseAsString, useQueryStates } from "nuqs";
 import { useTransition } from "react";
 
-interface FavoritesSerachbarProps {
+interface FavoritesSearchbarProps {
   className?: string;
 }
 
-export function FavoritesSerachbar({ className }: FavoritesSerachbarProps) {
+export function FavoritesSearchbar({ className }: FavoritesSearchbarProps) {
   const [isPending, startTransition] = useTransition();
   const [queryStates, setQueryStates] = useQueryStates(
     {
@@ -25,7 +25,7 @@ export function FavoritesSerachbar({ className }: FavoritesSerachbarProps) {
   return (
     <div className={cn("w-full", className)}>
       {/* Mobile layout: stacked */}
-      <div className="flex flex-col gap-4 md:hidden">
+      <div className="flex flex-col gap-4 @md:hidden">
         <div className="flex items-center gap-2">
           <Heart className="h-6 w-6" />
           <h1 className="text-2xl font-bold">Favorites</h1>
@@ -46,7 +46,7 @@ export function FavoritesSerachbar({ className }: FavoritesSerachbarProps) {
       </div>
 
       {/* Desktop layout: row */}
-      <div className="hidden md:flex items-center justify-between gap-4 pr-4">
+      <div className="hidden @md:flex items-center justify-between gap-4 pr-4">
         <div className="flex items-center gap-2">
           <Heart className="h-6 w-6" />
           <h1 className="text-2xl font-bold">Favorites</h1>
