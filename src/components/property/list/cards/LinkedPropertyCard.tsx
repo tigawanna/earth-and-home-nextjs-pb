@@ -3,6 +3,7 @@ import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
 import { BasePropertyCard } from "./BasePropertyCard";
 import { PropertyAdminActions } from "./PropertyAdminActions";
+import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
 
 
@@ -12,7 +13,7 @@ interface LinkedPropertyCardProps {
   className?: string;
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;
-  currentUserId?: string;
+  currentUser: UsersResponse | null;
   basePath?: "/" | "/dashboard/";
 }
 
@@ -26,7 +27,7 @@ export function LinkedPropertyCard({
   className,
   showFooterActions = true, // Enable footer by default for stats and interactions
   footerActions,
-  currentUserId,
+  currentUser,
   basePath,
 }: LinkedPropertyCardProps) {
   // Default href patterns
@@ -59,9 +60,11 @@ export function LinkedPropertyCard({
       
       {/* Interactive elements */}
       <div className="flex items-center gap-2">
-        <PropertyAdminActions property={property} />
+        {currentUser && currentUser.is_admin && (
+          <PropertyAdminActions property={property} />
+        )}
         <FavoriteProperty
-          userId={currentUserId}
+          userId={currentUser?.id}
           property={property}
         />
       </div>
@@ -88,7 +91,7 @@ export function DashboardLinkedPropertyCard({
   className,
   showFooterActions = true,
   footerActions,
-  currentUserId,
+  currentUser,
 }: Omit<LinkedPropertyCardProps, "href" | "basePath">) {
   return (
     <LinkedPropertyCard
@@ -97,7 +100,7 @@ export function DashboardLinkedPropertyCard({
       className={className}
       showFooterActions={showFooterActions}
       footerActions={footerActions}
-      currentUserId={currentUserId}
+      currentUser={currentUser}
     />
   );
 }

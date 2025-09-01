@@ -66,7 +66,7 @@ export async function PublicPropertiesList({
             basePath="/"
             key={property.id}
             property={property as PropertyWithFavorites}
-            currentUserId={user?.id}
+            currentUser={user}
           />
         ))}
       </div>

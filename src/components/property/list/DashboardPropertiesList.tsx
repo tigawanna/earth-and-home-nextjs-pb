@@ -21,7 +21,7 @@ export async function DashboardPropertiesList({ user, limit, searchParams, agent
     search: (searchParams?.search as string) || "",
     propertyType: searchParams?.propertyType as string,
     listingType: searchParams?.listingType as "sale" | "rent",
-    status: "active", // Only show active properties in public view
+    status: user?.is_admin ? undefined : "active", // Only show active properties in public view
     minPrice: searchParams?.minPrice ? Number(searchParams?.minPrice) : undefined,
     maxPrice: searchParams?.maxPrice ? Number(searchParams?.maxPrice) : undefined,
     beds: searchParams?.beds ? Number(searchParams?.beds) : undefined,
@@ -60,7 +60,7 @@ export async function DashboardPropertiesList({ user, limit, searchParams, agent
             basePath="/dashboard/"
             key={property.id}
             property={property as PropertyWithFavorites}
-            currentUserId={user?.id}
+            currentUser={user}
           />
         ))}
       </div>

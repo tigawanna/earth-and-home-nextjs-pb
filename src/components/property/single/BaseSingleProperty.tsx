@@ -25,6 +25,7 @@ import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
 import { PropertyContactForm } from "../form/PropertyContactForm";
 import { PropertyImageGallery } from "../list/PropertyImageGallery";
+import { PropertyAdminActions } from "../list/cards/PropertyAdminActions";
 
 interface SinglePropertyProps {
   property: PropertyWithFavorites;
@@ -57,12 +58,19 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="container mx-auto px-4 py-4 border-b">
-        <Button variant="ghost" asChild>
-          <Link href={`${basePath}properties`}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Properties
-          </Link>
-        </Button>
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" asChild>
+            <Link href={`${basePath}properties`}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Properties
+            </Link>
+          </Button>
+          
+          {/* Admin Controls - Only show for admin users */}
+          {user?.is_admin && (
+            <PropertyAdminActions property={property} />
+          )}
+        </div>
       </div>
 
       {/* Main Content - Edge to Edge */}
