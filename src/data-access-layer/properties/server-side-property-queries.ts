@@ -2,10 +2,11 @@ import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import {
-    baseGetFavoriteProperties,
-    baseGetPaginatedProperties,
-    baseGetPropertyById,
-    baseGetSearchableFavorites,
+  baseGetFavoriteProperties,
+  baseGetFeaturedProperties,
+  baseGetPaginatedProperties,
+  baseGetPropertyById,
+  baseGetSearchableFavorites,
 } from "./base-property-queries";
 import { PropertyFilters, PropertySortBy, SortOrder } from "./property-types";
 
@@ -149,46 +150,28 @@ export async function getServerSideSearchableFavorites({
   }
 }
 
-
-
-
-
-
 // ====================================================
-// UTILITY ACTIONS
+// GET FEATURED PROPERTIES (server-side wrapper)
 // ====================================================
-// TODO implement the below as a pocketbase view
-// export async function getPropertyStats(agentId?: string) {
-//   try {
-//     const client = createServerClient();
 
-//     // Build filter condition for agent
-//     const filter = agentId ? eq("agent_id", agentId) : undefined;
+export async function getServerSideFeaturedProperties({
+  limit = 12,
+}: {
+  limit?: number;
+} = {}) {
+  try {
+    const client = await createServerClient();
+    return await baseGetFeaturedProperties({ client, limit });
+  } catch (error) {
+    console.log("Error fetching featured properties:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch featured properties",
+      properties: [],
+      totalCount: 0,
+    };
+  }
+}
 
-//     // Get all properties for the agent (or all if no agentId)
-//     const propertiesResult = await client.from("properties").getFullList(filter,{
 
-//     });
 
-//     // Calculate stats from the results
-//     const stats = {
-//       totalProperties: propertiesResult.length,
-//       activeProperties: propertiesResult.filter((p) => p.status === "active").length,
-//       soldProperties: propertiesResult.filter((p) => p.status === "sold").length,
-//       rentedProperties: propertiesResult.filter((p) => p.status === "rented").length,
-//       draftProperties: propertiesResult.filter((p) => p.status === "draft").length,
-//       featuredProperties: propertiesResult.filter((p) => p.is_featured === true).length,
-//     };
-
-//     return {
-//       success: true,
-//       stats,
-//     };
-//   } catch (error) {
-//     console.log("error happende = =>\n","Error fetching property stats:", error);
-//     return {
-//       success: false,
-//       message: error instanceof Error ? error.message : "Failed to fetch stats",
-//     };
-//   }
-// }

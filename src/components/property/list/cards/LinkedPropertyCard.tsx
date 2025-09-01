@@ -13,7 +13,7 @@ interface LinkedPropertyCardProps {
   className?: string;
   showFooterActions?: boolean;
   footerActions?: React.ReactNode;
-  currentUser: UsersResponse | null;
+  currentUser?: UsersResponse | null;
   basePath?: "/" | "/dashboard/";
 }
 

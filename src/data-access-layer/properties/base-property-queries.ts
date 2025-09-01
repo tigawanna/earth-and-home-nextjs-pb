@@ -468,3 +468,54 @@ export async function baseGetPropertyStats({
     };
   }
 }
+
+// ====================================================
+// GET FEATURED PROPERTIES (limited to 10)
+// ====================================================
+
+export async function baseGetFeaturedProperties({
+  client,
+  limit = 12,
+}: {
+  client: TypedPocketBase<Schema>;
+  limit?: number;
+}) {
+  try {
+    const propertiesCollection = client.from("properties");
+
+    // Create filter for featured properties that are active
+    const filter = propertiesCollection.createFilter(
+      and(
+        eq("is_featured", true),
+        eq("status", "active" as PropertiesResponse["status"])
+      )
+    );
+
+    // Sort by creation date (newest first)
+    const sort = propertiesCollection.createSort("-created");
+
+    // Get featured properties with agent and favorites info
+    const featuredPropertiesResult = await propertiesCollection.getList(1, limit, {
+      filter,
+      sort,
+      next: {
+        revalidate: 60 * 60 * 24 * 3, // 3 days
+        tags: ["properties-list", "featured-properties"],
+      },
+    });
+
+    return {
+      success: true,
+      properties: featuredPropertiesResult.items,
+      totalCount: featuredPropertiesResult.totalItems,
+    };
+  } catch (error) {
+    console.log("Error fetching featured properties:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to fetch featured properties",
+      properties: [],
+      totalCount: 0,
+    };
+  }
+}

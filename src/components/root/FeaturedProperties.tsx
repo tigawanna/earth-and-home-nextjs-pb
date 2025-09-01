@@ -5,6 +5,7 @@ import { PropertyFilters } from "@/data-access-layer/properties/property-types";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { FeaturedPropertiesList } from "../property/list/FeaturedProperties";
 
 export function FeaturedProperties() {
   // Search params to get only featured properties
@@ -23,14 +24,7 @@ export function FeaturedProperties() {
             Discover our handpicked selection of premium properties available for sale
           </p>
         </div>
-
-        {/* Use the PublicPropertyListings component with featured filter */}
-        <Suspense fallback={<LoadingFallback />}>
-          <PublicPropertiesList
-            searchParams={featuredSearchParams}
-            limit={6} // Show only 6 featured properties on homepage
-          />
-        </Suspense>
+        <FeaturedPropertiesList />
 
         <div className="text-center mt-12">
           <Button
