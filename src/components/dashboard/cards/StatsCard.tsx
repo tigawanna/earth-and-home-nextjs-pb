@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowDown, ArrowRight, ArrowUp, ExternalLink, TrendingUp } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 interface StatsCardProps {

@@ -67,19 +67,4 @@ type AddNewChatProps = {
   chat: PropertyMessagesResponse;
 };
 
-export const addNewChatMessageMutationOption = mutationOptions({
-  mutationFn: async ({ chat }: AddNewChatProps) => {
-    try {
-      const result = await pbMessagesCollection.create(chat);
-      return {
-        success: true,
-        message: "Message sent",
-      };
-    } catch (e: any) {
-      return {
-        success: false,
-        message: e.message,
-      };
-    }
-  },
-});
+
