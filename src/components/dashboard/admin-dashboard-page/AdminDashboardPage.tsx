@@ -19,7 +19,7 @@ export async function AdminDashboardPage({  }: AdminDashboardPageProps) {
     );
   }
 
-  const { propertyStats, userStats, favoritesStats, recentProperties, recentUsers } =
+  const { propertyStats, userStats, messagesStats, recentProperties, recentUsers } =
     dashboardData.data;
   return (
     <div className="w-full h-full p-6 space-y-6 @container">
@@ -29,7 +29,7 @@ export async function AdminDashboardPage({  }: AdminDashboardPageProps) {
       <AdminDashboardStatsGrid
         propertyStats={propertyStats}
         userStats={userStats}
-        favoritesStats={favoritesStats}
+        messagesStats={messagesStats}
       />
       <div className="w-full flex flex-col @2xl:flex-row gap-6">
         <RecentPropertiesCard properties={recentProperties} />

@@ -18,12 +18,23 @@ export async function getAdminDashboardStats() {
     // Get all users
     const usersResult = await baseGetPaginatedUsers({ client, limit: 50 });
 
-    // Get favorites count
-    const favoritesCollection = client.from("favorites");
-    const favoritesResult = await favoritesCollection.getList(1, 1);
+    // Get favorites count (commented out to reduce clutter)
+    // const favoritesCollection = client.from("favorites");
+    // const favoritesResult = await favoritesCollection.getList(1, 1);
 
     // Get all properties for stats calculation
     const propertiesResult = await baseGetPropertyStats({ client });
+
+    // Get messages stats
+    const messagesCollection = client.from("property_messages");
+    
+    // Get total parent messages (messages with type="parent" and no replies)
+    const parentMessagesResult = await messagesCollection.getList(1, 1, {
+      filter: 'type = "parent"',
+    });
+
+    // Get all messages count
+    const allMessagesResult = await messagesCollection.getList(1, 1);
 
     // Calculate property stats
     const propertyStats = {
@@ -40,9 +51,16 @@ export async function getAdminDashboardStats() {
       total: usersResult?.result?.totalItems || 0,
     };
 
-    // Calculate favorites stats
-    const favoritesStats = {
-      total: favoritesResult.totalItems || 0,
+    // Calculate favorites stats (commented out to reduce clutter)
+    // const favoritesStats = {
+    //   total: favoritesResult.totalItems || 0,
+    // };
+
+    // Calculate messages stats
+    const messagesStats = {
+      total: allMessagesResult.totalItems || 0,
+      parentMessages: parentMessagesResult.totalItems || 0, // Messages with no replies
+      unrepliedMessages: parentMessagesResult.totalItems || 0, // Same as parent messages in this context
     };
 
     // Get recent activities (last 10 properties and users)
@@ -55,7 +73,8 @@ export async function getAdminDashboardStats() {
       data: {
         propertyStats,
         userStats,
-        favoritesStats,
+        // favoritesStats, // commented out to reduce clutter
+        messagesStats,
         recentProperties,
         recentUsers,
         totalRevenue: 0, // TODO: Calculate from actual revenue data
@@ -134,11 +153,26 @@ export async function getRecentActivities() {
       },
     });
 
+    // Get recent messages (last 10)
+    const messagesCollection = client.from("property_messages");
+    const messagesSort = messagesCollection.createSort("-created");
+    const messagesResult = await messagesCollection.getList(1, 10, {
+      sort: messagesSort,
+      select: {
+        expand: {
+          property_id: true,
+          user_id: true,
+          parent: true,
+        },
+      },
+    });
+
     return {
       success: true,
       data: {
         recentProperties: propertiesResult.properties || [],
         recentFavorites: favoritesResult.items || [],
+        recentMessages: messagesResult.items || [],
       },
     };
   } catch (error) {
@@ -149,6 +183,7 @@ export async function getRecentActivities() {
       data: {
         recentProperties: [],
         recentFavorites: [],
+        recentMessages: [],
       },
     };
   }

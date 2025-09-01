@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowDown, ArrowUp, TrendingUp } from "lucide-react";
+import { ArrowDown, ArrowRight, ArrowUp, ExternalLink, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 interface StatsCardProps {
   title: string;
@@ -11,6 +12,10 @@ interface StatsCardProps {
   };
   icon?: React.ReactNode;
   className?: string;
+  link?: {
+    href: string;
+    label: string;
+  };
 }
 
 export function StatsCard({ 
@@ -19,7 +24,8 @@ export function StatsCard({
   description, 
   trend, 
   icon, 
-  className 
+  className,
+  link
 }: StatsCardProps) {
   return (
     <Card className={`relative overflow-hidden ${className || ""}`}>
@@ -56,6 +62,15 @@ export function StatsCard({
             </span>
             <TrendingUp className="h-3 w-3 text-muted-foreground ml-1" />
           </div>
+        )}
+        {link && (
+          <Link 
+            href={link.href}
+            className="inline-flex items-center text-xs text-primary hover:text-primary/80 mt-2 group"
+          >
+            {link.label}
+            <ArrowRight className="h-3 w-3 ml-1 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
         )}
       </CardContent>
     </Card>
