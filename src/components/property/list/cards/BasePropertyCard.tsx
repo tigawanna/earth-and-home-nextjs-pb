@@ -113,6 +113,27 @@ export function BasePropertyCard({
           </div>
         )}
 
+        {/* Sold/Rented Banner */}
+        {(status === "sold" || status === "rented") && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 bg-black/50" />
+            <div 
+              className={`
+                relative z-10 transform -rotate-12 px-8 py-2 font-bold text-white text-lg uppercase tracking-widest shadow-lg
+                ${status === "sold" 
+                  ? "bg-red-600 border-2 border-red-500" 
+                  : "bg-blue-600 border-2 border-blue-500"
+                }
+              `}
+              style={{
+                textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
+              }}
+            >
+              {status === "sold" ? "SOLD" : "RENTED"}
+            </div>
+          </div>
+        )}
+
         {/* Status Badges - Keep these in the image for visual hierarchy */}
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start gap-2">
           <div className="flex gap-2 flex-wrap">
