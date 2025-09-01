@@ -1,33 +1,33 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Users, MoreHorizontal, Shield, Ban, User, Loader } from "lucide-react";
-
-import { toast } from "sonner";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
-import { browserPB } from "@/lib/pocketbase/browser-client";
 import {
-  toggleAdminMutationOptions,
-  toggleBanUserMutationOptions,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Ban, Loader, MoreHorizontal, Shield, User, Users } from "lucide-react";
+
+import {
+    toggleAdminMutationOptions,
+    toggleBanUserMutationOptions,
 } from "@/data-access-layer/pocketbase/admin-user-management";
+import { browserPB } from "@/lib/pocketbase/browser-client";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface User {
   id: string;
@@ -50,7 +50,7 @@ export default function AdminUsersPage() {
           success: true,
         };
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.log("error happende = =>\n","Error fetching users:", error);
         toast.error("Failed to load users");
         return { result: null, success: false };
       }

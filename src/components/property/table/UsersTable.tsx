@@ -3,10 +3,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -42,7 +42,7 @@ export function UsersTable({ users = [] }: UsersTableProps) {
       await toggleAdminMutation.mutateAsync({ userId: user.id, is_admin: !!user.is_admin });
       toast.success(`Updated admin status for ${user.name || user.email}`);
     } catch (e) {
-      console.error(e);
+      console.log("error happende = =>\n",e);
       toast.error("Failed to update admin status");
     }
   }
@@ -52,7 +52,7 @@ export function UsersTable({ users = [] }: UsersTableProps) {
       await toggleBanMutation.mutateAsync({ userId: user.id, is_banned: !!user.is_banned });
       toast.success(`${user.is_banned ? "Unbanned" : "Banned"} ${user.name || user.email}`);
     } catch (e) {
-      console.error(e);
+      console.log("error happende = =>\n",e);
       toast.error("Failed to update ban status");
     }
   }

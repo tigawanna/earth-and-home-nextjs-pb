@@ -63,7 +63,7 @@ export async function getUserDashboardStats({ userId }: QueryProps) {
       recentFavorites,
     };
   } catch (error) {
-    console.error("Error fetching user dashboard stats:", error);
+    console.log("error happende = =>\n","Error fetching user dashboard stats:", error);
     return {
       totalFavorites: 0,
       recentFavorites: [],
@@ -114,7 +114,7 @@ export async function getUserFavoriteProperties({ userId, page = 1, limit = 10 }
       page: result.page,
     };
   } catch (error) {
-    console.error("Error fetching user favorite properties:", error);
+    console.log("error happende = =>\n","Error fetching user favorite properties:", error);
     return {
       items: [],
       totalItems: 0,
@@ -140,7 +140,7 @@ export async function getUserMessages({ userId, limit = 50, page = 1 }: QueryPro
 
     return result.items;
   } catch (error) {
-    console.error("Error fetching user messages:", error);
+    console.log("error happende = =>\n","Error fetching user messages:", error);
     return [];
   }
 }

@@ -88,7 +88,7 @@ export function TanStackDashboardSidebar({ user }: { user: UsersResponse }) {
       // Navigate to home page using Next.js router for server navigation
       window.location.href = "/";
     } catch (error) {
-      console.error("Sign out failed:", error);
+      console.log("error happende = =>\n","Sign out failed:", error);
     }
   };
 

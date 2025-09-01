@@ -42,7 +42,7 @@ function AdminUsersPage() {
           success: true,
         };
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.log("error happende = =>\n","Error fetching users:", error);
         toast.error("Failed to load users");
         return { result: null, success: false };
       }

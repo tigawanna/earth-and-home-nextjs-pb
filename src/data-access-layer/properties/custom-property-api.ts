@@ -137,7 +137,7 @@
 //       },
 //     };
 //   } catch (error) {
-//     console.error("Error fetching properties:", error);
+//     console.log("error happende = =>\n","Error fetching properties:", error);
 //     return {
 //       success: false,
 //       message: error instanceof Error ? error.message : "Failed to fetch properties",
@@ -187,7 +187,7 @@
 //       property,
 //     };
 //   } catch (error: any) {
-//     console.error("Error fetching property:", error);
+//     console.log("error happende = =>\n","Error fetching property:", error);
     
 //     // Handle 404 specifically
 //     if (error.status === 404) {

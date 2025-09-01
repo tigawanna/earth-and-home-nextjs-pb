@@ -1,4 +1,5 @@
 "use client";
+import { CopyButton } from "@/components/shared/CopyButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,18 +9,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { CopyButton } from "@/components/shared/CopyButton";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
+import { AgentsResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loader2, MessageSquare, Send, MessageCircle, Phone, Mail, User } from "lucide-react";
+import { and, eq } from "@tigawanna/typed-pocketbase";
+import { Loader2, Mail, MessageCircle, MessageSquare, Phone, Send, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { eq, and } from "@tigawanna/typed-pocketbase";
-import { UsersResponse, AgentsResponse } from "@/lib/pocketbase/types/pb-types";
-import { useRouter } from "next/navigation";
 
 const messageSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters"),
@@ -114,7 +114,7 @@ export function PropertyContactForm({
       setOpen(false);
     },
     onError: (error) => {
-      console.error("Error sending message:", error);
+      console.log("error happende = =>\n","Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
     },
   });

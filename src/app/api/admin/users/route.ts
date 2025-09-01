@@ -46,7 +46,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error("Error in user management API:", error);
+    console.log("error happende = =>\n","Error in user management API:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
@@ -80,7 +80,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.error("Error in user deletion API:", error);
+    console.log("error happende = =>\n","Error in user deletion API:", error);
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }

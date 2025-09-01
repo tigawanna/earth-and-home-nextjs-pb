@@ -11,7 +11,7 @@ export const toggleBanUserMutationOptions = mutationOptions({
         result: response,
       };
     } catch (error) {
-      console.error("Error banning user:", error);
+      console.log("error happende = =>\n","Error banning user:", error);
       return {
         success: false,
         message: error instanceof Error ? error.message : String(error),
@@ -30,7 +30,7 @@ export const toggleAdminMutationOptions = mutationOptions({
         result: response,
       };
     } catch (error) {
-      console.error("Error toggling admin status:", error);
+      console.log("error happende = =>\n","Error toggling admin status:", error);
       return {
         success: false,
         message: error instanceof Error ? error.message : String(error),

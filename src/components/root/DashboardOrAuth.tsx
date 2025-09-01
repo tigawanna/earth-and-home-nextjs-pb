@@ -3,15 +3,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  signoutMutationOptions,
-  useLocalViewer
+    signoutMutationOptions,
+    useLocalViewer
 } from "@/data-access-layer/user/auth";
 import { useMutation } from "@tanstack/react-query";
 import { LayoutDashboard, LogOut, Settings } from "lucide-react";
@@ -33,7 +33,7 @@ export default function DashboardOrAuth({ className }: DashboardOrAuthProps) {
       await mutate();
       router.push("/");
     } catch (error) {
-      console.error("Sign out failed:", error);
+      console.log("error happende = =>\n","Sign out failed:", error);
     }
   };
 

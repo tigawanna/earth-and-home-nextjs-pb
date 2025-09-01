@@ -16,7 +16,7 @@ const serverEnvSchema = z.object({
 
 const { success, data, error } = serverEnvSchema.safeParse(process.env);
 if (!success) {
-  console.error("Invalid server environment variables:", z.treeifyError(error));
+  console.log("error happende = =>\n","Invalid server environment variables:", z.treeifyError(error));
   throw new Error("Invalid server environment variables");
 }
 

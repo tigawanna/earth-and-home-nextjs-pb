@@ -16,7 +16,7 @@ if (!clientResult.success && typeof window !== 'undefined') {
   console.log("Available env vars:", Object.keys(process.env).filter(key => key.startsWith('NEXT_PUBLIC_')));
   console.log("NEXT_PUBLIC_R2_PUBLIC_URL:", process.env.NEXT_PUBLIC_R2_PUBLIC_URL);
   if ('error' in clientResult) {
-    console.error("Invalid client environment variables:", clientResult.error.issues);
+    console.log("error happende = =>\n","Invalid client environment variables:", clientResult.error.issues);
   }
   throw new Error("Invalid client environment variables");
 }

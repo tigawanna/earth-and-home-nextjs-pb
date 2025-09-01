@@ -28,7 +28,7 @@ export async function getSinglePropertyMessage({ msgId }: GetSinglePropertyMessa
       result: response,
     };
   } catch (error) {
-    console.error("Error fetching property message parent:", error);
+    console.log("error happende = =>\n","Error fetching property message parent:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch property message parent",

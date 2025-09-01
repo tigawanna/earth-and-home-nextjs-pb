@@ -2,10 +2,10 @@ import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import {
-  baseGetFavoriteProperties,
-  baseGetPaginatedProperties,
-  baseGetPropertyById,
-  baseGetSearchableFavorites,
+    baseGetFavoriteProperties,
+    baseGetPaginatedProperties,
+    baseGetPropertyById,
+    baseGetSearchableFavorites,
 } from "./base-property-queries";
 import { PropertyFilters, PropertySortBy, SortOrder } from "./property-types";
 
@@ -48,7 +48,7 @@ export async function getProperties({
     
     return result;
   } catch (error) {
-    console.error("Error fetching properties:", error);
+    console.log("error happende = =>\n","Error fetching properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch properties",
@@ -84,7 +84,7 @@ export async function getServerSidePropertyById(identifier: string, userId?: str
       message,
     };
   } catch (error) {
-    console.error("Error fetching property:", error);
+    console.log("error happende = =>\n","Error fetching property:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch property",
@@ -106,7 +106,7 @@ export async function getServerSideFavoriteProperties({
     const client = await createServerClient();
     return await baseGetFavoriteProperties({ client, userId, page, limit });
   } catch (error) {
-    console.error("Error fetching favorite properties:", error);
+    console.log("error happende = =>\n","Error fetching favorite properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch favorites",
@@ -140,7 +140,7 @@ export async function getServerSideSearchableFavorites({
     const client = await createServerClient();
     return await baseGetSearchableFavorites({ client, q, page, limit });
   } catch (error) {
-    console.error("Error fetching searchable favorites:", error);
+    console.log("error happende = =>\n","Error fetching searchable favorites:", error);
     return {
       success: false,
       result: null,
@@ -185,7 +185,7 @@ export async function getServerSideSearchableFavorites({
 //       stats,
 //     };
 //   } catch (error) {
-//     console.error("Error fetching property stats:", error);
+//     console.log("error happende = =>\n","Error fetching property stats:", error);
 //     return {
 //       success: false,
 //       message: error instanceof Error ? error.message : "Failed to fetch stats",

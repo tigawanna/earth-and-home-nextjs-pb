@@ -1,13 +1,13 @@
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import {
-  PropertiesResponse,
-  PropertyMessagesResponse,
-  UsersResponse,
+    PropertiesResponse,
+    PropertyMessagesResponse,
+    UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
 import { createCollection } from "@tanstack/react-db";
-import { and, eq as pBeq,lte } from "@tigawanna/typed-pocketbase";
+import { and, eq as pBeq } from "@tigawanna/typed-pocketbase";
 
 // ====================================================
 // POCKETBASE COLLECTIONS
@@ -105,7 +105,7 @@ export async function getPropertyMessageSummaries(){
       success:true,
     }
   } catch (error) {
-    console.error("Error fetching property message summaries:", error);
+    console.log("error happende = =>\n","Error fetching property message summaries:", error);
     return {
       result: null,
       success: false,
@@ -128,7 +128,7 @@ export async function getPropertyMessages(
 
     return result as PropertyMessageWithExpansion[];
   } catch (error) {
-    console.error("Error fetching property messages:", error);
+    console.log("error happende = =>\n","Error fetching property messages:", error);
     return [];
   }
 }
@@ -147,7 +147,7 @@ export async function createPropertyMessage(data: {
     });
     return message;
   } catch (error) {
-    console.error("Error creating property message:", error);
+    console.log("error happende = =>\n","Error creating property message:", error);
     return null;
   }
 }

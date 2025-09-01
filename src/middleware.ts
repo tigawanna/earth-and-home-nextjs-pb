@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { createServerClient } from "./lib/pocketbase/clients/server-client";
 import { UsersResponse } from "./lib/pocketbase/types/pb-types";
-import { storeNextjsPocketbaseCookie,deleteNextjsPocketbaseCookie } from "./lib/pocketbase/utils/next-cookies";
+import { deleteNextjsPocketbaseCookie } from "./lib/pocketbase/utils/next-cookies";
 
 const adminOnlyPatterns: RegExp[] = [
   /^\/dashboard\/properties\/add$/, // add page
@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
     client.authStore.isValid && (await client.from("users").authRefresh());
   } catch (_) {
     // clear the auth store on failed refresh
-    console.error("Failed to refresh user session, clearing auth store\n\n");
+    console.log("error happende = =>\n","Failed to refresh user session, clearing auth store\n\n");
     client.authStore.clear();
   }
 

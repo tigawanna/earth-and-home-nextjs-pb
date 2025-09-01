@@ -2,24 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
 import {
-  FavoritesResponse,
-  PropertiesResponse,
-  UsersResponse,
+    FavoritesResponse,
+    PropertiesResponse,
+    UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
@@ -71,7 +71,7 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
       await toggleFavorite(propertyId, userId);
       toast.success("Toggled favorite");
     } catch (e) {
-      console.error(e);
+      console.log("error happende = =>\n",e);
       toast.error("Failed to toggle favorite");
     }
   }

@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Copy, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 interface CopyButtonProps {
   text: string;
@@ -44,7 +44,7 @@ export function CopyButton({
       // Reset the copied state after 2 seconds
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error("Failed to copy to clipboard:", error);
+      console.log("error happende = =>\n","Failed to copy to clipboard:", error);
       
       if (showToast) {
         toast.error(`Failed to copy ${label.toLowerCase()}`);

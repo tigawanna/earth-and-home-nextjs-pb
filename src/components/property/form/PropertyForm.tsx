@@ -4,10 +4,19 @@ import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import {
+  revalidatePropertiesList,
+  revalidatePropertyById,
+} from "@/data-access-layer/actions/revalidate-actions";
+import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
 } from "@/data-access-layer/properties/property-mutations";
-import { AgentsResponse, PropertiesCreate, PropertiesUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  AgentsResponse,
+  PropertiesCreate,
+  PropertiesUpdate,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { isLandProperty } from "@/utils/forms";
@@ -39,7 +48,7 @@ interface PropertyFormProps {
   isEdit?: boolean;
   propertyId?: string; // Add propertyId for editing
   user: UsersResponse;
-  agent:AgentsResponse;
+  agent: AgentsResponse;
 }
 
 export default function PropertyForm({
@@ -69,6 +78,7 @@ export default function PropertyForm({
     ...createPropertyMutationOptions,
     onSuccess: (data) => {
       if (data.success) {
+        revalidatePropertiesList();
         toast.success(data.message);
         // Redirect to the property page or dashboard
         form.reset();
@@ -82,7 +92,7 @@ export default function PropertyForm({
       }
     },
     onError: (error) => {
-      console.error("Property mutation error:", error);
+      console.log("error happende = =>\n", "Property mutation error:", error);
       toast.error("Failed to save property. Please try again.");
     },
   });
@@ -94,7 +104,9 @@ export default function PropertyForm({
         toast.success(data.message);
         // Redirect to the property page or dashboard
         form.reset();
+        revalidatePropertiesList();
         if (data.record?.id) {
+          revalidatePropertyById(data.record.id);
           router.push(`/properties/${data.record.id}`);
         } else {
           router.push("/dashboard/properties");
@@ -104,7 +116,7 @@ export default function PropertyForm({
       }
     },
     onError: (error) => {
-      console.error("Property mutation error:", error);
+      console.log("error happende = =>\n", "Property mutation error:", error);
       toast.error("Failed to save property. Please try again.");
     },
   });
@@ -118,7 +130,7 @@ export default function PropertyForm({
         await createPropertyMutation.mutateAsync(values as PropertiesCreate);
       }
     } catch (error) {
-      console.error("Form submission error:", error);
+      console.log("error happende = =>\n", "Form submission error:", error);
       toast.error("Failed to save property. Please try again.");
     }
   };
@@ -136,7 +148,7 @@ export default function PropertyForm({
           await createPropertyMutation.mutateAsync(data as PropertiesCreate);
         }
       } catch (error) {
-        console.error("Save draft error:", error);
+        console.log("error happende = =>\n", "Save draft error:", error);
         toast.error("Failed to save draft. Please try again.");
       }
     });

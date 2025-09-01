@@ -50,7 +50,7 @@ export async function getServerSideAgents({
       result,
     };
   } catch (error) {
-    console.error("Error fetching agents:", error);
+    console.log("error happende = =>\n","Error fetching agents:", error);
     return {
       success: false,
       result: null,
@@ -81,7 +81,7 @@ export async function getSingleAgent(agentId: string) {
       result: agent,
     };
   } catch (error) {
-    console.error("Error fetching agent:", error);
+    console.log("error happende = =>\n","Error fetching agent:", error);
     return {
       success: false,
       result: null,

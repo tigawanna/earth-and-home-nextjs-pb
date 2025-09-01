@@ -50,7 +50,7 @@ export async function getServerSideUsers({
     // Use the base function for standard pagination
     return await baseGetPaginatedUsers({ client, page, limit });
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.log("error happende = =>\n","Error fetching users:", error);
     return {
       success: false,
       result: null,
@@ -91,7 +91,7 @@ export async function updateUserStatus({
       message: "User status updated successfully",
     };
   } catch (error) {
-    console.error("Error updating user status:", error);
+    console.log("error happende = =>\n","Error updating user status:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to update user status",
@@ -122,7 +122,7 @@ export async function deleteUser(userId: string) {
       message: "User deleted successfully",
     };
   } catch (error) {
-    console.error("Error deleting user:", error);
+    console.log("error happende = =>\n","Error deleting user:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to delete user",

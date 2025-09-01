@@ -112,7 +112,7 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
       await mutate();
       router.push("/");
     } catch (error) {
-      console.error("Sign out failed:", error);
+      console.log("error happende = =>\n","Sign out failed:", error);
     }
   };
 

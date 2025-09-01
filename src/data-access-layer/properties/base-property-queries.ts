@@ -133,6 +133,10 @@ export async function baseGetPaginatedProperties({
           agent_id: true,
         },
       },
+      next: {
+        revalidate: 60,
+        tags: ["properties-list"],
+      },
     });
 
     return {
@@ -148,7 +152,7 @@ export async function baseGetPaginatedProperties({
       },
     };
   } catch (error) {
-    console.error("Error fetching properties:", error);
+    console.log("Error fetching properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch properties",
@@ -204,13 +208,16 @@ export async function baseGetPropertyById({
         // title: true,
         expand: {
           favorites_via_property_id: true,
-          agent_id:{
+          agent_id: {
             expand: {
               user_id: true,
             },
-          }
-
+          },
         },
+      },
+      next: {
+        revalidate: 60 * 60 * 24 * 3, // 3 days
+        tags: [propertyId],
       },
     });
 
@@ -222,13 +229,12 @@ export async function baseGetPropertyById({
       };
     }
 
-
     return {
       success: true,
       result: property,
     };
   } catch (error) {
-    console.error("Error fetching property:", error);
+    console.log("error happende = =>\n","Error fetching property:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch property",
@@ -301,7 +307,7 @@ export async function baseGetFavoriteProperties({
       },
     };
   } catch (error) {
-    console.error("Error fetching favorite properties:", error);
+    console.log("error happende = =>\n","Error fetching favorite properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch favorites",
@@ -340,7 +346,7 @@ export async function baseGetPaginatedUsers({
       result: usersResult,
     };
   } catch (error) {
-    console.error("Error fetching paginated users:", error);
+    console.log("error happende = =>\n","Error fetching paginated users:", error);
     return {
       success: false,
       result: null,
@@ -389,7 +395,7 @@ export async function baseGetSearchableFavorites({
       result: favoritesResult,
     };
   } catch (error) {
-    console.error("Error fetching searchable favorites:", error);
+    console.log("error happende = =>\n","Error fetching searchable favorites:", error);
     return {
       success: false,
       result: null,
@@ -417,7 +423,7 @@ export async function baseGetPropertyStats({
   limit?: number;
 }) {
   try {
-    client.autoCancellation(false)
+    client.autoCancellation(false);
     const propertiesCollection = client.from("properties");
 
     const totalPropertiesResult = await propertiesCollection.getList(1, 50, {
@@ -454,7 +460,7 @@ export async function baseGetPropertyStats({
       result,
     };
   } catch (error) {
-    console.error("Error fetching property stats:", error);
+    console.log("error happende = =>\n","Error fetching property stats:", error);
     return {
       success: false,
       result: null,

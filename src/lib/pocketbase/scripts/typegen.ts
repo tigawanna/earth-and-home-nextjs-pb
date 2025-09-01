@@ -18,12 +18,12 @@ export async function runCommand(command: string): Promise<string> {
     });
 
     if (stderr) {
-      console.error("Command errors:", stderr);
+      console.log("error happende = =>\n","Command errors:", stderr);
     }
 
     return stdout.toString();
   } catch (error) {
-    console.error("Error running command:", error);
+    console.log("error happende = =>\n","Error running command:", error);
     throw error; // Re-throw for further handling if needed
   }
 }
@@ -68,5 +68,5 @@ callCliDirectly()
     console.log("=== output ===", output);
   })
   .catch((error) => {
-    console.error(error);
+    console.log("error happende = =>\n",error);
   });
