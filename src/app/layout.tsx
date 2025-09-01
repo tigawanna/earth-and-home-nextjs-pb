@@ -1,12 +1,13 @@
-import "./globals.css";
+import { Footer } from "@/components/root/Footer";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { siteinfo } from "@/config/siteinfo";
 import "@/lib/react-responsive-pagination/pagination.css";
+import { TanstackQueryProvider } from "@/lib/tanstack/query/tsq-provider";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/theme/theme-provider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Toaster } from "@/components/ui/sonner";
-import { TanstackQueryProvider } from "@/lib/tanstack/query/tsq-provider";
-import { Footer } from "@/components/root/Footer";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,38 +19,44 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || siteinfo.url;
 
 export const metadata: Metadata = {
   title: {
-    default: "Earth & Home",
-    template: "%s | Earth & Home",
+    default: siteinfo.title,
+    template: `%s | ${siteinfo.title}`,
   },
-  description:
-    "Earth & Home is a modern real estate platform for discovering, buying, and selling homes and premium properties.",
-  applicationName: "Earth & Home",
+  description: siteinfo.description,
+  applicationName: siteinfo.title,
   metadataBase: new URL(siteUrl),
   openGraph: {
-    title: "Earth & Home",
-    description:
-      "Earth & Home is a modern real estate platform for discovering, buying, and selling homes and premium properties.",
+    title: siteinfo.title,
+    description: siteinfo.description,
     type: "website",
     url: siteUrl,
+    siteName: siteinfo.title,
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Earth & Home",
-    description:
-      "Earth & Home is a modern real estate platform for discovering, buying, and selling homes and premium properties.",
+    title: siteinfo.title,
+    description: siteinfo.description,
+    creator: siteinfo.social.twitter,
   },
   robots: {
     index: true,
     follow: true,
   },
-  keywords: ["real estate", "properties", "listings", "homes", "Earth & Home"],
-  authors: [{ name: "Earth & Home Real Estate" }],
+  keywords: ["real estate", "properties", "listings", "homes", siteinfo.title, "property search", "rental properties"],
+  authors: [{ name: siteinfo.author }, { name: `${siteinfo.title} Real Estate` }],
+  creator: siteinfo.author,
+  publisher: `${siteinfo.title} Real Estate`,
   alternates: {
     canonical: "/",
+  },
+  other: {
+    "contact:email": siteinfo.contact.email,
+    "contact:phone": siteinfo.contact.phone,
   },
 };
 
@@ -67,7 +74,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.log(" pb url == ", process.env.NEXT_PUBLIC_PB_URL);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
