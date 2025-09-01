@@ -1,7 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 import { AlertCircle, Home } from "lucide-react";
 import Link from "next/link";
@@ -139,7 +139,7 @@ export function SinglePropertyNotFound({ tsr }: SinglePropertyNotFoundProps) {
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">Property Not Found</h1>
             <p className="text-muted-foreground text-lg">
-              The property you're looking for doesn't exist or may have been removed.
+              The property you&apos;re looking for doesn&apos;t exist or may have been removed.
             </p>
           </div>
 

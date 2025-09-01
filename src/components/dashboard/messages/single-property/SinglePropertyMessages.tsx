@@ -53,14 +53,14 @@ export default function SinglePropertyMessages({
       // propertyMessagesCollection.utils.writeInsert(messageParent);
       propertyMessagesCollection.utils.writeUpsert(messageParent);
     }
-  }, [messageParent.id]);
+  }, [messageParent, propertyMessagesCollection.utils]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
     if (liveMessages && liveMessages.length > 0) {
       scrollToBottom();
     }
-  }, [liveMessages?.length]);
+  }, [liveMessages]);
 
   useEffect(() => {
     pbMessagesCollection.subscribe(
@@ -86,7 +86,7 @@ export default function SinglePropertyMessages({
       // @ts-expect-error TODO fix this in typed pocketbase
       pbMessagesCollection.unsubscribe();
     };
-  }, []);
+  }, [parentId, propertyMessagesCollection.utils]);
   const mostPreviousMessage = liveMessages?.[liveMessages.length - 1];
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

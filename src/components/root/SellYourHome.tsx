@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Check, Heart, Home, MapPin, Search } from "lucide-react";
+import { Check, Heart, Home, MapPin, Search } from "lucide-react";
 import Link from "next/link";
 
 export function SellYourHome() {
@@ -13,7 +13,7 @@ export function SellYourHome() {
               Your Property Journey Starts Here
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              From finding your dream home to understanding the local market, we're here to guide you every step of the way.
+              From finding your dream home to understanding the local market, we&apos;re here to guide you every step of the way.
             </p>
 
             <ul className="space-y-4">

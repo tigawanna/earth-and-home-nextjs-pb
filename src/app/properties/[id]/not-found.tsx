@@ -20,7 +20,7 @@ export default function PropertyNotFound() {
         <div className="space-y-2">
           <h1 className="text-4xl font-bold text-foreground">Property Not Found</h1>
           <p className="text-xl text-muted-foreground">
-            Sorry, the property you're looking for doesn't exist or has been removed.
+            Sorry, the property you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
         </div>
         

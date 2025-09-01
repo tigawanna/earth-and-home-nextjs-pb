@@ -39,7 +39,7 @@ export function DashboardWelcome({ user, className }: DashboardWelcomeProps) {
               </div>
             </div>
             <p className="text-sm sm:text-base text-muted-foreground">
-              Here's what's happening with your properties and account today.
+              Here&apos;s what&apos;s happening with your properties and account today.
             </p>
           </div>
           <div className="text-left sm:text-right text-sm text-muted-foreground flex-shrink-0">

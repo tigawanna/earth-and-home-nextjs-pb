@@ -2,19 +2,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -22,14 +22,14 @@ import { updatePropertyMutationOptions } from "@/data-access-layer/properties/pr
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-    Edit,
-    Eye,
-    EyeOff,
-    MapPin,
-    MoreVertical,
-    Settings,
-    Sparkles,
-    Star
+  Edit,
+  Eye,
+  EyeOff,
+  MapPin,
+  MoreVertical,
+  Settings,
+  Sparkles,
+  Star
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -276,7 +276,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                     />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-48">
-                    <p>Mark as new property listing with "New" badge</p>
+                    <p>Mark as new property listing with &quot;New&quot; badge</p>
                   </TooltipContent>
                 </Tooltip>
               </div>

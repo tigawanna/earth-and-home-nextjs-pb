@@ -25,7 +25,7 @@ import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { AgentsResponse, AgentsUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Loader, Loader2, Pencil } from "lucide-react";
+import { Loader, Pencil } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -104,7 +104,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
         <DialogHeader>
           <DialogTitle>Edit Agent Profile</DialogTitle>
           <DialogDescription>
-            Update agency information and details. Click save when you're done.
+            Update agency information and details. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
 

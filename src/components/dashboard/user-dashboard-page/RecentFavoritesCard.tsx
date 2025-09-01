@@ -1,6 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { Building2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface RecentFavorite {
@@ -57,21 +60,29 @@ export function RecentFavoritesCard({ favorites }: RecentFavoritesCardProps) {
         <CardTitle>Recent Favorites</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {favorites.map((favorite) => (
-          <div key={favorite.id} className="flex items-center space-x-4 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-            <div className="flex-shrink-0">
-              {favorite.property.image_url ? (
-                <img
-                  src={favorite.property.image_url}
-                  alt={favorite.property.title}
-                  className="w-16 h-16 object-cover rounded-md"
-                />
-              ) : (
-                <div className="w-16 h-16 bg-muted rounded-md flex items-center justify-center">
-                  <span className="text-muted-foreground text-xs">No Image</span>
-                </div>
-              )}
-            </div>
+        {favorites.map((favorite) => {
+          const primaryImage = favorite.property.image_url || (Array.isArray(favorite.property.images) && favorite.property.images.length > 0 ? favorite.property.images[0] : null);
+          const imageUrl = primaryImage && typeof primaryImage === 'string' 
+            ? getImageThumbnailUrl(favorite.property, primaryImage, "64x64")
+            : null;
+          
+          return (
+            <div key={favorite.id} className="flex items-center space-x-4 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
+              <div className="relative w-16 h-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={favorite.property.title}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                )}
+              </div>
             <div className="flex-1 min-w-0">
               <Link href={`/properties/${favorite.property.id}`} className="block">
                 <h3 className="font-medium text-sm truncate hover:text-primary">
@@ -99,7 +110,8 @@ export function RecentFavoritesCard({ favorites }: RecentFavoritesCardProps) {
               </p>
             </div>
           </div>
-        ))}
+        );
+        })}
         <div className="pt-2">
           <Link 
             href="/dashboard/favorites" 

@@ -70,7 +70,7 @@ export function About() {
                 </div>
               </div>
               <p className="text-muted-foreground italic mb-4">
-                "{siteinfo.testimonials[0].text}"
+                &quot;{siteinfo.testimonials[0].text}&quot;
               </p>
               <div className="font-semibold text-foreground">- {siteinfo.testimonials[0].author}</div>
             </div>
