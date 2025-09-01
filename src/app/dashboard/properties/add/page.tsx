@@ -4,11 +4,13 @@ import { redirect } from "next/navigation";
 
 export default async function NewPropertyPage() {
   const { user, agent } = await getServerSideUserwithAgent();
+  console.log("User:", user);
+  console.log("Agent:", agent);
   if (!user) {
     throw redirect("/auth/signin");
   }
   if (!agent) {
-    throw redirect("/dashboard/agent");
+    throw redirect("/dashboard/agents");
   }
  return (
     <div className="container max-w-4xl mx-auto">

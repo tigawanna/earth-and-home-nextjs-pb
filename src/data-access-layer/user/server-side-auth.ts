@@ -4,6 +4,7 @@ import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { cookies } from "next/headers";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import { eq } from "@tigawanna/typed-pocketbase";
 
 export async function getServerSideUser(nextCookies?: ReadonlyRequestCookies) {
   const cookieStore = nextCookies || (await cookies());
@@ -21,7 +22,7 @@ export async function getServerSideUserwithAgent(nextCookies?: ReadonlyRequestCo
   const agent = user?.id
     ? await client
         .from("agents")
-        .getOne(user?.id)
+        .getFirstListItem(eq("user_id",user?.id))
         .then((res) => res)
         .catch(() => null)
     : null;
