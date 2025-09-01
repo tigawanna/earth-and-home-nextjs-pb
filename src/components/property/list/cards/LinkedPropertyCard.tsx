@@ -2,6 +2,7 @@ import { PropertyWithFavorites } from "@/data-access-layer/properties/property-t
 import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
 import { BasePropertyCard } from "./BasePropertyCard";
+import { PropertyAdminActions } from "./PropertyAdminActions";
 
 
 
@@ -58,6 +59,7 @@ export function LinkedPropertyCard({
       
       {/* Interactive elements */}
       <div className="flex items-center gap-2">
+        <PropertyAdminActions property={property} />
         <FavoriteProperty
           userId={currentUserId}
           property={property}
