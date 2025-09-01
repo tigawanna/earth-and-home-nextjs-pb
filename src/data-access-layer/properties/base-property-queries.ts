@@ -204,7 +204,12 @@ export async function baseGetPropertyById({
         // title: true,
         expand: {
           favorites_via_property_id: true,
-          agent_id: true,
+          agent_id:{
+            expand: {
+              user_id: true,
+            },
+          }
+
         },
       },
     });

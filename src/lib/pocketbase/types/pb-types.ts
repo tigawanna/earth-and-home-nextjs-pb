@@ -359,6 +359,7 @@ export interface UsersResponse extends AuthCollectionResponse {
 	is_admin: boolean;
 	is_banned: boolean;
 	phone: string;
+	is_agent: boolean;
 	created: string;
 	updated: string;
 }
@@ -373,6 +374,7 @@ export interface UsersCreate extends AuthCollectionCreate {
 	is_admin?: boolean;
 	is_banned?: boolean;
 	phone?: string;
+	is_agent?: boolean;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -387,6 +389,7 @@ export interface UsersUpdate extends AuthCollectionUpdate {
 	is_admin?: boolean;
 	is_banned?: boolean;
 	phone?: string;
+	is_agent?: boolean;
 	created?: string | Date;
 	updated?: string | Date;
 }
@@ -704,35 +707,37 @@ export interface PropertyMessagesCollection {
 export interface AgentsResponse extends BaseCollectionResponse {
 	collectionName: 'agents';
 	id: string;
-	name: string;
-	phone: string;
-	email: string;
 	user_id: string;
-	avatar: string;
-	created: string;
-	updated: string;
+	agency_name: string;
+	license_number: string;
+	specialization: '' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
+	service_areas: string;
+	years_experience: number;
+	is_verified: boolean;
 }
 
 export interface AgentsCreate extends BaseCollectionCreate {
 	id?: string;
-	name?: string;
-	phone?: string;
-	email?: string;
-	user_id?: string;
-	avatar?: File | null;
-	created?: string | Date;
-	updated?: string | Date;
+	user_id: string;
+	agency_name: string;
+	license_number?: string;
+	specialization?: '' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
+	service_areas?: string;
+	years_experience?: number;
+	is_verified?: boolean;
 }
 
 export interface AgentsUpdate extends BaseCollectionUpdate {
 	id?: string;
-	name?: string;
-	phone?: string;
-	email?: string;
 	user_id?: string;
-	avatar?: File | null;
-	created?: string | Date;
-	updated?: string | Date;
+	agency_name?: string;
+	license_number?: string;
+	specialization?: '' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
+	service_areas?: string;
+	years_experience?: number;
+	'years_experience+'?: number;
+	'years_experience-'?: number;
+	is_verified?: boolean;
 }
 
 export interface AgentsCollection {

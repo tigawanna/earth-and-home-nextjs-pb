@@ -49,7 +49,9 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
   const rawImages = Array.isArray(property.images) ? property.images : [];
   const amenities = Array.isArray(property.amenities) ? property.amenities : [];
   const features = Array.isArray(property.features) ? property.features : [];
-  const agent = property.expand?.agent_id;
+
+  const agent = property.expand?.agent_id
+  const agent_profile = property.expand?.agent_id?.expand?.user_id;
 
   return (
     <div className="min-h-screen bg-background">
@@ -262,15 +264,15 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                 <CardContent>
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage src={agent.avatar || undefined} />
-                      <AvatarFallback>{agent.name?.charAt(0).toUpperCase() || "A"}</AvatarFallback>
+                      <AvatarImage src={agent_profile?.avatar || undefined} />
+                      <AvatarFallback>{agent_profile?.name?.charAt(0).toUpperCase() || "A"}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <Link href={`/dashboard/agents/${agent.id}`} className="hover:underline flex items-center gap-1 group">
-                        <p className="font-medium">{agent.name}</p>
+                      <Link href={`/dashboard/agents/${agent_profile?.id}`} className="hover:underline flex items-center gap-1 group">
+                        <p className="font-medium">{agent_profile?.name}</p>
                         <ArrowLeft className="h-3 w-3 rotate-180 text-muted-foreground group-hover:text-foreground transition-colors" />
                       </Link>
-                      <p className="text-sm text-muted-foreground">{agent.email}</p>
+                      <p className="text-sm text-muted-foreground">{agent_profile?.email}</p>
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-2 mt-4">

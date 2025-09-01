@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { eq, and } from "@tigawanna/typed-pocketbase";
-import { UsersResponse,AgentsResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse, AgentsResponse } from "@/lib/pocketbase/types/pb-types";
 import { useRouter } from "next/navigation";
 
 const messageSchema = z.object({
@@ -31,8 +31,14 @@ interface PropertyContactFormProps {
   propertyId: string;
   propertyTitle: string;
   children?: React.ReactNode;
-  user: UsersResponse
-  agent: AgentsResponse
+  user: UsersResponse;
+  agent: AgentsResponse & {
+    expand?:
+      | {
+          user_id?: UsersResponse | undefined;
+        }
+      | undefined;
+  };
 }
 
 interface SendMessagePayload {
@@ -56,16 +62,17 @@ export function PropertyContactForm({
   propertyTitle,
   children,
   user,
-  agent
+  agent,
 }: PropertyContactFormProps) {
   const userId = user.id;
+  const agent_profile = agent?.expand?.user_id;
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  
-  const { 
-    data: message, 
+
+  const {
+    data: message,
     isLoading: isCheckingExistingMessage,
-    error: messageCheckError 
+    error: messageCheckError,
   } = useQuery({
     queryKey: ["property_messages", propertyId, userId],
     queryFn: async () => {
@@ -160,47 +167,35 @@ export function PropertyContactForm({
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-medium text-sm mb-1">Property Agent</h3>
-              <p className="text-sm font-semibold mb-2">
-                {agent.name || agent.name || "Agent"}
-              </p>
-              
+              <p className="text-sm font-semibold mb-2">{agent_profile?.name || agent_profile?.name || "Agent"}</p>
+
               <div className="space-y-1">
                 {/* Phone Number */}
-                {agent.phone && (
+                {agent_profile?.phone && (
                   <div className="flex items-center gap-2 text-xs">
                     <Phone className="w-3 h-3 text-muted-foreground" />
-                    <span className="flex-1 font-mono">{agent.phone}</span>
-                    <CopyButton
-                      text={agent.phone}
-                      label="Phone number"
-                      className="h-6 w-6 p-0"
-                    />
+                    <span className="flex-1 font-mono">{agent_profile?.phone}</span>
+                    <CopyButton text={agent_profile?.phone} label="Phone number" className="h-6 w-6 p-0" />
                   </div>
                 )}
-                
+
                 {/* Email */}
-                {agent.email && (
+                {agent_profile?.email && (
                   <div className="flex items-center gap-2 text-xs">
                     <Mail className="w-3 h-3 text-muted-foreground" />
-                    <span className="flex-1 font-mono truncate">{agent.email}</span>
-                    <CopyButton
-                      text={agent.email}
-                      label="Email"
-                      className="h-6 w-6 p-0"
-                    />
+                    <span className="flex-1 font-mono truncate">{agent_profile?.email}</span>
+                    <CopyButton text={agent_profile?.email} label="Email" className="h-6 w-6 p-0" />
                   </div>
                 )}
               </div>
-              
-              {(!agent.phone && !agent.email) && (
-                <p className="text-xs text-muted-foreground">
-                  Contact information not available
-                </p>
+
+              {!agent_profile?.phone && !agent_profile?.email && (
+                <p className="text-xs text-muted-foreground">Contact information not available</p>
               )}
             </div>
           </div>
         </div>
-        
+
         {/* Loading state while checking for existing messages */}
         {isCheckingExistingMessage && (
           <div className="flex items-center justify-center py-8">
@@ -234,7 +229,7 @@ export function PropertyContactForm({
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-2 pt-4">
                   <Button
                     type="button"

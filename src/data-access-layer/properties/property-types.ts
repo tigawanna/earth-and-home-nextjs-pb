@@ -1,9 +1,20 @@
-import { AgentsResponse, FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  AgentsResponse,
+  FavoritesResponse,
+  PropertiesResponse,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 
 export type PropertyWithFavorites = PropertiesResponse & {
   expand?:
     | {
-        agent_id?: AgentsResponse | undefined;
+        agent_id?: AgentsResponse & {
+          expand?:
+            | {
+                user_id?: UsersResponse | undefined;
+              }
+            | undefined;
+        };
         favorites_via_property_id?: FavoritesResponse[] | undefined;
       }
     | undefined;
@@ -39,9 +50,6 @@ export const allowedSortFields = [
   "is_featured",
   "city",
   "state",
-] as const
-export type PropertySortBy = typeof allowedSortFields[number];
+] as const;
+export type PropertySortBy = (typeof allowedSortFields)[number];
 export type SortOrder = "asc" | "desc";
-
-
-

@@ -20,13 +20,14 @@ interface SingleAgentDetailsProps {
 }
 
 export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
-  const associatedUser = agent.expand?.user_id;
-  const avatarSrc = agent.avatar
-    ? getImageThumbnailUrl(agent, agent.avatar, "96x96")
+  const agent_profile = agent.expand?.user_id;
+  const avatarSrc = agent_profile?.avatar
+    ? getImageThumbnailUrl(agent_profile, agent_profile.avatar, "96x96")
     : undefined;
-  const contactMethods = [agent.email, agent.phone].filter(Boolean).length;
+  const contactMethods = [agent_profile?.email, agent_profile?.phone].filter(Boolean).length;
   const profilePercent = Math.round(
-    ([agent.name, agent.email, agent.phone].filter(Boolean).length / 3) * 100
+    ([agent_profile?.name, agent_profile?.email, agent_profile?.phone].filter(Boolean).length / 3) *
+      100
   );
 
   return (
@@ -39,10 +40,10 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               <div className="relative">
                 <Avatar className="size-20 ring-4 ring-background shadow-xl">
                   {avatarSrc ? (
-                    <AvatarImage src={avatarSrc} alt={agent.name ?? "Agent avatar"} />
+                    <AvatarImage src={avatarSrc} alt={agent_profile?.name ?? "Agent avatar"} />
                   ) : (
                     <AvatarFallback className="text-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-                      {agent.name?.[0]?.toUpperCase() ?? "A"}
+                      {agent_profile?.name?.[0]?.toUpperCase() ?? "A"}
                     </AvatarFallback>
                   )}
                 </Avatar>
@@ -50,10 +51,12 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               </div>
               <div className="min-w-0 flex-1">
                 <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                  {agent.name || "Unnamed Agent"}
+                  {agent_profile?.name || "Unnamed Agent"}
                 </CardTitle>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
-                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
+                  <Badge
+                    variant="secondary"
+                    className="bg-primary/10 text-primary border-primary/20 font-medium">
                     <User className="w-3 h-3 mr-1" />
                     Agent Profile
                   </Badge>
@@ -62,23 +65,23 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                   </Badge>
                 </div>
                 <CardDescription className="mt-2 text-base">
-                  {associatedUser?.email || associatedUser?.name || "No linked user"}
+                  {agent_profile?.email || agent_profile?.name || "No linked user"}
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <InfoItem icon={User} label="Full Name" value={agent.name} />
+              <InfoItem icon={User} label="Full Name" value={agent_profile?.name} />
               <InfoItem
                 icon={UserCheck}
                 label="Associated User"
-                value={associatedUser?.name || associatedUser?.email || "Unknown"}
+                value={agent_profile?.name || agent_profile?.email || "Unknown"}
               />
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <InfoItem icon={Mail} label="Email Address" value={agent.email} />
-              <InfoItem icon={Phone} label="Phone Number" value={agent.phone} />
+              <InfoItem icon={Mail} label="Email Address" value={agent_profile?.email} />
+              <InfoItem icon={Phone} label="Phone Number" value={agent_profile?.phone} />
             </div>
             <Separator className="bg-gradient-to-r from-transparent via-border to-transparent" />
           </CardContent>
@@ -97,19 +100,24 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
             <CardDescription>Reach this agent instantly</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            {agent.email && (
+            {agent_profile?.email && (
               <div className="flex items-center gap-3">
-                <Button asChild variant="outline" className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
-                  <a href={`mailto:${agent.email}`}>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
+                  <a href={`mailto:${agent_profile?.email}`}>
                     <span className="flex items-center gap-2">
-                      <Mail className="size-4 group-hover:text-primary transition-colors" /> 
+                      <Mail className="size-4 group-hover:text-primary transition-colors" />
                       Email
                     </span>
-                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">Open</span>
+                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                      Open
+                    </span>
                   </a>
                 </Button>
                 <CopyButton
-                  text={agent.email}
+                  text={agent_profile?.email}
                   label="Email"
                   size="sm"
                   variant="ghost"
@@ -117,19 +125,24 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                 />
               </div>
             )}
-            {agent.phone && (
+            {agent_profile?.phone && (
               <div className="flex items-center gap-3">
-                <Button asChild variant="outline" className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
-                  <a href={`tel:${agent.phone}`}>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
+                  <a href={`tel:${agent_profile?.phone}`}>
                     <span className="flex items-center gap-2">
-                      <Phone className="size-4 group-hover:text-primary transition-colors" /> 
+                      <Phone className="size-4 group-hover:text-primary transition-colors" />
                       Phone
                     </span>
-                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">Open</span>
+                    <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                      Open
+                    </span>
                   </a>
                 </Button>
                 <CopyButton
-                  text={agent.phone}
+                  text={agent_profile?.phone}
                   label="Phone"
                   size="sm"
                   variant="ghost"
@@ -156,17 +169,20 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
             </div>
             <div className="flex items-center justify-between p-3 bg-accent/10 rounded-lg border border-accent/20">
               <span className="text-sm font-medium text-accent-foreground">Contact methods</span>
-              <span className="text-sm font-bold text-accent-foreground">{contactMethods} of 2</span>
+              <span className="text-sm font-bold text-accent-foreground">
+                {contactMethods} of 2
+              </span>
             </div>
             <div className="space-y-3 p-3 bg-secondary/50 rounded-lg border border-secondary">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-secondary-foreground">Profile complete</span>
-                <span className="text-sm font-bold text-secondary-foreground">{profilePercent}%</span>
+                <span className="text-sm font-medium text-secondary-foreground">
+                  Profile complete
+                </span>
+                <span className="text-sm font-bold text-secondary-foreground">
+                  {profilePercent}%
+                </span>
               </div>
-              <Progress 
-                value={profilePercent} 
-                className="h-2 bg-secondary"
-              />
+              <Progress value={profilePercent} className="h-2 bg-secondary" />
             </div>
           </CardContent>
         </Card>

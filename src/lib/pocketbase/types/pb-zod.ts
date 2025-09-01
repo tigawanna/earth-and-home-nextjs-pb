@@ -206,6 +206,7 @@ export const UsersResponseZodSchema = authResponseSchema.extend({
     is_admin: z.boolean().optional(),
     is_banned: z.boolean().optional(),
     phone: z.string().optional(),
+    is_agent: z.boolean().optional(),
     created: z.string().optional(),
     updated: z.string().optional()
 });
@@ -220,6 +221,7 @@ export const UsersCreateZodSchema = authCreateSchema.extend({
     is_admin: z.boolean().optional(),
     is_banned: z.boolean().optional(),
     phone: z.string().optional(),
+    is_agent: z.boolean().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -234,6 +236,7 @@ export const UsersUpdateZodSchema = authUpdateSchema.extend({
     is_admin: z.boolean().optional(),
     is_banned: z.boolean().optional(),
     phone: z.string().optional(),
+    is_agent: z.boolean().optional(),
     created: z.union([z.string(), z.date()]).optional(),
     updated: z.union([z.string(), z.date()]).optional()
 });
@@ -491,35 +494,37 @@ export const PropertyMessagesUpdateZodSchema = baseUpdateSchema.extend({
 export const AgentsResponseZodSchema = baseResponseSchema.extend({
     collectionName: z.literal('agents'),
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    name: z.string().optional(),
-    phone: z.string().optional(),
-    email: z.string().optional(),
-    user_id: z.string().optional(),
-    avatar: z.string().optional(),
-    created: z.string().optional(),
-    updated: z.string().optional()
+    user_id: z.string(),
+    agency_name: z.string(),
+    license_number: z.string().optional(),
+    specialization: z.enum(['', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
+    service_areas: z.string().optional(),
+    years_experience: z.number().optional(),
+    is_verified: z.boolean().optional()
 });
 
 export const AgentsCreateZodSchema = baseCreateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/).optional(),
-    name: z.string().optional(),
-    phone: z.string().optional(),
-    email: z.string().optional(),
-    user_id: z.string().optional(),
-    avatar: z.instanceof(File).nullable().optional(),
-    created: z.union([z.string(), z.date()]).optional(),
-    updated: z.union([z.string(), z.date()]).optional()
+    user_id: z.string(),
+    agency_name: z.string(),
+    license_number: z.string().optional(),
+    specialization: z.enum(['', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
+    service_areas: z.string().optional(),
+    years_experience: z.number().optional(),
+    is_verified: z.boolean().optional()
 });
 
 export const AgentsUpdateZodSchema = baseUpdateSchema.extend({
     id: z.string().min(15).max(15).regex(/^[a-z0-9]+$/),
-    name: z.string().optional(),
-    phone: z.string().optional(),
-    email: z.string().optional(),
     user_id: z.string().optional(),
-    avatar: z.instanceof(File).nullable().optional(),
-    created: z.union([z.string(), z.date()]).optional(),
-    updated: z.union([z.string(), z.date()]).optional()
+    agency_name: z.string().optional(),
+    license_number: z.string().optional(),
+    specialization: z.enum(['', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
+    service_areas: z.string().optional(),
+    years_experience: z.number().optional(),
+    'years_experience+': z.number().optional(),
+    'years_experience-': z.number().optional(),
+    is_verified: z.boolean().optional()
 });
 
 
