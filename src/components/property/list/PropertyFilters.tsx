@@ -13,15 +13,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PropertyFilters as PropertyFiltersType } from "@/data-access-layer/properties/property-types";
-import { Filter, Loader, Search, X } from "lucide-react";
+import { Building, Filter, Home, Loader, Plus, Search, X } from "lucide-react";
+import Link from "next/link";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
-import { useState, useTransition } from "react";
+import { ReactNode, useState, useTransition } from "react";
 
 interface PropertyFiltersProps {
   showStatusFilter?: boolean;
+  title?: string;
+  showAddButton?: boolean;
+  addButtonHref?: string;
+  addButtonComponent?: ReactNode;
 }
 
-export function PropertyFilters({ showStatusFilter = true }: PropertyFiltersProps) {
+export function PropertyFilters({ 
+  showStatusFilter = true,
+  title = "Properties",
+  showAddButton = false,
+  addButtonHref = "/dashboard/properties/add",
+  addButtonComponent,
+}: PropertyFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   

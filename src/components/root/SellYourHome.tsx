@@ -1,53 +1,53 @@
 import { Button } from "@/components/ui/button";
-import { Home, Sparkles, Shield, DollarSign, ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Heart, Home, MapPin, Search } from "lucide-react";
 
 export function SellYourHome() {
   return (
-    <section id="sell" className="py-16 bg-gradient-to-b from-background to-muted/30">
+    <section id="services" className="py-16 bg-gradient-to-b from-background to-muted/30">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           {/* Left: Value props */}
           <div>
             <h2 className="text-4xl font-playfair font-bold text-foreground mb-4">
-              Sell Your Home with Confidence
+              Your Property Journey Starts Here
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              Maximize your home’s value with our expert marketing, data-driven pricing, and concierge-level service.
+              From finding your dream home to understanding the local market, we're here to guide you every step of the way.
             </p>
 
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary">
-                  <Sparkles className="h-4 w-4" />
+                  <Search className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-medium text-foreground">Premium Marketing</p>
-                  <p className="text-sm text-muted-foreground">Cinematic photography, video tours, and targeted campaigns.</p>
+                  <p className="font-medium text-foreground">Property Search</p>
+                  <p className="text-sm text-muted-foreground">Comprehensive search tools to find properties that match your criteria.</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/20 text-accent-foreground">
-                  <DollarSign className="h-4 w-4" />
+                  <MapPin className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-medium text-foreground">Smart Pricing</p>
-                  <p className="text-sm text-muted-foreground">We analyze local comps to position your home for top dollar.</p>
+                  <p className="font-medium text-foreground">Local Insights</p>
+                  <p className="text-sm text-muted-foreground">Expert knowledge of neighborhoods, schools, and community amenities.</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
                 <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary">
-                  <Shield className="h-4 w-4" />
+                  <Heart className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="font-medium text-foreground">Trusted Guidance</p>
-                  <p className="text-sm text-muted-foreground">From prep to close, we handle the details with care.</p>
+                  <p className="font-medium text-foreground">Personal Support</p>
+                  <p className="text-sm text-muted-foreground">Dedicated assistance throughout your property search journey.</p>
                 </div>
               </li>
             </ul>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-                <Home className="mr-2 h-5 w-5" /> Start Listing
+                <Home className="mr-2 h-5 w-5" /> Start Searching
               </Button>
               <Button
                 size="lg"
@@ -59,19 +59,19 @@ export function SellYourHome() {
             </div>
           </div>
 
-          {/* Right: Simple checklist card with accessible contrast */}
+          {/* Right: Simple service checklist */}
           <div className="bg-card text-card-foreground rounded-2xl border boredr-base-200 shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
-              <div className="font-semibold">Listing Checklist</div>
-              <span className="rounded-full px-3 py-1 text-xs bg-background border boredr-base-200">2–3 weeks</span>
+              <div className="font-semibold">Our Services</div>
+              <span className="rounded-full px-3 py-1 text-xs bg-background border boredr-base-200">Always Available</span>
             </div>
             <ul className="space-y-3 text-sm">
               {[
-                "In-home consultation and pricing strategy",
-                "Professional media and staging guidance",
-                "Launch to MLS + digital marketing",
-                "Offer review and negotiation",
-                "Smooth closing coordination",
+                "Property search and recommendations",
+                "Neighborhood and market insights", 
+                "Property viewing coordination",
+                "Guidance through the buying process",
+                "Ongoing support and consultation",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <span className="mt-0.5 text-primary">

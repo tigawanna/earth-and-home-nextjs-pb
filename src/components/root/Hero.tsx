@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, Home } from "lucide-react";
-import Image from "next/image";
+import { Search } from "lucide-react";
+import Link from "next/link";
+import { HeroSectionProperty } from "./HeroSectionProperty";
 
 export function Hero() {
   return (
@@ -23,25 +24,27 @@ export function Hero() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 mb-8">
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">1,200+</div>
-                <div className="text-sm text-muted-foreground">Properties Listed</div>
+                <div className="text-3xl font-bold text-primary">24/7</div>
+                <div className="text-sm text-muted-foreground">Support Available</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-accent-foreground">500+</div>
-                <div className="text-sm text-muted-foreground">Happy Families</div>
+                <div className="text-3xl font-bold text-accent-foreground">100%</div>
+                <div className="text-sm text-muted-foreground">Satisfaction Focus</div>
               </div>
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">15+</div>
-                <div className="text-sm text-muted-foreground">Years Experience</div>
+                <div className="text-3xl font-bold text-primary">Local</div>
+                <div className="text-sm text-muted-foreground">Market Expertise</div>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <Search className="mr-2 h-5 w-5" />
-                Browse Properties
-              </Button>
-              <Button
+              <Link href="/properties">
+                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Search className="mr-2 h-5 w-5" />
+                  Browse Properties
+                </Button>
+              </Link>
+              {/* <Button
                 size="lg"
                 variant="outline"
                 aria-label="Sell your home"
@@ -49,13 +52,13 @@ export function Hero() {
               >
                 <Home className="mr-2 h-5 w-5" />
                 Sell Your Home
-              </Button>
+              </Button> */}
             </div>
           </div>
 
           {/* Right content - Featured property card */}
           <div className="animate-scale-in">
-            <div className="bg-card text-card-foreground rounded-2xl shadow-2xl overflow-hidden border boredr-base-200">
+            {/* <div className="bg-card text-card-foreground rounded-2xl shadow-2xl overflow-hidden border boredr-base-200">
               <div className="relative">
                 <Image
                   src="https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=600&h=400&fit=crop"
@@ -91,7 +94,8 @@ export function Hero() {
                   <div>📐 2,500 sq ft</div>
                 </div>
               </div>
-            </div>
+            </div> */}
+            <HeroSectionProperty />
           </div>
         </div>
       </div>

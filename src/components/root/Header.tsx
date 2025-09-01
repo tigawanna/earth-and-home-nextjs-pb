@@ -2,8 +2,8 @@ import { Menu } from "lucide-react";
 import { SiteIcon } from "../icons/SiteIcon";
 import { ModeToggle } from "../theme/theme-toggle";
 
-import Link from "next/link";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { DashboardOrAuthLoader } from "./DashboardOrAuth";
 
 const DashboardOrAuth = dynamic(() => import("./DashboardOrAuth"), {
@@ -50,13 +50,6 @@ export function Header({ isLandingPage }: { isLandingPage?: boolean }) {
                 href="#buy"
                 className="text-muted-foreground hover:text-primary transition-colors font-medium">
                 Buy
-              </a>
-            </li>
-            <li>
-              <a
-                href="#sell"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium">
-                Sell
               </a>
             </li>
             <li>

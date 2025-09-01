@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook, Twitter, Instagram, Linkedin, Phone, Mail, MapPin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
 import Image from "next/image";
 
 export function Footer() {
@@ -52,7 +52,6 @@ export function Footer() {
               <li><a href="#home" className="hover:text-primary transition-colors">Home</a></li>
               <li><a href="#properties" className="hover:text-primary transition-colors">Properties</a></li>
               <li><a href="#buy" className="hover:text-primary transition-colors">Buy</a></li>
-              <li><a href="#sell" className="hover:text-primary transition-colors">Sell</a></li>
               <li><a href="#about" className="hover:text-primary transition-colors">About Us</a></li>
               <li><a href="#contact" className="hover:text-primary transition-colors">Contact</a></li>
             </ul>
@@ -62,12 +61,12 @@ export function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-6 text-foreground">Services</h4>
             <ul className="space-y-3">
-              <li><a href="#" className="hover:text-primary transition-colors">Residential Sales</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Commercial Properties</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Property Management</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Investment Consulting</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Market Analysis</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Home Valuation</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Property Search</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Rental Properties</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Property Viewing</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Market Research</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Property Consultation</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Neighborhood Insights</a></li>
             </ul>
           </div>
 

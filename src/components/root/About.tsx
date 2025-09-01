@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Award, Users, TrendingUp } from "lucide-react";
+import { Award, Shield, TrendingUp, Users } from "lucide-react";
 
 export function About() {
   return (
@@ -12,9 +12,9 @@ export function About() {
               Why Choose Earth & Home?
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              With over 15 years of experience in the real estate industry, Earth & Home has been
-              connecting families with their dream properties. Our commitment to excellence and
-              personalized service sets us apart.
+              With a passion for real estate and commitment to exceptional service, Earth & Home 
+              specializes in helping clients find their perfect property. Our focus is on building 
+              lasting relationships and providing personalized guidance throughout your home buying journey.
             </p>
 
             {/* Features */}
@@ -24,8 +24,8 @@ export function About() {
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Trusted Expertise</h3>
-                  <p className="text-muted-foreground">Licensed professionals with deep market knowledge and proven track record.</p>
+                  <h3 className="font-semibold text-foreground mb-2">Local Knowledge</h3>
+                  <p className="text-muted-foreground">Deep understanding of neighborhood markets and community insights.</p>
                 </div>
               </div>
 
@@ -34,8 +34,8 @@ export function About() {
                   <Award className="h-6 w-6 text-accent-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Award-Winning Service</h3>
-                  <p className="text-muted-foreground">Recognized for outstanding customer service and successful transactions.</p>
+                  <h3 className="font-semibold text-foreground mb-2">Dedicated Service</h3>
+                  <p className="text-muted-foreground">Committed to providing exceptional support throughout your property search.</p>
                 </div>
               </div>
 
@@ -54,8 +54,8 @@ export function About() {
                   <TrendingUp className="h-6 w-6 text-accent-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-2">Market Leadership</h3>
-                  <p className="text-muted-foreground">Consistent top performer in local market with innovative strategies.</p>
+                  <h3 className="font-semibold text-foreground mb-2">Client-First Approach</h3>
+                  <p className="text-muted-foreground">Growing network and focus on building strong client relationships.</p>
                 </div>
               </div>
             </div>
@@ -69,20 +69,20 @@ export function About() {
           <div className="bg-linear-to-br from-primary/5 to-accent/10 rounded-2xl p-8">
             <div className="grid grid-cols-2 gap-8">
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">1,200+</div>
-                <div className="text-muted-foreground">Properties Sold</div>
+                <div className="text-4xl font-bold text-primary mb-2">24/7</div>
+                <div className="text-muted-foreground">Available Support</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-accent-foreground mb-2">500+</div>
-                <div className="text-muted-foreground">Happy Families</div>
+                <div className="text-4xl font-bold text-accent-foreground mb-2">100%</div>
+                <div className="text-muted-foreground">Client Focused</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">15+</div>
-                <div className="text-muted-foreground">Years Experience</div>
+                <div className="text-4xl font-bold text-primary mb-2">Local</div>
+                <div className="text-muted-foreground">Market Expert</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-accent-foreground mb-2">98%</div>
-                <div className="text-muted-foreground">Satisfaction Rate</div>
+                <div className="text-4xl font-bold text-accent-foreground mb-2">Personal</div>
+                <div className="text-muted-foreground">Service Touch</div>
               </div>
             </div>
 
@@ -94,8 +94,8 @@ export function About() {
                 </div>
               </div>
               <p className="text-muted-foreground italic mb-4">
-                "Earth & Home made our home buying journey seamless and stress-free.
-                Their expertise and dedication are unmatched!"
+                "Earth & Home helped us find the perfect property for our family.
+                Their knowledge of the local market and personal attention made all the difference!"
               </p>
               <div className="font-semibold text-foreground">- Sarah & Mike Johnson</div>
             </div>
