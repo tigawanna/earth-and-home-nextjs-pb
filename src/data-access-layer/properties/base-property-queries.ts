@@ -217,7 +217,7 @@ export async function baseGetPropertyById({
       },
       next: {
         revalidate: 60 * 60 * 24 * 3, // 3 days
-        tags: [propertyId],
+        tags: ["properties-list", propertyId],
       },
     });
 
