@@ -497,10 +497,12 @@ export const AgentsResponseZodSchema = baseResponseSchema.extend({
     user_id: z.string(),
     agency_name: z.string(),
     license_number: z.string().optional(),
-    specialization: z.enum(['', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
+    specialization: z.enum(['', 'general', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
     service_areas: z.string().optional(),
     years_experience: z.number().optional(),
-    is_verified: z.boolean().optional()
+    is_verified: z.boolean().optional(),
+    created: z.string().optional(),
+    updated: z.string().optional()
 });
 
 export const AgentsCreateZodSchema = baseCreateSchema.extend({
@@ -508,10 +510,12 @@ export const AgentsCreateZodSchema = baseCreateSchema.extend({
     user_id: z.string(),
     agency_name: z.string(),
     license_number: z.string().optional(),
-    specialization: z.enum(['', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
+    specialization: z.enum(['', 'general', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
     service_areas: z.string().optional(),
     years_experience: z.number().optional(),
-    is_verified: z.boolean().optional()
+    is_verified: z.boolean().optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
 });
 
 export const AgentsUpdateZodSchema = baseUpdateSchema.extend({
@@ -519,12 +523,14 @@ export const AgentsUpdateZodSchema = baseUpdateSchema.extend({
     user_id: z.string().optional(),
     agency_name: z.string().optional(),
     license_number: z.string().optional(),
-    specialization: z.enum(['', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
+    specialization: z.enum(['', 'general', 'residential', 'commercial', 'land', 'industrial', 'mixed']).optional(),
     service_areas: z.string().optional(),
     years_experience: z.number().optional(),
     'years_experience+': z.number().optional(),
     'years_experience-': z.number().optional(),
-    is_verified: z.boolean().optional()
+    is_verified: z.boolean().optional(),
+    created: z.union([z.string(), z.date()]).optional(),
+    updated: z.union([z.string(), z.date()]).optional()
 });
 
 

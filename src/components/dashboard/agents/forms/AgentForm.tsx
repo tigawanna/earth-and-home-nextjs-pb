@@ -205,7 +205,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="">No specialization</SelectItem>
+                          <SelectItem value="general">General</SelectItem>
                           <SelectItem value="residential">Residential</SelectItem>
                           <SelectItem value="commercial">Commercial</SelectItem>
                           <SelectItem value="land">Land</SelectItem>

@@ -710,10 +710,12 @@ export interface AgentsResponse extends BaseCollectionResponse {
 	user_id: string;
 	agency_name: string;
 	license_number: string;
-	specialization: '' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
+	specialization: '' | 'general' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
 	service_areas: string;
 	years_experience: number;
 	is_verified: boolean;
+	created: string;
+	updated: string;
 }
 
 export interface AgentsCreate extends BaseCollectionCreate {
@@ -721,10 +723,12 @@ export interface AgentsCreate extends BaseCollectionCreate {
 	user_id: string;
 	agency_name: string;
 	license_number?: string;
-	specialization?: '' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
+	specialization?: '' | 'general' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
 	service_areas?: string;
 	years_experience?: number;
 	is_verified?: boolean;
+	created?: string | Date;
+	updated?: string | Date;
 }
 
 export interface AgentsUpdate extends BaseCollectionUpdate {
@@ -732,12 +736,14 @@ export interface AgentsUpdate extends BaseCollectionUpdate {
 	user_id?: string;
 	agency_name?: string;
 	license_number?: string;
-	specialization?: '' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
+	specialization?: '' | 'general' | 'residential' | 'commercial' | 'land' | 'industrial' | 'mixed';
 	service_areas?: string;
 	years_experience?: number;
 	'years_experience+'?: number;
 	'years_experience-'?: number;
 	is_verified?: boolean;
+	created?: string | Date;
+	updated?: string | Date;
 }
 
 export interface AgentsCollection {

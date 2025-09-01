@@ -25,7 +25,7 @@ import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { AgentsResponse, AgentsUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Loader2, Pencil } from "lucide-react";
+import { Loader, Loader2, Pencil } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -54,6 +54,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
 
   const updateMutation = useMutation({
     mutationFn: async (data: AgentsUpdate & { id: string }) => {
+      console.log("Updating agent:", data);
       const result = await browserPB.from("agents").update(data.id, data);
       return result;
     },
@@ -64,7 +65,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
     },
     onError: (error) => {
       toast.error("Failed to update agent profile");
-      console.error(error);
+      console.log(error);
     },
   });
 
@@ -153,7 +154,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="">No specialization</SelectItem>
+                        <SelectItem value="general">General</SelectItem>
                         <SelectItem value="residential">Residential</SelectItem>
                         <SelectItem value="commercial">Commercial</SelectItem>
                         <SelectItem value="land">Land</SelectItem>
@@ -235,7 +236,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
                     Saving...
                   </>
                 ) : (
