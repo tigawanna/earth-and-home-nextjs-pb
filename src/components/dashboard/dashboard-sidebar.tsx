@@ -54,7 +54,7 @@ const userMenuItems = [
     icon: Building2,
   },
   {
-    title: "Agent Profile",
+    title: "Property Agents",
     url: "/dashboard/agents",
     icon: User,
   },

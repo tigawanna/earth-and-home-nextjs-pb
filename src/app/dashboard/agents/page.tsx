@@ -12,12 +12,7 @@ export default async function AgentsPage({ searchParams }: AgentsPageProps) {
   if (!user) {
     throw redirect("/auth/signin");
   }
-  if (!user.is_admin) {
-    throw redirect("/dashboard");
-  }
-
   const { q: searchQuery } = await searchParams;
-
   return (
     <section className="w-full h-full flex flex-col">
       <Suspense fallback={<AgentsGridSkeleton />}>

@@ -81,13 +81,13 @@ export function PropertyContactForm({
           .from("property_messages")
           .getFirstListItem(
             and(eq("property_id", propertyId), eq("user_id", userId), eq("type", "parent"))
-          );
+          )
         return {
           result,
           success: true,
         };
       } catch (error) {
-        console.error("Error fetching messages:", error);
+        console.log("Error fetching messages:", error);
         return {
           result: null,
           success: false,
