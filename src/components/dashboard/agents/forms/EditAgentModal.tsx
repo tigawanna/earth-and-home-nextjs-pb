@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { AgentsResponse, AgentsUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -41,9 +43,12 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
   const form = useForm<EditAgentFormData>({
     resolver: zodResolver(editAgentFormSchema),
     defaultValues: {
-      name: agent.name || "",
-      email: agent.email || "",
-      phone: agent.phone || "",
+      agency_name: agent.agency_name || "",
+      license_number: agent.license_number || "",
+      specialization: agent.specialization || "",
+      service_areas: agent.service_areas || "",
+      years_experience: agent.years_experience || undefined,
+      is_verified: agent.is_verified || false,
     },
   });
 
@@ -66,9 +71,12 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
   const onSubmit = async (data: EditAgentFormData) => {
     updateMutation.mutate({
       id: agent.id,
-      name: data.name,
-      email: data.email || undefined,
-      phone: data.phone || undefined,
+      agency_name: data.agency_name,
+      license_number: data.license_number || undefined,
+      specialization: data.specialization || undefined,
+      service_areas: data.service_areas || undefined,
+      years_experience: data.years_experience || undefined,
+      is_verified: data.is_verified,
     });
   };
 
@@ -91,61 +99,129 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Edit Agent Profile</DialogTitle>
           <DialogDescription>
-            Update your agent information. Click save when you're done.
+            Update agency information and details. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="agency_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Agency Name *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter agency name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="license_number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>License Number</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter license number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="specialization"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Specialization</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select specialization" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="">No specialization</SelectItem>
+                        <SelectItem value="residential">Residential</SelectItem>
+                        <SelectItem value="commercial">Commercial</SelectItem>
+                        <SelectItem value="land">Land</SelectItem>
+                        <SelectItem value="industrial">Industrial</SelectItem>
+                        <SelectItem value="mixed">Mixed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="years_experience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Years of Experience</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        placeholder="Years" 
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
-              name="name"
+              name="service_areas"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name *</FormLabel>
+                  <FormLabel>Service Areas</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your full name" {...field} />
+                    <Input placeholder="e.g., Nairobi, Kiambu, Machakos" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email Address</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter email address"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter phone number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {currentUser.is_admin && (
+              <FormField
+                control={form.control}
+                name="is_verified"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        Verified Agent
+                      </FormLabel>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter>
               <Button

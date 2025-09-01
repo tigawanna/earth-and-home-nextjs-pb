@@ -1,8 +1,6 @@
 import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
-import { AgentsCreate, AgentsUpdate } from "@/lib/pocketbase/types/pb-types";
-import { eq } from "@tigawanna/typed-pocketbase";
 
 // ====================================================
 // GET AGENTS WITH SEARCH AND PAGINATION
@@ -29,7 +27,7 @@ export async function getServerSideAgents({
     let filter = null;
     if (q) {
       filter = agentsCollection.createFilter(
-        `name ~ "${q}" || email ~ "${q}" || phone ~ "${q}"`
+        `agency_name ~ "${q}" || license_number ~ "${q}" || specialization ~ "${q}" || service_areas ~ "${q}" || user_id.name ~ "${q}" || user_id.email ~ "${q}"`
       );
     }
 

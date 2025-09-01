@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { AgentsResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
-import { Calendar, Mail, Phone, User, UserCheck } from "lucide-react";
+import { Building2, Calendar, CheckCircle, FileText, Mail, MapPin, Phone, Star, User } from "lucide-react";
 
 interface SingleAgentDetailsProps {
   agent: AgentsResponse & {
@@ -20,14 +20,20 @@ interface SingleAgentDetailsProps {
 }
 
 export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
-  const agent_profile = agent.expand?.user_id;
-  const avatarSrc = agent_profile?.avatar
-    ? getImageThumbnailUrl(agent_profile, agent_profile.avatar, "96x96")
+  const user = agent.expand?.user_id;
+  const avatarSrc = user?.avatar
+    ? getImageThumbnailUrl(user, user.avatar, "96x96")
     : undefined;
-  const contactMethods = [agent_profile?.email, agent_profile?.phone].filter(Boolean).length;
+  const contactMethods = [user?.email, user?.phone].filter(Boolean).length;
+  const agencyDataFields = [
+    agent.agency_name,
+    agent.license_number,
+    agent.specialization,
+    agent.service_areas,
+    agent.years_experience ? agent.years_experience.toString() : undefined
+  ].filter(Boolean).length;
   const profilePercent = Math.round(
-    ([agent_profile?.name, agent_profile?.email, agent_profile?.phone].filter(Boolean).length / 3) *
-      100
+    (([user?.name, user?.email, user?.phone].filter(Boolean).length + agencyDataFields) / 8) * 100
   );
 
   return (
@@ -40,10 +46,10 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               <div className="relative">
                 <Avatar className="size-20 ring-4 ring-background shadow-xl">
                   {avatarSrc ? (
-                    <AvatarImage src={avatarSrc} alt={agent_profile?.name ?? "Agent avatar"} />
+                    <AvatarImage src={avatarSrc} alt={user?.name ?? "Agent avatar"} />
                   ) : (
                     <AvatarFallback className="text-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-                      {agent_profile?.name?.[0]?.toUpperCase() ?? "A"}
+                      {user?.name?.[0]?.toUpperCase() ?? agent.agency_name?.[0]?.toUpperCase() ?? "A"}
                     </AvatarFallback>
                   )}
                 </Avatar>
@@ -51,37 +57,57 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               </div>
               <div className="min-w-0 flex-1">
                 <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-                  {agent_profile?.name || "Unnamed Agent"}
+                  {agent.agency_name || "Unnamed Agency"}
                 </CardTitle>
                 <div className="flex flex-wrap items-center gap-2 mt-2">
                   <Badge
                     variant="secondary"
                     className="bg-primary/10 text-primary border-primary/20 font-medium">
-                    <User className="w-3 h-3 mr-1" />
-                    Agent Profile
+                    <Building2 className="w-3 h-3 mr-1" />
+                    Property Agent
                   </Badge>
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                    Active
-                  </Badge>
+                  {agent.is_verified && (
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      Verified
+                    </Badge>
+                  )}
+                  {agent.specialization && (
+                    <Badge variant="outline" className="capitalize">
+                      {agent.specialization}
+                    </Badge>
+                  )}
                 </div>
                 <CardDescription className="mt-2 text-base">
-                  {agent_profile?.email || agent_profile?.name || "No linked user"}
+                  Agent: {user?.name || user?.email || "Unknown Agent"}
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-8">
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <InfoItem icon={User} label="Full Name" value={agent_profile?.name} />
-              <InfoItem
-                icon={UserCheck}
-                label="Associated User"
-                value={agent_profile?.name || agent_profile?.email || "Unknown"}
+              <InfoItem icon={Building2} label="Agency Name" value={agent.agency_name} />
+              <InfoItem icon={User} label="Agent Name" value={user?.name} />
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <InfoItem icon={Mail} label="Email Address" value={user?.email} />
+              <InfoItem icon={Phone} label="Phone Number" value={user?.phone} />
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <InfoItem icon={FileText} label="License Number" value={agent.license_number} />
+              <InfoItem 
+                icon={Star} 
+                label="Years Experience" 
+                value={agent.years_experience ? `${agent.years_experience} years` : undefined} 
               />
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <InfoItem icon={Mail} label="Email Address" value={agent_profile?.email} />
-              <InfoItem icon={Phone} label="Phone Number" value={agent_profile?.phone} />
+              <InfoItem icon={MapPin} label="Service Areas" value={agent.service_areas} />
+              <InfoItem 
+                icon={Building2} 
+                label="Specialization" 
+                value={agent.specialization ? agent.specialization.charAt(0).toUpperCase() + agent.specialization.slice(1) : undefined} 
+              />
             </div>
             <Separator className="bg-gradient-to-r from-transparent via-border to-transparent" />
           </CardContent>
@@ -100,13 +126,13 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
             <CardDescription>Reach this agent instantly</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            {agent_profile?.email && (
+            {user?.email && (
               <div className="flex items-center gap-3">
                 <Button
                   asChild
                   variant="outline"
                   className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
-                  <a href={`mailto:${agent_profile?.email}`}>
+                  <a href={`mailto:${user.email}`}>
                     <span className="flex items-center gap-2">
                       <Mail className="size-4 group-hover:text-primary transition-colors" />
                       Email
@@ -117,7 +143,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                   </a>
                 </Button>
                 <CopyButton
-                  text={agent_profile?.email}
+                  text={user.email}
                   label="Email"
                   size="sm"
                   variant="ghost"
@@ -125,13 +151,13 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                 />
               </div>
             )}
-            {agent_profile?.phone && (
+            {user?.phone && (
               <div className="flex items-center gap-3">
                 <Button
                   asChild
                   variant="outline"
                   className="justify-between grow hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
-                  <a href={`tel:${agent_profile?.phone}`}>
+                  <a href={`tel:${user.phone}`}>
                     <span className="flex items-center gap-2">
                       <Phone className="size-4 group-hover:text-primary transition-colors" />
                       Phone
@@ -142,7 +168,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                   </a>
                 </Button>
                 <CopyButton
-                  text={agent_profile?.phone}
+                  text={user.phone}
                   label="Phone"
                   size="sm"
                   variant="ghost"
@@ -163,8 +189,8 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
               <span className="text-sm font-medium text-primary">Status</span>
-              <Badge className="bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-sm">
-                Active
+              <Badge className={agent.is_verified ? "bg-green-600 hover:bg-green-700" : "bg-primary hover:bg-primary/90"}>
+                {agent.is_verified ? "Verified" : "Pending"}
               </Badge>
             </div>
             <div className="flex items-center justify-between p-3 bg-accent/10 rounded-lg border border-accent/20">
