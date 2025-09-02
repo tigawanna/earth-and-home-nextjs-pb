@@ -111,9 +111,9 @@ export async function HeroSectionProperty({
                   <span className="text-sm">{locationLabel || "Location not specified"}</span>
                 </div>
 
-                <h3 className="text-3xl font-semibold text-foreground mb-4">
+                <h2 className="text-3xl font-semibold text-foreground mb-4">
                   {featuredProperty.title || "Untitled Property"}
-                </h3>
+                </h2>
 
                 <p className="text-muted-foreground text-base mb-6 flex-grow">
                   {featuredProperty.description ||

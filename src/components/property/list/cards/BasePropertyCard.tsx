@@ -203,7 +203,11 @@ export function BasePropertyCard({
       className={`group relative py-0 w-full justify-between gap-2 overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}>
       {/* Main card content - optionally wrapped with Link */}
       {wrapWithLink && href ? (
-        <Link href={href} className="block">
+        <Link 
+          href={href} 
+          className="block"
+          aria-label={`View details for ${title || 'property'} in ${locationLabel || 'unspecified location'} - ${mainPrice ? formatPrice(currency, mainPrice) : 'Price on request'}`}
+        >
           {cardContent}
         </Link>
       ) : (

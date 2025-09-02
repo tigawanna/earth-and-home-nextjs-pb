@@ -2,19 +2,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -22,14 +22,14 @@ import { updatePropertyMutationOptions } from "@/data-access-layer/properties/pr
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  Edit,
-  Eye,
-  EyeOff,
-  MapPin,
-  MoreVertical,
-  Settings,
-  Sparkles,
-  Star
+    Edit,
+    Eye,
+    EyeOff,
+    MapPin,
+    MoreVertical,
+    Settings,
+    Sparkles,
+    Star
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -114,6 +114,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
           variant="outline" 
           size="sm" 
           className="gap-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group shadow-sm"
+          aria-label={`Open admin controls for ${property.title || 'property'}`}
         >
           <Settings className="h-4 w-4 group-hover:rotate-90 transition-transform duration-200" />
           <span className="font-medium">Quick toggles</span>
@@ -142,6 +143,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                   variant="ghost" 
                   size="sm" 
                   className="h-8 w-8 p-0 hover:bg-accent/50 transition-colors rounded-full"
+                  aria-label="Open property actions menu"
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
@@ -187,6 +189,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                   variant="outline" 
                   size="sm" 
                   className="w-full justify-between h-10 hover:bg-background/50 transition-all duration-200 shadow-sm"
+                  aria-label={`Change property status from ${property.status}`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-1 rounded-md bg-background/80">
@@ -247,6 +250,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                       onCheckedChange={(checked) => handleToggle("is_featured", checked)}
                       disabled={updatePropertyMutation.isPending}
                       className="data-[state=checked]:bg-amber-500"
+                      aria-label={`${property.is_featured ? 'Remove from' : 'Add to'} featured properties`}
                     />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-48">
@@ -273,6 +277,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                       onCheckedChange={(checked) => handleToggle("is_new", checked)}
                       disabled={updatePropertyMutation.isPending}
                       className="data-[state=checked]:bg-green-500"
+                      aria-label={`${property.is_new ? 'Remove' : 'Add'} new listing badge`}
                     />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-48">
@@ -296,6 +301,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                     variant="outline" 
                     size="sm" 
                     className="w-full justify-start h-10 hover:bg-background/50 transition-all duration-200 shadow-sm"
+                    aria-label={`Change property type from ${property.property_type}`}
                   >
                     <span className="capitalize font-medium">{property.property_type.replace("_", " ")}</span>
                   </Button>
@@ -342,6 +348,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                     variant="outline" 
                     size="sm" 
                     className="w-full justify-start h-10 hover:bg-background/50 transition-all duration-200 shadow-sm"
+                    aria-label={`Change listing type from ${property.listing_type}`}
                   >
                     <span className="capitalize font-medium">{property.listing_type}</span>
                   </Button>

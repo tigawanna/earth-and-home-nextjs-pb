@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  PropertyWithFavorites
+    PropertyWithFavorites
 } from "@/data-access-layer/properties/property-types";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -71,7 +71,12 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
   if (!currentUserId) {
     return (
       <Link href="/auth/signin">
-        <Button variant="outline" size="icon" title="Sign in to favorite properties">
+        <Button 
+          variant="outline" 
+          size="icon" 
+          title="Sign in to favorite properties"
+          aria-label="Sign in to favorite properties"
+        >
           <Heart className="h-4 w-4" />
         </Button>
       </Link>
@@ -87,7 +92,9 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
       disabled={isPending}
       variant="outline"
       size="icon"
-      title={favoriteState ? "Remove from favorites" : "Add to favorites"}>
+      title={favoriteState ? "Remove from favorites" : "Add to favorites"}
+      aria-label={favoriteState ? `Remove ${property.title || 'property'} from favorites` : `Add ${property.title || 'property'} to favorites`}
+    >
       <Heart
         data-pending={isPending}
         className={`h-4 w-4 transition-colors ${favoriteState ? "fill-red-500 text-red-500" : ""} ${

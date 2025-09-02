@@ -6,15 +6,14 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { PropertyFilters as PropertyFiltersType } from "@/data-access-layer/properties/property-types";
-import { Building, Filter, Home, Loader, Plus, Search, X } from "lucide-react";
-import Link from "next/link";
+import { Filter, Loader, Search, X } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
 import { ReactNode, useState, useTransition } from "react";
 
@@ -176,7 +175,7 @@ export function PropertyFilters({
                   page: 1,
                 }));
               }}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md">
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select listing type">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -204,7 +203,7 @@ export function PropertyFilters({
                   page: 1,
                 }));
               }}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md">
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select property type">
                 <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -230,7 +229,7 @@ export function PropertyFilters({
                   page: 1,
                 }));
               }}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md">
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select number of bedrooms">
                 <SelectValue placeholder="Any" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -286,7 +285,7 @@ export function PropertyFilters({
             <Select
               value={sortBy}
               onValueChange={(value) => handleSortChange("sortBy", value)}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md">
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Sort properties by">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -303,7 +302,7 @@ export function PropertyFilters({
             <Select
               value={sortOrder}
               onValueChange={(value) => handleSortChange("sortOrder", value)}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md">
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Sort order">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -323,7 +322,8 @@ export function PropertyFilters({
                 size="sm"
                 className="group px-4 py-1.5 rounded-md border-border/50 text-primary hover:bg-primary/5 hover:border-primary flex items-center gap-2 h-8"
                 aria-expanded={isOpen}
-                aria-controls="advanced-filters">
+                aria-controls="advanced-filters"
+                aria-label={`${isOpen ? "Hide" : "Show"} advanced property filters`}>
                 <Filter className="h-3 w-3 group-hover:scale-110 transition-transform" />
                 <span className="font-medium text-xs">{isOpen ? "Hide" : "More"} Filters</span>
               </Button>
@@ -340,7 +340,8 @@ export function PropertyFilters({
                 variant="outline"
                 size="sm"
                 onClick={handleClearFilters}
-                className="group border-border/50 hover:border-primary rounded-md h-8">
+                className="group border-border/50 hover:border-primary rounded-md h-8"
+                aria-label="Clear all property filters">
                 <X className="h-3 w-3 mr-1 group-hover:rotate-90 transition-transform" />
                 <span className="hidden sm:inline">Clear</span>
               </Button>
@@ -383,7 +384,7 @@ export function PropertyFilters({
                           page: 1,
                         }));
                       }}>
-                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md">
+                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md" aria-label="Select number of bathrooms">
                         <SelectValue placeholder="Any" />
                       </SelectTrigger>
                       <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -452,7 +453,7 @@ export function PropertyFilters({
                               page: 1,
                             }));
                           }}>
-                        <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md">
+                        <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md" aria-label="Select property status">
                           <SelectValue placeholder="All statuses" />
                         </SelectTrigger>
                         <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -480,7 +481,7 @@ export function PropertyFilters({
                           page: 1,
                         }));
                       }}>
-                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md">
+                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md" aria-label="Select extended property type">
                         <SelectValue placeholder="All types" />
                       </SelectTrigger>
                       <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -516,7 +517,8 @@ export function PropertyFilters({
                 size="sm"
                 onClick={() => setQueryState(prev => ({ ...prev, page: currentPage - 1 }))}
                 disabled={currentPage <= 1}
-                className="px-3 py-1.5 border-border/50 hover:border-primary rounded-md disabled:opacity-50 disabled:cursor-not-allowed h-8 text-xs">
+                className="px-3 py-1.5 border-border/50 hover:border-primary rounded-md disabled:opacity-50 disabled:cursor-not-allowed h-8 text-xs"
+                aria-label="Go to previous page">
                 Previous
               </Button>
 
@@ -524,7 +526,8 @@ export function PropertyFilters({
                 variant="outline"
                 size="sm"
                 onClick={() => setQueryState(prev => ({ ...prev, page: currentPage + 1 }))}
-                className="px-3 py-1.5 border-border/50 hover:border-primary rounded-md h-8 text-xs">
+                className="px-3 py-1.5 border-border/50 hover:border-primary rounded-md h-8 text-xs"
+                aria-label="Go to next page">
                 Next
               </Button>
             </div>

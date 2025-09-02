@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Filter } from "lucide-react";
+import { Filter, MapPin, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function PropertySearch() {
   const router = useRouter();
@@ -71,7 +71,7 @@ export function PropertySearch() {
                 Property Type
               </label>
               <Select value={propertyType} onValueChange={setPropertyType}>
-                <SelectTrigger className="h-12">
+                <SelectTrigger className="h-12" aria-label="Select property type">
                   <SelectValue placeholder="Any Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -91,7 +91,7 @@ export function PropertySearch() {
                 Price Range
               </label>
               <Select value={priceRange} onValueChange={setPriceRange}>
-                <SelectTrigger className="h-12">
+                <SelectTrigger className="h-12" aria-label="Select price range">
                   <SelectValue placeholder="Any Price" />
                 </SelectTrigger>
                 <SelectContent>
@@ -121,7 +121,7 @@ export function PropertySearch() {
           <div className="mt-6 pt-6 border-t boredr-base-200">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Select value={bedrooms} onValueChange={setBedrooms}>
-                <SelectTrigger>
+                <SelectTrigger aria-label="Select number of bedrooms">
                   <SelectValue placeholder="Bedrooms" />
                 </SelectTrigger>
                 <SelectContent>
@@ -135,7 +135,7 @@ export function PropertySearch() {
               </Select>
 
               <Select value={bathrooms} onValueChange={setBathrooms}>
-                <SelectTrigger>
+                <SelectTrigger aria-label="Select number of bathrooms">
                   <SelectValue placeholder="Bathrooms" />
                 </SelectTrigger>
                 <SelectContent>
@@ -148,7 +148,7 @@ export function PropertySearch() {
               </Select>
 
               <Select value={size} onValueChange={setSize}>
-                <SelectTrigger>
+                <SelectTrigger aria-label="Select property size">
                   <SelectValue placeholder="Size (sq ft)" />
                 </SelectTrigger>
                 <SelectContent>
