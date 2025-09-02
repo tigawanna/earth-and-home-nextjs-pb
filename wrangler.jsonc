@@ -1,53 +1,53 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"main": ".open-next/worker.js",
-	"name": "earth-and-home-nextjs",
-	"compatibility_date": "2024-12-30",
-	"compatibility_flags": [
-		// Enable Node.js API
-		// see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#nodejs-compatibility-flag
-		"nodejs_compat",
-		// Allow to fetch URLs in your app
-		// see https://developers.cloudflare.com/workers/configuration/compatibility-flags/#global-fetch-strictly-public
-		"global_fetch_strictly_public"
-	],
-	"assets": {
-		"directory": ".open-next/assets",
-		"binding": "ASSETS"
-	},
-	"services": [
-		{
-			"binding": "WORKER_SELF_REFERENCE",
-			// The service should match the "name" of your worker
-			"service": "earth-and-home-nextjs"
-		}
-	],
-	"r2_buckets": [
-		{
-			"binding": "NEXT_INC_CACHE_R2_BUCKET",
-			"bucket_name": "earth-and-home-cache"
-		}
-	],
-	// Observability configuration - enables logging for better debugging
-	"observability": {
-		"logs": {
-			"enabled": true
-		}
-	}
-	// Durable Objects for Queue and Tag Cache (for production)
-	// Uncomment when deploying to production with ISR revalidation:
-	// "durable_objects": {
-	//   "bindings": [
-	//     {
-	//       "name": "NEXT_CACHE_DO_QUEUE",
-	//       "class_name": "DOQueueHandler"
-	//     }
-	//   ]
-	// },
-	// "migrations": [
-	//   {
-	//     "tag": "v1",
-	//     "new_sqlite_classes": ["DOQueueHandler"]
-	//   }
-	// ]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "earth-and-home-nextjs",
+  "compatibility_date": "2024-12-30",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "earth-and-home-nextjs"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "NEXT_INC_CACHE_R2_BUCKET",
+      "bucket_name": "earth-and-home-cache"
+    }
+  ],
+  "observability": {
+    "logs": {
+      "enabled": true
+    }
+  },
+  "env": {
+    "production": {
+      "name": "earth-and-home-prod",
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "earth-and-home-prod"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "NEXT_INC_CACHE_R2_BUCKET",
+          "bucket_name": "earth-and-home-cache"
+        }
+      ],
+      "vars": {
+        "NEXT_PUBLIC_PB_URL": "https://earth-and-home.tigawanna.vip",
+        "NEXT_PUBLIC_POSTHOG_HOST": "https://us.i.posthog.com",
+        "NODE_ENV": "production"
+      }
+    }
+  }
 }

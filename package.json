@@ -15,9 +15,11 @@
     "lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse/localhost_3000-$(date +%Y%m%dT%H%M%S).html --save-assets --view",
     "perf:build": "next build && next-bundle-analysis",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy --env=production",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "setup:prod-secrets": "node scripts/set-production-secrets.js",
+    "list:prod-secrets": "node scripts/list-production-secrets.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
