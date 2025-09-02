@@ -1,4 +1,3 @@
-import { PublicPropertiesList } from "@/components/property/list/PublicPropertiesList";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PropertyFilters } from "@/data-access-layer/properties/property-types";
@@ -24,7 +23,10 @@ export function FeaturedProperties() {
             Discover our handpicked selection of premium properties available for sale
           </p>
         </div>
-        <FeaturedPropertiesList />
+        
+        <Suspense fallback={<LoadingFallback />}>
+          <FeaturedPropertiesList />
+        </Suspense>
 
         <div className="text-center mt-12">
           <Button

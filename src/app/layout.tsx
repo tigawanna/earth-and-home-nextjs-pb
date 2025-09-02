@@ -1,4 +1,5 @@
 import { Footer } from "@/components/root/Footer";
+import { PerformanceMonitor } from "@/components/shared/PerformanceMonitor";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { siteinfo } from "@/config/siteinfo";
@@ -12,11 +13,15 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap',
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
+  preload: false, // Only preload primary font
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || siteinfo.url;
@@ -77,7 +82,16 @@ export default function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Preconnect to important external domains */}
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
+        
+        {/* Preload critical CSS */}
+        <link rel="preload" href="/globals.css" as="style" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <PerformanceMonitor />
         <NuqsAdapter>
           <TanstackQueryProvider>
             <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>

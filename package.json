@@ -12,7 +12,10 @@
     "pb-types": "tsx src/lib/pocketbase/scripts/typegen.ts",
     "pb-collections": "tsx src/lib/pocketbase/scripts/get-collection-structure.ts",
     "predev": "npm run pb-types && npm run pb-collections",
-    "npm": "pnpm"
+    "npm": "pnpm",
+    "analyze": "ANALYZE=true next build",
+    "lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse/localhost_3000-$(date +%Y%m%dT%H%M%S).html --save-assets --view",
+    "perf:build": "next build && next-bundle-analysis"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -78,6 +81,7 @@
     "zod": "^4.0.17"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.5.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

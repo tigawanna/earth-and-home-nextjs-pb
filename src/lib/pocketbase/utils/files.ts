@@ -1,6 +1,7 @@
 import { browserPB } from '../clients/browser-client';
 
-
+// Cache for file URLs to avoid regenerating the same URLs
+const fileUrlCache = new Map<string, string>();
 
 /**
  * Generate a file URL for a PocketBase record file
@@ -14,8 +15,19 @@ export function getFileUrl(
   filename: string,
   queryParams?: { thumb?: string; download?: boolean; token?: string }
 ): string {
+  // Create cache key
+  const cacheKey = `${record.collectionName}-${record.id}-${filename}-${JSON.stringify(queryParams || {})}`;
+  
+  // Check cache first
+  if (fileUrlCache.has(cacheKey)) {
+    return fileUrlCache.get(cacheKey)!;
+  }
+  
   // console.log("Generating file URL for:", record.id, filename, queryParams);
   const fileUrl = browserPB.files.getURL(record, filename, queryParams);
+  
+  // Cache the URL for future use
+  fileUrlCache.set(cacheKey, fileUrl);
 
   return fileUrl;
 }
