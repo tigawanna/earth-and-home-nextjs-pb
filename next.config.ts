@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "127.0.0.1",
       },
+      {
+        protocol: "https",
+        hostname: process.env.NEXT_PUBLIC_PB_URL?.replace(/^https?:\/\//, '') || "",
+      }
     ],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 31536000, // 1 year

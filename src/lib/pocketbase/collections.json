@@ -580,11 +580,11 @@
   },
   {
     "id": "_pb_users_auth_",
-    "listRule": "id = @request.auth.id",
-    "viewRule": "id = @request.auth.id",
-    "createRule": "@request.body.is_admin:isset = false",
-    "updateRule": "id = @request.auth.id && @request.body.is_admin:isset = false",
-    "deleteRule": "id = @request.auth.id",
+    "listRule": "@request.auth.is_admin = true\n||\n@request.auth.is_agent = true\n||\nid = @request.auth.id\n",
+    "viewRule": "@request.auth.is_admin = true\n||\n@request.auth.is_agent = true\n||\nid = @request.auth.id",
+    "createRule": "@request.auth.is_admin = true \n||\n(@request.body.is_admin:isset = false\n&& @request.body.is_agent:isset = false\n&& @request.body.is_banned:isset = false)",
+    "updateRule": "@request.auth.is_admin = true \n||\n(id = @request.auth.id\n&& @request.body.is_admin:isset = false\n&& @request.body.is_agent:isset = false\n&& @request.body.is_banned:isset = false\n)",
+    "deleteRule": "@request.auth.is_admin = true || id = @request.auth.id",
     "name": "users",
     "type": "auth",
     "fields": [
@@ -703,6 +703,38 @@
       },
       {
         "hidden": false,
+        "id": "bool3405807721",
+        "name": "is_banned",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text1146066909",
+        "max": 0,
+        "min": 0,
+        "name": "phone",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "bool1786216429",
+        "name": "is_agent",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
         "id": "autodate2990389176",
         "name": "created",
         "onCreate": true,
@@ -727,7 +759,7 @@
       "CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
     ],
     "created": "2025-08-16 14:08:28.060Z",
-    "updated": "2025-08-16 19:29:07.629Z",
+    "updated": "2025-09-02 15:54:11.229Z",
     "system": false,
     "authRule": "",
     "manageRule": null,
@@ -739,14 +771,25 @@
       }
     },
     "oauth2": {
-      "providers": [],
+      "providers": [
+        {
+          "pkce": null,
+          "name": "google",
+          "clientId": "69413220862-jqfilldcb2ir7njng1fvjnum8p7aq1fa.apps.googleusercontent.com",
+          "authURL": "",
+          "tokenURL": "",
+          "userInfoURL": "",
+          "displayName": "",
+          "extra": null
+        }
+      ],
       "mappedFields": {
         "id": "",
         "name": "name",
         "username": "",
         "avatarURL": "avatar"
       },
-      "enabled": false
+      "enabled": true
     },
     "passwordAuth": {
       "enabled": true,
@@ -800,9 +843,9 @@
     "id": "pbc_2037580119",
     "listRule": "",
     "viewRule": "",
-    "createRule": "@request.auth.id != \"\"",
-    "updateRule": "@request.auth.id != \"\" && (agent_id = @request.auth.id || owner_id = @request.auth.id)",
-    "deleteRule": "@request.auth.id != \"\" && (agent_id = @request.auth.id || owner_id = @request.auth.id)",
+    "createRule": "@request.auth.is_admin = true",
+    "updateRule": "@request.auth.is_admin = true",
+    "deleteRule": "@request.auth.is_admin = true",
     "name": "properties",
     "type": "base",
     "fields": [
@@ -844,6 +887,18 @@
         "required": false,
         "system": false,
         "type": "editor"
+      },
+      {
+        "hidden": false,
+        "id": "number3402113753",
+        "max": null,
+        "min": null,
+        "name": "price",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
       },
       {
         "hidden": false,
@@ -1012,6 +1067,18 @@
       },
       {
         "hidden": false,
+        "id": "number2442806003",
+        "max": null,
+        "min": null,
+        "name": "baths",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
         "id": "number595678189",
         "max": null,
         "min": null,
@@ -1064,18 +1131,6 @@
         "max": null,
         "min": null,
         "name": "beds",
-        "onlyInt": false,
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "number"
-      },
-      {
-        "hidden": false,
-        "id": "number2442806003",
-        "max": null,
-        "min": null,
-        "name": "baths",
         "onlyInt": false,
         "presentable": false,
         "required": false,
@@ -1180,18 +1235,6 @@
         "required": false,
         "system": false,
         "type": "text"
-      },
-      {
-        "hidden": false,
-        "id": "number3402113753",
-        "max": null,
-        "min": null,
-        "name": "price",
-        "onlyInt": false,
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "number"
       },
       {
         "hidden": false,
@@ -1345,19 +1388,6 @@
         "cascadeDelete": false,
         "collectionId": "_pb_users_auth_",
         "hidden": false,
-        "id": "relation873754891",
-        "maxSelect": 0,
-        "minSelect": 0,
-        "name": "agent_id",
-        "presentable": false,
-        "required": false,
-        "system": false,
-        "type": "relation"
-      },
-      {
-        "cascadeDelete": false,
-        "collectionId": "_pb_users_auth_",
-        "hidden": false,
         "id": "relation2117886457",
         "maxSelect": 0,
         "minSelect": 0,
@@ -1395,6 +1425,19 @@
         "type": "geoPoint"
       },
       {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2726680096",
+        "hidden": false,
+        "id": "relation873754891",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "agent_id",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
         "hidden": false,
         "id": "autodate_created",
         "name": "created",
@@ -1417,7 +1460,7 @@
     ],
     "indexes": [],
     "created": "2025-08-16 16:25:08.565Z",
-    "updated": "2025-08-16 22:25:20.707Z",
+    "updated": "2025-08-28 21:06:39.966Z",
     "system": false
   },
   {
@@ -1491,9 +1534,285 @@
         "type": "autodate"
       }
     ],
-    "indexes": [],
+    "indexes": [
+      "CREATE INDEX `idx_aMteEvOai9` ON `favorites` (\n  `user_id`,\n  `property_id`\n)"
+    ],
     "created": "2025-08-16 16:25:48.513Z",
-    "updated": "2025-08-16 16:25:48.513Z",
+    "updated": "2025-08-25 22:53:20.868Z",
+    "system": false
+  },
+  {
+    "id": "pbc_407450307",
+    "listRule": "@request.auth.is_admin = true \n||\n(@request.auth.id != \"\" && user_id = @request.auth.id)",
+    "viewRule": "@request.auth.is_admin = true\n||\n(@request.auth.id != \"\" && user_id = @request.auth.id)",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.is_admin = true",
+    "deleteRule": "@request.auth.is_admin = true",
+    "name": "property_messages",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "hidden": false,
+        "id": "relation2809058197",
+        "maxSelect": 0,
+        "minSelect": 0,
+        "name": "user_id",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_2037580119",
+        "hidden": false,
+        "id": "relation1418859500",
+        "maxSelect": 0,
+        "minSelect": 0,
+        "name": "property_id",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "select2363381545",
+        "maxSelect": 1,
+        "name": "type",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "parent",
+          "reply"
+        ]
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text3685223346",
+        "max": 0,
+        "min": 0,
+        "name": "body",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_407450307",
+        "hidden": false,
+        "id": "relation1032740943",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "parent",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "hidden": false,
+        "id": "relation1680572944",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "admin_id",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "autodate_created",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate_updated",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [],
+    "created": "2025-08-25 23:12:40.887Z",
+    "updated": "2025-08-28 06:09:37.484Z",
+    "system": false
+  },
+  {
+    "id": "pbc_2726680096",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.id = id",
+    "deleteRule": "@request.auth.is_admin = true",
+    "name": "agents",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "hidden": false,
+        "id": "relation2809058197",
+        "maxSelect": 0,
+        "minSelect": 0,
+        "name": "user_id",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text1227121166",
+        "max": 0,
+        "min": 0,
+        "name": "agency_name",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": true,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text3967709522",
+        "max": 0,
+        "min": 0,
+        "name": "license_number",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "select2665083498",
+        "maxSelect": 0,
+        "name": "specialization",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "general",
+          "residential",
+          "commercial",
+          "land",
+          "industrial",
+          "mixed"
+        ]
+      },
+      {
+        "autogeneratePattern": "",
+        "hidden": false,
+        "id": "text4056047547",
+        "max": 0,
+        "min": 0,
+        "name": "service_areas",
+        "pattern": "",
+        "presentable": false,
+        "primaryKey": false,
+        "required": false,
+        "system": false,
+        "type": "text"
+      },
+      {
+        "hidden": false,
+        "id": "number183335417",
+        "max": null,
+        "min": null,
+        "name": "years_experience",
+        "onlyInt": false,
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "number"
+      },
+      {
+        "hidden": false,
+        "id": "bool2599192861",
+        "name": "is_verified",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "bool"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [],
+    "created": "2025-08-28 21:03:55.467Z",
+    "updated": "2025-09-01 05:38:12.370Z",
     "system": false
   }
 ]
