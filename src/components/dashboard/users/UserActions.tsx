@@ -3,24 +3,24 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import {
-    Ban,
-    CheckCircle,
-    Copy,
-    Mail,
-    MoreHorizontal,
-    Shield,
-    ShieldOff,
-    Trash2,
-    UserCheck,
-    UserX
+  Ban,
+  CheckCircle,
+  Copy,
+  Mail,
+  MoreHorizontal,
+  Shield,
+  ShieldOff,
+  Trash2,
+  UserCheck,
+  UserX
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -45,55 +45,12 @@ export function UserActions({ user, currentUserId, onUserUpdate }: UserActionsPr
   };
 
   const handleUserAction = async (action: string, value?: boolean) => {
-    try {
-      const response = await fetch("/api/admin/users", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          action,
-          value,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        toast.success(result.message);
-        router.refresh(); // Refresh the page to show updated data
-        onUserUpdate?.();
-      } else {
-        toast.error(result.message);
-      }
-    } catch (error) {
-      toast.error("Action failed");
-    }
+    toast.success("this feature is coming soon");
   };
 
   const handleDeleteUser = async () => {
-    if (!confirm(`Are you sure you want to delete user "${user.name || user.email}"?`)) {
-      return;
-    }
+    toast.success("this feature is coming soon");
 
-    try {
-      const response = await fetch("/api/admin/users", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user.id }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        toast.success(result.message);
-        router.refresh(); // Refresh the page to show updated data
-        onUserUpdate?.();
-      } else {
-        toast.error(result.message);
-      }
-    } catch (error) {
-      toast.error("Failed to delete user");
-    }
   };
 
   return (
@@ -139,9 +96,9 @@ export function UserActions({ user, currentUserId, onUserUpdate }: UserActionsPr
               Copy Name
             </DropdownMenuItem>
           )}
-          
+
           <DropdownMenuSeparator />
-          
+
           {/* Admin Actions */}
           {!isCurrentUser && (
             <>
@@ -151,45 +108,45 @@ export function UserActions({ user, currentUserId, onUserUpdate }: UserActionsPr
                   Verify User
                 </DropdownMenuItem>
               )}
-              
+
               {user.verified && (
                 <DropdownMenuItem onClick={() => handleUserAction("verify", false)}>
                   <UserX className="h-4 w-4 mr-2" />
                   Unverify User
                 </DropdownMenuItem>
               )}
-              
+
               {!user.is_admin && (
                 <DropdownMenuItem onClick={() => handleUserAction("admin", true)}>
                   <Shield className="h-4 w-4 mr-2" />
                   Make Admin
                 </DropdownMenuItem>
               )}
-              
+
               {user.is_admin && (
                 <DropdownMenuItem onClick={() => handleUserAction("admin", false)}>
                   <ShieldOff className="h-4 w-4 mr-2" />
                   Remove Admin
                 </DropdownMenuItem>
               )}
-              
+
               {!user.is_banned && (
                 <DropdownMenuItem onClick={() => handleUserAction("ban", true)}>
                   <Ban className="h-4 w-4 mr-2" />
                   Ban User
                 </DropdownMenuItem>
               )}
-              
+
               {user.is_banned && (
                 <DropdownMenuItem onClick={() => handleUserAction("ban", false)}>
                   <CheckCircle className="h-4 w-4 mr-2" />
                   Unban User
                 </DropdownMenuItem>
               )}
-              
+
               <DropdownMenuSeparator />
-              
-              <DropdownMenuItem 
+
+              <DropdownMenuItem
                 onClick={handleDeleteUser}
                 className="text-red-600 focus:text-red-600"
               >
@@ -198,7 +155,7 @@ export function UserActions({ user, currentUserId, onUserUpdate }: UserActionsPr
               </DropdownMenuItem>
             </>
           )}
-          
+
           {isCurrentUser && (
             <DropdownMenuItem disabled>
               <Shield className="h-4 w-4 mr-2" />
