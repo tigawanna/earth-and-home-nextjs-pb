@@ -8,10 +8,6 @@ import { FeaturedPropertiesList } from "../property/list/FeaturedProperties";
 
 export function FeaturedProperties() {
   // Search params to get only featured properties
-  const featuredSearchParams = {
-   isFeatured: true,
-    status: "active", // Only show active featured properties
-  } satisfies PropertyFilters;
   return (
     <section id="properties" className="py-16 bg-muted/20">
       <div className="container mx-auto px-4">

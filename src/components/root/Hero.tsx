@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { siteinfo } from "@/config/siteinfo";
 import { Search } from "lucide-react";
 import Link from "next/link";
-import { HeroSectionProperty } from "./HeroSectionProperty";
+import { HeroSectionProperty, HeroSectionPropertyFallback } from "./HeroSectionProperty";
+import { Suspense } from "react";
 
 export function Hero() {
   return (
@@ -58,44 +59,9 @@ export function Hero() {
 
           {/* Right content - Featured property card */}
           <div className="animate-scale-in">
-            {/* <div className="bg-card text-card-foreground rounded-2xl shadow-2xl overflow-hidden border boredr-base-200">
-              <div className="relative">
-                <Image
-                  src="https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=600&h=400&fit=crop"
-                  alt="Featured Property"
-                  width={600}
-                  height={400}
-                  className="w-full h-64 object-cover" />
-                <div className="absolute top-4 left-4">
-                  <span className="bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-medium">
-                    Featured
-                  </span>
-                </div>
-                <div className="absolute top-4 right-4">
-                  <span className="bg-background text-foreground px-3 py-1 rounded-full text-sm font-medium border boredr-base-200">
-                    $850,000
-                  </span>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center text-muted-foreground mb-2">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  <span className="text-sm">Beverly Hills, CA</span>
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">
-                  Modern Luxury Villa
-                </h3>
-                <p className="text-muted-foreground text-sm mb-4">
-                  Stunning 4-bedroom villa with panoramic city views, modern amenities, and elegant design.
-                </p>
-                <div className="grid grid-cols-3 gap-4 text-sm text-muted-foreground">
-                  <div>🛏️ 4 Beds</div>
-                  <div>🚿 3 Baths</div>
-                  <div>📐 2,500 sq ft</div>
-                </div>
-              </div>
-            </div> */}
-            <HeroSectionProperty />
+            <Suspense fallback={<HeroSectionPropertyFallback />}>
+              <HeroSectionProperty />
+            </Suspense>
           </div>
         </div>
       </div>
