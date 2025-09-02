@@ -143,20 +143,83 @@ pnpm run deploy
 2. Add Custom Domain or Route
 3. Configure DNS records if using external domain
 
-#### R2 Storage (Optional)
-For enhanced caching with Cloudflare R2:
-1. Create an R2 bucket in Cloudflare Dashboard
-2. Update `wrangler.jsonc` with R2 binding:
+#### Caching Configuration ✅ Implemented
+The application now uses Cloudflare R2 for advanced caching with regional cache optimization:
+
+**Current Setup (Production-Ready)**
+- ✅ R2 Incremental Cache with Regional Cache enabled
+- ✅ Long-lived cache mode (30-min cache for ISR/SSG)
+- ✅ Lazy background cache updates from R2
+- ✅ Cache interception for better cold start performance
+- ✅ Static asset caching optimized for 1-year immutable assets
+
+**R2 Bucket Configuration**
+The app is configured with R2 bucket `earth-and-home-cache` for incremental caching:
 ```jsonc
+// wrangler.jsonc
 {
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "your-bucket-name"
+      "bucket_name": "earth-and-home-cache"
     }
   ]
 }
 ```
+
+**OpenNext Caching Configuration**
+```typescript
+// open-next.config.ts
+export default defineCloudflareConfig({
+  incrementalCache: withRegionalCache(r2IncrementalCache, {
+    mode: "long-lived", // 30-min cache for ISR/SSG responses
+    shouldLazilyUpdateOnCacheHit: true, // Background R2 refresh
+  }),
+  enableCacheInterception: true, // Better cold start performance
+});
+```
+
+**Creating Your Own R2 Bucket**
+If deploying to your own Cloudflare account:
+```bash
+# Create R2 bucket for caching
+npx wrangler r2 bucket create your-app-cache
+
+# Update wrangler.jsonc with your bucket name
+# Update bucket_name in the r2_buckets configuration
+```
+
+### Deployment Commands ✅ Tested
+
+All OpenNext commands have been tested and are working:
+
+```bash
+# Build the Next.js app
+pnpm run build
+
+# Build OpenNext worker for Cloudflare
+npx opennextjs-cloudflare build
+
+# Preview locally with Wrangler (recommended for testing)
+npx opennextjs-cloudflare preview
+
+# Deploy to Cloudflare Workers
+npx opennextjs-cloudflare deploy
+
+# Combined build and preview (from package.json)
+pnpm run preview
+
+# Combined build and deploy (from package.json)  
+pnpm run deploy
+```
+
+**Command Explanations:**
+- `pnpm run build`: Builds the Next.js application with production optimizations
+- `opennextjs-cloudflare build`: Converts Next.js build to Cloudflare Worker format
+- `opennextjs-cloudflare preview`: Starts local Wrangler dev server for testing
+- `opennextjs-cloudflare deploy`: Uploads worker to Cloudflare and deploys
+- `pnpm run preview`: Convenience script that builds and previews in one command
+- `pnpm run deploy`: Convenience script that builds and deploys in one command
 
 ### Performance Optimizations
 
@@ -190,6 +253,56 @@ wrangler whoami
 ```
 
 ### Common Issues & Solutions
+
+#### Caching Setup ✅ Working
+The app now uses R2 caching successfully. If you encounter caching issues:
+
+**Current Working Configuration:**
+- R2 bucket: `earth-and-home-cache` 
+- Regional cache with long-lived mode (30 minutes)
+- Cache interception enabled for better performance
+- Static assets cached via `public/_headers`
+
+#### R2 Caching Errors (Legacy)
+**Error**: `No R2 binding "NEXT_INC_CACHE_R2_BUCKET" found!`
+
+**Solution**: This was resolved by properly configuring the R2 bucket and OpenNext config:
+1. ✅ **R2 Bucket Created**: `earth-and-home-cache`
+2. ✅ **Wrangler Config**: R2 binding properly configured  
+3. ✅ **OpenNext Config**: Regional cache with R2 backend enabled
+4. ✅ **Testing**: All commands work successfully
+
+**Note**: If deploying to your own account, create your own R2 bucket:
+```bash
+npx wrangler r2 bucket create your-bucket-name
+# Then update bucket_name in wrangler.jsonc
+```
+
+#### Advanced Caching Features
+
+**Regional Cache Benefits:**
+- `mode: "long-lived"`: ISR/SSG responses cached for up to 30 minutes
+- `shouldLazilyUpdateOnCacheHit: true`: Background cache refresh from R2
+- Reduced R2 requests and faster response times
+- Better performance for frequently accessed content
+
+**Static Asset Optimization:**
+- Next.js `/_next/static/*` files: 1-year immutable cache
+- Images (PNG, JPG, WebP, SVG): 30-day cache
+- Fonts (WOFF, WOFF2, TTF): 1-year immutable cache
+- CSS/JS files: 1-year immutable cache
+- HTML files: No cache (always fresh)
+
+**Cache Interception:**
+- Bypasses Next.js server for cached ISR/SSG routes
+- Improves cold start performance
+- Reduces JavaScript execution overhead
+- Not compatible with PPR (Partial Prerendering)
+
+**Future Enhancements Available:**
+- Durable Objects Queue for ISR revalidation (commented in config)
+- D1 Tag Cache for on-demand revalidation with `revalidateTag`
+- Automatic cache purge for zone-based deployments
 
 #### Build Errors
 - Ensure all environment variables are set
