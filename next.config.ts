@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
     viewTransition: true,
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
   },
+  compiler: {
+    // Remove console logs only in production, excluding error logs
+    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
+  },
 };
 
 export default withBundleAnalyzer(nextConfig);

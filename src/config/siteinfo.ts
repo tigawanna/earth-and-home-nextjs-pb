@@ -2,7 +2,7 @@ export const siteinfo = {
   // Basic Site Info
   title: "Earth & Home",
   tagline: "Real Estate Excellence",
-  description: "Your trusted partner in finding the perfect home. We connect dreams with reality through exceptional real estate services.",
+  description: "Find your perfect home with Earth & Home Real Estate. Browse luxury properties, family homes, and rental listings. Expert real estate services, local market knowledge, and personalized property search assistance.",
   author: "Dennis",
   url: "https://earthandhome.com",
   

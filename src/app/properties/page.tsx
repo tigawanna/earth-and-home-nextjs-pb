@@ -24,7 +24,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
 
   // Build dynamic title and description
   let title = "Properties";
-  let description = `Browse our collection of available properties for sale and rent. Find your perfect home with ${siteinfo.title}`;
+  let description = `Browse our extensive collection of properties for sale and rent. Discover luxury homes, family houses, apartments, and commercial real estate with ${siteinfo.title}. Expert guidance and local market knowledge.`;
   
   const titleParts: string[] = [];
   const descriptionParts: string[] = [];
@@ -75,7 +75,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   }
 
   if (descriptionParts.length > 0) {
-    description = `Browse ${descriptionParts.join(' ')} with ${siteinfo.title}. Find your perfect home from our curated selection of real estate listings.`;
+    description = `Explore ${descriptionParts.join(' ')} with ${siteinfo.title}. Professional real estate services, detailed property information, and expert assistance to help you find your perfect home or investment property.`;
   }
 
   // Build keywords array
@@ -85,7 +85,14 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     "real estate listings",
     "homes for sale",
     "apartments for rent",
+    "houses for sale",
+    "luxury properties",
+    "commercial real estate",
     "property search",
+    "real estate agent",
+    "home buying",
+    "property investment",
+    "rental properties",
     siteinfo.title
   ];
 
