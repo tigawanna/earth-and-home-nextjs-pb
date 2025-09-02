@@ -138,14 +138,20 @@ export function BasePropertyCard({
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start gap-2">
           <div className="flex gap-2 flex-wrap">
             {is_featured ? (
-              <Badge className="bg-orange-600 hover:bg-orange-700 text-white border-0 font-medium">
+              <Badge className="bg-orange-700 hover:bg-orange-800 text-white border-0 font-medium shadow-sm">
                 Featured
               </Badge>
             ) : null}
             {is_new ? (
-              <Badge className="bg-green-600 hover:bg-green-700 text-white border-0 font-medium">New</Badge>
+              <Badge className="bg-green-700 hover:bg-green-800 text-white border-0 font-medium shadow-sm">New</Badge>
             ) : null}
-            <Badge variant={listing_type === "sale" ? "default" : "secondary"} className="border-0">
+            <Badge 
+              className={`border-0 font-medium shadow-sm ${
+                listing_type === "sale" 
+                  ? "bg-blue-700 hover:bg-blue-800 text-white" 
+                  : "bg-purple-700 hover:bg-purple-800 text-white"
+              }`}
+            >
               {listing_type === "sale" ? "For Sale" : "For Rent"}
             </Badge>
           </div>
@@ -158,8 +164,7 @@ export function BasePropertyCard({
         {property_type ? (
           <div className="mb-2">
             <Badge
-              variant="outline"
-              className="border-border/60 bg-background/60 text-[10px] font-medium uppercase tracking-wide">
+              className="border-gray-600 bg-gray-100 text-gray-800 text-[10px] font-medium uppercase tracking-wide">
               {property_type.replace(/_/g, " ")}
             </Badge>
           </div>
