@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tsr:gen": "tsr generate",
-    "tsr:watch": "tsr watch",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",

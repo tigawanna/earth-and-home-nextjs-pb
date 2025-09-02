@@ -27,7 +27,13 @@
 			"binding": "NEXT_INC_CACHE_R2_BUCKET",
 			"bucket_name": "earth-and-home-cache"
 		}
-	]
+	],
+	// Observability configuration - enables logging for better debugging
+	"observability": {
+		"logs": {
+			"enabled": true
+		}
+	}
 	// Durable Objects for Queue and Tag Cache (for production)
 	// Uncomment when deploying to production with ISR revalidation:
 	// "durable_objects": {

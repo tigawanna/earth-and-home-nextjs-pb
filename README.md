@@ -336,3 +336,5 @@ npx wrangler r2 bucket create your-bucket-name
 - [Cloudflare Workers](https://developers.cloudflare.com/workers/) - Runtime documentation
 - [PocketBase Documentation](https://pocketbase.io/docs/) - Backend API reference
 - [shadcn/ui](https://ui.shadcn.com/) - UI component system
+
+
