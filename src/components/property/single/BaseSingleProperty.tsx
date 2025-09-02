@@ -7,19 +7,19 @@ import { PropertyWithFavorites } from "@/data-access-layer/properties/property-t
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {
-  ArrowLeft,
-  Bath,
-  Bed,
-  Building,
-  Calendar,
-  Car,
-  Mail,
-  MapPin,
-  Phone,
-  Share2,
-  Snowflake,
-  Square,
-  Thermometer,
+    ArrowLeft,
+    Bath,
+    Bed,
+    Building,
+    Calendar,
+    Car,
+    Mail,
+    MapPin,
+    Phone,
+    Share2,
+    Snowflake,
+    Square,
+    Thermometer,
 } from "lucide-react";
 import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
@@ -99,7 +99,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 mb-2">
                       {property.is_featured ? (
-                        <Badge className="bg-orange-500 hover:bg-orange-600">Featured</Badge>
+                        <Badge className="bg-orange-600 hover:bg-orange-700 text-white font-medium">Featured</Badge>
                       ) : null}
                       {property.is_new ? (
                         <Badge className="bg-green-500 hover:bg-green-600">New</Badge>
@@ -172,7 +172,11 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                         <Heart className="h-4 w-4" />
                       </Button> */}
                       <FavoriteProperty userId={user?.id} property={property} />
-                      <Button variant="outline" size="icon">
+                      <Button 
+                        variant="outline" 
+                        size="icon"
+                        aria-label={`Share ${property.title || 'this property'}`}
+                      >
                         <Share2 className="h-4 w-4" />
                       </Button>
                     </div>

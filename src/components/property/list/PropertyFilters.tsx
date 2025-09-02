@@ -6,11 +6,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { PropertyFilters as PropertyFiltersType } from "@/data-access-layer/properties/property-types";
 import { Filter, Loader, Search, X } from "lucide-react";
@@ -137,35 +137,38 @@ export function PropertyFilters({
   };
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4" role="search" aria-label="Property search and filters">
       {/* Main Search Card - Always Visible */}
-      <div className="rounded-lg border">
-        {/* Header - More Compact */}
-        <div className="flex flex-col md:flex-row  items-center justify-between gap-3 mb-4">
-          <div className="flex w-full flex-3/4 gap-1 relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            {isPending && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                <Loader className="h-3 w-3 animate-spin text-primary" />
-              </div>
-            )}
-            <Input
-              placeholder="Search by title, description, or location..."
-              value={search}
-              onChange={(e) => {
-                setQueryState(prev => ({
-                  ...prev,
-                  search: e.target.value || "",
-                  page: 1,
-                }));
-              }}
-              className="pl-10 pr-10 h-10 text-sm border-border/50 focus:border-primary focus-visible:ring-1 rounded-lg transition-colors"
-              aria-label="Search properties"
-            />
-          </div>
+      <div className="rounded-lg border p-4">
+        <fieldset className="space-y-4">
+          <legend className="sr-only">Property Search and Quick Filters</legend>
+          
+          {/* Header - More Compact */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+            <div className="flex w-full flex-3/4 gap-1 relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              {isPending && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <Loader className="h-3 w-3 animate-spin text-primary" />
+                </div>
+              )}
+              <Input
+                placeholder="Search by title, description, or location..."
+                value={search}
+                onChange={(e) => {
+                  setQueryState(prev => ({
+                    ...prev,
+                    search: e.target.value || "",
+                    page: 1,
+                  }));
+                }}
+                className="pl-10 pr-10 h-10 text-sm border-border/50 focus:border-primary focus-visible:ring-1 rounded-lg transition-colors"
+                aria-label="Search properties"
+              />
+            </div>
           {/* Listing Type */}
           <div className="space-y-1 w-full flex-1/4">
-            {/* <Label className="text-xs font-medium text-foreground">For</Label> */}
+            <Label className="text-xs font-medium text-muted-foreground">Listing Type</Label>
             <Select
               value={listingType || "all"}
               onValueChange={(value) => {
@@ -176,7 +179,7 @@ export function PropertyFilters({
                 }));
               }}>
               <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select listing type">
-                <SelectValue placeholder="All" />
+                <SelectValue placeholder="All listings" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
                 <SelectItem value="all">All listings</SelectItem>
@@ -194,6 +197,7 @@ export function PropertyFilters({
         <div className="flex flex-wrap gap-3 mb-3">
           {/* Property Type */}
           <div className="space-y-1 min-w-[140px] flex-1">
+            <Label className="text-xs font-medium text-muted-foreground">Property Type</Label>
             <Select
               value={propertyType || "all"}
               onValueChange={(value) => {
@@ -204,7 +208,7 @@ export function PropertyFilters({
                 }));
               }}>
               <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select property type">
-                <SelectValue placeholder="All" />
+                <SelectValue placeholder="All types" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
                 <SelectItem value="all">All types</SelectItem>
@@ -220,6 +224,7 @@ export function PropertyFilters({
 
           {/* Bedrooms */}
           <div className="space-y-1 min-w-[120px] flex-1">
+            <Label className="text-xs font-medium text-muted-foreground">Bedrooms</Label>
             <Select
               value={beds?.toString() || "any"}
               onValueChange={(value) => {
@@ -230,7 +235,7 @@ export function PropertyFilters({
                 }));
               }}>
               <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select number of bedrooms">
-                <SelectValue placeholder="Any" />
+                <SelectValue placeholder="Any beds" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
                 <SelectItem value="any">Any</SelectItem>
@@ -245,6 +250,7 @@ export function PropertyFilters({
 
           {/* Price Range - Responsive Width */}
           <div className="space-y-1 min-w-[180px] flex-[2_1_320px]">
+            <Label className="text-xs font-medium text-muted-foreground">Price Range</Label>
             <div className="flex gap-2">
               <Input
                 type="number"
@@ -282,6 +288,7 @@ export function PropertyFilters({
         <div className="flex flex-wrap gap-3 mb-3">
           {/* Sort By */}
           <div className="space-y-1 min-w-[140px] flex-1">
+            <Label className="text-xs font-medium text-muted-foreground">Sort By</Label>
             <Select
               value={sortBy}
               onValueChange={(value) => handleSortChange("sortBy", value)}>
@@ -299,10 +306,11 @@ export function PropertyFilters({
 
           {/* Sort Order */}
           <div className="space-y-1 min-w-[120px] flex-1">
+            <Label className="text-xs font-medium text-muted-foreground">Order</Label>
             <Select
               value={sortOrder}
               onValueChange={(value) => handleSortChange("sortOrder", value)}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Sort order">
+              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select sort order">
                 <SelectValue placeholder="Order" />
               </SelectTrigger>
               <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -347,7 +355,8 @@ export function PropertyFilters({
               </Button>
             </div>
           )}
-        </div>
+          </div>
+        </fieldset>
       </div>
 
       {/* Advanced Filters Card - More Compact */}
@@ -374,7 +383,7 @@ export function PropertyFilters({
                 </h4>
                 <div className="space-y-2">
                   <div className="space-y-1">
-    
+                    <Label className="text-xs font-medium text-muted-foreground">Bathrooms</Label>
                     <Select
                       value={baths?.toString() || "any"}
                       onValueChange={(value) => {
@@ -385,7 +394,7 @@ export function PropertyFilters({
                         }));
                       }}>
                       <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md" aria-label="Select number of bathrooms">
-                        <SelectValue placeholder="Any" />
+                        <SelectValue placeholder="Any baths" />
                       </SelectTrigger>
                       <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
                         <SelectItem value="any">Any</SelectItem>
@@ -398,7 +407,7 @@ export function PropertyFilters({
                   </div>
 
                   <div className="space-y-1">
- 
+                    <Label className="text-xs font-medium text-muted-foreground">City</Label>
                     <Input
                       placeholder="Enter city name"
                       value={city || ""}

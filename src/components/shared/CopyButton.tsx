@@ -59,6 +59,7 @@ export function CopyButton({
       className={cn("transition-all duration-200", className)}
       onClick={copyToClipboard}
       title={title || `Copy ${label.toLowerCase()}`}
+      aria-label={title || `Copy ${label.toLowerCase()}`}
     >
       {children || (
         <>

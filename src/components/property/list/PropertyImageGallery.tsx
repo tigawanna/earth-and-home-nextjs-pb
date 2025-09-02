@@ -130,7 +130,7 @@ export function PropertyImageGallery({
             {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
           </Badge>
           {property.is_featured && <Badge variant="destructive">⭐ Featured</Badge>}
-          {property.is_new && <Badge className="bg-green-600 hover:bg-green-700">New</Badge>}
+          {property.is_new && <Badge className="bg-green-700 hover:bg-green-800 text-white font-medium">New</Badge>}
         </div>
 
         {/* Carousel for images */}

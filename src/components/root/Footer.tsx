@@ -25,16 +25,36 @@ export function Footer() {
               {siteinfo.footer.companyDescription}
             </p>
             <div className="flex space-x-4">
-              <Button size="sm" variant="outline" className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
+                aria-label="Follow us on Facebook"
+              >
                 <Facebook className="h-4 w-4" />
               </Button>
-              <Button size="sm" variant="outline" className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
+                aria-label="Follow us on Twitter"
+              >
                 <Twitter className="h-4 w-4" />
               </Button>
-              <Button size="sm" variant="outline" className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
+                aria-label="Follow us on Instagram"
+              >
                 <Instagram className="h-4 w-4" />
               </Button>
-              <Button size="sm" variant="outline" className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="boredr-base-200 text-muted-foreground hover:bg-primary hover:text-primary-foreground"
+                aria-label="Connect with us on LinkedIn"
+              >
                 <Linkedin className="h-4 w-4" />
               </Button>
             </div>
@@ -93,8 +113,13 @@ export function Footer() {
               <div className="flex space-x-2">
                 <Input
                   placeholder="Your email"
+                  type="email"
+                  aria-label="Email address for newsletter subscription"
                   className="bg-background border-input text-foreground placeholder:text-muted-foreground" />
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button 
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
+                  aria-label="Subscribe to newsletter"
+                >
                   Subscribe
                 </Button>
               </div>

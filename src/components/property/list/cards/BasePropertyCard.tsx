@@ -121,8 +121,8 @@ export function BasePropertyCard({
               className={`
                 relative z-10 transform -rotate-12 px-8 py-2 font-bold text-white text-lg uppercase tracking-widest shadow-lg
                 ${status === "sold" 
-                  ? "bg-red-600 border-2 border-red-500" 
-                  : "bg-blue-600 border-2 border-blue-500"
+                  ? "bg-red-700 border-2 border-red-600" 
+                  : "bg-blue-700 border-2 border-blue-600"
                 }
               `}
               style={{
@@ -138,12 +138,12 @@ export function BasePropertyCard({
         <div className="absolute top-3 left-3 right-3 flex justify-between items-start gap-2">
           <div className="flex gap-2 flex-wrap">
             {is_featured ? (
-              <Badge className="bg-orange-500 hover:bg-orange-600 text-white border-0">
+              <Badge className="bg-orange-600 hover:bg-orange-700 text-white border-0 font-medium">
                 Featured
               </Badge>
             ) : null}
             {is_new ? (
-              <Badge className="bg-green-500 hover:bg-green-600 text-white border-0">New</Badge>
+              <Badge className="bg-green-600 hover:bg-green-700 text-white border-0 font-medium">New</Badge>
             ) : null}
             <Badge variant={listing_type === "sale" ? "default" : "secondary"} className="border-0">
               {listing_type === "sale" ? "For Sale" : "For Rent"}

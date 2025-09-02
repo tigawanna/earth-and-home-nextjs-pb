@@ -137,7 +137,13 @@ export async function HeroSectionProperty({
 
                 <div className="flex gap-4">
                   <Link href={`/properties/${featuredProperty.id}`} className="w-full">
-                    <Button size="lg" className="w-full">View Details</Button>
+                    <Button 
+                      size="lg" 
+                      className="w-full"
+                      aria-label={`View details for ${featuredProperty.title || 'featured property'} in ${locationLabel || 'unspecified location'}`}
+                    >
+                      View Details
+                    </Button>
                   </Link>
                 </div>
               </div>

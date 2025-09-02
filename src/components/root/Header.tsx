@@ -18,10 +18,10 @@ export function Header({ isLandingPage }: { isLandingPage?: boolean }) {
       {/* Logo */}
       <div className="flex-1">
         <div className="flex items-center space-x-3">
-          <Link href="/">
+          <Link href="/" aria-label="Earth & Home - Go to homepage">
             <SiteIcon />
           </Link>
-          <Link href="/">
+          <Link href="/" aria-label="Earth & Home Real Estate - Go to homepage">
             <h1 className="text-2xl font-playfair font-bold text-primary">Earth & Home</h1>
             <p className="text-sm text-muted-foreground hidden sm:block">Real Estate Excellence</p>
           </Link>

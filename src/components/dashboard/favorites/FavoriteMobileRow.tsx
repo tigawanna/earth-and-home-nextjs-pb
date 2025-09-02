@@ -3,10 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
@@ -56,18 +56,20 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
             </div>
             <div className="flex items-center gap-2">
               <Link href={prop ? `/properties/${prop.id}` : "#"} className="inline-block" >
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" aria-label={`View property ${prop?.title || 'details'}`}>
                   <Eye className="w-4 h-4" />
                 </Button>
               </Link>
 
-              <Button variant="ghost" size="sm" onClick={() => onRemove(fav)}>
+              <Button variant="ghost" size="sm" onClick={() => onRemove(fav)} aria-label={`Remove ${prop?.title || 'property'} from favorites`}>
                 <Trash2 className="w-4 h-4 text-destructive" />
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" aria-label={`More actions for ${prop?.title || 'property'}`}>
                     <MoreHorizontal className="w-4 h-4" />
+                  </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
