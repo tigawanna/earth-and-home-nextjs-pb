@@ -30,17 +30,17 @@
   },
   "env": {
     "production": {
-      "name": "earth-and-home-prod",
+      "name": "earth-and-home-nextjs",
       "services": [
         {
           "binding": "WORKER_SELF_REFERENCE",
-          "service": "earth-and-home-prod"
+          "service": "earth-and-home-nextjs"
         }
       ],
       "r2_buckets": [
         {
           "binding": "NEXT_INC_CACHE_R2_BUCKET",
-          "bucket_name": "earth-and-home-cache"
+          "bucket_name": "earth-and-home-nextjs-cache"
         }
       ],
       "vars": {

@@ -1,7 +1,0 @@
-{
-  "routesDirectory": "./src/app/dashboard/_routes",
-  "generatedRouteTree": "./src/app/dashboard/routeTree.gen.ts",
-  "quoteStyle": "double",
-  "semicolons": true,
-  "disableTypes": false
-}
