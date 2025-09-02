@@ -40,7 +40,7 @@
       "r2_buckets": [
         {
           "binding": "NEXT_INC_CACHE_R2_BUCKET",
-          "bucket_name": "earth-and-home-nextjs-cache"
+          "bucket_name": "earth-and-home-cache"
         }
       ],
       "vars": {

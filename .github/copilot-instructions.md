@@ -35,6 +35,7 @@
 - `/src/utils` contains utility functions and types that doesn't rely on any specific framework or library
 
 ## Preferences & Conventions
+- use `pnpm`
 - Avoid using `any` except when absolutely necessary
 - Components should never exceed 150 lines - break into smaller components if needed
 - Main page components should not exceed 70 lines - extract sections into separate components

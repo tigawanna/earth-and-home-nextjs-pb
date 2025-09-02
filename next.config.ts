@@ -30,10 +30,25 @@ const nextConfig: NextConfig = {
     reactCompiler: true,
     viewTransition: true,
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
+    // Disable CSS chunking to preserve loading order
+    // optimizeCss: false,
   },
   compiler: {
     // Remove console logs only in production, excluding error logs
     removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
+  },
+  // Webpack configuration to control CSS order
+  webpack: (config, { dev, isServer }) => {
+    if (!dev && !isServer) {
+      // Disable CSS chunking in production
+      config.optimization.splitChunks.cacheGroups.styles = {
+        name: 'styles',
+        test: /\.(css|scss|sass)$/,
+        chunks: 'all',
+        enforce: true,
+      };
+    }
+    return config;
   },
   async rewrites() {
     return [

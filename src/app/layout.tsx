@@ -1,3 +1,4 @@
+import "./globals.css";
 import { Footer } from "@/components/root/Footer";
 import { PerformanceMonitor } from "@/components/shared/PerformanceMonitor";
 import { ThemeProvider } from "@/components/theme/theme-provider";
@@ -8,7 +9,6 @@ import { TanstackQueryProvider } from "@/lib/tanstack/query/tsq-provider";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
