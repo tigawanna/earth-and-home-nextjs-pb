@@ -28,7 +28,7 @@
 - PocketBase integration points:
   - Browser client: `src/lib/pocketbase/browser-client.ts`
   - Server client: `src/lib/pocketbase/server-client.ts`
-  - Middleware guard: `src/middleware.ts`
+  - Proxy guard (dashboard auth): `src/proxy.ts`
   - Environment variable: `NEXT_PUBLIC_POCKETBASE_API_URL` must point to your PocketBase API (e.g. http://127.0.0.1:8090)
   - Optional: generate typed models with `pnm run pb-types` into `src/lib/pocketbase/types/pb-types.ts` and zod schemas into `src/lib/pocketbase/types/pb-zod.ts`
 

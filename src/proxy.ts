@@ -6,12 +6,12 @@ import { UsersResponse } from "./lib/pocketbase/types/pb-types";
 import { deleteNextjsPocketbaseCookie } from "./lib/pocketbase/utils/next-cookies";
 
 const adminOnlyPatterns: RegExp[] = [
-  /^\/dashboard\/properties\/add$/, // add page
-  /^\/dashboard\/users(?:\/.*)?$/, // users area
-  /^\/dashboard\/properties\/[^/]+\/edit$/, // /dashboard/properties/:id/edit
+  /^\/dashboard\/properties\/add$/,
+  /^\/dashboard\/users(?:\/.*)?$/,
+  /^\/dashboard\/properties\/[^/]+\/edit$/,
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const cookieStore = await cookies();
   const client = await createServerClient(cookieStore);
   const pathname = new URL(request.url).pathname;
@@ -20,7 +20,6 @@ export async function middleware(request: NextRequest) {
       await client.from("users").authRefresh();
     }
   } catch {
-    // clear the auth store on failed refresh
     console.log("error happende = =>\n", "Failed to refresh user session, clearing auth store\n\n");
     client.authStore.clear();
   }
@@ -35,7 +34,6 @@ export async function middleware(request: NextRequest) {
     await deleteNextjsPocketbaseCookie();
     return NextResponse.redirect(new URL("/banned", request.url));
   }
-  // await storeNextjsPocketbaseCookie,(user.id, user);
   if (adminOnlyPatterns.some((re) => re.test(pathname))) {
     const isAdmin = !!user?.is_admin;
     if (!isAdmin) {

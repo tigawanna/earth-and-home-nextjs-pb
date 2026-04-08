@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --webpack",
+    "build": "next build",
     "start": "next start",
     "lint": "oxlint .",
     "format": "oxfmt .",
@@ -15,7 +15,7 @@
     "npm": "pnpm",
     "analyze": "ANALYZE=true next build --webpack",
     "lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse/localhost_3000-$(date +%Y%m%dT%H%M%S).html --save-assets --view",
-    "perf:build": "next build --webpack && next-bundle-analysis",
+    "perf:build": "next build",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy --env=production",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",

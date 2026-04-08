@@ -1,13 +1,11 @@
 import { TypedPocketBase } from "@tigawanna/typed-pocketbase";
 import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import { getPublicPocketBaseUrl } from "../public-url";
 import { Schema } from "../types/pb-types";
 import { cookies } from "next/headers";
 
 export async function createServerClient(cookieStore?: ReadonlyRequestCookies) {
-  const url = process.env.NEXT_PUBLIC_PB_URL;
-  if (!url) {
-    throw new Error("Pocketbase API url not defined !");
-  }
+  const url = getPublicPocketBaseUrl();
 
   if (typeof window !== "undefined") {
     throw new Error("This method is only supposed to call from the Server environment");

@@ -1,15 +1,11 @@
 import { TypedPocketBase } from "@tigawanna/typed-pocketbase";
+import { getPublicPocketBaseUrl } from "../public-url";
 import { Schema } from "../types/pb-types";
 
 let singletonClient: TypedPocketBase<Schema> | null = null;
 
-// export const _pb = new TypedPocketBase<Schema>(process.env.NEXT_PUBLIC_PB_URL);
-
 export function createBrowserClient() {
-  const url = process.env.NEXT_PUBLIC_PB_URL;
-  if (!url) {
-    throw new Error("Pocketbase API url not defined !");
-  }
+  const url = getPublicPocketBaseUrl();
 
   const createNewClient = () => new TypedPocketBase<Schema>(url);
 
