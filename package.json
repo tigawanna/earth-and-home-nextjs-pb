@@ -20,7 +20,7 @@
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy --env=production",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "auth:generate": "pnpm exec @better-auth/cli generate --config better-auth.config.ts --output src/db/schema/auth-schema.ts -y",
+    "auth:generate": "pnpm exec better-auth generate --config better-auth.config.ts --output src/db/schema/auth-schema.ts -y",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply earth-and-home-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply earth-and-home-db --remote",
