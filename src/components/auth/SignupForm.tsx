@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -11,10 +10,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { signupMutationOptions } from "@/data-access-layer/user/auth";
-import LinkLoadingIndicator from "@/lib/next/LinkLoadingIndicator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -22,9 +19,9 @@ import { toast } from "sonner";
 import { signupSchema, type SignupFormData } from "./auth-schemas";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 
-interface SignupFormProps { }
+interface SignupFormProps {}
 
-export function SignupForm({ }: SignupFormProps) {
+export function SignupForm(_props: SignupFormProps) {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -45,7 +42,7 @@ export function SignupForm({ }: SignupFormProps) {
       toast.success("Account created successfully!");
       router.push("/auth/signin");
     },
-    onError: (error) => {
+    onError: () => {
       toast.error("Failed to create account. Please try again.");
     },
   });
@@ -60,7 +57,8 @@ export function SignupForm({ }: SignupFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
         role="form"
-        aria-label="Sign up form">
+        aria-label="Sign up form"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -115,7 +113,8 @@ export function SignupForm({ }: SignupFormProps) {
                     type="button"
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-2 py-1 bg-muted rounded hover:bg-accent focus:outline-none"
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    onClick={() => setShowPassword((v) => !v)}>
+                    onClick={() => setShowPassword((v) => !v)}
+                  >
                     {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
@@ -142,7 +141,8 @@ export function SignupForm({ }: SignupFormProps) {
                     type="button"
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-2 py-1 bg-muted rounded hover:bg-accent focus:outline-none"
                     aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                    onClick={() => setShowConfirmPassword((v) => !v)}>
+                    onClick={() => setShowConfirmPassword((v) => !v)}
+                  >
                     {showConfirmPassword ? "Hide" : "Show"}
                   </button>
                 </div>

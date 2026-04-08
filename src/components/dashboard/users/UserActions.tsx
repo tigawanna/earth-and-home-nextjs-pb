@@ -20,9 +20,8 @@ import {
   ShieldOff,
   Trash2,
   UserCheck,
-  UserX
+  UserX,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface UserActionsProps {
@@ -31,26 +30,24 @@ interface UserActionsProps {
   onUserUpdate?: () => void;
 }
 
-export function UserActions({ user, currentUserId, onUserUpdate }: UserActionsProps) {
-  const router = useRouter();
+export function UserActions({ user, currentUserId, onUserUpdate: _onUserUpdate }: UserActionsProps) {
   const isCurrentUser = currentUserId === user.id;
 
   const copyToClipboard = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
       toast.success(`${label} copied to clipboard`);
-    } catch (error) {
+    } catch {
       toast.error("Failed to copy to clipboard");
     }
   };
 
-  const handleUserAction = async (action: string, value?: boolean) => {
+  const handleUserAction = async (_action: string, _value?: boolean) => {
     toast.success("this feature is coming soon");
   };
 
   const handleDeleteUser = async () => {
     toast.success("this feature is coming soon");
-
   };
 
   return (

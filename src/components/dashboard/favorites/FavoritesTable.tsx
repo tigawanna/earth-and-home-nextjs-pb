@@ -2,24 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
 import {
-    FavoritesResponse,
-    PropertiesResponse,
-    UsersResponse,
+  FavoritesResponse,
+  PropertiesResponse,
+  UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
@@ -71,7 +71,7 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
       await toggleFavorite(propertyId, userId);
       toast.success("Toggled favorite");
     } catch (e) {
-      console.log("error happende = =>\n",e);
+      console.log("error happende = =>\n", e);
       toast.error("Failed to toggle favorite");
     }
   }
@@ -174,7 +174,8 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
                     <div className="flex items-center justify-end gap-2">
                       <Link
                         href={prop ? `/properties/${(prop as any).id}` : "#"}
-                        className="inline-block">
+                        className="inline-block"
+                      >
                         <Button variant="ghost" size="sm">
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -189,7 +190,8 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
                           <DropdownMenuItem>
                             <Link
                               href={prop ? `/properties/${(prop as any).id}` : "#"}
-                              className="flex items-center gap-2 w-full">
+                              className="flex items-center gap-2 w-full"
+                            >
                               <Eye className="w-4 h-4" />
                               View Property
                             </Link>

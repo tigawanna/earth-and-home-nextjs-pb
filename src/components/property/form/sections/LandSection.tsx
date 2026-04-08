@@ -3,11 +3,7 @@
 import { Control, useWatch } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PropertyFormData } from "../property-form-schema";
-import { 
-  NumberFieldComponent, 
-  SelectFieldComponent,
-  TextFieldComponent 
-} from "../form-fields";
+import { NumberFieldComponent, SelectFieldComponent, TextFieldComponent } from "../form-fields";
 import { isLandProperty } from "@/utils/forms";
 
 interface LandSectionProps {
@@ -26,7 +22,7 @@ const zoningOptions = [
 
 export function LandSection({ control }: LandSectionProps) {
   const propertyType = useWatch({ control, name: "property_type" });
-  
+
   // Only show for land properties
   if (!isLandProperty(propertyType)) {
     return null;
@@ -46,7 +42,7 @@ export function LandSection({ control }: LandSectionProps) {
             placeholder="Enter lot size in square feet"
             required
           />
-          
+
           <NumberFieldComponent
             control={control}
             name="lot_size_acres"

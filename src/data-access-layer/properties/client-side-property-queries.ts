@@ -10,8 +10,6 @@ import {
   baseGetSearchableFavorites,
 } from "./base-property-queries";
 
-
-
 interface DashboardPropertyQueryOptionsProps {
   page?: number;
   limit?: number;
@@ -39,7 +37,7 @@ export function dashboardPropertyQueryOptions({
       sortBy,
       sortOrder,
     ],
-    queryFn: async ({}) => {
+    queryFn: async () => {
       // Merge search term with filters
       const mergedFilters = {
         ...filters,
@@ -47,12 +45,12 @@ export function dashboardPropertyQueryOptions({
       };
 
       try {
-      const result = await baseGetPaginatedProperties({
-        client: browserPB,
-        filters: mergedFilters,
-        page,
-        limit,
-      });
+        const result = await baseGetPaginatedProperties({
+          client: browserPB,
+          filters: mergedFilters,
+          page,
+          limit,
+        });
         // const result = await getPaginatedProperties({
         //   client: browserPB,
         //   filters: mergedFilters,
@@ -100,7 +98,7 @@ export function dashboardFavoritesQueryOptions({
 }: DashboardFavoritesQueryOptionsProps = {}) {
   return queryOptions({
     queryKey: [queryKeyPrefixes.dashboard, "favorites", { page, limit, q }],
-    queryFn: async ({}) => {
+    queryFn: async () => {
       return await baseGetSearchableFavorites({
         client: browserPB,
         q,
@@ -125,7 +123,7 @@ export function dashboardUsersQueryOptions({
 }: DashboardUsersQueryOptionsProps = {}) {
   return queryOptions({
     queryKey: [queryKeyPrefixes.dashboard, "users", { page, limit }],
-    queryFn: async ({}) => {
+    queryFn: async () => {
       return await baseGetPaginatedUsers({
         client: browserPB,
         page,
@@ -150,7 +148,7 @@ export function dashboardPropertyByIdQueryOptions({
 }: DashboardPropertyByIdQueryOptionsProps) {
   return queryOptions({
     queryKey: [queryKeyPrefixes.dashboard, "property", propertyId, userId],
-    queryFn: async ({}) => {
+    queryFn: async () => {
       try {
         const { result, success, message } = await baseGetPropertyById({
           client: browserPB,

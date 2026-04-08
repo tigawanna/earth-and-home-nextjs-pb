@@ -15,7 +15,7 @@ export async function FavoriteProperties({ searchParams }: FavoritePropertiesPro
     page: typeof searchParams?.page === "string" ? parseInt(searchParams.page, 10) : 1,
     limit: 50,
   });
- 
+
   return (
     <div className="space-y-6">
       <FavoritesTable data={result} />

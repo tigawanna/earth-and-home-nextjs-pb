@@ -21,7 +21,8 @@ export function MediaSection({ control }: MediaSectionProps) {
         <Alert>
           <InfoIcon className="h-4 w-4" />
           <AlertDescription>
-            Image upload functionality will be implemented later. For now, you can provide URLs to existing images.
+            Image upload functionality will be implemented later. For now, you can provide URLs to
+            existing images.
           </AlertDescription>
         </Alert>
 
@@ -33,7 +34,7 @@ export function MediaSection({ control }: MediaSectionProps) {
             placeholder="https://example.com/image.jpg"
             description="URL to the main property image"
           />
-          
+
           <TextFieldComponent
             control={control}
             name="video_url"
@@ -41,7 +42,7 @@ export function MediaSection({ control }: MediaSectionProps) {
             placeholder="https://youtube.com/watch?v=..."
             description="YouTube, Vimeo, or other video platform URL"
           />
-          
+
           <TextFieldComponent
             control={control}
             name="virtual_tour_url"

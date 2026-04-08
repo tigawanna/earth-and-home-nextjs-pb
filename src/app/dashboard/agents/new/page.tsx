@@ -13,9 +13,7 @@ export default async function NewAgentPage() {
 
   return (
     <section className="w-full h-full flex flex-col">
-      <AgentForm 
-        currentUser={user}
-      />
+      <AgentForm currentUser={user} />
     </section>
   );
 }

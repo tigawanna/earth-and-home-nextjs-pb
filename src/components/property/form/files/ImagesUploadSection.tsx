@@ -21,8 +21,31 @@ interface ImagesUploadSectionProps {
   };
 }
 
-// Type for images field - can be File[] for new uploads or string[] for existing
 type ImageItem = File | string;
+
+function getImageName(item: ImageItem): string {
+  if (!item) return "Unknown file";
+
+  if (item instanceof File) {
+    return item.name;
+  }
+
+  if (typeof item === "string") {
+    return item;
+  }
+
+  return "Unknown file";
+}
+
+function getImageSize(item: ImageItem): string {
+  if (!item) return "—";
+
+  if (item instanceof File) {
+    return `${(item.size / 1024 / 1024).toFixed(2)} MB`;
+  }
+
+  return "—";
+}
 
 export function ImagesUploadSection({ control, existingProperty }: ImagesUploadSectionProps) {
   const { append, remove } = useFieldArray({
@@ -32,7 +55,6 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
 
   const { images } = useWatch({ control });
   const fields: ImageItem[] = images || [];
-
 
   const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -81,7 +103,7 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
     toast.success("Featured image updated");
   };
 
-  const getImagePreview = (item: ImageItem, index: number): string => {
+  const getImagePreview = (item: ImageItem): string => {
     if (!item) return "/apple-icon.png";
     if (item instanceof File) {
       return URL.createObjectURL(item);
@@ -95,30 +117,6 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
     }
 
     return "/apple-icon.png";
-  };
-
-  const getImageName = (item: ImageItem): string => {
-    if (!item) return "Unknown file";
-
-    if (item instanceof File) {
-      return item.name;
-    }
-
-    if (typeof item === "string") {
-      return item; // filename string
-    }
-
-    return "Unknown file";
-  };
-
-  const getImageSize = (item: ImageItem): string => {
-    if (!item) return "—";
-
-    if (item instanceof File) {
-      return `${(item.size / 1024 / 1024).toFixed(2)} MB`;
-    }
-
-    return "—"; // Unknown size for existing files
   };
 
   return (
@@ -153,7 +151,8 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
 
           <div
             className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
-            onClick={() => fileInputRef.current?.click()}>
+            onClick={() => fileInputRef.current?.click()}
+          >
             <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
             <p className="text-sm font-medium mb-2">Click to upload images</p>
             <p className="text-xs text-muted-foreground">JPEG, PNG, WebP, GIF up to 5MB each</p>
@@ -163,7 +162,8 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
             type="button"
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
-            className="w-full">
+            className="w-full"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Add Images
           </Button>
@@ -181,13 +181,18 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
 
             {/* Debug info - remove this later */}
             {process.env.NODE_ENV === "development" && (
-              <pre className="text-xs  p-2 rounded">{JSON.stringify(
-                fields.map((field) => {
-                  if (typeof field === "string") {
-                    return { name: field, type: "string" };
-                  }
-                  return { name: field.name, type: "file" };
-                }), null, 2)}</pre>
+              <pre className="text-xs  p-2 rounded">
+                {JSON.stringify(
+                  fields.map((field) => {
+                    if (typeof field === "string") {
+                      return { name: field, type: "string" };
+                    }
+                    return { name: field.name, type: "file" };
+                  }),
+                  null,
+                  2,
+                )}
+              </pre>
             )}
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -203,11 +208,12 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
                     key={index}
                     className={`group relative overflow-hidden rounded-lg border transition-all hover:shadow-md ${
                       index === featuredImageIndex ? "ring-2 ring-primary ring-offset-2" : ""
-                    }`}>
+                    }`}
+                  >
                     {/* Image */}
                     <div className="aspect-video relative bg-muted">
                       <Image
-                        src={getImagePreview(imageItem, index)}
+                        src={getImagePreview(imageItem)}
                         alt={getImageName(imageItem)}
                         fill
                         className="object-cover"
@@ -243,7 +249,8 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
                           size="sm"
                           className="h-7 px-2"
                           onClick={() => handleSetFeatured(index)}
-                          disabled={index === featuredImageIndex}>
+                          disabled={index === featuredImageIndex}
+                        >
                           <Star className="h-3 w-3" />
                         </Button>
 
@@ -252,7 +259,8 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
                           variant="outline"
                           size="sm"
                           className="h-7 px-2 hover:bg-destructive hover:text-destructive-foreground ml-auto"
-                          onClick={() => handleRemoveImage(index)}>
+                          onClick={() => handleRemoveImage(index)}
+                        >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>

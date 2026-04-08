@@ -1,16 +1,26 @@
-"use client"
+"use client";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { toggleAdminMutationOptions, toggleBanUserMutationOptions } from "@/data-access-layer/user/admin-user-management";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  toggleAdminMutationOptions,
+  toggleBanUserMutationOptions,
+} from "@/data-access-layer/user/admin-user-management";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { useMutation } from "@tanstack/react-query";
 import { Ban, Eye, Loader, MoreHorizontal, Shield, Users as UsersIcon } from "lucide-react";
@@ -42,7 +52,7 @@ export function UsersTable({ users = [] }: UsersTableProps) {
       await toggleAdminMutation.mutateAsync({ userId: user.id, is_admin: !!user.is_admin });
       toast.success(`Updated admin status for ${user.name || user.email}`);
     } catch (e) {
-      console.log("error happende = =>\n",e);
+      console.log("error happende = =>\n", e);
       toast.error("Failed to update admin status");
     }
   }
@@ -52,7 +62,7 @@ export function UsersTable({ users = [] }: UsersTableProps) {
       await toggleBanMutation.mutateAsync({ userId: user.id, is_banned: !!user.is_banned });
       toast.success(`${user.is_banned ? "Unbanned" : "Banned"} ${user.name || user.email}`);
     } catch (e) {
-      console.log("error happende = =>\n",e);
+      console.log("error happende = =>\n", e);
       toast.error("Failed to update ban status");
     }
   }
@@ -84,7 +94,7 @@ export function UsersTable({ users = [] }: UsersTableProps) {
               <TableRow key={u.id}>
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-muted/20 flex items-center justify-center"> 
+                    <div className="w-10 h-10 rounded-full bg-muted/20 flex items-center justify-center">
                       <UsersIcon className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div>
@@ -101,12 +111,16 @@ export function UsersTable({ users = [] }: UsersTableProps) {
 
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Badge className={u.is_admin ? "bg-blue-100 text-blue-800" : "bg-muted/10 text-muted-foreground"}>
+                    <Badge
+                      className={
+                        u.is_admin
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-muted/10 text-muted-foreground"
+                      }
+                    >
                       {u.is_admin ? "Admin" : "User"}
                     </Badge>
-                    {u.is_banned ? (
-                      <Badge className="bg-red-100 text-red-800">Banned</Badge>
-                    ) : null}
+                    {u.is_banned ? <Badge className="bg-red-100 text-red-800">Banned</Badge> : null}
                   </div>
                 </TableCell>
 
@@ -133,14 +147,16 @@ export function UsersTable({ users = [] }: UsersTableProps) {
                           )}
                         </DropdownMenuItem>
 
-                        <DropdownMenuItem onClick={() => handleToggleBan(u)} className={u.is_banned ? "text-green-600" : "text-red-600"}>
+                        <DropdownMenuItem
+                          onClick={() => handleToggleBan(u)}
+                          className={u.is_banned ? "text-green-600" : "text-red-600"}
+                        >
                           <Ban className="w-4 h-4 mr-2" />
                           {u.is_banned ? "Unban User" : "Ban User"}
                           {toggleBanMutation.isPending && (
                             <Loader className="ml-2 h-4 w-4 animate-spin" />
                           )}
                         </DropdownMenuItem>
-
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -151,7 +167,9 @@ export function UsersTable({ users = [] }: UsersTableProps) {
         </Table>
       </div>
 
-      {filtered.length === 0 && <div className="text-center py-8 text-muted-foreground">No users found.</div>}
+      {filtered.length === 0 && (
+        <div className="text-center py-8 text-muted-foreground">No users found.</div>
+      )}
     </div>
   );
 }

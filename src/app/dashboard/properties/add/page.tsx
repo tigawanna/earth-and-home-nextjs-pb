@@ -10,9 +10,9 @@ export default async function NewPropertyPage() {
   }
   if (!agent) {
     // throw redirect("/dashboard/agents");
-    return <AgentRequiredModal open/>
+    return <AgentRequiredModal open />;
   }
- return (
+  return (
     <div className="container max-w-4xl mx-auto">
       <PropertyForm isEdit={false} user={user} agent={agent} />
     </div>

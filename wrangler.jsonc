@@ -3,30 +3,27 @@
   "main": ".open-next/worker.js",
   "name": "earth-and-home-nextjs",
   "compatibility_date": "2024-12-30",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "earth-and-home-nextjs"
-    }
+      "service": "earth-and-home-nextjs",
+    },
   ],
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "earth-and-home-cache"
-    }
+      "bucket_name": "earth-and-home-cache",
+    },
   ],
   "observability": {
     "logs": {
-      "enabled": true
-    }
+      "enabled": true,
+    },
   },
   "env": {
     "production": {
@@ -34,20 +31,20 @@
       "services": [
         {
           "binding": "WORKER_SELF_REFERENCE",
-          "service": "earth-and-home-nextjs"
-        }
+          "service": "earth-and-home-nextjs",
+        },
       ],
       "r2_buckets": [
         {
           "binding": "NEXT_INC_CACHE_R2_BUCKET",
-          "bucket_name": "earth-and-home-cache"
-        }
+          "bucket_name": "earth-and-home-cache",
+        },
       ],
       "vars": {
         "NEXT_PUBLIC_PB_URL": "https://earth-and-home.tigawanna.vip",
         "NEXT_PUBLIC_POSTHOG_HOST": "https://us.i.posthog.com",
-        "NODE_ENV": "production"
-      }
-    }
-  }
+        "NODE_ENV": "production",
+      },
+    },
+  },
 }

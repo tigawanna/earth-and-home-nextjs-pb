@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 
 interface TablePendingProps {
@@ -18,13 +18,7 @@ interface TablePendingProps {
   showHeader?: boolean;
 }
 
-export function TablePending({
-  columns = 6,
-  rows = 12,
-  showHeader = true,
-}: TablePendingProps) {
-  const innerCols = Math.max(1, columns - 1);
-
+export function TablePending({ columns: _columns = 6, rows = 12, showHeader = true }: TablePendingProps) {
   return (
     <Card className="w-full">
       {showHeader && (

@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 
 interface LogoutButtonProps {}
 
-export function LogoutButton({}: LogoutButtonProps) {
+export function LogoutButton(_props: LogoutButtonProps) {
   const router = useRouter();
   const { mutate, isPending: isLoggingOut } = useMutation({
     ...signoutMutationOptions(),
@@ -22,5 +22,3 @@ export function LogoutButton({}: LogoutButtonProps) {
     </Button>
   );
 }
-
-

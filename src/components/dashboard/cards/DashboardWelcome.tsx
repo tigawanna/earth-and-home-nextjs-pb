@@ -15,7 +15,8 @@ export function DashboardWelcome({ user, className }: DashboardWelcomeProps) {
     <Card
       className={`bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/20 ${
         className || ""
-      }`}>
+      }`}
+    >
       <CardContent className="p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div className="space-y-2 flex-1">

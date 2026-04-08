@@ -19,7 +19,7 @@ export function FavoritesSearchbar({ className }: FavoritesSearchbarProps) {
     {
       shallow: false,
       startTransition,
-    }
+    },
   );
 
   return (
@@ -30,7 +30,7 @@ export function FavoritesSearchbar({ className }: FavoritesSearchbarProps) {
           <Heart className="h-6 w-6" />
           <h1 className="text-2xl font-bold">Favorites</h1>
         </div>
-        
+
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input

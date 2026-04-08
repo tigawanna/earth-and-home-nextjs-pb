@@ -11,8 +11,6 @@ export default async function SinglePropertyMessagesPage({
 }: SinglePropertyMessagesPageProps) {
   const messageId = (await params).msg;
 
-
-
   const user = await getServerSideUser();
   if (!messageId) {
     throw redirect("/dashboard");
@@ -39,12 +37,12 @@ export default async function SinglePropertyMessagesPage({
           </h1>
           <p className="text-sm text-muted-foreground">
             Message from {messageParent.expand?.user_id?.username} •{" "}
-          {messageParent.expand?.user_id?.email} •{" "}
+            {messageParent.expand?.user_id?.email} •{" "}
             {messageParent.type === "parent" ? " Original Message" : " Reply Thread"}
           </p>
         </div>
       </div>
-      
+
       {/* Chat Content */}
       <div className="flex-1 flex flex-col items-center justify-center">
         <LazySinglePropertyMessagesShell

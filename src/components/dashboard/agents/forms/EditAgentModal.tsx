@@ -20,7 +20,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { AgentsResponse, AgentsUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -89,11 +95,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
         {trigger ? (
           trigger
         ) : (
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 w-8 p-0"
-          >
+          <Button variant="outline" size="sm" className="h-8 w-8 p-0">
             <Pencil className="h-4 w-4" />
             <span className="sr-only">Edit agent</span>
           </Button>
@@ -174,11 +176,13 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
                   <FormItem>
                     <FormLabel>Years of Experience</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="Years" 
+                      <Input
+                        type="number"
+                        placeholder="Years"
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                        onChange={(e) =>
+                          field.onChange(e.target.value ? Number(e.target.value) : undefined)
+                        }
                       />
                     </FormControl>
                     <FormMessage />
@@ -208,15 +212,10 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                     <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>
                     <div className="space-y-1 leading-none">
-                      <FormLabel>
-                        Verified Agent
-                      </FormLabel>
+                      <FormLabel>Verified Agent</FormLabel>
                       <FormMessage />
                     </div>
                   </FormItem>

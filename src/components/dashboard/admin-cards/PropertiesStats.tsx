@@ -7,7 +7,7 @@ import { ArrowRight, Home } from "lucide-react";
 
 interface PropertiesStatsProps {}
 
-export function PropertiesStats({}: PropertiesStatsProps) {
+export function PropertiesStats(_props: PropertiesStatsProps) {
   const { data, isPending } = useSuspenseQuery(dashboardPropertyQueryOptions());
   const total = data?.result?.totalItems ?? 0;
 
@@ -15,7 +15,8 @@ export function PropertiesStats({}: PropertiesStatsProps) {
     <Card
       className="relative w-full bg-card/95 border border-border/60 shadow-sm overflow-hidden group transition-colors rounded-lg"
       aria-busy={isPending}
-      aria-live="polite">
+      aria-live="polite"
+    >
       <div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
         style={{
@@ -49,7 +50,8 @@ export function PropertiesStats({}: PropertiesStatsProps) {
             variant="ghost"
             size="sm"
             aria-label="Manage properties"
-            className="gap-1 text-xs font-medium hover:bg-primary/10 hover:text-primary h-6 px-2 shrink-0 self-start">
+            className="gap-1 text-xs font-medium hover:bg-primary/10 hover:text-primary h-6 px-2 shrink-0 self-start"
+          >
             Manage <ArrowRight className="h-3 w-3" />
           </Button>
         </div>

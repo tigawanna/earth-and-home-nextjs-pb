@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PropertyFilters } from "@/data-access-layer/properties/property-types";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -19,7 +18,7 @@ export function FeaturedProperties() {
             Discover our handpicked selection of premium properties available for sale
           </p>
         </div>
-        
+
         <Suspense fallback={<LoadingFallback />}>
           <FeaturedPropertiesList />
         </Suspense>
@@ -29,7 +28,8 @@ export function FeaturedProperties() {
             size="lg"
             variant="outline"
             className="border-primary text-primary hover:bg-primary/10"
-            asChild>
+            asChild
+          >
             <Link href="/properties">View All Properties</Link>
           </Button>
         </div>

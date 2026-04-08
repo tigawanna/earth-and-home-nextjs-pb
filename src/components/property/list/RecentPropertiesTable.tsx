@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { dashboardPropertyQueryOptions } from "@/data-access-layer/properties/client-side-property-queries";
@@ -18,11 +18,16 @@ export function RecentPropertiesTable({ limit = 10, className }: RecentPropertie
   const items = data?.result?.items ?? [];
 
   return (
-    <Card className={cn("bg-card/95 border border-border/60 shadow-sm", className)} aria-busy={isPending}>
+    <Card
+      className={cn("bg-card/95 border border-border/60 shadow-sm", className)}
+      aria-busy={isPending}
+    >
       <CardHeader className="py-4 px-5 flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold">Recent Properties</CardTitle>
         <Button asChild variant="ghost" size="sm" className="h-7 px-2 text-xs gap-1">
-          <Link href="/dashboard/properties">View all <ArrowRight className="h-3 w-3" /></Link>
+          <Link href="/dashboard/properties">
+            View all <ArrowRight className="h-3 w-3" />
+          </Link>
         </Button>
       </CardHeader>
       <CardContent className="px-0 pb-0">
@@ -46,23 +51,45 @@ export function RecentPropertiesTable({ limit = 10, className }: RecentPropertie
               )}
               {!isPending && items.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-muted-foreground text-xs">No properties found.</td>
+                  <td colSpan={4} className="py-8 text-center text-muted-foreground text-xs">
+                    No properties found.
+                  </td>
                 </tr>
               )}
-              {!isPending && items.map(p => {
-                // Assuming structure has fields: title, location(city?), price, created
-                const created = p.created ? formatDistanceToNow(new Date(p.created), { addSuffix: true }) : "";
-                return (
-                  <tr key={p.id} className="border-b last:border-b-0 border-border/40 hover:bg-muted/30 transition-colors h-10">
-                    <td className="px-4 py-1.5 font-medium text-foreground max-w-[180px] truncate">
-                      <Link href={`/properties/${p.id}`} className="hover:text-primary">{p.title || "Untitled"}</Link>
-                    </td>
-                    <td className="px-4 py-1.5 text-muted-foreground hidden sm:table-cell max-w-[140px] truncate">{(p as any).city || (p as any).location || "-"}</td>
-                    <td className="px-4 py-1.5 text-foreground hidden md:table-cell">{p.price ? Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number(p.price)) : "-"}</td>
-                    <td className="px-4 py-1.5 text-muted-foreground hidden lg:table-cell whitespace-nowrap">{created}</td>
-                  </tr>
-                );
-              })}
+              {!isPending &&
+                items.map((p) => {
+                  // Assuming structure has fields: title, location(city?), price, created
+                  const created = p.created
+                    ? formatDistanceToNow(new Date(p.created), { addSuffix: true })
+                    : "";
+                  return (
+                    <tr
+                      key={p.id}
+                      className="border-b last:border-b-0 border-border/40 hover:bg-muted/30 transition-colors h-10"
+                    >
+                      <td className="px-4 py-1.5 font-medium text-foreground max-w-[180px] truncate">
+                        <Link href={`/properties/${p.id}`} className="hover:text-primary">
+                          {p.title || "Untitled"}
+                        </Link>
+                      </td>
+                      <td className="px-4 py-1.5 text-muted-foreground hidden sm:table-cell max-w-[140px] truncate">
+                        {(p as any).city || (p as any).location || "-"}
+                      </td>
+                      <td className="px-4 py-1.5 text-foreground hidden md:table-cell">
+                        {p.price
+                          ? Intl.NumberFormat(undefined, {
+                              style: "currency",
+                              currency: "USD",
+                              maximumFractionDigits: 0,
+                            }).format(Number(p.price))
+                          : "-"}
+                      </td>
+                      <td className="px-4 py-1.5 text-muted-foreground hidden lg:table-cell whitespace-nowrap">
+                        {created}
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>

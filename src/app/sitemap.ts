@@ -10,25 +10,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${baseUrl}/properties`,
       lastModified: new Date(),
-      changeFrequency: 'daily',
+      changeFrequency: "daily",
       priority: 0.8,
     },
     {
       url: `${baseUrl}/auth/signin`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 0.3,
     },
     {
       url: `${baseUrl}/auth/signup`,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 0.3,
     },
   ];
@@ -36,22 +36,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Get active properties for dynamic sitemap
     const propertiesResponse = await getProperties({
-      filters: { status: 'active' },
+      filters: { status: "active" },
       limit: 1000, // Get a large number of properties for sitemap
     });
 
     if (propertiesResponse.success && propertiesResponse.properties) {
-      const propertyPages: MetadataRoute.Sitemap = propertiesResponse.properties.map((property) => ({
-        url: `${baseUrl}/properties/${property.id}`,
-        lastModified: new Date(property.updated),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6,
-      }));
+      const propertyPages: MetadataRoute.Sitemap = propertiesResponse.properties.map(
+        (property) => ({
+          url: `${baseUrl}/properties/${property.id}`,
+          lastModified: new Date(property.updated),
+          changeFrequency: "weekly" as const,
+          priority: 0.6,
+        }),
+      );
 
       return [...staticPages, ...propertyPages];
     }
   } catch (error) {
-    console.error('Error generating sitemap:', error);
+    console.error("Error generating sitemap:", error);
   }
 
   return staticPages;

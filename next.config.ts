@@ -1,11 +1,12 @@
 import "dotenv/config";
 import type { NextConfig } from "next";
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
 });
 
 const nextConfig: NextConfig = {
+  reactCompiler: true,
   images: {
     remotePatterns: [
       {
@@ -18,8 +19,8 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_PB_URL?.replace(/^https?:\/\//, '') || "",
-      }
+        hostname: process.env.NEXT_PUBLIC_PB_URL?.replace(/^https?:\/\//, "") || "",
+      },
     ],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 31536000, // 1 year
@@ -27,7 +28,6 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   experimental: {
-    reactCompiler: true,
     viewTransition: true,
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
     // Disable CSS chunking to preserve loading order
@@ -42,9 +42,9 @@ const nextConfig: NextConfig = {
     if (!dev && !isServer) {
       // Disable CSS chunking in production
       config.optimization.splitChunks.cacheGroups.styles = {
-        name: 'styles',
+        name: "styles",
         test: /\.(css|scss|sass)$/,
-        chunks: 'all',
+        chunks: "all",
         enforce: true,
       };
     }

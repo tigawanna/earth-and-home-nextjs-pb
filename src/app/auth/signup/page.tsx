@@ -10,7 +10,15 @@ import LinkLoadingIndicator from "@/lib/next/LinkLoadingIndicator";
 export const metadata: Metadata = {
   title: "Sign Up",
   description: `Create your free ${siteinfo.title} account to save property favorites, set up custom search alerts, and get personalized real estate recommendations. Join thousands of users finding their perfect home.`,
-  keywords: ["sign up", "create account", "register", "free account", "real estate account", "property alerts", siteinfo.title],
+  keywords: [
+    "sign up",
+    "create account",
+    "register",
+    "free account",
+    "real estate account",
+    "property alerts",
+    siteinfo.title,
+  ],
   openGraph: {
     title: `Sign Up | ${siteinfo.title}`,
     description: `Join ${siteinfo.title} to access exclusive property features and personalized real estate services.`,
@@ -32,7 +40,8 @@ export default function SignupPage() {
             <h2 className="sr-only">Create your Earth & Home account</h2>
             <span
               className="block mb-6 text-3xl font-extrabold text-primary"
-              aria-label="Sign Up Label">
+              aria-label="Sign Up Label"
+            >
               Sign Up
             </span>
             {process.env.NODE_ENV === "development" && <SignupForm />}

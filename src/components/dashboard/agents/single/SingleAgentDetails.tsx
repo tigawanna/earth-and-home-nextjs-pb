@@ -1,5 +1,10 @@
 import { CopyButton } from "@/components/shared/CopyButton";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,7 +13,17 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { AgentsResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
-import { Building2, Calendar, CheckCircle, FileText, Mail, MapPin, Phone, Star, User } from "lucide-react";
+import {
+  Building2,
+  Calendar,
+  CheckCircle,
+  FileText,
+  Mail,
+  MapPin,
+  Phone,
+  Star,
+  User,
+} from "lucide-react";
 
 interface SingleAgentDetailsProps {
   agent: AgentsResponse & {
@@ -22,19 +37,17 @@ interface SingleAgentDetailsProps {
 
 export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
   const user = agent.expand?.user_id;
-  const avatarSrc = user?.avatar
-    ? getImageThumbnailUrl(user, user.avatar, "96x96")
-    : undefined;
+  const avatarSrc = user?.avatar ? getImageThumbnailUrl(user, user.avatar, "96x96") : undefined;
   const contactMethods = [user?.email, user?.phone].filter(Boolean).length;
   const agencyDataFields = [
     agent.agency_name,
     agent.license_number,
     agent.specialization,
     agent.service_areas,
-    agent.years_experience ? agent.years_experience.toString() : undefined
+    agent.years_experience ? agent.years_experience.toString() : undefined,
   ].filter(Boolean).length;
   const profilePercent = Math.round(
-    (([user?.name, user?.email, user?.phone].filter(Boolean).length + agencyDataFields) / 8) * 100
+    (([user?.name, user?.email, user?.phone].filter(Boolean).length + agencyDataFields) / 8) * 100,
   );
 
   return (
@@ -61,7 +74,8 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               <div className="flex flex-wrap items-center gap-2 mt-2">
                 <Badge
                   variant="secondary"
-                  className="bg-primary/10 text-primary border-primary/20 font-medium">
+                  className="bg-primary/10 text-primary border-primary/20 font-medium"
+                >
                   <Building2 className="w-3 h-3 mr-1" />
                   Property Agent
                 </Badge>
@@ -81,7 +95,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                 Agent: {user?.name || user?.email || "Unknown Agent"}
               </CardDescription>
             </div>
-            
+
             {/* Quick Actions - moved to header */}
             <div className="flex flex-col sm:flex-row gap-3 lg:ml-auto">
               {user?.email && (
@@ -90,7 +104,8 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                     asChild
                     variant="outline"
                     size="sm"
-                    className="hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
+                    className="hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group"
+                  >
                     <a href={`mailto:${user.email}`}>
                       <Mail className="size-4 group-hover:text-primary transition-colors" />
                       Email
@@ -111,7 +126,8 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                     asChild
                     variant="outline"
                     size="sm"
-                    className="hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group">
+                    className="hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group"
+                  >
                     <a href={`tel:${user.phone}`}>
                       <Phone className="size-4 group-hover:text-primary transition-colors" />
                       Phone
@@ -129,7 +145,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
             </div>
           </div>
         </CardHeader>
-        
+
         <CardContent className="space-y-8">
           {/* Agent Information Accordion */}
           <Accordion type="single" collapsible defaultValue="agent-details" className="w-full">
@@ -146,7 +162,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                       <p className="font-medium">{agent.agency_name || "Not provided"}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <User className="size-4 text-muted-foreground" />
                     <div>
@@ -154,7 +170,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                       <p className="font-medium">{user?.name || "Not provided"}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <Mail className="size-4 text-muted-foreground" />
                     <div>
@@ -162,7 +178,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                       <p className="font-medium">{user?.email || "Not provided"}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <Phone className="size-4 text-muted-foreground" />
                     <div>
@@ -170,7 +186,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                       <p className="font-medium">{user?.phone || "Not provided"}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <FileText className="size-4 text-muted-foreground" />
                     <div>
@@ -178,15 +194,19 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                       <p className="font-medium">{agent.license_number || "Not provided"}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <Star className="size-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Years Experience</p>
-                      <p className="font-medium">{agent.years_experience ? `${agent.years_experience} years` : "Not provided"}</p>
+                      <p className="font-medium">
+                        {agent.years_experience
+                          ? `${agent.years_experience} years`
+                          : "Not provided"}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <MapPin className="size-4 text-muted-foreground" />
                     <div>
@@ -194,12 +214,14 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                       <p className="font-medium">{agent.service_areas || "Not provided"}</p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <Building2 className="size-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Specialization</p>
-                      <p className="font-medium capitalize">{agent.specialization || "Not provided"}</p>
+                      <p className="font-medium capitalize">
+                        {agent.specialization || "Not provided"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -216,11 +238,17 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                 <Calendar className="size-4 text-primary" />
                 <span className="text-sm font-medium text-primary">Status</span>
               </div>
-              <Badge className={agent.is_verified ? "bg-green-600 hover:bg-green-700" : "bg-primary hover:bg-primary/90"}>
+              <Badge
+                className={
+                  agent.is_verified
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-primary hover:bg-primary/90"
+                }
+              >
                 {agent.is_verified ? "Verified" : "Pending"}
               </Badge>
             </div>
-            
+
             <div className="flex items-center justify-between p-4 bg-accent/10 rounded-lg border border-accent/20">
               <div className="flex items-center gap-2">
                 <Phone className="size-4 text-accent-foreground" />
@@ -230,7 +258,7 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                 {contactMethods} of 2
               </span>
             </div>
-            
+
             <div className="p-4 bg-secondary/50 rounded-lg border border-secondary">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">

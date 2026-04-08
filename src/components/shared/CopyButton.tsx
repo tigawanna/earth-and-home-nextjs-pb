@@ -27,7 +27,7 @@ export function CopyButton({
   showToast = true,
   toastMessage,
   children,
-  title
+  title,
 }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
@@ -35,17 +35,17 @@ export function CopyButton({
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      
+
       if (showToast) {
         const message = toastMessage || `${label} copied to clipboard!`;
         toast.success(message);
       }
-      
+
       // Reset the copied state after 2 seconds
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.log("error happende = =>\n","Failed to copy to clipboard:", error);
-      
+      console.log("error happende = =>\n", "Failed to copy to clipboard:", error);
+
       if (showToast) {
         toast.error(`Failed to copy ${label.toLowerCase()}`);
       }
@@ -62,13 +62,7 @@ export function CopyButton({
       aria-label={title || `Copy ${label.toLowerCase()}`}
     >
       {children || (
-        <>
-          {copied ? (
-            <Check className="w-3 h-3 text-green-600" />
-          ) : (
-            <Copy className="w-3 h-3" />
-          )}
-        </>
+        <>{copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}</>
       )}
     </Button>
   );

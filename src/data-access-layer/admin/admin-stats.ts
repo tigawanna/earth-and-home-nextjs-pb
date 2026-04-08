@@ -2,9 +2,9 @@ import "server-only";
 
 import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import {
-    baseGetPaginatedProperties,
-    baseGetPaginatedUsers,
-    baseGetPropertyStats,
+  baseGetPaginatedProperties,
+  baseGetPaginatedUsers,
+  baseGetPropertyStats,
 } from "../properties/base-property-queries";
 
 // ====================================================
@@ -27,7 +27,7 @@ export async function getAdminDashboardStats() {
 
     // Get messages stats
     const messagesCollection = client.from("property_messages");
-    
+
     // Get total parent messages (messages with type="parent" and no replies)
     const parentMessagesResult = await messagesCollection.getList(1, 1, {
       filter: 'type = "parent"',
@@ -82,7 +82,7 @@ export async function getAdminDashboardStats() {
       },
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching dashboard stats:", error);
+    console.log("error happende = =>\n", "Error fetching dashboard stats:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch dashboard stats",
@@ -111,7 +111,7 @@ export async function getQuickActionsData() {
       },
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching quick actions data:", error);
+    console.log("error happende = =>\n", "Error fetching quick actions data:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch quick actions data",
@@ -176,7 +176,7 @@ export async function getRecentActivities() {
       },
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching recent activities:", error);
+    console.log("error happende = =>\n", "Error fetching recent activities:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch recent activities",

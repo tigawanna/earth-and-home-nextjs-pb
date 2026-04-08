@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc", "react"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "unicorn/no-empty-file": "off",
+    "react/react-in-jsx-scope": "off"
+  },
+  "env": {
+    "builtin": true,
+    "browser": true
+  },
+  "ignorePatterns": [
+    ".next/**",
+    "node_modules/**",
+    "old/**",
+    "cloudflare-env.d.ts",
+    "next-env.d.ts",
+    "*.config.js",
+    "*.config.mjs",
+    "*.config.cjs"
+  ],
+  "settings": {
+    "react": {
+      "version": "19.1.0"
+    }
+  }
+}

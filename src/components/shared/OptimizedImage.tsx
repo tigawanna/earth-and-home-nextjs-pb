@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import Image, { ImageProps } from "next/image";
 import { useState } from "react";
 
-interface OptimizedImageProps extends Omit<ImageProps, 'onLoad' | 'onError'> {
+interface OptimizedImageProps extends Omit<ImageProps, "onLoad" | "onError"> {
   fallbackSrc?: string;
   showPlaceholder?: boolean;
   containerClassName?: string;
@@ -38,10 +38,8 @@ export function OptimizedImage({
 
   return (
     <div className={cn("relative overflow-hidden", containerClassName)}>
-      {showPlaceholder && isLoading && (
-        <div className="absolute inset-0 bg-muted animate-pulse" />
-      )}
-      
+      {showPlaceholder && isLoading && <div className="absolute inset-0 bg-muted animate-pulse" />}
+
       <Image
         {...props}
         src={imageSrc}
@@ -49,7 +47,7 @@ export function OptimizedImage({
         className={cn(
           "transition-opacity duration-300",
           isLoading ? "opacity-0" : "opacity-100",
-          className
+          className,
         )}
         onLoad={handleLoad}
         onError={handleError}
@@ -57,7 +55,7 @@ export function OptimizedImage({
         placeholder="blur"
         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
       />
-      
+
       {hasError && fallbackSrc === imageSrc && (
         <div className="absolute inset-0 bg-muted flex items-center justify-center">
           <div className="text-center text-muted-foreground">

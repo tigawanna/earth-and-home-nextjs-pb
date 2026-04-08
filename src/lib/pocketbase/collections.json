@@ -532,9 +532,7 @@
     },
     "passwordAuth": {
       "enabled": true,
-      "identityFields": [
-        "email"
-      ]
+      "identityFields": ["email"]
     },
     "mfa": {
       "enabled": false,
@@ -677,13 +675,7 @@
         "id": "file376926767",
         "maxSelect": 1,
         "maxSize": 0,
-        "mimeTypes": [
-          "image/jpeg",
-          "image/png",
-          "image/svg+xml",
-          "image/gif",
-          "image/webp"
-        ],
+        "mimeTypes": ["image/jpeg", "image/png", "image/svg+xml", "image/gif", "image/webp"],
         "name": "avatar",
         "presentable": false,
         "protected": false,
@@ -793,9 +785,7 @@
     },
     "passwordAuth": {
       "enabled": true,
-      "identityFields": [
-        "email"
-      ]
+      "identityFields": ["email"]
     },
     "mfa": {
       "enabled": false,
@@ -909,10 +899,7 @@
         "required": true,
         "system": false,
         "type": "select",
-        "values": [
-          "sale",
-          "rent"
-        ]
+        "values": ["sale", "rent"]
       },
       {
         "hidden": false,
@@ -946,14 +933,7 @@
         "required": true,
         "system": false,
         "type": "select",
-        "values": [
-          "draft",
-          "active",
-          "pending",
-          "sold",
-          "rented",
-          "off_market"
-        ]
+        "values": ["draft", "active", "pending", "sold", "rented", "off_market"]
       },
       {
         "autogeneratePattern": "",
@@ -1158,14 +1138,7 @@
         "required": false,
         "system": false,
         "type": "select",
-        "values": [
-          "garage",
-          "carport",
-          "street",
-          "covered",
-          "assigned",
-          "none"
-        ]
+        "values": ["garage", "carport", "street", "covered", "assigned", "none"]
       },
       {
         "hidden": false,
@@ -1176,15 +1149,7 @@
         "required": false,
         "system": false,
         "type": "select",
-        "values": [
-          "none",
-          "electric",
-          "gas",
-          "oil",
-          "heat_pump",
-          "solar",
-          "geothermal"
-        ]
+        "values": ["none", "electric", "gas", "oil", "heat_pump", "solar", "geothermal"]
       },
       {
         "hidden": false,
@@ -1195,13 +1160,7 @@
         "required": false,
         "system": false,
         "type": "select",
-        "values": [
-          "none",
-          "central",
-          "wall_unit",
-          "evaporative",
-          "geothermal"
-        ]
+        "values": ["none", "central", "wall_unit", "evaporative", "geothermal"]
       },
       {
         "hidden": false,
@@ -1534,9 +1493,7 @@
         "type": "autodate"
       }
     ],
-    "indexes": [
-      "CREATE INDEX `idx_aMteEvOai9` ON `favorites` (\n  `user_id`,\n  `property_id`\n)"
-    ],
+    "indexes": ["CREATE INDEX `idx_aMteEvOai9` ON `favorites` (\n  `user_id`,\n  `property_id`\n)"],
     "created": "2025-08-16 16:25:48.513Z",
     "updated": "2025-08-25 22:53:20.868Z",
     "system": false
@@ -1600,10 +1557,7 @@
         "required": false,
         "system": false,
         "type": "select",
-        "values": [
-          "parent",
-          "reply"
-        ]
+        "values": ["parent", "reply"]
       },
       {
         "autogeneratePattern": "",
@@ -1745,14 +1699,7 @@
         "required": false,
         "system": false,
         "type": "select",
-        "values": [
-          "general",
-          "residential",
-          "commercial",
-          "land",
-          "industrial",
-          "mixed"
-        ]
+        "values": ["general", "residential", "commercial", "land", "industrial", "mixed"]
       },
       {
         "autogeneratePattern": "",

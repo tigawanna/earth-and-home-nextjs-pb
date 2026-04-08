@@ -38,11 +38,6 @@ import { MediaSection } from "./sections/MediaSection";
 import { ParkingSection } from "./sections/ParkingSection";
 import { PricingSection } from "./sections/PricingSection";
 
-// Convert Partial<T> (undefined) to nullable properties (null)
-type Nullable<T> = {
-  [K in keyof T]?: T[K] | null;
-};
-
 interface PropertyFormProps {
   initialData?: PropertiesResponseZod;
   isEdit?: boolean;
@@ -55,7 +50,7 @@ export default function PropertyForm({
   initialData,
   isEdit = false,
   propertyId,
-  user,
+  user: _user,
   agent,
 }: PropertyFormProps) {
   const agentId = agent.id;
@@ -196,7 +191,8 @@ export default function PropertyForm({
                   isLand
                     ? "bg-earth-green-50 border-earth-green-200 text-earth-green-800 dark:bg-earth-green-950 dark:border-earth-green-800 dark:text-earth-green-200"
                     : "bg-accent border-accent-foreground/20 text-accent-foreground"
-                }`}>
+                }`}
+              >
                 <span className="text-lg">{isLand ? "🏞️" : "🏠"}</span>
                 {isLand ? "Land Property" : "Building Property"}
               </div>
@@ -226,7 +222,8 @@ export default function PropertyForm({
               variant={"outline"}
               onClick={() => {
                 toast("Hello from button");
-              }}>
+              }}
+            >
               hello
             </Button>
 
@@ -313,7 +310,8 @@ export default function PropertyForm({
                     onClick={handleSaveDraft}
                     disabled={isSubmittingDraft}
                     size="lg"
-                    className="flex ">
+                    className="flex "
+                  >
                     {isSubmittingDraft ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (

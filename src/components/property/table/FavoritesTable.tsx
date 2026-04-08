@@ -4,26 +4,26 @@ import { TableEmpty } from "@/components/shared/TableEmpty";
 import { TablePending } from "@/components/shared/TablePending";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/properties/client-side-property-queries";
 import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
 import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
 import {
-    FavoritesResponse,
-    PropertiesResponse,
-    UsersResponse,
+  FavoritesResponse,
+  PropertiesResponse,
+  UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -35,16 +35,16 @@ import { toast } from "sonner";
 
 interface FavoritesTableProps {}
 
-export function FavoritesTable({}: FavoritesTableProps) {
-  const [queryStates, setQueryStats] = useQueryStates({
+export function FavoritesTable(_props: FavoritesTableProps) {
+  const [queryStates] = useQueryStates({
     page: parseAsInteger.withDefault(1),
     q: parseAsString.withDefault(""),
   });
-  const { data, error, isPending } = useSuspenseQuery(
+  const { data, isPending } = useSuspenseQuery(
     dashboardFavoritesQueryOptions({
       page: queryStates.page,
       q: queryStates.q,
-    })
+    }),
   );
 
   async function handleRemoveFavorite(fav: FavoritesResponse) {
@@ -57,7 +57,7 @@ export function FavoritesTable({}: FavoritesTableProps) {
       await toggleFavorite(propertyId, userId);
       toast.success("Toggled favorite");
     } catch (e) {
-      console.log("error happende = =>\n",e);
+      console.log("error happende = =>\n", e);
       toast.error("Failed to toggle favorite");
     }
   }
@@ -134,7 +134,10 @@ export function FavoritesTable({}: FavoritesTableProps) {
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link href={property ? `/properties/${property.id}` : "#"} className="inline-block">
+                      <Link
+                        href={property ? `/properties/${property.id}` : "#"}
+                        className="inline-block"
+                      >
                         <Button variant="ghost" size="sm">
                           <Eye className="w-4 h-4" />
                         </Button>
@@ -154,7 +157,8 @@ export function FavoritesTable({}: FavoritesTableProps) {
                           <DropdownMenuItem asChild>
                             <Link
                               href={property ? `/properties/${property.id}` : "#"}
-                              className="flex items-center">
+                              className="flex items-center"
+                            >
                               <Eye className="w-4 h-4 mr-2" />
                               View property
                             </Link>

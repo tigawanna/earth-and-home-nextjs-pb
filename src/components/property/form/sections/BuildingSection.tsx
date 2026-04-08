@@ -3,43 +3,16 @@
 import { Control, useWatch } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PropertyFormData } from "../property-form-schema";
-import { NumberFieldComponent, SelectFieldComponent } from "../form-fields";
+import { NumberFieldComponent } from "../form-fields";
 import { isLandProperty } from "@/utils/forms";
 
 interface BuildingSectionProps {
   control: Control<PropertyFormData>;
 }
 
-const parkingTypeOptions = [
-  { value: "garage", label: "Garage" },
-  { value: "carport", label: "Carport" },
-  { value: "street", label: "Street Parking" },
-  { value: "covered", label: "Covered Parking" },
-  { value: "assigned", label: "Assigned Parking" },
-  { value: "none", label: "No Parking" },
-];
-
-const heatingOptions = [
-  { value: "none", label: "None" },
-  { value: "electric", label: "Electric" },
-  { value: "gas", label: "Gas" },
-  { value: "oil", label: "Oil" },
-  { value: "heat_pump", label: "Heat Pump" },
-  { value: "solar", label: "Solar" },
-  { value: "geothermal", label: "Geothermal" },
-];
-
-const coolingOptions = [
-  { value: "none", label: "None" },
-  { value: "central", label: "Central AC" },
-  { value: "wall_unit", label: "Wall Unit" },
-  { value: "evaporative", label: "Evaporative" },
-  { value: "geothermal", label: "Geothermal" },
-];
-
 export function BuildingSection({ control }: BuildingSectionProps) {
   const propertyType = useWatch({ control, name: "property_type" });
-  
+
   // Hide for land properties
   if (isLandProperty(propertyType)) {
     return null;
@@ -59,7 +32,7 @@ export function BuildingSection({ control }: BuildingSectionProps) {
             placeholder="Enter building size"
             description="Total interior floor area"
           />
-          
+
           <NumberFieldComponent
             control={control}
             name="year_built"
@@ -76,7 +49,7 @@ export function BuildingSection({ control }: BuildingSectionProps) {
             label="Number of Floors"
             placeholder="Enter floors"
           />
-          
+
           <NumberFieldComponent
             control={control}
             name="beds"
@@ -84,7 +57,7 @@ export function BuildingSection({ control }: BuildingSectionProps) {
             placeholder="Enter bedrooms"
             required
           />
-          
+
           <NumberFieldComponent
             control={control}
             name="baths"

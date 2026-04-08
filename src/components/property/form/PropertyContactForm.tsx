@@ -80,8 +80,8 @@ export function PropertyContactForm({
         const result = await browserPB
           .from("property_messages")
           .getFirstListItem(
-            and(eq("property_id", propertyId), eq("user_id", userId), eq("type", "parent"))
-          )
+            and(eq("property_id", propertyId), eq("user_id", userId), eq("type", "parent")),
+          );
         return {
           result,
           success: true,
@@ -114,14 +114,14 @@ export function PropertyContactForm({
       setOpen(false);
     },
     onError: (error) => {
-      console.log("error happende = =>\n","Error sending message:", error);
+      console.log("error happende = =>\n", "Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
     },
   });
 
   const onSubmit = async (data: MessageFormData) => {
-    const user = browserPB.authStore.record;
-    if (!user) {
+    const authUser = browserPB.authStore.record;
+    if (!authUser) {
       toast.error("Please sign in to send a message");
       return;
     }
@@ -129,7 +129,7 @@ export function PropertyContactForm({
     sendMessageMutation.mutate({
       message: data.message,
       propertyId,
-      userId: user.id,
+      userId: authUser.id,
     });
   };
 
@@ -167,7 +167,9 @@ export function PropertyContactForm({
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-medium text-sm mb-1">Property Agent</h3>
-              <p className="text-sm font-semibold mb-2">{agent_profile?.name || agent_profile?.name || "Agent"}</p>
+              <p className="text-sm font-semibold mb-2">
+                {agent_profile?.name || "Agent"}
+              </p>
 
               <div className="space-y-1">
                 {/* Phone Number */}
@@ -175,7 +177,11 @@ export function PropertyContactForm({
                   <div className="flex items-center gap-2 text-xs">
                     <Phone className="w-3 h-3 text-muted-foreground" />
                     <span className="flex-1 font-mono">{agent_profile?.phone}</span>
-                    <CopyButton text={agent_profile?.phone} label="Phone number" className="h-6 w-6 p-0" />
+                    <CopyButton
+                      text={agent_profile?.phone}
+                      label="Phone number"
+                      className="h-6 w-6 p-0"
+                    />
                   </div>
                 )}
 
@@ -235,7 +241,8 @@ export function PropertyContactForm({
                     type="button"
                     variant="outline"
                     onClick={() => setOpen(false)}
-                    className="flex-1">
+                    className="flex-1"
+                  >
                     Cancel
                   </Button>
                   <Button onClick={handleGoToExistingThread} className="flex-1">
@@ -263,7 +270,8 @@ export function PropertyContactForm({
                     type="button"
                     variant="outline"
                     onClick={() => setOpen(false)}
-                    className="flex-1">
+                    className="flex-1"
+                  >
                     Cancel
                   </Button>
                   <Button type="submit" disabled={sendMessageMutation.isPending} className="flex-1">

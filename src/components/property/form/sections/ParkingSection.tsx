@@ -3,10 +3,7 @@
 import { Control, useWatch } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PropertyFormData } from "../property-form-schema";
-import { 
-  NumberFieldComponent, 
-  SelectFieldComponent 
-} from "../form-fields";
+import { NumberFieldComponent, SelectFieldComponent } from "../form-fields";
 import { isLandProperty } from "@/utils/forms";
 
 interface ParkingSectionProps {
@@ -42,7 +39,7 @@ const coolingOptions = [
 
 export function ParkingSection({ control }: ParkingSectionProps) {
   const propertyType = useWatch({ control, name: "property_type" });
-  
+
   // Hide for land properties
   if (isLandProperty(propertyType)) {
     return null;
@@ -63,7 +60,7 @@ export function ParkingSection({ control }: ParkingSectionProps) {
             placeholder="Number of parking spaces"
             description="Total number of parking spaces available"
           />
-          
+
           <SelectFieldComponent
             control={control}
             name="parking_type"
@@ -84,7 +81,7 @@ export function ParkingSection({ control }: ParkingSectionProps) {
             options={heatingOptions}
             description="Primary heating system"
           />
-          
+
           <SelectFieldComponent
             control={control}
             name="cooling"

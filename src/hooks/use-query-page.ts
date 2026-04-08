@@ -30,7 +30,9 @@ export function useSttringQueryParams() {
 // New simple hook: useTypedQueryParams
 // Accepts a schema object like: { q: 'string', page: 'number' }
 // Returns an object with parsed values (number for 'number', string for 'string'), or undefined when missing/invalid.
-export function useTypedQueryParams<Schema extends Record<string, 'string' | 'number'>>(schema: Schema) {
+export function useTypedQueryParams<Schema extends Record<string, "string" | "number">>(
+  schema: Schema,
+) {
   const sp = useSearchParams();
 
   const parsed = useMemo(() => {
@@ -40,8 +42,8 @@ export function useTypedQueryParams<Schema extends Record<string, 'string' | 'nu
       const t = schema[key as string];
       const raw = sp.get(key as string);
 
-      if (t === 'number') {
-        if (raw == null || raw === '') {
+      if (t === "number") {
+        if (raw == null || raw === "") {
           out[key] = undefined;
         } else {
           const n = parseInt(raw, 10);
@@ -53,7 +55,7 @@ export function useTypedQueryParams<Schema extends Record<string, 'string' | 'nu
       }
     }
 
-    return out as { [K in keyof Schema]?: Schema[K] extends 'number' ? number : string };
+    return out as { [K in keyof Schema]?: Schema[K] extends "number" ? number : string };
     // Re-run when search params string changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sp.toString(), JSON.stringify(schema)]);

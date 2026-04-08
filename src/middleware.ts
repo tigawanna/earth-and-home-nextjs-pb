@@ -8,7 +8,7 @@ import { deleteNextjsPocketbaseCookie } from "./lib/pocketbase/utils/next-cookie
 const adminOnlyPatterns: RegExp[] = [
   /^\/dashboard\/properties\/add$/, // add page
   /^\/dashboard\/users(?:\/.*)?$/, // users area
-  /^\/dashboard\/properties\/[^\/]+\/edit$/, // /dashboard/properties/:id/edit
+  /^\/dashboard\/properties\/[^/]+\/edit$/, // /dashboard/properties/:id/edit
 ];
 
 export async function middleware(request: NextRequest) {
@@ -16,10 +16,12 @@ export async function middleware(request: NextRequest) {
   const client = await createServerClient(cookieStore);
   const pathname = new URL(request.url).pathname;
   try {
-    client.authStore.isValid && (await client.from("users").authRefresh());
-  } catch (_) {
+    if (client.authStore.isValid) {
+      await client.from("users").authRefresh();
+    }
+  } catch {
     // clear the auth store on failed refresh
-    console.log("error happende = =>\n","Failed to refresh user session, clearing auth store\n\n");
+    console.log("error happende = =>\n", "Failed to refresh user session, clearing auth store\n\n");
     client.authStore.clear();
   }
 
@@ -29,7 +31,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
   if (user?.is_banned) {
-    console.log("User is banned:", user.id,"\n\n");
+    console.log("User is banned:", user.id, "\n\n");
     await deleteNextjsPocketbaseCookie();
     return NextResponse.redirect(new URL("/banned", request.url));
   }

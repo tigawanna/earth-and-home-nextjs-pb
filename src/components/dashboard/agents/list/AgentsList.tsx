@@ -1,9 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getServerSideAgents } from "@/data-access-layer/admin/agents-management";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { Users } from "lucide-react";
-import Link from "next/link";
 import { Suspense } from "react";
 import { AgentCard } from "./AgentCard";
 import { AgentsSearch } from "./AgentsSearch";

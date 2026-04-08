@@ -18,7 +18,7 @@ While manual cleanup logic can be implemented (using `setTimeout` and subscribin
 
 A `WeakMap` provides a more elegant and robust solution. Unlike a `Map`, a `WeakMap` holds **weak references** to its keys. This has a crucial implication for garbage collection:
 
-> If an object is used as a key in a `WeakMap`, and it's the *only* reference to that object left in the application, the garbage collector is free to destroy it and remove it from memory. The `WeakMap` entry will be removed automatically.
+> If an object is used as a key in a `WeakMap`, and it's the _only_ reference to that object left in the application, the garbage collector is free to destroy it and remove it from memory. The `WeakMap` entry will be removed automatically.
 
 This is the perfect behavior for our caching factory.
 
@@ -27,19 +27,20 @@ This is the perfect behavior for our caching factory.
 We can create a higher-order function, `createCollectionFactory`, that takes a "creator" function and returns a new factory that uses a `WeakMap` for caching.
 
 **Key points:**
+
 - The `WeakMap` key **must be an object**. We use the parameters object for this.
 - The factory checks if a collection for the given `params` object already exists in the cache.
 - If it exists, it's returned. If not, a new one is created, stored in the cache, and then returned.
 
 ```typescript
 // src/lib/tanstack/db/create-collection-factory.ts
-import { Collection } from '@tanstack/react-db';
+import { Collection } from "@tanstack/react-db";
 
 // The key for the WeakMap MUST be an object.
 type ParamsObject = Record<string, any>;
 
 export function createCollectionFactory<TItem, TParams extends ParamsObject>(
-  creatorFn: (params: TParams) => Collection<TItem>
+  creatorFn: (params: TParams) => Collection<TItem>,
 ) {
   // The cache now uses a WeakMap.
   // The key is the params object, the value is the collection.
@@ -53,7 +54,7 @@ export function createCollectionFactory<TItem, TParams extends ParamsObject>(
 
     // Otherwise, create a new collection instance.
     const newCollection = creatorFn(params);
-    
+
     // Store it in the WeakMap with the params object as the key.
     cache.set(params, newCollection);
 
@@ -70,8 +71,8 @@ The solution is to memoize the `params` object using the `useMemo` hook.
 
 ```tsx
 // In your component file
-import { useMemo } from 'react';
-import { getPropertySpecificMessagesCollection } from '@/data-access-layer/messages/single-property-messages';
+import { useMemo } from "react";
+import { getPropertySpecificMessagesCollection } from "@/data-access-layer/messages/single-property-messages";
 
 function MessagesComponent({ propertyId }: { propertyId: string }) {
   // CRITICAL: Memoize the params object so its reference is stable.

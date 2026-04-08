@@ -6,35 +6,31 @@ import { and, eq } from "@tigawanna/typed-pocketbase";
 export const toggleFavoriteMutationOptions = mutationOptions({
   mutationFn: async ({ propertyId, userId }: { propertyId: string; userId: string }) => {
     try {
-
-
       // Check if favorite already exists
       try {
-        browserPB.from("favorites").getOne("item_id",{
+        browserPB.from("favorites").getOne("item_id", {
           // this will select everything and especially the expand fields , which is joining to those tables it results in a data response that's {...est_of_data,expand:{property_id:{...property_fields},user_id:{...user_fields}}}
-          select:{
-            expand:{
-              "property_id":true,
-              "user_id":true,   
-            }
-          }
-        })
+          select: {
+            expand: {
+              property_id: true,
+              user_id: true,
+            },
+          },
+        });
         // get first item that satisfies the filter
-       browserPB.from("favorites").getFirstListItem(eq("user_id", userId));
+        browserPB.from("favorites").getFirstListItem(eq("user_id", userId));
         // get full list options ( use sparingly)
         browserPB.from("favorites").getFullList({
-          filter:eq("user_id", userId),
+          filter: eq("user_id", userId),
           sort: "-created",
           perPage: 1,
         });
         // paginated list // page , perPage, options
-        browserPB.from("favorites").getList(1,24,{
-          filter:eq("user_id", userId),
+        browserPB.from("favorites").getList(1, 24, {
+          filter: eq("user_id", userId),
           sort: "-created",
           perPage: 1,
         });
-
-       
 
         const existingFavorite = await browserPB
           .from("favorites")
@@ -48,7 +44,7 @@ export const toggleFavoriteMutationOptions = mutationOptions({
           isFavorited: false,
           message: "Removed from favorites",
         };
-      } catch (error) {
+      } catch {
         // Favorite doesn't exist, create it
         const favoriteData: FavoritesCreate = {
           property_id: propertyId,
@@ -64,7 +60,7 @@ export const toggleFavoriteMutationOptions = mutationOptions({
           favorite: newFavorite,
         };
       }
-    } catch (error) {
+    } catch {
       return {
         success: false,
         isFavorited: false,

@@ -5,7 +5,7 @@ import Link from "next/link";
 
 interface PropertiesEmptyProps {}
 
-export function PropertiesEmpty({}: PropertiesEmptyProps) {
+export function PropertiesEmpty(_props: PropertiesEmptyProps) {
   return (
     <div className="w-full h-full flex flex-col items-center">
       <Card className="p-8 text-center w-full">
@@ -14,8 +14,7 @@ export function PropertiesEmpty({}: PropertiesEmptyProps) {
           <div>
             <h3 className="text-lg font-semibold">No properties found</h3>
             <p className="text-muted-foreground">
-              No properties match your current filters. Try broadening your search
-              or clear filters.
+              No properties match your current filters. Try broadening your search or clear filters.
             </p>
           </div>
           <div className="flex items-center justify-center gap-3 pt-2">

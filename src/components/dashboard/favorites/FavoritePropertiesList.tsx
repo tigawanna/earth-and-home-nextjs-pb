@@ -6,7 +6,7 @@ import { BasePropertyCard } from "../../property/list/cards/BasePropertyCard";
 
 interface FavoritePropertiesListProps {}
 
-export function FavoritePropertiesList({}: FavoritePropertiesListProps) {
+export function FavoritePropertiesList(_props: FavoritePropertiesListProps) {
   const user = browserPB.authStore.record!;
   const { data } = useSuspenseQuery({
     queryKey: ["favorites", user?.id],

@@ -1,9 +1,7 @@
-import Image from 'next/image';
-interface AuthSideviewProps {
-  
-}
+import Image from "next/image";
+interface AuthSideviewProps {}
 
-export function AuthSideview({  }: AuthSideviewProps) {
+export function AuthSideview(_props: AuthSideviewProps) {
   return (
     <div className="hidden md:flex flex-1 items-center justify-center relative overflow-hidden bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/10 ">
       {/* Animated background elements */}

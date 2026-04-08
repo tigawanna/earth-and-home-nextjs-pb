@@ -12,7 +12,6 @@ const DashboardOrAuth = dynamic(() => import("./DashboardOrAuth"), {
   loading: () => <DashboardOrAuthLoader />,
 });
 
-
 interface ResponsiveDrawerProps {
   children: React.ReactNode;
   isLandingPage?: boolean; // Optional prop to indicate if this is the landing page
@@ -34,13 +33,15 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
         <label
           htmlFor="header-drawer"
           aria-label="close sidebar"
-          className="drawer-overlay"></label>
+          className="drawer-overlay"
+        ></label>
         <ul className="menu p-4 w-80 min-h-full bg-base-200">
           {/* Logo in sidebar */}
           <label
             htmlFor="header-drawer"
             aria-label="close sidebar"
-            className="flex items-center space-x-3 mb-8">
+            className="flex items-center space-x-3 mb-8"
+          >
             <div className="flex items-center space-x-3">
               <SiteIcon />
               <div>
@@ -59,7 +60,8 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
                 <label htmlFor="header-drawer" aria-label="close sidebar">
                   <a
                     href="#home"
-                    className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                    className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
                     <label htmlFor="header-drawer" aria-label="close sidebar">
                       Home
                     </label>
@@ -70,7 +72,8 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
                 <label htmlFor="header-drawer" aria-label="close sidebar">
                   <a
                     href="#properties"
-                    className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                    className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
                     <label htmlFor="header-drawer" aria-label="close sidebar">
                       Properties
                     </label>
@@ -81,7 +84,8 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
                 <label htmlFor="header-drawer" aria-label="close sidebar">
                   <a
                     href="#buy"
-                    className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                    className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
                     <label htmlFor="header-drawer" aria-label="close sidebar">
                       Buy
                     </label>
@@ -92,7 +96,8 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
                 <label htmlFor="header-drawer" aria-label="close sidebar">
                   <a
                     href="#sell"
-                    className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                    className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
                     <label htmlFor="header-drawer" aria-label="close sidebar">
                       Sell
                     </label>
@@ -103,7 +108,8 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
                 <label htmlFor="header-drawer" aria-label="close sidebar">
                   <a
                     href="#about"
-                    className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                    className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
                     <label htmlFor="header-drawer" aria-label="close sidebar">
                       About
                     </label>
@@ -114,7 +120,8 @@ export function ResponsiveDrawer({ children, isLandingPage }: ResponsiveDrawerPr
                 <label htmlFor="header-drawer" aria-label="close sidebar">
                   <a
                     href="#contact"
-                    className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                    className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
                     <label htmlFor="header-drawer" aria-label="close sidebar">
                       Contact
                     </label>

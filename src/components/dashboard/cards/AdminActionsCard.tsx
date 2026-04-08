@@ -1,14 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-    Building2,
-    Heart,
-    Plus,
-    Settings,
-    Shield,
-    UserCheck,
-    Users
-} from "lucide-react";
+import { Building2, Heart, Plus, Settings, Shield, UserCheck, Users } from "lucide-react";
 import Link from "next/link";
 
 interface AdminActionsCardProps {
@@ -28,24 +20,14 @@ export function AdminActionsCard({ isAdmin, className }: AdminActionsCardProps) 
       <CardContent className="space-y-2">
         {/* User Actions */}
         <div className="space-y-2">
-          <Button 
-            variant="outline" 
-            asChild 
-            size="sm" 
-            className="w-full justify-start text-xs"
-          >
+          <Button variant="outline" asChild size="sm" className="w-full justify-start text-xs">
             <Link href="/dashboard/properties">
               <Building2 className="mr-2 h-3.5 w-3.5" />
               My Properties
             </Link>
           </Button>
-          
-          <Button 
-            variant="outline" 
-            asChild 
-            size="sm" 
-            className="w-full justify-start text-xs"
-          >
+
+          <Button variant="outline" asChild size="sm" className="w-full justify-start text-xs">
             <Link href="/dashboard/favorites">
               <Heart className="mr-2 h-3.5 w-3.5" />
               Saved Properties
@@ -59,21 +41,17 @@ export function AdminActionsCard({ isAdmin, className }: AdminActionsCardProps) 
             <div className="border-t pt-2 mt-3">
               <p className="text-xs text-muted-foreground mb-2 font-medium">Admin Actions</p>
               <div className="space-y-2">
-                <Button 
-                  asChild 
-                  size="sm" 
-                  className="w-full justify-start text-xs"
-                >
+                <Button asChild size="sm" className="w-full justify-start text-xs">
                   <Link href="/dashboard/properties/add">
                     <Plus className="mr-2 h-3.5 w-3.5" />
                     Add Property
                   </Link>
                 </Button>
-                
-                <Button 
-                  variant="outline" 
-                  asChild 
-                  size="sm" 
+
+                <Button
+                  variant="outline"
+                  asChild
+                  size="sm"
                   className="w-full justify-start text-xs"
                 >
                   <Link href="/dashboard/users">
@@ -81,11 +59,11 @@ export function AdminActionsCard({ isAdmin, className }: AdminActionsCardProps) 
                     Manage Users
                   </Link>
                 </Button>
-                
-                <Button 
-                  variant="outline" 
-                  asChild 
-                  size="sm" 
+
+                <Button
+                  variant="outline"
+                  asChild
+                  size="sm"
                   className="w-full justify-start text-xs"
                 >
                   <Link href="/dashboard/settings">
@@ -93,11 +71,11 @@ export function AdminActionsCard({ isAdmin, className }: AdminActionsCardProps) 
                     User Verification
                   </Link>
                 </Button>
-                
-                <Button 
-                  variant="outline" 
-                  asChild 
-                  size="sm" 
+
+                <Button
+                  variant="outline"
+                  asChild
+                  size="sm"
                   className="w-full justify-start text-xs"
                 >
                   <Link href="/dashboard/admin">

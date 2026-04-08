@@ -1,9 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-    PropertyWithFavorites
-} from "@/data-access-layer/properties/property-types";
+import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { and, eq } from "@tigawanna/typed-pocketbase";
@@ -43,7 +41,7 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
           await browserPB.from("favorites").delete(existingFavorite.id);
           return { action: "unfavorited", isFavorited: false };
         }
-      } catch (error) {
+      } catch {
         // Favorite doesn't exist, so we'll create it
       }
       // Create favorite
@@ -71,9 +69,9 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
   if (!currentUserId) {
     return (
       <Link href="/auth/signin">
-        <Button 
-          variant="outline" 
-          size="icon" 
+        <Button
+          variant="outline"
+          size="icon"
           title="Sign in to favorite properties"
           aria-label="Sign in to favorite properties"
         >
@@ -93,7 +91,11 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
       variant="outline"
       size="icon"
       title={favoriteState ? "Remove from favorites" : "Add to favorites"}
-      aria-label={favoriteState ? `Remove ${property.title || 'property'} from favorites` : `Add ${property.title || 'property'} to favorites`}
+      aria-label={
+        favoriteState
+          ? `Remove ${property.title || "property"} from favorites`
+          : `Add ${property.title || "property"} to favorites`
+      }
     >
       <Heart
         data-pending={isPending}

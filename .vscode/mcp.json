@@ -7,7 +7,7 @@
       "password": false
     },
     {
-      "type": "promptString", 
+      "type": "promptString",
       "id": "pocketbase-admin-password",
       "description": "PocketBase Admin Password",
       "password": true

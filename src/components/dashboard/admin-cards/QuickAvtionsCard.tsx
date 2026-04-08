@@ -13,7 +13,8 @@ export function QuickActionsCard({ className, isAdmin }: QuickActionsCardProps) 
     <Card
       className={`relative w-full bg-card/95 border border-border/60 shadow-sm overflow-hidden group transition-colors rounded-lg ${
         className || ""
-      }`}>
+      }`}
+    >
       <CardContent className="relative p-3 space-y-2">
         <div className="flex items-start justify-between gap-2 mb-0.5">
           <div className="flex items-start gap-2.5 min-w-0">
@@ -33,7 +34,8 @@ export function QuickActionsCard({ className, isAdmin }: QuickActionsCardProps) 
           <Button
             variant="ghost"
             size="sm"
-            className="gap-1 text-[10px] font-medium hover:bg-primary/10 hover:text-primary h-6 px-2 shrink-0">
+            className="gap-1 text-[10px] font-medium hover:bg-primary/10 hover:text-primary h-6 px-2 shrink-0"
+          >
             View all <ArrowRight className="h-3 w-3" />
           </Button>
         </div>

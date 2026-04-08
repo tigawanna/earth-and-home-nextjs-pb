@@ -1,40 +1,60 @@
 "use client";
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { AgentsCreate, AgentsResponse, AgentsUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  AgentsCreate,
+  AgentsResponse,
+  AgentsUpdate,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Building2, CheckCircle, FileText, Loader2, MapPin, Star, Trash2, User, Users } from "lucide-react";
+import {
+  Building2,
+  CheckCircle,
+  FileText,
+  Loader2,
+  MapPin,
+  Star,
+  Trash2,
+  User,
+  Users,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { AgentFormData, agentFormSchema } from "./agents-schemas";
-
 
 interface AgentFormProps {
   currentUser: UsersResponse;
@@ -43,7 +63,7 @@ interface AgentFormProps {
 
 export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
   const isEdit = !!initialAgent;
-  
+
   const form = useForm<AgentFormData>({
     resolver: zodResolver(agentFormSchema),
     defaultValues: {
@@ -71,7 +91,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
     },
     onError: (error) => {
       toast.error("Failed to create agent profile");
-      console.log("error happende = =>\n",error);
+      console.log("error happende = =>\n", error);
     },
   });
 
@@ -85,7 +105,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
     },
     onError: (error) => {
       toast.error("Failed to update agent profile");
-      console.log("error happende = =>\n",error);
+      console.log("error happende = =>\n", error);
     },
   });
 
@@ -99,7 +119,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
     },
     onError: (error) => {
       toast.error("Failed to delete agent profile");
-      console.log("error happende = =>\n",error);
+      console.log("error happende = =>\n", error);
     },
   });
 
@@ -133,7 +153,8 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
     }
   };
 
-  const isLoading = createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
+  const isLoading =
+    createMutation.isPending || updateMutation.isPending || deleteMutation.isPending;
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
@@ -152,10 +173,9 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
         <CardHeader>
           <CardTitle>{isEdit ? "Update Agent Information" : "Create New Agent"}</CardTitle>
           <CardDescription>
-            {isEdit 
+            {isEdit
               ? "Update your agent profile information below."
-              : "Create your agent profile to start listing properties."
-            }
+              : "Create your agent profile to start listing properties."}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -225,11 +245,13 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                     <FormItem>
                       <FormLabel>Years of Experience</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          placeholder="Years" 
+                        <Input
+                          type="number"
+                          placeholder="Years"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value ? Number(e.target.value) : undefined)}
+                          onChange={(e) =>
+                            field.onChange(e.target.value ? Number(e.target.value) : undefined)
+                          }
                         />
                       </FormControl>
                       <FormMessage />
@@ -259,15 +281,10 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                       <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
+                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                       <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          Verified Agent
-                        </FormLabel>
+                        <FormLabel>Verified Agent</FormLabel>
                         <FormMessage />
                       </div>
                     </FormItem>
@@ -282,19 +299,17 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       {isEdit ? "Updating..." : "Creating..."}
                     </>
+                  ) : isEdit ? (
+                    "Update Agent"
                   ) : (
-                    isEdit ? "Update Agent" : "Create Agent"
+                    "Create Agent"
                   )}
                 </Button>
-                
+
                 {isEdit && initialAgent && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        disabled={isLoading}
-                      >
+                      <Button type="button" variant="destructive" disabled={isLoading}>
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete Profile
                       </Button>
@@ -303,7 +318,8 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete your agent profile. This action cannot be undone.
+                          This will permanently delete your agent profile. This action cannot be
+                          undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -342,18 +358,21 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                 </label>
                 <p className="text-lg font-medium">{initialAgent.agency_name || "Not provided"}</p>
               </div>
-              
+
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Agent Name
                 </label>
                 <p className="text-lg font-medium">
-                  {initialAgent.expand?.user_id?.name || initialAgent.expand?.user_id?.email || currentUser.name || currentUser.email}
+                  {initialAgent.expand?.user_id?.name ||
+                    initialAgent.expand?.user_id?.email ||
+                    currentUser.name ||
+                    currentUser.email}
                 </p>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -362,14 +381,16 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                 </label>
                 <p className="text-lg">{initialAgent.license_number || "Not provided"}</p>
               </div>
-              
+
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <Star className="h-4 w-4" />
                   Experience
                 </label>
                 <p className="text-lg">
-                  {initialAgent.years_experience ? `${initialAgent.years_experience} years` : "Not provided"}
+                  {initialAgent.years_experience
+                    ? `${initialAgent.years_experience} years`
+                    : "Not provided"}
                 </p>
               </div>
             </div>
@@ -384,7 +405,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                   {initialAgent.specialization || "Not specified"}
                 </p>
               </div>
-              
+
               <div>
                 <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
                   <MapPin className="h-4 w-4" />

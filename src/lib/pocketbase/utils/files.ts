@@ -1,4 +1,4 @@
-import { browserPB } from '../clients/browser-client';
+import { browserPB } from "../clients/browser-client";
 
 // Cache for file URLs to avoid regenerating the same URLs
 const fileUrlCache = new Map<string, string>();
@@ -13,25 +13,24 @@ const fileUrlCache = new Map<string, string>();
 export function getFileUrl(
   record: { id: string; collectionId: string; collectionName: string },
   filename: string,
-  queryParams?: { thumb?: string; download?: boolean; token?: string }
+  queryParams?: { thumb?: string; download?: boolean; token?: string },
 ): string {
   // Create cache key
   const cacheKey = `${record.collectionName}-${record.id}-${filename}-${JSON.stringify(queryParams || {})}`;
-  
+
   // Check cache first
   if (fileUrlCache.has(cacheKey)) {
     return fileUrlCache.get(cacheKey)!;
   }
-  
+
   // console.log("Generating file URL for:", record.id, filename, queryParams);
   const fileUrl = browserPB.files.getURL(record, filename, queryParams);
-  
+
   // Cache the URL for future use
   fileUrlCache.set(cacheKey, fileUrl);
 
   return fileUrl;
 }
-
 
 /**
  * Generate a thumbnail URL for an image file
@@ -43,7 +42,7 @@ export function getFileUrl(
 export function getImageThumbnailUrl(
   record: { id: string; collectionId: string; collectionName: string },
   filename: string,
-  thumbSize: string = "300x200"
+  thumbSize: string = "300x200",
 ): string {
   return getFileUrl(record, filename, { thumb: thumbSize });
 }
@@ -56,7 +55,7 @@ export function getImageThumbnailUrl(
  */
 export function getFileDownloadUrl(
   record: { id: string; collectionId: string; collectionName: string },
-  filename: string
+  filename: string,
 ): string {
   return getFileUrl(record, filename, { download: true });
 }

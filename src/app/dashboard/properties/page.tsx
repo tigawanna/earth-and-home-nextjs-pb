@@ -1,4 +1,3 @@
-
 import { PropertyDashboard } from "@/components/property/PropertyDashboard";
 import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 

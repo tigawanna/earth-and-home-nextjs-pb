@@ -11,7 +11,7 @@ interface UserDashboardPageProps {}
 
 async function DashboardContent() {
   const user = await getServerSideUser();
-  
+
   if (!user) {
     redirect("/auth/signin");
   }
@@ -34,12 +34,7 @@ async function DashboardContent() {
           description="Favorites this week"
           icon={TrendingUp}
         />
-        <StatCard
-          title="Account Type"
-          value="User"
-          description="Standard member"
-          icon={Home}
-        />
+        <StatCard title="Account Type" value="User" description="Standard member" icon={Home} />
         <StatCard
           title="Member Since"
           value={new Date(user.created).getFullYear()}
@@ -52,7 +47,7 @@ async function DashboardContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Favorites */}
         <RecentFavoritesCard favorites={stats.recentFavorites} />
-        
+
         {/* Quick Actions */}
         <QuickActionsCard />
       </div>
@@ -60,22 +55,24 @@ async function DashboardContent() {
   );
 }
 
-export function UserDashboardPage({}: UserDashboardPageProps) {
+export function UserDashboardPage(_props: UserDashboardPageProps) {
   return (
     <div className="w-full">
-      <Suspense fallback={
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-32 bg-muted rounded animate-pulse" />
-            ))}
+      <Suspense
+        fallback={
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="h-32 bg-muted rounded animate-pulse" />
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="h-96 bg-muted rounded animate-pulse" />
+              <div className="h-96 bg-muted rounded animate-pulse" />
+            </div>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="h-96 bg-muted rounded animate-pulse" />
-            <div className="h-96 bg-muted rounded animate-pulse" />
-          </div>
-        </div>
-      }>
+        }
+      >
         <DashboardContent />
       </Suspense>
     </div>

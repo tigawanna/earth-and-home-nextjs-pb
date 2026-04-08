@@ -188,7 +188,7 @@
 //     };
 //   } catch (error: any) {
 //     console.log("error happende = =>\n","Error fetching property:", error);
-    
+
 //     // Handle 404 specifically
 //     if (error.status === 404) {
 //       return {
@@ -205,8 +205,6 @@
 //     };
 //   }
 // }
-
-
 
 // // ====================================================
 // // USAGE EXAMPLES

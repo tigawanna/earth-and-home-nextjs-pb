@@ -19,13 +19,22 @@ export function About() {
             {/* Features */}
             <div className="space-y-6 mb-8">
               {siteinfo.about.features.map((feature, index) => {
-                const IconComponent = feature.icon === 'Shield' ? Shield :
-                  feature.icon === 'Award' ? Award :
-                    feature.icon === 'Users' ? Users : TrendingUp;
+                const IconComponent =
+                  feature.icon === "Shield"
+                    ? Shield
+                    : feature.icon === "Award"
+                      ? Award
+                      : feature.icon === "Users"
+                        ? Users
+                        : TrendingUp;
                 return (
                   <div key={index} className="flex items-start space-x-4">
-                    <div className={`${index % 2 === 0 ? 'bg-primary/10' : 'bg-accent/20'} p-3 rounded-lg`}>
-                      <IconComponent className={`h-6 w-6 ${index % 2 === 0 ? 'text-primary' : 'text-accent-foreground'}`} />
+                    <div
+                      className={`${index % 2 === 0 ? "bg-primary/10" : "bg-accent/20"} p-3 rounded-lg`}
+                    >
+                      <IconComponent
+                        className={`h-6 w-6 ${index % 2 === 0 ? "text-primary" : "text-accent-foreground"}`}
+                      />
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground mb-2">{feature.title}</h3>
@@ -45,19 +54,29 @@ export function About() {
           <div className="bg-linear-to-br from-primary/5 to-accent/10 rounded-2xl p-8">
             <div className="grid grid-cols-2 gap-8">
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">{siteinfo.stats.support.value}</div>
+                <div className="text-4xl font-bold text-primary mb-2">
+                  {siteinfo.stats.support.value}
+                </div>
                 <div className="text-muted-foreground">{siteinfo.stats.support.description}</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-accent-foreground mb-2">{siteinfo.stats.satisfaction.value}</div>
-                <div className="text-muted-foreground">{siteinfo.stats.satisfaction.description}</div>
+                <div className="text-4xl font-bold text-accent-foreground mb-2">
+                  {siteinfo.stats.satisfaction.value}
+                </div>
+                <div className="text-muted-foreground">
+                  {siteinfo.stats.satisfaction.description}
+                </div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-primary mb-2">{siteinfo.stats.expertise.value}</div>
+                <div className="text-4xl font-bold text-primary mb-2">
+                  {siteinfo.stats.expertise.value}
+                </div>
                 <div className="text-muted-foreground">{siteinfo.stats.expertise.description}</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-accent-foreground mb-2">{siteinfo.stats.service.value}</div>
+                <div className="text-4xl font-bold text-accent-foreground mb-2">
+                  {siteinfo.stats.service.value}
+                </div>
                 <div className="text-muted-foreground">{siteinfo.stats.service.description}</div>
               </div>
             </div>
@@ -72,7 +91,9 @@ export function About() {
               <p className="text-muted-foreground italic mb-4">
                 &quot;{siteinfo.testimonials[0].text}&quot;
               </p>
-              <div className="font-semibold text-foreground">- {siteinfo.testimonials[0].author}</div>
+              <div className="font-semibold text-foreground">
+                - {siteinfo.testimonials[0].author}
+              </div>
             </div>
           </div>
         </div>
@@ -80,5 +101,3 @@ export function About() {
     </section>
   );
 }
-
-

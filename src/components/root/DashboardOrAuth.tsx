@@ -3,21 +3,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    signoutMutationOptions,
-    useLocalViewer
-} from "@/data-access-layer/user/auth";
+import { signoutMutationOptions, useLocalViewer } from "@/data-access-layer/user/auth";
 import { useMutation } from "@tanstack/react-query";
 import { LayoutDashboard, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 
 interface DashboardOrAuthProps {
   className?: string;
@@ -25,15 +21,15 @@ interface DashboardOrAuthProps {
 
 export default function DashboardOrAuth({ className }: DashboardOrAuthProps) {
   const router = useRouter();
-  const { data, isPending } = useLocalViewer()
-  const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
-  const user = data?.viewer
+  const { data, isPending } = useLocalViewer();
+  const { mutate } = useMutation(signoutMutationOptions());
+  const user = data?.viewer;
   const handleSignOut = async () => {
     try {
       await mutate();
       router.push("/");
-    } catch (error) {
-      console.log("error happende = =>\n","Sign out failed:", error);
+    } catch {
+      console.log("error happende = =>\n", "Sign out failed");
     }
   };
 
@@ -95,8 +91,7 @@ export default function DashboardOrAuth({ className }: DashboardOrAuthProps) {
   );
 }
 
-
-export function DashboardOrAuthLoader(){
+export function DashboardOrAuthLoader() {
   return (
     <div className="flex items-center gap-2">
       <Button asChild variant="outline" size="sm">

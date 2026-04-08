@@ -34,7 +34,7 @@ type ParamsObject = Record<string, any>;
  * );
  */
 export function createCollectionFactory<TCol extends Collection<any>, TParams extends ParamsObject>(
-  creatorFn: (params: TParams) => TCol
+  creatorFn: (params: TParams) => TCol,
 ) {
   // The cache now uses a WeakMap.
   // The key is the params object, the value is the collection.

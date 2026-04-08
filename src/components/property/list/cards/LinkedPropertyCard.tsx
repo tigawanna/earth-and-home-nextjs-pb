@@ -5,8 +5,6 @@ import { BasePropertyCard } from "./BasePropertyCard";
 import { PropertyAdminActions } from "./PropertyAdminActions";
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 
-
-
 interface LinkedPropertyCardProps {
   property: PropertyWithFavorites;
   href?: string;
@@ -57,16 +55,11 @@ export function LinkedPropertyCard({
           </div>
         ) : null}
       </div>
-      
+
       {/* Interactive elements */}
       <div className="flex items-center gap-2">
-        {currentUser && currentUser.is_admin && (
-          <PropertyAdminActions property={property} />
-        )}
-        <FavoriteProperty
-          userId={currentUser?.id}
-          property={property}
-        />
+        {currentUser && currentUser.is_admin && <PropertyAdminActions property={property} />}
+        <FavoriteProperty userId={currentUser?.id} property={property} />
       </div>
     </div>
   );

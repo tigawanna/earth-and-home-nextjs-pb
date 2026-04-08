@@ -1,7 +1,5 @@
 "use client";
-import {
-  getPropertyMessageSummaries
-} from "@/data-access-layer/messages/properties-messages-collection";
+import { getPropertyMessageSummaries } from "@/data-access-layer/messages/properties-messages-collection";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -17,20 +15,16 @@ export default function AllPropertiesMessages({
   onViewPropertyMessages,
 }: AllPropertiesMessagesProps) {
   // Use TanStack Query for better caching and state management
-  const {
-    data,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: [queryKeyPrefixes.property_messages] as const,
     queryFn: getPropertyMessageSummaries,
     refetchInterval: 30000, // Refetch every 30 seconds
   });
-  
+
   if (isLoading) {
     return <AllPropertiesMessagesLoading />;
   }
-  
+
   if (error) {
     return <PropertyMessagesError />;
   }
@@ -41,22 +35,22 @@ export default function AllPropertiesMessages({
     return <NoPropertyMessages />;
   }
 
-
   return (
     <div className="w-full h-full space-y-4">
       <div className="grid gap-4">
         {messages.map((msg) => {
           const property = msg.expand?.property_id;
-          if(!property) return null;
-          return(
-          <Link href={`/dashboard/messages/${msg.id}`} key={msg.id}>
-            <PropertyMessageCard
-              key={msg.id}
-              message={msg}
-              onViewMessages={() => onViewPropertyMessages?.(property.id)}
-            />
-          </Link>
-        )})}
+          if (!property) return null;
+          return (
+            <Link href={`/dashboard/messages/${msg.id}`} key={msg.id}>
+              <PropertyMessageCard
+                key={msg.id}
+                message={msg}
+                onViewMessages={() => onViewPropertyMessages?.(property.id)}
+              />
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

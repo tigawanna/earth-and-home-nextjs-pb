@@ -1,39 +1,39 @@
 "use client";
 
 import {
-    Building2,
-    ChevronDown,
-    Heart,
-    Home,
-    LogOut,
-    MessageSquare,
-    Plus,
-    Settings,
-    User,
-    Users,
+  Building2,
+  ChevronDown,
+  Heart,
+  Home,
+  LogOut,
+  MessageSquare,
+  Plus,
+  Settings,
+  User,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    Sidebar,
-    SidebarContent,
-    SidebarFooter,
-    SidebarGroup,
-    SidebarGroupContent,
-    SidebarGroupLabel,
-    SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
 import { ModeToggle } from "@/components/theme/theme-toggle";
@@ -90,7 +90,7 @@ const adminRoutes = [
     title: "Add Property",
     url: "/dashboard/properties/add",
     icon: Plus,
-  }
+  },
 ];
 
 interface User {
@@ -105,14 +105,14 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const { mutate, isPending: isLoggingOut } = useMutation(signoutMutationOptions());
+  const { mutate } = useMutation(signoutMutationOptions());
 
   const handleSignOut = async () => {
     try {
       await mutate();
       router.push("/");
     } catch (error) {
-      console.log("error happende = =>\n","Sign out failed:", error);
+      console.log("error happende = =>\n", "Sign out failed:", error);
     }
   };
 
@@ -148,7 +148,8 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
                   <SidebarMenuItem
                     key={item.title}
                     data-active={isActive}
-                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground">
+                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground"
+                  >
                     <SidebarMenuButton asChild isActive={isActive}>
                       <Link href={item.url}>
                         <item.icon />
@@ -164,7 +165,8 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
                 return (
                   <SidebarMenuItem
                     data-active={landingIsActive}
-                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground">
+                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground"
+                  >
                     <SidebarMenuButton asChild isActive={landingIsActive}>
                       <Link href="/">
                         <Home className="mr-2 h-4 w-4" />
@@ -178,7 +180,9 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
             {/* Admin section segmented */}
             {user.is_admin && (
               <div className="mt-4 space-y-2">
-                <SidebarGroupLabel className="text-xs font-semibold tracking-wide opacity-70">Admin</SidebarGroupLabel>
+                <SidebarGroupLabel className="text-xs font-semibold tracking-wide opacity-70">
+                  Admin
+                </SidebarGroupLabel>
                 <SidebarMenu>
                   {adminRoutes.map((item) => {
                     const isActive = pathname === item.url;
@@ -186,7 +190,8 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
                       <SidebarMenuItem
                         key={item.title}
                         data-active={isActive}
-                        className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground">
+                        className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground"
+                      >
                         <SidebarMenuButton asChild isActive={isActive}>
                           <Link href={item.url}>
                             <item.icon />
@@ -210,7 +215,8 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
                     <AvatarFallback className="rounded-lg">
@@ -228,9 +234,10 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
                 className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
                 side="bottom"
                 align="end"
-                sideOffset={4}>
+                sideOffset={4}
+              >
                 <DropdownMenuItem asChild>
-                  <ModeToggle  />
+                  <ModeToggle />
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

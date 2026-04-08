@@ -10,11 +10,24 @@ import { Footer } from "react-day-picker";
 
 export const metadata: Metadata = {
   title: siteinfo.title,
-  description: "Find your perfect home with Earth & Home Real Estate. Browse luxury properties, family homes, and rental listings. Expert real estate services, local market knowledge, and personalized property search assistance.",
-  keywords: ["real estate", "homes for sale", "property listings", "house rentals", "luxury properties", "family homes", "real estate agent", "property search", "home buying", "property rental"],
+  description:
+    "Find your perfect home with Earth & Home Real Estate. Browse luxury properties, family homes, and rental listings. Expert real estate services, local market knowledge, and personalized property search assistance.",
+  keywords: [
+    "real estate",
+    "homes for sale",
+    "property listings",
+    "house rentals",
+    "luxury properties",
+    "family homes",
+    "real estate agent",
+    "property search",
+    "home buying",
+    "property rental",
+  ],
   openGraph: {
     title: `${siteinfo.title} - ${siteinfo.tagline}`,
-    description: "Find your perfect home with Earth & Home Real Estate. Browse luxury properties, family homes, and rental listings.",
+    description:
+      "Find your perfect home with Earth & Home Real Estate. Browse luxury properties, family homes, and rental listings.",
     type: "website",
   },
 };

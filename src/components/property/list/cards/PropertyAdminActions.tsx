@@ -2,41 +2,69 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { updatePropertyMutationOptions } from "@/data-access-layer/properties/property-mutations";
 import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-    Edit,
-    Eye,
-    EyeOff,
-    MapPin,
-    MoreVertical,
-    Settings,
-    Sparkles,
-    Star
-} from "lucide-react";
+import { Edit, Eye, EyeOff, MapPin, MoreVertical, Settings, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface PropertyAdminActionsProps {
   property: PropertiesResponse;
+}
+
+function getStatusBadgeVariant(status: string) {
+  switch (status) {
+    case "active":
+      return "default";
+    case "pending":
+      return "secondary";
+    case "sold":
+      return "destructive";
+    case "rented":
+      return "outline";
+    case "draft":
+      return "secondary";
+    case "off_market":
+      return "outline";
+    default:
+      return "secondary";
+  }
+}
+
+function getStatusIcon(status: string) {
+  switch (status) {
+    case "active":
+      return <Eye className="w-3 h-3" />;
+    case "pending":
+      return <Sparkles className="w-3 h-3" />;
+    case "sold":
+    case "rented":
+      return <Star className="w-3 h-3" />;
+    case "draft":
+      return <Edit className="w-3 h-3" />;
+    case "off_market":
+      return <EyeOff className="w-3 h-3" />;
+    default:
+      return null;
+  }
 }
 
 export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
@@ -48,7 +76,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
     onSuccess: (data) => {
       if (data.success) {
         queryClient.invalidateQueries({ queryKey: ["properties"] });
-        router.refresh()
+        router.refresh();
         toast.success(data.message);
       } else {
         toast.error(data.message);
@@ -70,51 +98,14 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
     await handleToggle("status", status);
   };
 
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case "active":
-        return "default";
-      case "pending":
-        return "secondary";
-      case "sold":
-        return "destructive";
-      case "rented":
-        return "outline";
-      case "draft":
-        return "secondary";
-      case "off_market":
-        return "outline";
-      default:
-        return "secondary";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "active":
-        return <Eye className="w-3 h-3" />;
-      case "pending":
-        return <Sparkles className="w-3 h-3" />;
-      case "sold":
-      case "rented":
-        return <Star className="w-3 h-3" />;
-      case "draft":
-        return <Edit className="w-3 h-3" />;
-      case "off_market":
-        return <EyeOff className="w-3 h-3" />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           className="gap-2 hover:bg-primary/5 hover:border-primary/30 transition-all duration-200 group shadow-sm"
-          aria-label={`Open admin controls for ${property.title || 'property'}`}
+          aria-label={`Open admin controls for ${property.title || "property"}`}
         >
           <Settings className="h-4 w-4 group-hover:rotate-90 transition-transform duration-200" />
           <span className="font-medium">Quick toggles</span>
@@ -139,9 +130,9 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   className="h-8 w-8 p-0 hover:bg-accent/50 transition-colors rounded-full"
                   aria-label="Open property actions menu"
                 >
@@ -164,7 +155,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                     <span>Edit Property</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem 
+                <DropdownMenuItem
                   onClick={() => {
                     navigator.clipboard.writeText(property.id);
                     toast.success("Property ID copied to clipboard");
@@ -185,9 +176,9 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
             </label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="w-full justify-between h-10 hover:bg-background/50 transition-all duration-200 shadow-sm"
                   aria-label={`Change property status from ${property.status}`}
                 >
@@ -195,9 +186,14 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                     <div className="p-1 rounded-md bg-background/80">
                       {getStatusIcon(property.status)}
                     </div>
-                    <span className="capitalize font-medium">{property.status.replace("_", " ")}</span>
+                    <span className="capitalize font-medium">
+                      {property.status.replace("_", " ")}
+                    </span>
                   </div>
-                  <Badge variant={getStatusBadgeVariant(property.status)} className="h-6 px-3 font-medium shadow-sm">
+                  <Badge
+                    variant={getStatusBadgeVariant(property.status)}
+                    className="h-6 px-3 font-medium shadow-sm"
+                  >
                     {property.status}
                   </Badge>
                 </Button>
@@ -216,7 +212,10 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                       <span className="capitalize font-medium">{status.replace("_", " ")}</span>
                     </div>
                     {property.status === status && (
-                      <Badge variant={getStatusBadgeVariant(status)} className="h-5 text-xs font-medium shadow-sm">
+                      <Badge
+                        variant={getStatusBadgeVariant(status)}
+                        className="h-5 text-xs font-medium shadow-sm"
+                      >
                         Current
                       </Badge>
                     )}
@@ -250,7 +249,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                       onCheckedChange={(checked) => handleToggle("is_featured", checked)}
                       disabled={updatePropertyMutation.isPending}
                       className="data-[state=checked]:bg-amber-500"
-                      aria-label={`${property.is_featured ? 'Remove from' : 'Add to'} featured properties`}
+                      aria-label={`${property.is_featured ? "Remove from" : "Add to"} featured properties`}
                     />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-48">
@@ -277,7 +276,7 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                       onCheckedChange={(checked) => handleToggle("is_new", checked)}
                       disabled={updatePropertyMutation.isPending}
                       className="data-[state=checked]:bg-green-500"
-                      aria-label={`${property.is_new ? 'Remove' : 'Add'} new listing badge`}
+                      aria-label={`${property.is_new ? "Remove" : "Add"} new listing badge`}
                     />
                   </TooltipTrigger>
                   <TooltipContent side="left" className="max-w-48">
@@ -297,13 +296,15 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
               </label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="w-full justify-start h-10 hover:bg-background/50 transition-all duration-200 shadow-sm"
                     aria-label={`Change property type from ${property.property_type}`}
                   >
-                    <span className="capitalize font-medium">{property.property_type.replace("_", " ")}</span>
+                    <span className="capitalize font-medium">
+                      {property.property_type.replace("_", " ")}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48 border-0 shadow-lg max-h-48 overflow-y-auto">
@@ -344,9 +345,9 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
               </label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <Button
+                    variant="outline"
+                    size="sm"
                     className="w-full justify-start h-10 hover:bg-background/50 transition-all duration-200 shadow-sm"
                     aria-label={`Change listing type from ${property.listing_type}`}
                   >

@@ -11,11 +11,11 @@ export function createBrowserClient() {
     throw new Error("Pocketbase API url not defined !");
   }
 
-  const createNewClient = () => new TypedPocketBase<Schema>(url)
+  const createNewClient = () => new TypedPocketBase<Schema>(url);
 
   const _client = singletonClient ?? createNewClient();
   if (typeof window === "undefined") return _client;
-  
+
   _client.authStore.loadFromCookie(document.cookie);
   if (!singletonClient) singletonClient = _client;
 
@@ -28,6 +28,4 @@ export function createBrowserClient() {
   return singletonClient;
 }
 
-
 export const browserPB = createBrowserClient();
-

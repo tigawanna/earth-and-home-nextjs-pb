@@ -1,18 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageWithProperty } from "@/data-access-layer/messages/properties-messages-collection";
 import {
   PropertiesResponse,
   PropertyMessagesResponse,
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, Home, MessageCircle, User } from "lucide-react";
-import Image from "next/image";
-
 
 // ====================================================
 // CHAT-STYLE MESSAGE CARDS
@@ -52,16 +46,18 @@ export function ChatMessage({ message, currentUserId }: ChatMessageProps) {
         <div
           className={cn(
             "rounded-lg px-3 py-2 text-sm",
-            isCurrentUser ? "bg-primary text-primary-foreground ml-auto" : "bg-muted"
-          )}>
+            isCurrentUser ? "bg-primary text-primary-foreground ml-auto" : "bg-muted",
+          )}
+        >
           {message.body}
         </div>
 
         <div
           className={cn(
             "text-xs text-muted-foreground flex items-center gap-1",
-            isCurrentUser && "justify-end"
-          )}>
+            isCurrentUser && "justify-end",
+          )}
+        >
           <Clock className="w-3 h-3" />
           {formatDistanceToNow(new Date(message.created), { addSuffix: true })}
         </div>

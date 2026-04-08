@@ -6,8 +6,6 @@ import { Calendar, Home, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-
-
 interface BasePropertyCardProps {
   property: PropertyWithFavorites;
   className?: string;
@@ -30,7 +28,7 @@ function formatPrice(currency: string | undefined, price: number | undefined) {
       currency: currency || "KES",
       maximumFractionDigits: 0,
     }).format(price);
-  } catch (e) {
+  } catch {
     return `${currency ?? ""} ${price}`;
   }
 }
@@ -40,12 +38,11 @@ export function BasePropertyCard({
   className,
   showFooterActions = false,
   footerActions,
-  showViewButton = true,
+  showViewButton: _showViewButton = true,
   href,
   wrapWithLink = false,
 }: BasePropertyCardProps) {
   const {
-    id,
     title,
     city,
     state,
@@ -54,17 +51,10 @@ export function BasePropertyCard({
     images,
     listing_type,
     property_type,
-    beds,
-    baths,
-    building_size_sqft,
     price,
     currency,
     is_featured,
     is_new,
-    created,
-    updated,
-    owner_id,
-    agent_id,
     status,
   } = property;
 
@@ -88,7 +78,7 @@ export function BasePropertyCard({
 
   // Card content that should be clickable (wrapped in Link)
   const cardContent = (
-    <div className="flex flex-col h-full" >
+    <div className="flex flex-col h-full">
       {/* Media */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted/40">
         {imageUrl ? (
@@ -117,16 +107,17 @@ export function BasePropertyCard({
         {(status === "sold" || status === "rented") && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="absolute inset-0 bg-black/50" />
-            <div 
+            <div
               className={`
                 relative z-10 transform -rotate-12 px-8 py-2 font-bold text-white text-lg uppercase tracking-widest shadow-lg
-                ${status === "sold" 
-                  ? "bg-red-700 border-2 border-red-600" 
-                  : "bg-blue-700 border-2 border-blue-600"
+                ${
+                  status === "sold"
+                    ? "bg-red-700 border-2 border-red-600"
+                    : "bg-blue-700 border-2 border-blue-600"
                 }
               `}
               style={{
-                textShadow: '2px 2px 4px rgba(0,0,0,0.8)'
+                textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
               }}
             >
               {status === "sold" ? "SOLD" : "RENTED"}
@@ -143,12 +134,14 @@ export function BasePropertyCard({
               </Badge>
             ) : null}
             {is_new ? (
-              <Badge className="bg-green-700 hover:bg-green-800 text-white border-0 font-medium shadow-sm">New</Badge>
+              <Badge className="bg-green-700 hover:bg-green-800 text-white border-0 font-medium shadow-sm">
+                New
+              </Badge>
             ) : null}
-            <Badge 
+            <Badge
               className={`border-0 font-medium shadow-sm ${
-                listing_type === "sale" 
-                  ? "bg-blue-700 hover:bg-blue-800 text-white" 
+                listing_type === "sale"
+                  ? "bg-blue-700 hover:bg-blue-800 text-white"
                   : "bg-purple-700 hover:bg-purple-800 text-white"
               }`}
             >
@@ -163,8 +156,7 @@ export function BasePropertyCard({
         {/* Property Type Badge */}
         {property_type ? (
           <div className="mb-2">
-            <Badge
-              className="border-gray-600 bg-gray-100 text-gray-800 text-[10px] font-medium uppercase tracking-wide">
+            <Badge className="border-gray-600 bg-gray-100 text-gray-800 text-[10px] font-medium uppercase tracking-wide">
               {property_type.replace(/_/g, " ")}
             </Badge>
           </div>
@@ -205,13 +197,14 @@ export function BasePropertyCard({
 
   return (
     <Card
-      className={`group relative py-0 w-full justify-between gap-2 overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}>
+      className={`group relative py-0 w-full justify-between gap-2 overflow-hidden border border-border/60 bg-card shadow-sm hover:shadow-lg transition-all duration-300 ${className}`}
+    >
       {/* Main card content - optionally wrapped with Link */}
       {wrapWithLink && href ? (
-        <Link 
-          href={href} 
+        <Link
+          href={href}
           className="block"
-          aria-label={`View details for ${title || 'property'} in ${locationLabel || 'unspecified location'} - ${mainPrice ? formatPrice(currency, mainPrice) : 'Price on request'}`}
+          aria-label={`View details for ${title || "property"} in ${locationLabel || "unspecified location"} - ${mainPrice ? formatPrice(currency, mainPrice) : "Price on request"}`}
         >
           {cardContent}
         </Link>

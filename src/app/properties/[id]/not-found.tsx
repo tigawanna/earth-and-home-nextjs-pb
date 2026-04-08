@@ -23,12 +23,12 @@ export default function PropertyNotFound() {
             Sorry, the property you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
         </div>
-        
+
         <div className="space-y-4">
           <p className="text-muted-foreground">
             This property may have been sold, rented, or is no longer available.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/properties">
               <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
@@ -36,7 +36,7 @@ export default function PropertyNotFound() {
                 Browse All Properties
               </Button>
             </Link>
-            
+
             <Link href="/">
               <Button size="lg" variant="outline">
                 <Home className="mr-2 h-5 w-5" />
@@ -49,7 +49,8 @@ export default function PropertyNotFound() {
         <div className="mt-8 p-6 bg-muted rounded-lg">
           <h3 className="font-semibold text-foreground mb-2">Looking for something specific?</h3>
           <p className="text-sm text-muted-foreground">
-            Use our property search to find homes that match your criteria, or contact us directly for personalized assistance.
+            Use our property search to find homes that match your criteria, or contact us directly
+            for personalized assistance.
           </p>
         </div>
       </div>

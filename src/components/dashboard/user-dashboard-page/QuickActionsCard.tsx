@@ -53,9 +53,7 @@ export function QuickActionsCard() {
                 <action.icon className="h-5 w-5" />
                 <span className="font-medium">{action.title}</span>
               </div>
-              <p className="text-xs text-muted-foreground text-left">
-                {action.description}
-              </p>
+              <p className="text-xs text-muted-foreground text-left">{action.description}</p>
             </Link>
           </Button>
         ))}

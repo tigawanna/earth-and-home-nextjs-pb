@@ -3,29 +3,34 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FavoritesResponse, PropertiesResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  FavoritesResponse,
+  PropertiesResponse,
+  UsersResponse,
+} from "@/lib/pocketbase/types/pb-types";
 import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 interface FavoriteRowProps {
-  fav: FavoritesResponse &{
-    expand?: {
-      property_id?: PropertiesResponse | undefined;
-      user_id?: UsersResponse | undefined;
-    } | undefined;
-  }
+  fav: FavoritesResponse & {
+    expand?:
+      | {
+          property_id?: PropertiesResponse | undefined;
+          user_id?: UsersResponse | undefined;
+        }
+      | undefined;
+  };
   onRemove: (fav: FavoritesResponse) => void;
 }
 
 export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
-  
   const prop = fav.expand?.property_id;
   const user = fav.expand?.user_id;
   const primary =
@@ -33,7 +38,9 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
     (Array.isArray(prop?.images) && prop!.images.length > 0 && typeof prop!.images[0] === "string"
       ? prop!.images[0]
       : null);
-  const imageUrl = primary ? getImageThumbnailUrl(prop as PropertiesResponse, primary, "400x300") : null;
+  const imageUrl = primary
+    ? getImageThumbnailUrl(prop as PropertiesResponse, primary, "400x300")
+    : null;
 
   const location = prop ? [prop.city, prop.state, prop.country].filter(Boolean).join(", ") : "";
 
@@ -44,7 +51,9 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
           {imageUrl ? (
             <Image src={imageUrl} alt={prop?.title || "property"} fill className="object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+              No image
+            </div>
           )}
         </div>
 
@@ -55,25 +64,41 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
               <div className="text-xs text-muted-foreground line-clamp-1">{location}</div>
             </div>
             <div className="flex items-center gap-2">
-              <Link href={prop ? `/properties/${prop.id}` : "#"} className="inline-block" >
-                <Button variant="ghost" size="sm" aria-label={`View property ${prop?.title || 'details'}`}>
+              <Link href={prop ? `/properties/${prop.id}` : "#"} className="inline-block">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  aria-label={`View property ${prop?.title || "details"}`}
+                >
                   <Eye className="w-4 h-4" />
                 </Button>
               </Link>
 
-              <Button variant="ghost" size="sm" onClick={() => onRemove(fav)} aria-label={`Remove ${prop?.title || 'property'} from favorites`}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onRemove(fav)}
+                aria-label={`Remove ${prop?.title || "property"} from favorites`}
+              >
                 <Trash2 className="w-4 h-4 text-destructive" />
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" aria-label={`More actions for ${prop?.title || 'property'}`}>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label={`More actions for ${prop?.title || "property"}`}
+                  >
                     <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
-                    <Link href={prop ? `/properties/${prop.id}` : "#"} className="flex items-center">
+                    <Link
+                      href={prop ? `/properties/${prop.id}` : "#"}
+                      className="flex items-center"
+                    >
                       <Eye className="w-4 h-4 mr-2" />
                       View property
                     </Link>
@@ -92,7 +117,9 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
             <div>{user?.email || "-"}</div>
           </div>
 
-          <div className="mt-3 text-xs text-muted-foreground">{fav.created ? new Date(fav.created).toLocaleDateString() : "-"}</div>
+          <div className="mt-3 text-xs text-muted-foreground">
+            {fav.created ? new Date(fav.created).toLocaleDateString() : "-"}
+          </div>
         </div>
       </div>
     </Card>

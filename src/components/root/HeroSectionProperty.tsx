@@ -18,14 +18,14 @@ function formatPrice(currency: string | undefined, price: number | undefined) {
       currency: currency || "KES",
       maximumFractionDigits: 0,
     }).format(price);
-  } catch (e) {
+  } catch {
     return `${currency ?? ""} ${price}`;
   }
 }
 
 export async function HeroSectionProperty({
-  title = "Featured Property",
-  showAddButton = false
+  title: _title = "Featured Property",
+  showAddButton: _showAddButton = false,
 }: HeroSectionPropertyProps) {
   // Fetch featured properties from the backend - we'll just get the top one
   const { success, properties } = await getServerSideFeaturedProperties({ limit: 1 });
@@ -36,9 +36,10 @@ export async function HeroSectionProperty({
   // Get image URL if available
   let imageUrl = null;
   if (featuredProperty) {
-    const primaryImageFilename = featuredProperty.image_url ||
+    const primaryImageFilename =
+      featuredProperty.image_url ||
       (Array.isArray(featuredProperty.images) && featuredProperty.images.length > 0
-        ? typeof featuredProperty.images[0] === 'string'
+        ? typeof featuredProperty.images[0] === "string"
           ? featuredProperty.images[0]
           : null
         : null);
@@ -50,14 +51,14 @@ export async function HeroSectionProperty({
 
   // Get location string
   const locationLabel = featuredProperty
-    ? [featuredProperty.city, featuredProperty.state, featuredProperty.country].filter(Boolean).join(", ")
+    ? [featuredProperty.city, featuredProperty.state, featuredProperty.country]
+        .filter(Boolean)
+        .join(", ")
     : "";
 
   // Early return with fallback design if no property is found
   if (!featuredProperty) {
-    return (
-      <HeroSectionPropertyFallback />
-    );
+    return <HeroSectionPropertyFallback />;
   }
 
   return (
@@ -73,7 +74,11 @@ export async function HeroSectionProperty({
                   <>
                     <Image
                       src={imageUrl}
-                      alt={featuredProperty.title ? `${featuredProperty.title} image` : "Featured Property"}
+                      alt={
+                        featuredProperty.title
+                          ? `${featuredProperty.title} image`
+                          : "Featured Property"
+                      }
                       fill
                       priority={true}
                       sizes="(max-width:768px) 100vw, 50vw"
@@ -131,16 +136,18 @@ export async function HeroSectionProperty({
                   </div>
                   <div className="flex items-center gap-2">
                     <Square className="h-5 w-5 text-primary" />
-                    <span className="font-medium">{featuredProperty.building_size_sqft || 0} sq ft</span>
+                    <span className="font-medium">
+                      {featuredProperty.building_size_sqft || 0} sq ft
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex gap-4">
                   <Link href={`/properties/${featuredProperty.id}`} className="w-full">
-                    <Button 
-                      size="lg" 
+                    <Button
+                      size="lg"
                       className="w-full"
-                      aria-label={`View details for ${featuredProperty.title || 'featured property'} in ${locationLabel || 'unspecified location'}`}
+                      aria-label={`View details for ${featuredProperty.title || "featured property"} in ${locationLabel || "unspecified location"}`}
                     >
                       View Details
                     </Button>
@@ -154,7 +161,6 @@ export async function HeroSectionProperty({
     </section>
   );
 }
-
 
 export function HeroSectionPropertyFallback() {
   return (
@@ -196,5 +202,5 @@ export function HeroSectionPropertyFallback() {
         </div>
       </div>
     </section>
-  )
+  );
 }

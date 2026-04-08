@@ -19,7 +19,7 @@ export function AgentsSearch({ className, currentUser = { is_admin: false } }: A
     defaultValue: "",
     throttleMs: 500,
     startTransition,
-    shallow: false
+    shallow: false,
   });
 
   return (
@@ -27,18 +27,20 @@ export function AgentsSearch({ className, currentUser = { is_admin: false } }: A
       {/* Mobile layout: stacked */}
       <div className="flex flex-col gap-4 @lg:hidden">
         <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Users className="h-6 w-6" />
-          <h1 className="text-2xl font-bold">Agents</h1>
-        </div>
-        
-        {currentUser.is_admin && (
-          <div className="flex items-center">
-            <Link href="/dashboard/agents/new">
-              <Button size="sm" className="w-full">Create Agent</Button>
-            </Link>
+          <div className="flex items-center gap-2">
+            <Users className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Agents</h1>
           </div>
-        )}
+
+          {currentUser.is_admin && (
+            <div className="flex items-center">
+              <Link href="/dashboard/agents/new">
+                <Button size="sm" className="w-full">
+                  Create Agent
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -60,7 +62,7 @@ export function AgentsSearch({ className, currentUser = { is_admin: false } }: A
           <Users className="h-6 w-6" />
           <h1 className="text-2xl font-bold">Agents</h1>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="relative w-80">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -74,7 +76,7 @@ export function AgentsSearch({ className, currentUser = { is_admin: false } }: A
               <Loader className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-muted-foreground" />
             )}
           </div>
-          
+
           {currentUser.is_admin && (
             <Link href="/dashboard/agents/new">
               <Button>Create Agent</Button>

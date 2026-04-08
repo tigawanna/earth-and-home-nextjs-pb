@@ -4,7 +4,6 @@ import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
 import { BaseSingleProperty } from "./BaseSingleProperty";
 import { SinglePropertyNotFound } from "./single-property-query-states";
 
-
 interface ServersideSinglePropertyProps {
   propertyId: string;
 }

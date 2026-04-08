@@ -15,11 +15,10 @@ export function ListPagination({ totalPages }: ListingsPaginationProps) {
   const [ispending, startTransition] = useTransition();
   const [pageIndex, setPageIndex] = useQueryState(
     "page",
-    parseAsIndex.withDefault(0).withOptions({ startTransition,shallow: false })
+    parseAsIndex.withDefault(0).withOptions({ startTransition, shallow: false }),
   );
 
   const current = (pageIndex ?? 0) + 1;
-
 
   return (
     <div className="flex w-full items-center justify-center">
@@ -31,9 +30,7 @@ export function ListPagination({ totalPages }: ListingsPaginationProps) {
           setPageIndex(newPage - 1);
         }}
       />
-      {ispending && (
-        <Loader className="ml-2 animate-spin h-4 w-4 text-muted-foreground" />
-      )}
+      {ispending && <Loader className="ml-2 animate-spin h-4 w-4 text-muted-foreground" />}
     </div>
   );
 }

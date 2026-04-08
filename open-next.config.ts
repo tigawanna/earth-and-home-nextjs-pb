@@ -9,13 +9,13 @@ export default defineCloudflareConfig({
     mode: "long-lived", // Responses re-used for up to 30 minutes for ISR/SSG
     shouldLazilyUpdateOnCacheHit: true, // Background refresh from R2
   }),
-  
+
   // Use default memory queue for development (comment out for production)
   // For production, uncomment the doQueue import and use: queue: doQueue,
-  
+
   // Enable cache interception for better performance (disable for PPR)
   enableCacheInterception: true,
-  
+
   // Note: D1 Tag Cache can be added later for on-demand revalidation
   // Requires: npx wrangler d1 create earth-and-home-tag-cache
   // tagCache: d1NextTagCache,

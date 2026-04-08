@@ -1,12 +1,12 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { Clock, Mail, User } from "lucide-react";
@@ -49,8 +49,9 @@ export function UsersTable({ users, currentUserId, onUserUpdate }: UsersTablePro
               <TableCell>
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="text-xs">
-                    {user.name?.charAt(0)?.toUpperCase() || 
-                     user.email?.charAt(0)?.toUpperCase() || "U"}
+                    {user.name?.charAt(0)?.toUpperCase() ||
+                      user.email?.charAt(0)?.toUpperCase() ||
+                      "U"}
                   </AvatarFallback>
                 </Avatar>
               </TableCell>
@@ -58,12 +59,8 @@ export function UsersTable({ users, currentUserId, onUserUpdate }: UsersTablePro
               {/* User Info */}
               <TableCell>
                 <div className="space-y-1">
-                  <div className="font-medium">
-                    {user.name || "Unnamed User"}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    ID: {user.id.slice(0, 8)}...
-                  </div>
+                  <div className="font-medium">{user.name || "Unnamed User"}</div>
+                  <div className="text-xs text-muted-foreground">ID: {user.id.slice(0, 8)}...</div>
                 </div>
               </TableCell>
 
@@ -87,13 +84,13 @@ export function UsersTable({ users, currentUserId, onUserUpdate }: UsersTablePro
                       Unverified
                     </Badge>
                   )}
-                  
+
                   {user.is_admin && (
                     <Badge variant="destructive" className="text-xs w-fit">
                       Admin
                     </Badge>
                   )}
-                  
+
                   {user.is_banned && (
                     <Badge variant="outline" className="text-xs w-fit border-red-500 text-red-500">
                       Banned
@@ -112,8 +109,8 @@ export function UsersTable({ users, currentUserId, onUserUpdate }: UsersTablePro
 
               {/* Actions */}
               <TableCell className="text-right">
-                <UserActions 
-                  user={user} 
+                <UserActions
+                  user={user}
                   currentUserId={currentUserId}
                   onUserUpdate={onUserUpdate}
                 />

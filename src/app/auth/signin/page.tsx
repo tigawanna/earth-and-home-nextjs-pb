@@ -10,7 +10,14 @@ import { Card, CardContent } from "@/components/ui/card";
 export const metadata: Metadata = {
   title: "Sign In",
   description: `Sign in to your ${siteinfo.title} account to access your property favorites, saved searches, and personalized real estate recommendations. Secure login for existing members.`,
-  keywords: ["sign in", "login", "account access", "real estate account", "member login", siteinfo.title],
+  keywords: [
+    "sign in",
+    "login",
+    "account access",
+    "real estate account",
+    "member login",
+    siteinfo.title,
+  ],
   openGraph: {
     title: `Sign In | ${siteinfo.title}`,
     description: `Access your ${siteinfo.title} account to manage your property searches and favorites.`,
@@ -31,7 +38,8 @@ export default function SigninPage() {
           <CardContent className="flex flex-col gap-4">
             <span
               className="block mb-6 text-5xl font-extrabold text-primary"
-              aria-label="Sign In Label">
+              aria-label="Sign In Label"
+            >
               Sign In
             </span>
             {process.env.NODE_ENV === "development" && <SigninForm />}

@@ -1,6 +1,5 @@
 "use client";
 
-import { Control, FieldPath, useWatch } from "react-hook-form";
 import {
   FormField,
   FormItem,
@@ -23,11 +22,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, ChartNoAxesColumnDecreasing, X } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { PropertyFormData } from "./property-form-schema";
-import { FormFieldProps, createEnumOptions, formatCurrency, parseCurrency } from "@/utils/forms";
+import { FormFieldProps } from "@/utils/forms";
 
 // Basic Text Input Field
 export function TextFieldComponent({
@@ -45,7 +44,8 @@ export function TextFieldComponent({
       render={({ field }) => (
         <FormItem>
           <FormLabel
-            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}>
+            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}
+          >
             {label}
           </FormLabel>
           <FormControl>
@@ -80,7 +80,8 @@ export function TextareaFieldComponent({
       render={({ field }) => (
         <FormItem>
           <FormLabel
-            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}>
+            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}
+          >
             {label}
           </FormLabel>
           <FormControl>
@@ -115,7 +116,8 @@ export function NumberFieldComponent({
       render={({ field }) => (
         <FormItem>
           <FormLabel
-            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}>
+            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}
+          >
             {label}
           </FormLabel>
           <FormControl>
@@ -156,7 +158,8 @@ export function CurrencyFieldComponent({
       render={({ field }) => (
         <FormItem>
           <FormLabel
-            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}>
+            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}
+          >
             {label}
           </FormLabel>
           <FormControl>
@@ -213,7 +216,8 @@ export function SelectFieldComponent({
         return (
           <FormItem>
             <FormLabel
-              className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}>
+              className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}
+            >
               {label}
             </FormLabel>
             <Select onValueChange={field.onChange} value={field.value as string}>
@@ -300,7 +304,8 @@ export function MultiSelectTagsComponent({
                         const newValue = (field.value as string[]).filter((_, i) => i !== index);
                         field.onChange(newValue);
                       }}
-                      className="ml-1 text-muted-foreground hover:text-foreground">
+                      className="ml-1 text-muted-foreground hover:text-foreground"
+                    >
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>
@@ -314,7 +319,8 @@ export function MultiSelectTagsComponent({
                   if (!currentValue.includes(value)) {
                     field.onChange([...currentValue, value]);
                   }
-                }}>
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
@@ -377,7 +383,8 @@ export function MultiSelectFieldComponent({
                         const newValue = (field.value as string[]).filter((_, i) => i !== index);
                         field.onChange(newValue);
                       }}
-                      className="ml-1 text-muted-foreground hover:text-foreground">
+                      className="ml-1 text-muted-foreground hover:text-foreground"
+                    >
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>
@@ -391,7 +398,8 @@ export function MultiSelectFieldComponent({
                   if (!currentValue.includes(value)) {
                     field.onChange([...currentValue, value]);
                   }
-                }}>
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
@@ -431,7 +439,8 @@ export function DateFieldComponent({
       render={({ field }) => (
         <FormItem className="flex flex-col">
           <FormLabel
-            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}>
+            className={cn(required && "after:content-['*'] after:ml-0.5 after:text-destructive")}
+          >
             {label}
           </FormLabel>
           <Popover>
@@ -441,8 +450,9 @@ export function DateFieldComponent({
                   variant="outline"
                   className={cn(
                     "w-full pl-3 text-left font-normal",
-                    !field.value && "text-muted-foreground"
-                  )}>
+                    !field.value && "text-muted-foreground",
+                  )}
+                >
                   {field.value ? (
                     format(field.value as Date, "PPP")
                   ) : (

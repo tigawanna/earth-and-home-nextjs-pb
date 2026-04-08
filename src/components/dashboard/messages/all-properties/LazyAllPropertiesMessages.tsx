@@ -1,7 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
 
-
 // Keep the old component for backward compatibility
 export const LazyAllPropertiesMessages = dynamic(
   () => import("@/components/dashboard/messages/all-properties/AllPropertiesMessages"),
@@ -12,5 +11,5 @@ export const LazyAllPropertiesMessages = dynamic(
         <p>Loading property messages...</p>
       </div>
     ),
-  }
+  },
 );

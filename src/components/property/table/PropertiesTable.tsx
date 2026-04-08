@@ -35,6 +35,35 @@ interface PropertiesTableProps {
   properties: PropertiesResponse[];
 }
 
+function formatPrice(price?: number, currency?: string) {
+  if (!price) return "—";
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: currency || "KES",
+      maximumFractionDigits: 0,
+    }).format(price);
+  } catch {
+    return `${currency ?? ""} ${price}`;
+  }
+}
+
+function getStatusClass(status?: string) {
+  switch ((status || "").toLowerCase()) {
+    case "active":
+      return "bg-green-100 text-green-800";
+    case "pending":
+      return "bg-yellow-100 text-yellow-800";
+    case "sold":
+    case "rented":
+      return "bg-blue-100 text-blue-800";
+    case "draft":
+      return "bg-muted/10 text-muted-foreground";
+    default:
+      return "bg-muted/10 text-muted-foreground";
+  }
+}
+
 export function PropertiesTable({ properties }: PropertiesTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -43,13 +72,9 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
   const filtered = useMemo(() => {
     return (properties || []).filter((p) => {
       const title = (p.title || "").toString().toLowerCase();
-      const location = [p.city, p.state, p.country]
-        .filter(Boolean)
-        .join(", ")
-        .toLowerCase();
+      const location = [p.city, p.state, p.country].filter(Boolean).join(", ").toLowerCase();
       const matchesSearch =
-        title.includes(searchTerm.toLowerCase()) ||
-        location.includes(searchTerm.toLowerCase());
+        title.includes(searchTerm.toLowerCase()) || location.includes(searchTerm.toLowerCase());
       const matchesStatus =
         statusFilter === "all" || (p.status || "").toLowerCase() === statusFilter;
       const matchesType =
@@ -57,35 +82,6 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
       return matchesSearch && matchesStatus && matchesType;
     });
   }, [properties, searchTerm, statusFilter, typeFilter]);
-
-  function formatPrice(price?: number, currency?: string) {
-    if (!price) return "—";
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: "currency",
-        currency: currency || "KES",
-        maximumFractionDigits: 0,
-      }).format(price);
-    } catch (e) {
-      return `${currency ?? ""} ${price}`;
-    }
-  }
-
-  function getStatusClass(status?: string) {
-    switch ((status || "").toLowerCase()) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "sold":
-      case "rented":
-        return "bg-blue-100 text-blue-800";
-      case "draft":
-        return "bg-muted/10 text-muted-foreground";
-      default:
-        return "bg-muted/10 text-muted-foreground";
-    }
-  }
 
   return (
     <div className="space-y-4">
@@ -150,7 +146,6 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
               const imageUrl = primary
                 ? getImageThumbnailUrl(p as PropertiesResponse, primary, "120x90")
                 : null;
-              const mainPrice = p.price; // Using unified price field
               const location = [p.city, p.state, p.country].filter(Boolean).join(", ");
 
               return (
@@ -173,9 +168,7 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
                       </div>
                       <div>
                         <div className="font-medium">{p.title || "Untitled"}</div>
-                        <div className="text-sm text-muted-foreground line-clamp-1">
-                          {location}
-                        </div>
+                        <div className="text-sm text-muted-foreground line-clamp-1">{location}</div>
                         <div className="flex items-center gap-1 mt-1">
                           {p.is_featured ? (
                             <Badge variant="secondary" className="text-xs">
@@ -193,18 +186,14 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
                   </TableCell>
 
                   <TableCell>
-                    <div className="capitalize">
-                      {(p.property_type || "").replace(/_/g, " ")}
-                    </div>
+                    <div className="capitalize">{(p.property_type || "").replace(/_/g, " ")}</div>
                     <div className="text-sm text-muted-foreground capitalize">
                       For {p.listing_type}
                     </div>
                   </TableCell>
 
                   <TableCell>
-                    <Badge className={getStatusClass(p.status)}>
-                      {p.status || "unknown"}
-                    </Badge>
+                    <Badge className={getStatusClass(p.status)}>{p.status || "unknown"}</Badge>
                   </TableCell>
 
                   <TableCell>
@@ -230,10 +219,7 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem asChild>
-                          <Link
-                            href={`/properties/${p.id}`}
-                            className="flex items-center"
-                          >
+                          <Link href={`/properties/${p.id}`} className="flex items-center">
                             <Eye className="w-4 h-4 mr-2" />
                             View
                           </Link>

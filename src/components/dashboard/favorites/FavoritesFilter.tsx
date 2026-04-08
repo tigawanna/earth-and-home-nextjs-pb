@@ -1,11 +1,7 @@
-interface FavoritesFilterProps {
-  
-}
+interface FavoritesFilterProps {}
 
-export function FavoritesFilter({  }: FavoritesFilterProps) {
+export function FavoritesFilter(_props: FavoritesFilterProps) {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
-        FavoritesFilter
-    </div>
+    <div className="w-full h-full flex flex-col items-center justify-center">FavoritesFilter</div>
   );
 }

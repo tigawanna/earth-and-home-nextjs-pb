@@ -10,7 +10,7 @@ interface AgentCardProps {
 
 export function AgentCard({ agent }: AgentCardProps) {
   const user = agent.expand?.user_id;
-  
+
   return (
     <Card className="hover:shadow-md transition-shadow">
       <Link href={`/dashboard/agents/${agent.id}`} className="hover:text-primary">
@@ -67,7 +67,7 @@ export function AgentCard({ agent }: AgentCardProps) {
             </div>
           )}
 
-          {typeof agent.years_experience === 'number' && agent.years_experience > 0 && (
+          {typeof agent.years_experience === "number" && agent.years_experience > 0 && (
             <div className="flex items-center gap-2 text-sm">
               <Star className="h-4 w-4 text-muted-foreground" />
               <span>{agent.years_experience} years experience</span>

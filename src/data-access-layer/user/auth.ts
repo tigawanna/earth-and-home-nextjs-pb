@@ -7,11 +7,11 @@ import { mutationOptions, queryOptions, useQuery } from "@tanstack/react-query";
 export function localViewerQueryOptions() {
   return queryOptions({
     queryKey: [queryKeyPrefixes.viewer] as const,
-    queryFn: async ({}) => {
+    queryFn: async () => {
       try {
         const res = browserPB.authStore.record as UsersResponse;
         return res;
-      } catch (error) {
+      } catch {
         return {
           record: null,
           error: {
@@ -37,7 +37,7 @@ export const useLocalViewer = () => {
           viewer: res,
           success: true,
         };
-      } catch (error) {
+      } catch {
         return {
           viewer: null,
           success: false,
@@ -57,11 +57,11 @@ export const useLocalViewer = () => {
 export function viewerQueryOptions() {
   return queryOptions({
     queryKey: [queryKeyPrefixes.viewer] as const,
-    queryFn: async ({}) => {
+    queryFn: async () => {
       try {
         const res = browserPB.from("users").authRefresh();
         return res;
-      } catch (error) {
+      } catch {
         return {
           record: null,
           error: {
@@ -92,7 +92,7 @@ export function signinMutationOptions() {
     mutationFn: async (data: { email: string; password: string }) => {
       const res = await browserPB.from("users").authWithPassword(data.email, data.password);
       browserPB.authStore.exportToCookie({
-        httpOnly:false
+        httpOnly: false,
       });
       return res;
     },
@@ -105,7 +105,7 @@ export function signinMutationOptions() {
 export function signupMutationOptions() {
   return mutationOptions({
     mutationFn: async (data: UsersCreate) => {
-      const res = await browserPB.from("users").create({...data,emailVisibility:true});
+      const res = await browserPB.from("users").create({ ...data, emailVisibility: true });
       browserPB.authStore.exportToCookie();
       return res;
     },

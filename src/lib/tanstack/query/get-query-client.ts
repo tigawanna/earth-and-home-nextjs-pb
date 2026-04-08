@@ -24,7 +24,7 @@ export const queryKeyPrefixes = {
 
 export type QueryKey = [
   (typeof queryKeyPrefixes)[keyof typeof queryKeyPrefixes],
-  ...(readonly unknown[])
+  ...(readonly unknown[]),
 ];
 
 interface MyMeta extends Record<string, unknown> {

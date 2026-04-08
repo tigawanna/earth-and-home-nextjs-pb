@@ -124,5 +124,3 @@ export function NoMessagesForProperty({ propertyTitle }: { propertyTitle?: strin
     </div>
   );
 }
-
-

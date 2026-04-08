@@ -7,5 +7,5 @@ export const LazySinglePropertyMessagesShell = dynamic(
   {
     ssr: false,
     loading: () => <PropertyMessagesLoading />,
-  }
+  },
 );

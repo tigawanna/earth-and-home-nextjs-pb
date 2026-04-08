@@ -11,7 +11,7 @@ interface PageProps {
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const params = await searchParams;
-  
+
   // Extract search parameters for dynamic metadata
   const search = params.search as string;
   const propertyType = params.propertyType as string;
@@ -25,7 +25,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   // Build dynamic title and description
   let title = "Properties";
   let description = `Browse our extensive collection of properties for sale and rent. Discover luxury homes, family houses, apartments, and commercial real estate with ${siteinfo.title}. Expert guidance and local market knowledge.`;
-  
+
   const titleParts: string[] = [];
   const descriptionParts: string[] = [];
 
@@ -35,13 +35,13 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   }
 
   if (propertyType) {
-    const formattedType = propertyType.charAt(0).toUpperCase() + propertyType.slice(1) + 's';
+    const formattedType = propertyType.charAt(0).toUpperCase() + propertyType.slice(1) + "s";
     titleParts.push(formattedType);
     descriptionParts.push(formattedType.toLowerCase());
   }
 
   if (listingType) {
-    const formattedListing = listingType === 'sale' ? 'for Sale' : 'for Rent';
+    const formattedListing = listingType === "sale" ? "for Sale" : "for Rent";
     titleParts.push(formattedListing);
     descriptionParts.push(formattedListing.toLowerCase());
   }
@@ -52,36 +52,36 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   }
 
   if (beds) {
-    titleParts.push(`${beds}+ Bed${parseInt(beds) > 1 ? 's' : ''}`);
-    descriptionParts.push(`with ${beds}+ bedroom${parseInt(beds) > 1 ? 's' : ''}`);
+    titleParts.push(`${beds}+ Bed${parseInt(beds) > 1 ? "s" : ""}`);
+    descriptionParts.push(`with ${beds}+ bedroom${parseInt(beds) > 1 ? "s" : ""}`);
   }
 
   if (baths) {
-    titleParts.push(`${baths}+ Bath${parseInt(baths) > 1 ? 's' : ''}`);
-    descriptionParts.push(`and ${baths}+ bathroom${parseInt(baths) > 1 ? 's' : ''}`);
+    titleParts.push(`${baths}+ Bath${parseInt(baths) > 1 ? "s" : ""}`);
+    descriptionParts.push(`and ${baths}+ bathroom${parseInt(baths) > 1 ? "s" : ""}`);
   }
 
   if (minPrice || maxPrice) {
     const priceRange = [];
     if (minPrice) priceRange.push(`$${parseInt(minPrice).toLocaleString()}+`);
     if (maxPrice) priceRange.push(`under $${parseInt(maxPrice).toLocaleString()}`);
-    const priceText = priceRange.join(' - ');
+    const priceText = priceRange.join(" - ");
     titleParts.push(priceText);
     descriptionParts.push(`priced ${priceText}`);
   }
 
   if (titleParts.length > 0) {
-    title = titleParts.join(' ') + ' | Properties';
+    title = titleParts.join(" ") + " | Properties";
   }
 
   if (descriptionParts.length > 0) {
-    description = `Explore ${descriptionParts.join(' ')} with ${siteinfo.title}. Professional real estate services, detailed property information, and expert assistance to help you find your perfect home or investment property.`;
+    description = `Explore ${descriptionParts.join(" ")} with ${siteinfo.title}. Professional real estate services, detailed property information, and expert assistance to help you find your perfect home or investment property.`;
   }
 
   // Build keywords array
   const keywords = [
     "properties for sale",
-    "properties for rent", 
+    "properties for rent",
     "real estate listings",
     "homes for sale",
     "apartments for rent",
@@ -93,12 +93,12 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
     "home buying",
     "property investment",
     "rental properties",
-    siteinfo.title
+    siteinfo.title,
   ];
 
   if (propertyType) keywords.push(`${propertyType} for sale`, `${propertyType} for rent`);
   if (city) keywords.push(`properties in ${city}`, `real estate ${city}`);
-  if (listingType) keywords.push(`${listingType === 'sale' ? 'buy' : 'rent'} property`);
+  if (listingType) keywords.push(`${listingType === "sale" ? "buy" : "rent"} property`);
 
   return {
     title,

@@ -11,7 +11,7 @@ export function FormStateDebug({
   form,
   title = "🔧 Form State (Development)",
   className = "",
-  showFullState = false
+  showFullState = false,
 }: FormStateDebugProps) {
   if (process.env.NODE_ENV !== "development") {
     return null;

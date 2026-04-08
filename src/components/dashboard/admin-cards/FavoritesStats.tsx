@@ -7,7 +7,7 @@ import { ArrowRight, Heart } from "lucide-react";
 
 interface FavoritesStatsProps {}
 
-export function FavoritesStats({}: FavoritesStatsProps) {
+export function FavoritesStats(_props: FavoritesStatsProps) {
   const { data, isPending } = useSuspenseQuery(dashboardFavoritesQueryOptions());
   const total = data?.result?.totalItems ?? 0;
 

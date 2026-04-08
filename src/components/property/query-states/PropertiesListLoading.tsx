@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface PropertiesListLoadingProps {}
 
-export function PropertiesListLoading({}: PropertiesListLoadingProps) {
+export function PropertiesListLoading(_props: PropertiesListLoadingProps) {
   const placeholders = Array.from({ length: 6 }).map((_, i) => i + 1);
 
   return (

@@ -3,12 +3,7 @@
 import { Control } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PropertyFormData } from "../property-form-schema";
-import { 
-  TextFieldComponent, 
-  TextareaFieldComponent, 
-  SelectFieldComponent 
-} from "../form-fields";
-
+import { TextFieldComponent, TextareaFieldComponent, SelectFieldComponent } from "../form-fields";
 
 interface BasicInfoSectionProps {
   control: Control<PropertyFormData>;

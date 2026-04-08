@@ -1,5 +1,4 @@
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { PropertyMessagesResponse } from "@/lib/pocketbase/types/pb-types";
 import { createCollectionFactory } from "@/lib/tanstack/db/query-collection-factory";
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
@@ -52,7 +51,7 @@ export const createSinglePropertyMessagesCollection = ({ parentId }: { parentId:
         await pbMessagesCollection.delete(original.id);
       },
       queryClient: queryClient!,
-    })
+    }),
   );
 };
 
@@ -61,9 +60,3 @@ export const singlePropertyMessagesCollection = createCollectionFactory<
   ReturnType<typeof createSinglePropertyMessagesCollection>,
   Parameters<typeof createSinglePropertyMessagesCollection>[0]
 >(createSinglePropertyMessagesCollection);
-
-type AddNewChatProps = {
-  chat: PropertyMessagesResponse;
-};
-
-

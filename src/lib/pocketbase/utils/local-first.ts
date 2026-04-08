@@ -6,7 +6,7 @@ export const pocketbaseFriendlyUUID = () => {
 };
 
 export function addLocalfirstPocketbaseMetadata<T extends Record<string, any>>(
-  item: T
+  item: T,
 ): T & {
   id: string;
   created: string;
@@ -20,11 +20,12 @@ export function addLocalfirstPocketbaseMetadata<T extends Record<string, any>>(
     id: item.id || pocketbaseFriendlyUUID(),
     created: item.created || now,
     updated: item.updated || now,
-    collectionId: item?.collectionId!,
+    collectionId: item.collectionId ?? "",
   };
 }
 
-export const stripLocalOnlyMetadata = <T extends Record<string, any>>(item: T): T => {
-  const { id, created, updated, collectionId, ...rest } = item;
+export const stripLocalOnlyMetadata = <T extends Record<string, unknown>>(item: T): T => {
+  const { id: _id, created: _created, updated: _updated, collectionId: _collectionId, ...rest } =
+    item;
   return rest as T;
 };

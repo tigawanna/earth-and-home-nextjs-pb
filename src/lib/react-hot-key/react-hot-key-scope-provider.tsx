@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { HotkeysProvider } from "react-hotkeys-hook";
 
 interface ReactHotKeyScopeProviderProps {
@@ -20,9 +20,5 @@ interface ReactHotKeyScopeProviderProps {
  * @param {React.ReactNode} [props.children]
  */
 export function ReactHotKeyScopeProvider({ scope, children }: ReactHotKeyScopeProviderProps) {
-  return (
-    <HotkeysProvider initiallyActiveScopes={[scope]}>
-      {children}
-    </HotkeysProvider>
-  );
+  return <HotkeysProvider initiallyActiveScopes={[scope]}>{children}</HotkeysProvider>;
 }

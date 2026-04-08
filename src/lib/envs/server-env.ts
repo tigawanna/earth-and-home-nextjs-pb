@@ -13,14 +13,14 @@ const serverEnvSchema = z.object({
   //   API_KEY: z.string().min(32).max(32),
 });
 
-
 const { success, data, error } = serverEnvSchema.safeParse(process.env);
 if (!success) {
-  console.log("error happende = =>\n","Invalid server environment variables:", z.treeifyError(error));
+  console.log(
+    "error happende = =>\n",
+    "Invalid server environment variables:",
+    z.treeifyError(error),
+  );
   throw new Error("Invalid server environment variables");
 }
 
-
 export const serverEnvs = data;
-
-

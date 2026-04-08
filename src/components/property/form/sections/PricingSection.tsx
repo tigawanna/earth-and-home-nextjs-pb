@@ -2,11 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Control, useWatch } from "react-hook-form";
-import {
-    CurrencyFieldComponent,
-    DateFieldComponent,
-    SelectFieldComponent
-} from "../form-fields";
+import { CurrencyFieldComponent, DateFieldComponent, SelectFieldComponent } from "../form-fields";
 import { PropertyFormData } from "../property-form-schema";
 
 // Common currencies with their symbols and names
@@ -27,8 +23,6 @@ const CURRENCIES = [
   { value: "TZS", label: "TZS - Tanzanian Shilling (TSh)" },
   { value: "UGX", label: "UGX - Ugandan Shilling (USh)" },
 ];
-
-
 
 interface PricingSectionProps {
   control: Control<PropertyFormData>;

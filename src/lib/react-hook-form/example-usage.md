@@ -21,8 +21,7 @@ AFTER (automatic):
 <FormErrorDisplay form={form} />
 
 Much cleaner! 🚀
-*/
-
+\*/
 
 ```tsx
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
@@ -56,12 +55,12 @@ export function ExampleForm() {
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       {/* Your form fields here */}
-      
+
       {/* Submit button */}
       <button type="submit">Submit</button>
 
       {/* Enhanced Error Display - Just pass the form! */}
-      <FormErrorDisplay 
+      <FormErrorDisplay
         form={form}
         title="Please fix the following errors:"
         maxErrors={5}
@@ -69,7 +68,7 @@ export function ExampleForm() {
       />
 
       {/* Development Debug Info - Just pass the form! */}
-      <FormStateDebug 
+      <FormStateDebug
         form={form}
         title="🔧 Debug Form Errors"
         showFullState={false} // false = errors only, true = full form state
@@ -78,4 +77,3 @@ export function ExampleForm() {
   );
 }
 ```
-

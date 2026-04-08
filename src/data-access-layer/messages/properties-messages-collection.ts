@@ -1,8 +1,8 @@
 import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import {
-    PropertiesResponse,
-    PropertyMessagesResponse,
-    UsersResponse,
+  PropertiesResponse,
+  PropertyMessagesResponse,
+  UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
 import { queryCollectionOptions } from "@tanstack/query-db-collection";
@@ -17,9 +17,7 @@ export const pbMessagesCollection = browserPB.from("property_messages");
 
 // Filter for parent messages (main conversations, not replies)
 export const pbMessagesCollectionFilter = pbMessagesCollection.createFilter(
-  and(
-    pBeq("type", "parent")
-  )
+  and(pBeq("type", "parent")),
 );
 
 // Select with expanded relations
@@ -60,7 +58,7 @@ export const propertyMessagesCollection = createCollection(
       await pbMessagesCollection.delete(original.id);
     },
     queryClient: queryClient!,
-  })
+  }),
 );
 
 // ====================================================
@@ -74,16 +72,14 @@ export type PropertyMessageWithExpansion = PropertyMessagesResponse & {
   };
 };
 
-
-
-
 export type MessageWithProperty = PropertyMessagesResponse & {
-  expand?: {
-    user_id?: UsersResponse | undefined;
-    property_id?: PropertiesResponse | undefined;
-} | undefined;
+  expand?:
+    | {
+        user_id?: UsersResponse | undefined;
+        property_id?: PropertiesResponse | undefined;
+      }
+    | undefined;
 };
-
 
 export type PropertyMessageSummary = {
   property: PropertiesResponse;
@@ -93,7 +89,7 @@ export type PropertyMessageSummary = {
 };
 
 // Get message summaries grouped by property
-export async function getPropertyMessageSummaries(){
+export async function getPropertyMessageSummaries() {
   try {
     const response = await pbMessagesCollection.getList(1, 50, {
       sort: "-created",
@@ -101,11 +97,11 @@ export async function getPropertyMessageSummaries(){
       select: pbMessagesCollectionSelect,
     });
     return {
-      result:response,
-      success:true,
-    }
+      result: response,
+      success: true,
+    };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching property message summaries:", error);
+    console.log("error happende = =>\n", "Error fetching property message summaries:", error);
     return {
       result: null,
       success: false,
@@ -116,7 +112,7 @@ export async function getPropertyMessageSummaries(){
 
 // Get all messages for a specific property (including replies)
 export async function getPropertyMessages(
-  propertyId: string
+  propertyId: string,
 ): Promise<PropertyMessageWithExpansion[]> {
   try {
     const filter = pbMessagesCollection.createFilter(pBeq("property_id", propertyId));
@@ -128,7 +124,7 @@ export async function getPropertyMessages(
 
     return result as PropertyMessageWithExpansion[];
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching property messages:", error);
+    console.log("error happende = =>\n", "Error fetching property messages:", error);
     return [];
   }
 }
@@ -147,7 +143,7 @@ export async function createPropertyMessage(data: {
     });
     return message;
   } catch (error) {
-    console.log("error happende = =>\n","Error creating property message:", error);
+    console.log("error happende = =>\n", "Error creating property message:", error);
     return null;
   }
 }

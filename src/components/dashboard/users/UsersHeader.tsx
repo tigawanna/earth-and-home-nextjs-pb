@@ -4,11 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Ban, Filter, Search, Shield, UserCheck, Users, X } from "lucide-react";
 import { useQueryState } from "nuqs";
@@ -20,11 +20,11 @@ interface UsersHeaderProps {
   bannedUsers: number;
 }
 
-export function UsersHeader({ 
-  totalUsers, 
-  verifiedUsers, 
-  adminUsers, 
-  bannedUsers 
+export function UsersHeader({
+  totalUsers,
+  verifiedUsers,
+  adminUsers,
+  bannedUsers,
 }: UsersHeaderProps) {
   const [q, setQ] = useQueryState("q", { defaultValue: "" });
   const [sortBy, setSortBy] = useQueryState("sortBy", { defaultValue: "created" });

@@ -34,35 +34,40 @@ export function Header({ isLandingPage }: { isLandingPage?: boolean }) {
             <li>
               <a
                 href="#home"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                className="text-muted-foreground hover:text-primary transition-colors font-medium"
+              >
                 Home
               </a>
             </li>
             <li>
               <a
                 href="#properties"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                className="text-muted-foreground hover:text-primary transition-colors font-medium"
+              >
                 Properties
               </a>
             </li>
             <li>
               <a
                 href="#buy"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                className="text-muted-foreground hover:text-primary transition-colors font-medium"
+              >
                 Buy
               </a>
             </li>
             <li>
               <a
                 href="#about"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                className="text-muted-foreground hover:text-primary transition-colors font-medium"
+              >
                 About
               </a>
             </li>
             <li>
               <a
                 href="#contact"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium">
+                className="text-muted-foreground hover:text-primary transition-colors font-medium"
+              >
                 Contact
               </a>
             </li>
@@ -73,7 +78,8 @@ export function Header({ isLandingPage }: { isLandingPage?: boolean }) {
         <label
           htmlFor="header-drawer"
           aria-label="open sidebar"
-          className="btn btn-square btn-ghost">
+          className="btn btn-square btn-ghost"
+        >
           <Menu className="h-6 w-6" />
         </label>
       </div>

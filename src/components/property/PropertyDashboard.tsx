@@ -35,8 +35,7 @@ export function PropertyDashboard({ user, searchParams, agentId }: PropertyDashb
       <PropertyFilters showStatusFilter={isAdmin} />
       {/* Properties List */}
       <Suspense fallback={<PropertiesListLoading />}>
-        <DashboardPropertiesList 
-        user={user} searchParams={searchParams} agentId={agentId} />
+        <DashboardPropertiesList user={user} searchParams={searchParams} agentId={agentId} />
       </Suspense>
       {/* Quick Actions Card */}
     </div>

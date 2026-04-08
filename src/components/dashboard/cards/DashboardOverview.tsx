@@ -22,17 +22,14 @@ interface DashboardOverviewProps {
   className?: string;
 }
 
-export function DashboardOverview({ 
-  propertyStats, 
-  userStats, 
-  favoritesStats, 
-  className 
+export function DashboardOverview({
+  propertyStats,
+  userStats,
+  favoritesStats,
+  className,
 }: DashboardOverviewProps) {
-  const activePropertyPercentage = propertyStats.total > 0 
-    ? (propertyStats.active / propertyStats.total) * 100 
-    : 0;
-    
-
+  const activePropertyPercentage =
+    propertyStats.total > 0 ? (propertyStats.active / propertyStats.total) * 100 : 0;
 
   return (
     <Card className={`${className || ""}`}>

@@ -29,12 +29,9 @@ export async function getServerSideUsers({
       const usersCollection = client.from("users");
       const filter = usersCollection.createFilter(`name ~ "${q}" || email ~ "${q}"`);
 
-      const sort = usersCollection
-        .createSort
-        (
-            `${sortOrder === "desc" ? "-" : "+"}${sortBy}` as Sort<UsersResponse>
-
-        );
+      const sort = usersCollection.createSort(
+        `${sortOrder === "desc" ? "-" : "+"}${sortBy}` as Sort<UsersResponse>,
+      );
 
       const result = await usersCollection.getList(page, limit, {
         filter,
@@ -50,7 +47,7 @@ export async function getServerSideUsers({
     // Use the base function for standard pagination
     return await baseGetPaginatedUsers({ client, page, limit });
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching users:", error);
+    console.log("error happende = =>\n", "Error fetching users:", error);
     return {
       success: false,
       result: null,
@@ -76,22 +73,22 @@ export async function updateUserStatus({
 }) {
   try {
     const client = await createServerClient();
-    
+
     // Check if current user is admin
     const currentUser = client.authStore.record;
     if (!currentUser?.is_admin) {
       throw new Error("Unauthorized: Admin access required");
     }
-    
+
     const usersCollection = client.from("users");
     await usersCollection.update(userId, updates);
-    
+
     return {
       success: true,
       message: "User status updated successfully",
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error updating user status:", error);
+    console.log("error happende = =>\n", "Error updating user status:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to update user status",
@@ -102,27 +99,27 @@ export async function updateUserStatus({
 export async function deleteUser(userId: string) {
   try {
     const client = await createServerClient();
-    
+
     // Check if current user is admin
     const currentUser = client.authStore.record;
     if (!currentUser?.is_admin) {
       throw new Error("Unauthorized: Admin access required");
     }
-    
+
     // Prevent admin from deleting themselves
     if (currentUser.id === userId) {
       throw new Error("Cannot delete your own account");
     }
-    
+
     const usersCollection = client.from("users");
     await usersCollection.delete(userId);
-    
+
     return {
       success: true,
       message: "User deleted successfully",
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error deleting user:", error);
+    console.log("error happende = =>\n", "Error deleting user:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to delete user",

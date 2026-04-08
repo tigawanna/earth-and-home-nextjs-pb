@@ -34,7 +34,7 @@ export function ClearAllNuqsSearchParms({
   }
   if (resetPageKey) mapping[resetPageKey] = parseAsInteger.withDefault(1);
 
-  const [,setQueryStates] = useQueryStates(mapping);
+  const [, setQueryStates] = useQueryStates(mapping);
 
   const handleClear = useCallback(() => {
     const update: Record<string, any> = {};

@@ -7,19 +7,19 @@ import { PropertyWithFavorites } from "@/data-access-layer/properties/property-t
 import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
 import { ReactHotKeyScopeProvider } from "@/lib/react-hot-key/react-hot-key-scope-provider";
 import {
-    ArrowLeft,
-    Bath,
-    Bed,
-    Building,
-    Calendar,
-    Car,
-    Mail,
-    MapPin,
-    Phone,
-    Share2,
-    Snowflake,
-    Square,
-    Thermometer,
+  ArrowLeft,
+  Bath,
+  Bed,
+  Building,
+  Calendar,
+  Car,
+  Mail,
+  MapPin,
+  Phone,
+  Share2,
+  Snowflake,
+  Square,
+  Thermometer,
 } from "lucide-react";
 import Link from "next/link";
 import { FavoriteProperty } from "../form/FavoriteProperty";
@@ -33,25 +33,22 @@ interface SinglePropertyProps {
   user: UsersResponse | null;
 }
 
-export function BaseSingleProperty({ property, basePath = "/", user }: SinglePropertyProps) {
-  // Format price with currency
-  const formatPrice = (price: number | null, currency = "KES") => {
-    if (!price) return "Price on request";
-    return new Intl.NumberFormat("en-KE", {
-      style: "currency",
-      currency: currency,
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
+function formatPrice(price: number | null, currency = "KES") {
+  if (!price) return "Price on request";
+  return new Intl.NumberFormat("en-KE", {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 0,
+  }).format(price);
+}
 
-  // Get the main price from unified price field
+export function BaseSingleProperty({ property, basePath = "/", user }: SinglePropertyProps) {
   const mainPrice = property.price;
 
-  const rawImages = Array.isArray(property.images) ? property.images : [];
   const amenities = Array.isArray(property.amenities) ? property.amenities : [];
   const features = Array.isArray(property.features) ? property.features : [];
 
-  const agent = property.expand?.agent_id
+  const agent = property.expand?.agent_id;
   const agent_profile = property.expand?.agent_id?.expand?.user_id;
 
   return (
@@ -65,11 +62,9 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
               Back to Properties
             </Link>
           </Button>
-          
+
           {/* Admin Controls - Only show for admin users */}
-          {user?.is_admin && (
-            <PropertyAdminActions property={property} />
-          )}
+          {user?.is_admin && <PropertyAdminActions property={property} />}
         </div>
       </div>
 
@@ -99,7 +94,9 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                   <div className="space-y-4">
                     <div className="flex items-center gap-2 mb-2">
                       {property.is_featured ? (
-                        <Badge className="bg-orange-600 hover:bg-orange-700 text-white font-medium">Featured</Badge>
+                        <Badge className="bg-orange-600 hover:bg-orange-700 text-white font-medium">
+                          Featured
+                        </Badge>
                       ) : null}
                       {property.is_new ? (
                         <Badge className="bg-green-500 hover:bg-green-600">New</Badge>
@@ -154,7 +151,8 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                           user={user}
                           propertyId={property.id}
                           propertyTitle={property.title}
-                          agent={agent}>
+                          agent={agent}
+                        >
                           <Button className="w-full sm:w-auto">
                             <Phone className="h-4 w-4 mr-2" />
                             Contact About Property
@@ -172,10 +170,10 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                         <Heart className="h-4 w-4" />
                       </Button> */}
                       <FavoriteProperty userId={user?.id} property={property} />
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="icon"
-                        aria-label={`Share ${property.title || 'this property'}`}
+                        aria-label={`Share ${property.title || "this property"}`}
                       >
                         <Share2 className="h-4 w-4" />
                       </Button>
@@ -277,10 +275,15 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                   <div className="flex items-center gap-3">
                     <Avatar>
                       <AvatarImage src={agent_profile?.avatar || undefined} />
-                      <AvatarFallback>{agent_profile?.name?.charAt(0).toUpperCase() || "A"}</AvatarFallback>
+                      <AvatarFallback>
+                        {agent_profile?.name?.charAt(0).toUpperCase() || "A"}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <Link href={`/dashboard/agents/${agent_profile?.id}`} className="hover:underline flex items-center gap-1 group">
+                      <Link
+                        href={`/dashboard/agents/${agent_profile?.id}`}
+                        className="hover:underline flex items-center gap-1 group"
+                      >
                         <p className="font-medium">{agent_profile?.name}</p>
                         <ArrowLeft className="h-3 w-3 rotate-180 text-muted-foreground group-hover:text-foreground transition-colors" />
                       </Link>

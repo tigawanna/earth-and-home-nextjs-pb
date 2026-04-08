@@ -22,7 +22,7 @@ export async function getServerSideUserwithAgent(nextCookies?: ReadonlyRequestCo
   const agent = user?.id
     ? await client
         .from("agents")
-        .getFirstListItem(eq("user_id",user?.id))
+        .getFirstListItem(eq("user_id", user?.id))
         .then((res) => res)
         .catch(() => null)
     : null;

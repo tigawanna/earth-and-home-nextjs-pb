@@ -27,7 +27,6 @@ export default function SinglePropertyMessages({
   user,
   messageParent,
 }: SinglePropertyMessagesProps) {
-
   const parentId = messageParent.id;
 
   const [newMessage, setNewMessage] = useState("");
@@ -40,7 +39,7 @@ export default function SinglePropertyMessages({
       .from({
         messages: propertyMessagesCollection,
       })
-      .orderBy(({ messages }) => messages.created, "desc")
+      .orderBy(({ messages }) => messages.created, "desc"),
   );
 
   // Auto-scroll to bottom when new messages arrive
@@ -79,7 +78,7 @@ export default function SinglePropertyMessages({
       {
         filter: pbMessagesCollectionFilter(parentId),
         select: pbMessagesCollectionSelect,
-      }
+      },
     );
 
     return () => {
@@ -90,14 +89,14 @@ export default function SinglePropertyMessages({
   const mostPreviousMessage = liveMessages?.[liveMessages.length - 1];
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const parentId = mostPreviousMessage
+    const replyParentId = mostPreviousMessage
       ? mostPreviousMessage.parent || mostPreviousMessage.id
       : undefined;
     const messageType = mostPreviousMessage?.type === "parent" ? "reply" : "parent";
     const messagePayload = {
       body: newMessage,
       property_id: propertyId,
-      parent: parentId,
+      parent: replyParentId,
       user_id: user.is_admin ? messageParent.user_id : user.id,
       admin_id: user.is_admin ? user.id : undefined,
       type: messageType,
@@ -120,7 +119,8 @@ export default function SinglePropertyMessages({
           <div
             key={message.id}
             data-admin={!!message?.admin_id}
-            className="chat chat-end data-[admin=true]:chat-start">
+            className="chat chat-end data-[admin=true]:chat-start"
+          >
             <div className="chat-header">
               <time className="text-xs opacity-50">
                 {formatDistanceToNow(new Date(message?.created), { addSuffix: true })}
@@ -128,7 +128,8 @@ export default function SinglePropertyMessages({
             </div>
             <div
               data-admin={!!message?.admin_id}
-              className="chat-bubble bg-primary/30 p-4 data-[admin=true]:bg-accent/30">
+              className="chat-bubble bg-primary/30 p-4 data-[admin=true]:bg-accent/30"
+            >
               {message?.body}
             </div>
           </div>

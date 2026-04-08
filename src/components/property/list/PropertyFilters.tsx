@@ -25,16 +25,16 @@ interface PropertyFiltersProps {
   addButtonComponent?: ReactNode;
 }
 
-export function PropertyFilters({ 
+export function PropertyFilters({
   showStatusFilter = true,
-  title = "Properties",
-  showAddButton = false,
-  addButtonHref = "/dashboard/properties/add",
-  addButtonComponent,
+  title: _title = "Properties",
+  showAddButton: _showAddButton = false,
+  addButtonHref: _addButtonHref = "/dashboard/properties/add",
+  addButtonComponent: _addButtonComponent,
 }: PropertyFiltersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  
+
   // Combined query states using useQueryStates - batches all updates together
   const [queryState, setQueryState] = useQueryStates(
     {
@@ -57,7 +57,7 @@ export function PropertyFilters({
       shallow: false,
       throttleMs: 5000, // Better for search inputs
       startTransition, // This enables the isPending state
-    }
+    },
   );
 
   // Destructure for easier access
@@ -99,17 +99,17 @@ export function PropertyFilters({
   };
 
   const hasActiveFilters = Object.values(allFilters).some(
-    (value) => value !== undefined && value !== "" && value !== null
+    (value) => value !== undefined && value !== "" && value !== null,
   );
 
   const getActiveFilterCount = () => {
     return Object.values(allFilters).filter(
-      (value) => value !== undefined && value !== "" && value !== null
+      (value) => value !== undefined && value !== "" && value !== null,
     ).length;
   };
 
   const handleClearFilters = () => {
-    setQueryState(prev => ({
+    setQueryState((prev) => ({
       ...prev,
       search: "",
       propertyType: null,
@@ -129,7 +129,7 @@ export function PropertyFilters({
   };
 
   const handleSortChange = (field: "sortBy" | "sortOrder", value: string) => {
-    setQueryState(prev => ({
+    setQueryState((prev) => ({
       ...prev,
       [field]: value,
       page: 1, // Reset to first page when sort changes
@@ -142,7 +142,7 @@ export function PropertyFilters({
       <div className="rounded-lg border p-4">
         <fieldset className="space-y-4">
           <legend className="sr-only">Property Search and Quick Filters</legend>
-          
+
           {/* Header - More Compact */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-3">
             <div className="flex w-full flex-3/4 gap-1 relative">
@@ -156,7 +156,7 @@ export function PropertyFilters({
                 placeholder="Search by title, description, or location..."
                 value={search}
                 onChange={(e) => {
-                  setQueryState(prev => ({
+                  setQueryState((prev) => ({
                     ...prev,
                     search: e.target.value || "",
                     page: 1,
@@ -166,195 +166,215 @@ export function PropertyFilters({
                 aria-label="Search properties"
               />
             </div>
-          {/* Listing Type */}
-          <div className="space-y-1 w-full flex-1/4">
-            <Label className="text-xs font-medium text-muted-foreground">Listing Type</Label>
-            <Select
-              value={listingType || "all"}
-              onValueChange={(value) => {
-                setQueryState(prev => ({
-                  ...prev,
-                  listingType: value === "all" ? null : value,
-                  page: 1,
-                }));
-              }}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select listing type">
-                <SelectValue placeholder="All listings" />
-              </SelectTrigger>
-              <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                <SelectItem value="all">All listings</SelectItem>
-                <SelectItem value="sale">Sale</SelectItem>
-                <SelectItem value="rent">Rent</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Search Bar - More Compact */}
-        {/* <div className="mb-4"></div> */}
-
-        {/* Quick Filters Row - Flex Wrap Layout */}
-        <div className="flex flex-wrap gap-3 mb-3">
-          {/* Property Type */}
-          <div className="space-y-1 min-w-[140px] flex-1">
-            <Label className="text-xs font-medium text-muted-foreground">Property Type</Label>
-            <Select
-              value={propertyType || "all"}
-              onValueChange={(value) => {
-                setQueryState(prev => ({
-                  ...prev,
-                  propertyType: value === "all" ? null : value,
-                  page: 1,
-                }));
-              }}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select property type">
-                <SelectValue placeholder="All types" />
-              </SelectTrigger>
-              <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                <SelectItem value="all">All types</SelectItem>
-                <SelectItem value="house">House</SelectItem>
-                <SelectItem value="apartment">Apartment</SelectItem>
-                <SelectItem value="condo">Condo</SelectItem>
-                <SelectItem value="townhouse">Townhouse</SelectItem>
-                <SelectItem value="villa">Villa</SelectItem>
-                <SelectItem value="land">Land</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Bedrooms */}
-          <div className="space-y-1 min-w-[120px] flex-1">
-            <Label className="text-xs font-medium text-muted-foreground">Bedrooms</Label>
-            <Select
-              value={beds?.toString() || "any"}
-              onValueChange={(value) => {
-                setQueryState(prev => ({
-                  ...prev,
-                  beds: value === "any" ? null : Number(value),
-                  page: 1,
-                }));
-              }}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select number of bedrooms">
-                <SelectValue placeholder="Any beds" />
-              </SelectTrigger>
-              <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                <SelectItem value="any">Any</SelectItem>
-                <SelectItem value="1">1+</SelectItem>
-                <SelectItem value="2">2+</SelectItem>
-                <SelectItem value="3">3+</SelectItem>
-                <SelectItem value="4">4+</SelectItem>
-                <SelectItem value="5">5+</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Price Range - Responsive Width */}
-          <div className="space-y-1 min-w-[180px] flex-[2_1_320px]">
-            <Label className="text-xs font-medium text-muted-foreground">Price Range</Label>
-            <div className="flex gap-2">
-              <Input
-                type="number"
-                placeholder="Min"
-                value={minPrice || ""}
-                onChange={(e) => {
-                  setQueryState(prev => ({
+            {/* Listing Type */}
+            <div className="space-y-1 w-full flex-1/4">
+              <Label className="text-xs font-medium text-muted-foreground">Listing Type</Label>
+              <Select
+                value={listingType || "all"}
+                onValueChange={(value) => {
+                  setQueryState((prev) => ({
                     ...prev,
-                    minPrice: e.target.value ? Number(e.target.value) : null,
+                    listingType: value === "all" ? null : value,
                     page: 1,
                   }));
                 }}
-                className="h-9 border-border/50 focus:border-primary rounded-md text-sm w-1/2 min-w-[70px]"
-                aria-label="Minimum price"
-              />
-              <Input
-                type="number"
-                placeholder="Max"
-                value={maxPrice || ""}
-                onChange={(e) => {
-                  setQueryState(prev => ({
+              >
+                <SelectTrigger
+                  className="h-9 w-full border-border/50 focus:border-primary rounded-md"
+                  aria-label="Select listing type"
+                >
+                  <SelectValue placeholder="All listings" />
+                </SelectTrigger>
+                <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
+                  <SelectItem value="all">All listings</SelectItem>
+                  <SelectItem value="sale">Sale</SelectItem>
+                  <SelectItem value="rent">Rent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Search Bar - More Compact */}
+          {/* <div className="mb-4"></div> */}
+
+          {/* Quick Filters Row - Flex Wrap Layout */}
+          <div className="flex flex-wrap gap-3 mb-3">
+            {/* Property Type */}
+            <div className="space-y-1 min-w-[140px] flex-1">
+              <Label className="text-xs font-medium text-muted-foreground">Property Type</Label>
+              <Select
+                value={propertyType || "all"}
+                onValueChange={(value) => {
+                  setQueryState((prev) => ({
                     ...prev,
-                    maxPrice: e.target.value ? Number(e.target.value) : null,
+                    propertyType: value === "all" ? null : value,
                     page: 1,
                   }));
                 }}
-                className="h-9 border-border/50 focus:border-primary rounded-md text-sm w-1/2 min-w-[70px]"
-                aria-label="Maximum price"
-              />
+              >
+                <SelectTrigger
+                  className="h-9 w-full border-border/50 focus:border-primary rounded-md"
+                  aria-label="Select property type"
+                >
+                  <SelectValue placeholder="All types" />
+                </SelectTrigger>
+                <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
+                  <SelectItem value="all">All types</SelectItem>
+                  <SelectItem value="house">House</SelectItem>
+                  <SelectItem value="apartment">Apartment</SelectItem>
+                  <SelectItem value="condo">Condo</SelectItem>
+                  <SelectItem value="townhouse">Townhouse</SelectItem>
+                  <SelectItem value="villa">Villa</SelectItem>
+                  <SelectItem value="land">Land</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Bedrooms */}
+            <div className="space-y-1 min-w-[120px] flex-1">
+              <Label className="text-xs font-medium text-muted-foreground">Bedrooms</Label>
+              <Select
+                value={beds?.toString() || "any"}
+                onValueChange={(value) => {
+                  setQueryState((prev) => ({
+                    ...prev,
+                    beds: value === "any" ? null : Number(value),
+                    page: 1,
+                  }));
+                }}
+              >
+                <SelectTrigger
+                  className="h-9 w-full border-border/50 focus:border-primary rounded-md"
+                  aria-label="Select number of bedrooms"
+                >
+                  <SelectValue placeholder="Any beds" />
+                </SelectTrigger>
+                <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
+                  <SelectItem value="any">Any</SelectItem>
+                  <SelectItem value="1">1+</SelectItem>
+                  <SelectItem value="2">2+</SelectItem>
+                  <SelectItem value="3">3+</SelectItem>
+                  <SelectItem value="4">4+</SelectItem>
+                  <SelectItem value="5">5+</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Price Range - Responsive Width */}
+            <div className="space-y-1 min-w-[180px] flex-[2_1_320px]">
+              <Label className="text-xs font-medium text-muted-foreground">Price Range</Label>
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={minPrice || ""}
+                  onChange={(e) => {
+                    setQueryState((prev) => ({
+                      ...prev,
+                      minPrice: e.target.value ? Number(e.target.value) : null,
+                      page: 1,
+                    }));
+                  }}
+                  className="h-9 border-border/50 focus:border-primary rounded-md text-sm w-1/2 min-w-[70px]"
+                  aria-label="Minimum price"
+                />
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={maxPrice || ""}
+                  onChange={(e) => {
+                    setQueryState((prev) => ({
+                      ...prev,
+                      maxPrice: e.target.value ? Number(e.target.value) : null,
+                      page: 1,
+                    }));
+                  }}
+                  className="h-9 border-border/50 focus:border-primary rounded-md text-sm w-1/2 min-w-[70px]"
+                  aria-label="Maximum price"
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Sort Filters Row */}
-        <div className="flex flex-wrap gap-3 mb-3">
-          {/* Sort By */}
-          <div className="space-y-1 min-w-[140px] flex-1">
-            <Label className="text-xs font-medium text-muted-foreground">Sort By</Label>
-            <Select
-              value={sortBy}
-              onValueChange={(value) => handleSortChange("sortBy", value)}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Sort properties by">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                <SelectItem value="created">Date Created</SelectItem>
-                <SelectItem value="updated">Last Updated</SelectItem>
-                <SelectItem value="price">Price</SelectItem>
-                <SelectItem value="title">Title</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Sort Order */}
-          <div className="space-y-1 min-w-[120px] flex-1">
-            <Label className="text-xs font-medium text-muted-foreground">Order</Label>
-            <Select
-              value={sortOrder}
-              onValueChange={(value) => handleSortChange("sortOrder", value)}>
-              <SelectTrigger className="h-9 w-full border-border/50 focus:border-primary rounded-md" aria-label="Select sort order">
-                <SelectValue placeholder="Order" />
-              </SelectTrigger>
-              <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
-                <SelectItem value="desc">Descending</SelectItem>
-                <SelectItem value="asc">Ascending</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Advanced Filters Toggle - Smaller */}
-        <div className="flex justify-center pt-1">
-          <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-            <CollapsibleTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="group px-4 py-1.5 rounded-md border-border/50 text-primary hover:bg-primary/5 hover:border-primary flex items-center gap-2 h-8"
-                aria-expanded={isOpen}
-                aria-controls="advanced-filters"
-                aria-label={`${isOpen ? "Hide" : "Show"} advanced property filters`}>
-                <Filter className="h-3 w-3 group-hover:scale-110 transition-transform" />
-                <span className="font-medium text-xs">{isOpen ? "Hide" : "More"} Filters</span>
-              </Button>
-            </CollapsibleTrigger>
-          </Collapsible>
-          {hasActiveFilters && (
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Badge
-                variant="secondary"
-                className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-md">
-                {getActiveFilterCount()}
-              </Badge>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleClearFilters}
-                className="group border-border/50 hover:border-primary rounded-md h-8"
-                aria-label="Clear all property filters">
-                <X className="h-3 w-3 mr-1 group-hover:rotate-90 transition-transform" />
-                <span className="hidden sm:inline">Clear</span>
-              </Button>
+          {/* Sort Filters Row */}
+          <div className="flex flex-wrap gap-3 mb-3">
+            {/* Sort By */}
+            <div className="space-y-1 min-w-[140px] flex-1">
+              <Label className="text-xs font-medium text-muted-foreground">Sort By</Label>
+              <Select value={sortBy} onValueChange={(value) => handleSortChange("sortBy", value)}>
+                <SelectTrigger
+                  className="h-9 w-full border-border/50 focus:border-primary rounded-md"
+                  aria-label="Sort properties by"
+                >
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
+                  <SelectItem value="created">Date Created</SelectItem>
+                  <SelectItem value="updated">Last Updated</SelectItem>
+                  <SelectItem value="price">Price</SelectItem>
+                  <SelectItem value="title">Title</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          )}
+
+            {/* Sort Order */}
+            <div className="space-y-1 min-w-[120px] flex-1">
+              <Label className="text-xs font-medium text-muted-foreground">Order</Label>
+              <Select
+                value={sortOrder}
+                onValueChange={(value) => handleSortChange("sortOrder", value)}
+              >
+                <SelectTrigger
+                  className="h-9 w-full border-border/50 focus:border-primary rounded-md"
+                  aria-label="Select sort order"
+                >
+                  <SelectValue placeholder="Order" />
+                </SelectTrigger>
+                <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
+                  <SelectItem value="desc">Descending</SelectItem>
+                  <SelectItem value="asc">Ascending</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Advanced Filters Toggle - Smaller */}
+          <div className="flex justify-center pt-1">
+            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+              <CollapsibleTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="group px-4 py-1.5 rounded-md border-border/50 text-primary hover:bg-primary/5 hover:border-primary flex items-center gap-2 h-8"
+                  aria-expanded={isOpen}
+                  aria-controls="advanced-filters"
+                  aria-label={`${isOpen ? "Hide" : "Show"} advanced property filters`}
+                >
+                  <Filter className="h-3 w-3 group-hover:scale-110 transition-transform" />
+                  <span className="font-medium text-xs">{isOpen ? "Hide" : "More"} Filters</span>
+                </Button>
+              </CollapsibleTrigger>
+            </Collapsible>
+            {hasActiveFilters && (
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Badge
+                  variant="secondary"
+                  className="bg-primary/10 text-primary text-xs px-2 py-1 rounded-md"
+                >
+                  {getActiveFilterCount()}
+                </Badge>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearFilters}
+                  className="group border-border/50 hover:border-primary rounded-md h-8"
+                  aria-label="Clear all property filters"
+                >
+                  <X className="h-3 w-3 mr-1 group-hover:rotate-90 transition-transform" />
+                  <span className="hidden sm:inline">Clear</span>
+                </Button>
+              </div>
+            )}
           </div>
         </fieldset>
       </div>
@@ -387,13 +407,17 @@ export function PropertyFilters({
                     <Select
                       value={baths?.toString() || "any"}
                       onValueChange={(value) => {
-                        setQueryState(prev => ({
+                        setQueryState((prev) => ({
                           ...prev,
                           baths: value === "any" ? null : Number(value),
                           page: 1,
                         }));
-                      }}>
-                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md" aria-label="Select number of bathrooms">
+                      }}
+                    >
+                      <SelectTrigger
+                        className="h-9 border-border/50 focus:border-primary rounded-md"
+                        aria-label="Select number of bathrooms"
+                      >
                         <SelectValue placeholder="Any baths" />
                       </SelectTrigger>
                       <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -412,7 +436,7 @@ export function PropertyFilters({
                       placeholder="Enter city name"
                       value={city || ""}
                       onChange={(e) => {
-                        setQueryState(prev => ({
+                        setQueryState((prev) => ({
                           ...prev,
                           city: e.target.value || null,
                           page: 1,
@@ -430,7 +454,7 @@ export function PropertyFilters({
                       id="featured"
                       checked={isFeatured === "true"}
                       onChange={(e) => {
-                        setQueryState(prev => ({
+                        setQueryState((prev) => ({
                           ...prev,
                           featured: e.target.checked ? "true" : null,
                           page: 1,
@@ -453,16 +477,21 @@ export function PropertyFilters({
                 <div className="space-y-2">
                   {showStatusFilter && (
                     <div className="space-y-1">
-                      <Label className="text-xs">Status</Label>                        <Select
-                          value={status || "all"}
-                          onValueChange={(value) => {
-                            setQueryState(prev => ({
-                              ...prev,
-                              status: value === "all" ? null : value,
-                              page: 1,
-                            }));
-                          }}>
-                        <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md" aria-label="Select property status">
+                      <Label className="text-xs">Status</Label>{" "}
+                      <Select
+                        value={status || "all"}
+                        onValueChange={(value) => {
+                          setQueryState((prev) => ({
+                            ...prev,
+                            status: value === "all" ? null : value,
+                            page: 1,
+                          }));
+                        }}
+                      >
+                        <SelectTrigger
+                          className="h-9 border-border/50 focus:border-primary rounded-md"
+                          aria-label="Select property status"
+                        >
                           <SelectValue placeholder="All statuses" />
                         </SelectTrigger>
                         <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -484,13 +513,17 @@ export function PropertyFilters({
                     <Select
                       value={propertyType || "all"}
                       onValueChange={(value) => {
-                        setQueryState(prev => ({
+                        setQueryState((prev) => ({
                           ...prev,
                           propertyType: value === "all" ? null : value,
                           page: 1,
                         }));
-                      }}>
-                      <SelectTrigger className="h-9 border-border/50 focus:border-primary rounded-md" aria-label="Select extended property type">
+                      }}
+                    >
+                      <SelectTrigger
+                        className="h-9 border-border/50 focus:border-primary rounded-md"
+                        aria-label="Select extended property type"
+                      >
                         <SelectValue placeholder="All types" />
                       </SelectTrigger>
                       <SelectContent sideOffset={4} className="max-h-72 overflow-y-auto">
@@ -524,19 +557,21 @@ export function PropertyFilters({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setQueryState(prev => ({ ...prev, page: currentPage - 1 }))}
+                onClick={() => setQueryState((prev) => ({ ...prev, page: currentPage - 1 }))}
                 disabled={currentPage <= 1}
                 className="px-3 py-1.5 border-border/50 hover:border-primary rounded-md disabled:opacity-50 disabled:cursor-not-allowed h-8 text-xs"
-                aria-label="Go to previous page">
+                aria-label="Go to previous page"
+              >
                 Previous
               </Button>
 
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setQueryState(prev => ({ ...prev, page: currentPage + 1 }))}
+                onClick={() => setQueryState((prev) => ({ ...prev, page: currentPage + 1 }))}
                 className="px-3 py-1.5 border-border/50 hover:border-primary rounded-md h-8 text-xs"
-                aria-label="Go to next page">
+                aria-label="Go to next page"
+              >
                 Next
               </Button>
             </div>

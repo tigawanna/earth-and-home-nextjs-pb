@@ -13,14 +13,14 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
   preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
   preload: false, // Only preload primary font
 });
 
@@ -52,7 +52,15 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  keywords: ["real estate", "properties", "listings", "homes", siteinfo.title, "property search", "rental properties"],
+  keywords: [
+    "real estate",
+    "properties",
+    "listings",
+    "homes",
+    siteinfo.title,
+    "property search",
+    "rental properties",
+  ],
   authors: [{ name: siteinfo.author }, { name: `${siteinfo.title} Real Estate` }],
   creator: siteinfo.author,
   publisher: `${siteinfo.title} Real Estate`,
@@ -79,14 +87,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Preconnect to important external domains */}
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
-        
+
         {/* Preload critical CSS */}
         <link rel="preload" href="/globals.css" as="style" />
       </head>
@@ -98,7 +105,7 @@ export default function RootLayout({
               <div>
                 <div className="fixed inset-0 bg-gradient-to-b from-background to-background/80 z-[-1]" />
                 {children}
-                <Footer/>
+                <Footer />
               </div>
               <Toaster />
             </ThemeProvider>

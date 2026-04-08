@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { ModeToggle } from "@/components/theme/theme-toggle";
 import { SiteIcon } from "@/components/icons/SiteIcon";
@@ -11,14 +10,14 @@ interface AuthLayoutHeaderProps {
 }
 
 export function AuthLayoutHeader({ variant = "default", className }: AuthLayoutHeaderProps) {
-  const isFloating = variant === "floating";
-  
   return (
     <header
       className={cn(
         "w-full flex items-center justify-between py-4 px-6 z-50 border-b border-base-200 bg-background/20 fixed top-0",
-        className
-      )}>
+        variant === "floating" && "bg-background/80 backdrop-blur-sm",
+        className,
+      )}
+    >
       <Link href="/" aria-label="Earth & Home Home" className="flex items-center space-x-3 group">
         <SiteIcon className="transition-transform group-hover:scale-105" />
         <div>

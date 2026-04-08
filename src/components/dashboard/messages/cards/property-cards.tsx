@@ -17,8 +17,8 @@ interface PropertyMessageCardProps {
 }
 
 export function PropertyMessageCard({ message, onViewMessages }: PropertyMessageCardProps) {
-const property = message.expand?.property_id;
-const user = message.expand?.user_id;
+  const property = message.expand?.property_id;
+  const user = message.expand?.user_id;
 
   const primaryImage =
     property?.image_url ||
@@ -61,9 +61,7 @@ const user = message.expand?.user_id;
           <div className="flex items-center gap-3 flex-shrink-0">
             <div className="text-right min-w-0">
               <div className="flex items-center justify-end gap-2">
-                <h4 className="font-medium text-sm truncate">
-                  {user?.name || "Anonymous User"}
-                </h4>
+                <h4 className="font-medium text-sm truncate">{user?.name || "Anonymous User"}</h4>
                 {message.admin_id && (
                   <Badge variant="secondary" className="text-xs">
                     Admin
@@ -97,4 +95,3 @@ const user = message.expand?.user_id;
     </Card>
   );
 }
-

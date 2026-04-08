@@ -3,12 +3,9 @@ import { AdminDashboardStatsGrid } from "./AdminDashboardStatsGrid";
 import { RecentPropertiesCard } from "./RecentPropertiesCard";
 import { RecentUsersCard } from "./RecentUsersCard";
 
-interface AdminDashboardPageProps {
-  
-}
+interface AdminDashboardPageProps {}
 
-export async function AdminDashboardPage({  }: AdminDashboardPageProps) {
-
+export async function AdminDashboardPage(_props: AdminDashboardPageProps) {
   const dashboardData = await getAdminDashboardStats();
 
   if (!dashboardData.success || !dashboardData.data) {

@@ -1,8 +1,14 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Filter, MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,19 +24,19 @@ export function PropertySearch() {
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    
+
     if (location) params.set("search", location);
     if (propertyType && propertyType !== "any") params.set("propertyType", propertyType);
     if (bedrooms && bedrooms !== "any") params.set("beds", bedrooms);
     if (bathrooms && bathrooms !== "any") params.set("baths", bathrooms);
-    
+
     // Handle price range
     if (priceRange && priceRange !== "any") {
       const [min, max] = priceRange.split("-");
       if (min) params.set("minPrice", min);
       if (max && max !== "+") params.set("maxPrice", max);
     }
-    
+
     // Navigate to properties page with search params
     router.push(`/properties?${params.toString()}`);
   };
@@ -51,12 +57,10 @@ export function PropertySearch() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
             {/* Location */}
             <div className="lg:col-span-2">
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Location
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-2">Location</label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input 
+                <Input
                   placeholder="Enter city, neighborhood, or ZIP code"
                   className="pl-10 h-12"
                   value={location}
@@ -87,9 +91,7 @@ export function PropertySearch() {
 
             {/* Price Range */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Price Range
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-2">Price Range</label>
               <Select value={priceRange} onValueChange={setPriceRange}>
                 <SelectTrigger className="h-12" aria-label="Select price range">
                   <SelectValue placeholder="Any Price" />
@@ -107,7 +109,7 @@ export function PropertySearch() {
 
             {/* Search Button */}
             <div className="flex items-end">
-              <Button 
+              <Button
                 className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90"
                 onClick={handleSearch}
               >
@@ -161,8 +163,8 @@ export function PropertySearch() {
                 </SelectContent>
               </Select>
 
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="border-accent text-accent-foreground hover:bg-accent/20"
                 onClick={handleSearch}
               >
@@ -175,6 +177,4 @@ export function PropertySearch() {
       </div>
     </section>
   );
-};
-
-
+}

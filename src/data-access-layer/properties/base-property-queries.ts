@@ -24,7 +24,7 @@ export async function baseGetPaginatedProperties({
   sortOrder = "desc",
   page = 1,
   limit = 20,
-  userId,
+  userId: _userId,
   agentId,
 }: {
   client: TypedPocketBase<Schema>;
@@ -59,8 +59,8 @@ export async function baseGetPaginatedProperties({
         or(
           like("title", `%${filters.search}%`),
           like("description", `%${filters.search}%`),
-          like("location", `%${filters.search}%`)
-        )
+          like("location", `%${filters.search}%`),
+        ),
       );
     }
     if (agentId) {
@@ -194,7 +194,7 @@ interface GetPropertyResult {
 export async function baseGetPropertyById({
   client,
   propertyId,
-  userId,
+  userId: _userId,
 }: GetPropertyParams): Promise<GetPropertyResult> {
   try {
     const collection = client.from("properties");
@@ -234,7 +234,7 @@ export async function baseGetPropertyById({
       result: property,
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching property:", error);
+    console.log("error happende = =>\n", "Error fetching property:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch property",
@@ -307,7 +307,7 @@ export async function baseGetFavoriteProperties({
       },
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching favorite properties:", error);
+    console.log("error happende = =>\n", "Error fetching favorite properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch favorites",
@@ -346,7 +346,7 @@ export async function baseGetPaginatedUsers({
       result: usersResult,
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching paginated users:", error);
+    console.log("error happende = =>\n", "Error fetching paginated users:", error);
     return {
       success: false,
       result: null,
@@ -395,7 +395,7 @@ export async function baseGetSearchableFavorites({
       result: favoritesResult,
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching searchable favorites:", error);
+    console.log("error happende = =>\n", "Error fetching searchable favorites:", error);
     return {
       success: false,
       result: null,
@@ -415,8 +415,8 @@ export async function baseGetSearchableFavorites({
 
 export async function baseGetPropertyStats({
   client,
-  page = 1,
-  limit = 50,
+  page: _page = 1,
+  limit: _limit = 50,
 }: {
   client: TypedPocketBase<Schema>;
   page?: number;
@@ -460,7 +460,7 @@ export async function baseGetPropertyStats({
       result,
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching property stats:", error);
+    console.log("error happende = =>\n", "Error fetching property stats:", error);
     return {
       success: false,
       result: null,
@@ -485,10 +485,7 @@ export async function baseGetFeaturedProperties({
 
     // Create filter for featured properties that are active
     const filter = propertiesCollection.createFilter(
-      and(
-        eq("is_featured", true),
-        eq("status", "active" as PropertiesResponse["status"])
-      )
+      and(eq("is_featured", true), eq("status", "active" as PropertiesResponse["status"])),
     );
 
     // Sort by creation date (newest first)

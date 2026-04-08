@@ -13,7 +13,8 @@ export function SellYourHome() {
               Your Property Journey Starts Here
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              From finding your dream home to understanding the local market, we&apos;re here to guide you every step of the way.
+              From finding your dream home to understanding the local market, we&apos;re here to
+              guide you every step of the way.
             </p>
 
             <ul className="space-y-4">
@@ -23,7 +24,9 @@ export function SellYourHome() {
                 </span>
                 <div>
                   <p className="font-medium text-foreground">Property Search</p>
-                  <p className="text-sm text-muted-foreground">Comprehensive search tools to find properties that match your criteria.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Comprehensive search tools to find properties that match your criteria.
+                  </p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -32,7 +35,9 @@ export function SellYourHome() {
                 </span>
                 <div>
                   <p className="font-medium text-foreground">Local Insights</p>
-                  <p className="text-sm text-muted-foreground">Expert knowledge of neighborhoods, schools, and community amenities.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Expert knowledge of neighborhoods, schools, and community amenities.
+                  </p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -41,7 +46,9 @@ export function SellYourHome() {
                 </span>
                 <div>
                   <p className="font-medium text-foreground">Personal Support</p>
-                  <p className="text-sm text-muted-foreground">Dedicated assistance throughout your property search journey.</p>
+                  <p className="text-sm text-muted-foreground">
+                    Dedicated assistance throughout your property search journey.
+                  </p>
                 </div>
               </li>
             </ul>
@@ -66,12 +73,14 @@ export function SellYourHome() {
           <div className="bg-card text-card-foreground rounded-2xl border boredr-base-200 shadow-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <div className="font-semibold">Our Services</div>
-              <span className="rounded-full px-3 py-1 text-xs bg-background border boredr-base-200">Always Available</span>
+              <span className="rounded-full px-3 py-1 text-xs bg-background border boredr-base-200">
+                Always Available
+              </span>
             </div>
             <ul className="space-y-3 text-sm">
               {[
                 "Property search and recommendations",
-                "Neighborhood and market insights", 
+                "Neighborhood and market insights",
                 "Property viewing coordination",
                 "Guidance through the buying process",
                 "Ongoing support and consultation",

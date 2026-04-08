@@ -27,7 +27,7 @@ export function LocationSection({ control }: LocationSectionProps) {
       </CardHeader>
       <CardContent className="space-y-8">
         {/* Primary Location */}
-        <div className="relative p-6 rounded-xl shadow-md shadow-primary/15" >
+        <div className="relative p-6 rounded-xl shadow-md shadow-primary/15">
           <div className="absolute -top-3 left-4 bg-card px-3 py-1 rounded-full">
             <span className="text-sm font-medium text-earth-green-600">Primary Location</span>
           </div>
@@ -62,7 +62,7 @@ export function LocationSection({ control }: LocationSectionProps) {
                 placeholder="Enter city"
               />
             </div>
-            
+
             <div className="bg-muted/50 rounded-xl p-6">
               <TextFieldComponent
                 control={control}
@@ -82,7 +82,7 @@ export function LocationSection({ control }: LocationSectionProps) {
                 placeholder="Enter postal code"
               />
             </div>
-            
+
             <div className="bg-muted/50 rounded-xl p-6">
               <TextFieldComponent
                 control={control}
@@ -97,7 +97,9 @@ export function LocationSection({ control }: LocationSectionProps) {
         {/* GPS Coordinates */}
         <div className="relative p-6 rounded-xl bg-muted/30 shadow-md shadow-primary/15">
           <div className="absolute -top-3 left-4 bg-card px-3 py-1 rounded-full">
-            <span className="text-sm font-medium text-muted-foreground">📍 GPS Coordinates (Optional)</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              📍 GPS Coordinates (Optional)
+            </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
             {/* TODO: Implement GPS Coordinates */}
@@ -108,7 +110,7 @@ export function LocationSection({ control }: LocationSectionProps) {
               placeholder="e.g., -1.2921"
               description="Decimal degrees (optional)"
             />
-            
+
             {/* <NumberFieldComponent
               control={control}
               name="longitude"

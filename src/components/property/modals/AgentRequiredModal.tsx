@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { UserPlus, Users } from "lucide-react";
 import Link from "next/link";
@@ -27,10 +27,11 @@ export function AgentRequiredModal({ open, onOpenChange }: AgentRequiredModalPro
           </div>
           <DialogTitle className="text-center">Agent Required</DialogTitle>
           <DialogDescription className="text-center">
-            You need to have an agent assigned to perform this action. Please add an agent to continue.
+            You need to have an agent assigned to perform this action. Please add an agent to
+            continue.
           </DialogDescription>
         </DialogHeader>
-        
+
         <DialogFooter className="sm:flex-col sm:space-x-0 sm:space-y-2">
           <Button asChild className="w-full">
             <Link href="/dashboard/agents/add">
@@ -38,11 +39,7 @@ export function AgentRequiredModal({ open, onOpenChange }: AgentRequiredModalPro
               Add Agent
             </Link>
           </Button>
-          <Button 
-            variant="outline" 
-            onClick={() => onOpenChange?.(false)}
-            className="w-full"
-          >
+          <Button variant="outline" onClick={() => onOpenChange?.(false)} className="w-full">
             Cancel
           </Button>
         </DialogFooter>

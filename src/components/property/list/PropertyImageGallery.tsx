@@ -3,19 +3,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-    type CarouselApi,
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogTitle,
-    DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { getFileUrl, getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
@@ -36,31 +36,31 @@ interface PropertyImageGalleryProps {
  */
 function processPropertyImages(property: PropertiesResponse): string[] {
   const imageFilenames: string[] = [];
-  
+
   // Add primary image if it exists
-  if (property.image_url && typeof property.image_url === 'string') {
+  if (property.image_url && typeof property.image_url === "string") {
     imageFilenames.push(property.image_url);
   }
-  
+
   // Add gallery images if they exist
   if (property.images) {
     const images = Array.isArray(property.images) ? property.images : [property.images];
-    
-    images.forEach(image => {
+
+    images.forEach((image) => {
       // Only include string filenames (uploaded files), skip File objects
-      if (typeof image === 'string' && image.trim() && image !== property.image_url) {
+      if (typeof image === "string" && image.trim() && image !== property.image_url) {
         imageFilenames.push(image);
       }
     });
   }
-  
+
   return imageFilenames;
 }
 
 export function PropertyImageGallery({
   property,
-  videoUrl,
-  virtualTourUrl,
+  videoUrl: _videoUrl,
+  virtualTourUrl: _virtualTourUrl,
 }: PropertyImageGalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [mainApi, setMainApi] = useState<CarouselApi>();
@@ -70,13 +70,11 @@ export function PropertyImageGallery({
 
   // Process images from the property record
   const imageFilenames = processPropertyImages(property);
-  
+
   // Generate PocketBase URLs for the images
-  const imageUrls = imageFilenames.map(filename => 
-    getFileUrl(property, filename)
-  );
-  
-  const validImages = imageUrls.filter(url => Boolean(url));
+  const imageUrls = imageFilenames.map((filename) => getFileUrl(property, filename));
+
+  const validImages = imageUrls.filter((url) => Boolean(url));
   const validCount = validImages.length;
   const hasImages = validCount > 0;
 
@@ -130,7 +128,9 @@ export function PropertyImageGallery({
             {property.status.charAt(0).toUpperCase() + property.status.slice(1)}
           </Badge>
           {property.is_featured && <Badge variant="destructive">⭐ Featured</Badge>}
-          {property.is_new && <Badge className="bg-green-700 hover:bg-green-800 text-white font-medium">New</Badge>}
+          {property.is_new && (
+            <Badge className="bg-green-700 hover:bg-green-800 text-white font-medium">New</Badge>
+          )}
         </div>
 
         {/* Carousel for images */}
@@ -191,9 +191,7 @@ export function PropertyImageGallery({
                   View all images of {property.title}
                 </DialogDescription>
                 <div className="relative w-full h-full bg-black">
-                  <Carousel
-                    setApi={setFullscreenApi}
-                    className="w-full max-h-[95vh] h-full">
+                  <Carousel setApi={setFullscreenApi} className="w-full max-h-[95vh] h-full">
                     <CarouselContent className="h-[95vh] w-full">
                       {validImages.map((imageUrl, index) => (
                         <CarouselItem key={index} className="h-full">
@@ -224,7 +222,8 @@ export function PropertyImageGallery({
                       variant="ghost"
                       size="icon"
                       className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white"
-                      onClick={() => setIsOpen(false)}>
+                      onClick={() => setIsOpen(false)}
+                    >
                       <X className="h-6 w-6" />
                     </Button>
                   </Carousel>
@@ -252,11 +251,12 @@ export function PropertyImageGallery({
               align: "start",
               dragFree: true,
             }}
-            className="w-full">
+            className="w-full"
+          >
             <CarouselContent className="-ml-2">
               {imageFilenames.slice(0, 5).map((filename, index) => {
                 const thumbnailUrl = getImageThumbnailUrl(property, filename, "80x80");
-                
+
                 return (
                   <CarouselItem key={index} className="pl-2 basis-auto">
                     <button
@@ -266,7 +266,8 @@ export function PropertyImageGallery({
                         if (mainApi) {
                           mainApi.scrollTo(index);
                         }
-                      }}>
+                      }}
+                    >
                       <Image
                         src={thumbnailUrl}
                         alt={`${property.title} - Thumbnail ${index + 1}`}

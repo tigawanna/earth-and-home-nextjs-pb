@@ -27,13 +27,11 @@ export async function getServerSideAgents({
     let filter = null;
     if (q) {
       filter = agentsCollection.createFilter(
-        `agency_name ~ "${q}" || license_number ~ "${q}" || specialization ~ "${q}" || service_areas ~ "${q}" || user_id.name ~ "${q}" || user_id.email ~ "${q}"`
+        `agency_name ~ "${q}" || license_number ~ "${q}" || specialization ~ "${q}" || service_areas ~ "${q}" || user_id.name ~ "${q}" || user_id.email ~ "${q}"`,
       );
     }
 
-    const sort = agentsCollection.createSort(
-      `${sortOrder === "desc" ? "-" : "+"}${sortBy}` as any
-    );
+    const sort = agentsCollection.createSort(`${sortOrder === "desc" ? "-" : "+"}${sortBy}` as any);
 
     const result = await agentsCollection.getList(page, limit, {
       filter,
@@ -50,7 +48,7 @@ export async function getServerSideAgents({
       result,
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching agents:", error);
+    console.log("error happende = =>\n", "Error fetching agents:", error);
     return {
       success: false,
       result: null,
@@ -81,7 +79,7 @@ export async function getSingleAgent(agentId: string) {
       result: agent,
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching agent:", error);
+    console.log("error happende = =>\n", "Error fetching agent:", error);
     return {
       success: false,
       result: null,
@@ -89,4 +87,3 @@ export async function getSingleAgent(agentId: string) {
     };
   }
 }
-

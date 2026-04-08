@@ -10,8 +10,6 @@ import {
 } from "./base-property-queries";
 import { PropertyFilters, PropertySortBy, SortOrder } from "./property-types";
 
-
-
 // ====================================================
 // GET PROPERTIES (with filtering, sorting, pagination)
 // ====================================================
@@ -23,7 +21,7 @@ export async function getProperties({
   page = 1,
   limit = 20,
   userId,
-  agentId
+  agentId,
 }: {
   filters?: PropertyFilters;
   sortBy?: PropertySortBy;
@@ -35,7 +33,7 @@ export async function getProperties({
 } = {}) {
   try {
     const client = await createServerClient();
-    
+
     const result = await baseGetPaginatedProperties({
       client,
       filters,
@@ -44,12 +42,12 @@ export async function getProperties({
       page,
       limit,
       userId,
-      agentId
+      agentId,
     });
-    
+
     return result;
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching properties:", error);
+    console.log("error happende = =>\n", "Error fetching properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch properties",
@@ -70,11 +68,11 @@ export async function getProperties({
 // GET SINGLE PROPERTY
 // ====================================================
 
-export async function getServerSidePropertyById(identifier: string, userId?: string) {
+export async function getServerSidePropertyById(identifier: string, _userId?: string) {
   try {
     const client = await createServerClient();
 
-    const {result,success,message} = await baseGetPropertyById({
+    const { result, success, message } = await baseGetPropertyById({
       client,
       propertyId: identifier,
     });
@@ -85,7 +83,7 @@ export async function getServerSidePropertyById(identifier: string, userId?: str
       message,
     };
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching property:", error);
+    console.log("error happende = =>\n", "Error fetching property:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch property",
@@ -107,7 +105,7 @@ export async function getServerSideFavoriteProperties({
     const client = await createServerClient();
     return await baseGetFavoriteProperties({ client, userId, page, limit });
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching favorite properties:", error);
+    console.log("error happende = =>\n", "Error fetching favorite properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch favorites",
@@ -141,7 +139,7 @@ export async function getServerSideSearchableFavorites({
     const client = await createServerClient();
     return await baseGetSearchableFavorites({ client, q, page, limit });
   } catch (error) {
-    console.log("error happende = =>\n","Error fetching searchable favorites:", error);
+    console.log("error happende = =>\n", "Error fetching searchable favorites:", error);
     return {
       success: false,
       result: null,
@@ -172,6 +170,3 @@ export async function getServerSideFeaturedProperties({
     };
   }
 }
-
-
-
