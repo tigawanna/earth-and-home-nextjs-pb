@@ -1,12 +1,12 @@
 # Earth & Home - Real Estate Platform
 
-A modern real estate platform built with Next.js, PocketBase, and deployed on Cloudflare Workers using OpenNext.
+A modern real estate platform built with Next.js and deployed on Cloudflare Workers using OpenNext.
 
 ## Tech Stack
 
 - **Frontend**: Next.js 15 with App Router, React 19, TypeScript
 - **Styling**: Tailwind CSS + shadcn/ui components
-- **Backend**: PocketBase (database, auth, file storage)
+- **Backend**: Cloudflare D1, Better Auth, R2 (migration in progress; some features still use PocketBase clients during transition)
 - **Deployment**: Cloudflare Workers via OpenNext
 - **State Management**: TanStack Query for server state
 
@@ -16,8 +16,6 @@ A modern real estate platform built with Next.js, PocketBase, and deployed on Cl
 
 - Node.js 18+ (recommended: use Node 20+)
 - pnpm package manager
-- PocketBase server running
-
 ### Environment Setup
 
 1. Copy environment variables:
@@ -40,10 +38,6 @@ NEXT_PUBLIC_POCKETBASE_API_URL=http://127.0.0.1:8090
 # Install dependencies
 pnpm install
 
-# Generate PocketBase types and collections (runs automatically before dev)
-pnpm run pb-types        # Generate TypeScript types from PocketBase
-pnpm run pb-collections  # Generate collection structure
-
 # Start development server with Turbopack
 pnpm dev
 ```
@@ -59,13 +53,6 @@ pnpm dev                 # Start development server with Turbopack
 pnpm build              # Build for production
 pnpm start              # Start production server locally
 pnpm lint               # Run ESLint
-```
-
-### PocketBase Integration
-
-```bash
-pnpm run pb-types       # Generate TypeScript types from PocketBase schema
-pnpm run pb-collections # Generate collection structure documentation
 ```
 
 ### Performance & Analysis
@@ -337,7 +324,7 @@ npx wrangler r2 bucket create your-bucket-name
 #### Build Errors
 
 - Ensure all environment variables are set
-- Run `pnpm run pb-types` if PocketBase types are outdated
+- Run `pnpm run auth:generate` after changing Better Auth plugins (regenerates `src/db/schema/auth-schema.ts`)
 - Check for any `export const runtime = "edge"` statements (not supported)
 
 #### Deployment Issues
