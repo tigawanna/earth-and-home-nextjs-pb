@@ -15,6 +15,7 @@
     "lighthouse": "lighthouse http://localhost:3010 --output-path=./lighthouse/localhost_3010-$(date +%Y%m%dT%H%M%S).html --save-assets --view",
     "perf:build": "next build",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "ci:build": "bash scripts/stub-resvg-wasm.sh stub && opennextjs-cloudflare build && bash scripts/stub-resvg-wasm.sh restore",
     "deploy": "bash scripts/stub-resvg-wasm.sh stub && opennextjs-cloudflare build && opennextjs-cloudflare deploy && bash scripts/stub-resvg-wasm.sh restore",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
