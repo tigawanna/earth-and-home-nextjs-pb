@@ -11,13 +11,12 @@ import {
   createPropertyMutationOptions,
   updatePropertyMutationOptions,
 } from "@/data-access-layer/properties/property-mutations";
-import {
+import type {
   AgentsResponse,
   PropertiesCreate,
   PropertiesUpdate,
   UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
-import { PropertiesResponseZod } from "@/lib/pocketbase/types/pb-zod";
+} from "@/types/domain-types";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { isLandProperty } from "@/utils/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,9 +38,9 @@ import { ParkingSection } from "./sections/ParkingSection";
 import { PricingSection } from "./sections/PricingSection";
 
 interface PropertyFormProps {
-  initialData?: PropertiesResponseZod;
+  initialData?: PropertyFormData & { id?: string };
   isEdit?: boolean;
-  propertyId?: string; // Add propertyId for editing
+  propertyId?: string;
   user: UsersResponse;
   agent: AgentsResponse;
 }
@@ -75,10 +74,10 @@ export default function PropertyForm({
       if (data.success) {
         revalidatePropertiesList();
         toast.success(data.message);
-        // Redirect to the property page or dashboard
         form.reset();
-        if (data.record?.id) {
-          router.push(`/properties/${data.record.id}`);
+        const record = data.record as { id?: string } | null;
+        if (record?.id) {
+          router.push(`/properties/${record.id}`);
         } else {
           router.push("/dashboard/properties");
         }
@@ -97,12 +96,12 @@ export default function PropertyForm({
     onSuccess: (data) => {
       if (data.success) {
         toast.success(data.message);
-        // Redirect to the property page or dashboard
         form.reset();
         revalidatePropertiesList();
-        if (data.record?.id) {
-          revalidatePropertyById(data.record.id);
-          router.push(`/properties/${data.record.id}`);
+        const record = data.record as { id?: string } | null;
+        if (record?.id) {
+          revalidatePropertyById(record.id);
+          router.push(`/properties/${record.id}`);
         } else {
           router.push("/dashboard/properties");
         }
@@ -162,9 +161,7 @@ export default function PropertyForm({
   const existingProperty = isEdit
     ? {
         id: initialData?.id || "",
-        collectionId: initialData?.collectionId || "",
-        collectionName: initialData?.collectionName || "",
-        images: initialData?.images || [],
+        images: (initialData?.images as string[]) || [],
       }
     : undefined;
 

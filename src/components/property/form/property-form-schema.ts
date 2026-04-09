@@ -1,10 +1,56 @@
-import { PropertiesUpdateZodSchema } from "@/lib/pocketbase/types/pb-zod";
 import z from "zod";
 
-export const PropertyFormSchema = PropertiesUpdateZodSchema.extend({
-  // allow either an array of strings (uploaded file URLs) or an array that contains File objects (local uploads)
+export const PropertyFormSchema = z.object({
   id: z.string().optional(),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  price: z.number().optional(),
+  listing_type: z.enum(["sale", "rent"]).optional(),
+  property_type: z
+    .enum([
+      "house", "apartment", "condo", "townhouse", "duplex",
+      "studio", "villa", "land", "commercial", "industrial", "farm",
+    ])
+    .optional(),
+  status: z.enum(["draft", "active", "pending", "sold", "rented", "off_market"]).optional(),
+  location: z.string().optional(),
+  street_address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  postal_code: z.string().optional(),
+  country: z.string().optional(),
+  dimensions: z.string().optional(),
+  building_size_sqft: z.number().optional(),
+  baths: z.number().optional(),
+  lot_size_sqft: z.number().optional(),
+  lot_size_acres: z.number().optional(),
+  year_built: z.number().optional(),
+  floors: z.number().optional(),
+  beds: z.number().optional(),
+  parking_spaces: z.number().optional(),
+  parking_type: z.string().optional(),
+  heating: z.string().optional(),
+  cooling: z.string().optional(),
+  zoning: z.string().optional(),
+  currency: z.string().optional(),
+  sale_price: z.number().optional(),
+  rental_price: z.number().optional(),
+  security_deposit: z.number().optional(),
+  hoa_fee: z.number().optional(),
+  annual_taxes: z.number().optional(),
+  available_from: z.string().optional(),
+  image_url: z.string().optional(),
   images: z.array(z.union([z.string(), z.instanceof(File)])).nullable(),
+  video_url: z.string().optional(),
+  virtual_tour_url: z.string().optional(),
+  amenities: z.unknown().optional(),
+  features: z.unknown().optional(),
+  utilities: z.unknown().optional(),
+  owner_id: z.string().optional(),
+  is_featured: z.boolean().optional(),
+  is_new: z.boolean().optional(),
+  location_point: z.object({ lat: z.number(), lon: z.number() }).nullable().optional(),
+  agent_id: z.string().optional(),
 });
 
 export type PropertyFormData = z.infer<typeof PropertyFormSchema>;

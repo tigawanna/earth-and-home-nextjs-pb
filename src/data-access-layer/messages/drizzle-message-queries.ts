@@ -5,7 +5,7 @@ import { user as userTable } from "@/db/schema/auth-schema";
 import { getDb } from "@/lib/db/get-db";
 import { mapDrizzleRowToPropertiesResponse } from "@/data-access-layer/properties/drizzle-property-mapper";
 import { mapUserRowToUsersResponse } from "@/data-access-layer/user/drizzle-user-mapper";
-import type { PropertyMessagesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { PropertyMessagesResponse } from "@/types/domain-types";
 import { eq } from "drizzle-orm";
 
 export async function drizzleGetSinglePropertyMessage(msgId: string) {
@@ -30,8 +30,6 @@ export async function drizzleGetSinglePropertyMessage(msgId: string) {
   const updated = row.m.updatedAt ? new Date(row.m.updatedAt).toISOString() : created;
 
   const base: PropertyMessagesResponse = {
-    collectionName: "property_messages",
-    collectionId: "",
     id: row.m.id,
     user_id: row.m.userId,
     property_id: row.m.propertyId,

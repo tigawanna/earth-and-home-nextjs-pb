@@ -21,7 +21,7 @@ import {
   toggleAdminMutationOptions,
   toggleBanUserMutationOptions,
 } from "@/data-access-layer/user/admin-user-management";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse } from "@/types/domain-types";
 import { useMutation } from "@tanstack/react-query";
 import { Ban, Eye, Loader, MoreHorizontal, Shield, Users as UsersIcon } from "lucide-react";
 import Link from "next/link";
@@ -106,7 +106,7 @@ export function UsersTable({ users = [] }: UsersTableProps) {
 
                 <TableCell>
                   <div className="font-medium">{u.email || "-"}</div>
-                  <div className="text-sm text-muted-foreground">{u.username || "-"}</div>
+                  <div className="text-sm text-muted-foreground">{u.email || "-"}</div>
                 </TableCell>
 
                 <TableCell>

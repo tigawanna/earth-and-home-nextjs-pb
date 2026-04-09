@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import type { UsersResponse } from "@/types/domain-types";
 import {
   Ban,
   CheckCircle,

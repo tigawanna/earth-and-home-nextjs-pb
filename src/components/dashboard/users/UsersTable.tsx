@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import type { UsersResponse } from "@/types/domain-types";
 import { Clock, Mail, User } from "lucide-react";
 import { UserActions } from "./UserActions";
 

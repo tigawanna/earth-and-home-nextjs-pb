@@ -21,12 +21,11 @@ import { dashboardFavoritesQueryOptions } from "@/data-access-layer/properties/c
 import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
 import type { FavoriteWithExpand } from "@/data-access-layer/properties/property-types";
 import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
-import {
-  FavoritesResponse,
+import type {
   PropertiesResponse,
   UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+} from "@/types/domain-types";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -90,8 +89,8 @@ export function FavoritesTable(_props: FavoritesTableProps) {
               const user = f.expand?.user_id as any as UsersResponse | undefined;
               const primary = property?.images?.[0];
 
-              const imageUrl = primary
-                ? getImageThumbnailUrl(property as PropertiesResponse, primary, "120x90")
+              const imageUrl = primary && property
+                ? resolvePropertyThumbnailUrl(property, primary, "120x90")
                 : null;
 
               const location = property

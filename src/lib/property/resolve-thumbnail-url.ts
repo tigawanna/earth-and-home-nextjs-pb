@@ -1,13 +1,12 @@
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import type { PropertiesResponse } from "@/types/domain-types";
 
 export function resolvePropertyThumbnailUrl(
-  property: PropertiesResponse,
+  _property: PropertiesResponse,
   filenameOrUrl: string,
-  thumbSize = "400x300",
+  _thumbSize = "400x300",
 ): string {
   if (filenameOrUrl.startsWith("http://") || filenameOrUrl.startsWith("https://")) {
     return filenameOrUrl;
   }
-  return getImageThumbnailUrl(property, filenameOrUrl, thumbSize);
+  return filenameOrUrl || "/apple-icon.png";
 }

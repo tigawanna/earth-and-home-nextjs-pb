@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { dashboardPropertyQueryOptions } from "@/data-access-layer/properties/client-side-property-queries";
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { PropertiesResponse } from "@/types/domain-types";
 import { cn } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";

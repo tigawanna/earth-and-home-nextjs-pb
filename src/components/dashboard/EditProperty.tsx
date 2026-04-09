@@ -1,7 +1,7 @@
 "use client";
 import PropertyForm from "@/components/property/form/PropertyForm";
 import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
-import { AgentsResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { AgentsResponse, UsersResponse } from "@/types/domain-types";
 
 interface EditPropertyProps {
   id: string;

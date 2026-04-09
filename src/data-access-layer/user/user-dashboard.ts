@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { PropertiesResponse } from "@/types/domain-types";
 import {
   drizzleGetUserDashboardStats,
   drizzleGetUserFavoriteProperties,

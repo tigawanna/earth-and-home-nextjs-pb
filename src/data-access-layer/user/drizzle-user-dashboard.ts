@@ -2,7 +2,7 @@ import "server-only";
 
 import { favorites, properties, propertyMessages } from "@/db/schema/app-schema";
 import { getDb } from "@/lib/db/get-db";
-import type { PropertiesResponse, PropertyMessagesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { PropertiesResponse, PropertyMessagesResponse } from "@/types/domain-types";
 import { mapDrizzleRowToPropertiesResponse } from "@/data-access-layer/properties/drizzle-property-mapper";
 import { count, desc, eq } from "drizzle-orm";
 
@@ -111,8 +111,6 @@ export async function drizzleGetUserMessages(userId: string, limit = 50, page = 
     const created = m.createdAt ? new Date(m.createdAt).toISOString() : "";
     const updated = m.updatedAt ? new Date(m.updatedAt).toISOString() : created;
     const base: PropertyMessagesResponse = {
-      collectionName: "property_messages",
-      collectionId: "",
       id: m.id,
       user_id: m.userId,
       property_id: m.propertyId,

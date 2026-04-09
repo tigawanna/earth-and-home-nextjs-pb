@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import type { PropertiesResponse } from "@/types/domain-types";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Building2, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,7 +33,7 @@ export function RecentPropertiesCard({ properties, className }: RecentProperties
                 : null);
             const imageUrl =
               primaryImage && typeof primaryImage === "string"
-                ? getImageThumbnailUrl(property, primaryImage, "80x80")
+                ? resolvePropertyThumbnailUrl(property, primaryImage, "80x80")
                 : null;
 
             return (

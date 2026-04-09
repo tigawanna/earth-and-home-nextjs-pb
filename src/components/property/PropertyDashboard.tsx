@@ -1,6 +1,6 @@
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { Button } from "@/components/ui/button";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse } from "@/types/domain-types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";

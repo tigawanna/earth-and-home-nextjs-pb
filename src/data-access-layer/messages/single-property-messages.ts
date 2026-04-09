@@ -1,62 +1,32 @@
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { createCollectionFactory } from "@/lib/tanstack/db/query-collection-factory";
+import type { PropertyMessagesCreate, PropertyMessagesResponse } from "@/types/domain-types";
 import { queryClient } from "@/lib/tanstack/query/get-query-client";
-import { queryCollectionOptions } from "@tanstack/query-db-collection";
-import { createCollection } from "@tanstack/react-db";
-import { or, eq as pBeq } from "@tigawanna/typed-pocketbase";
+import { queryOptions } from "@tanstack/react-query";
 
-// ====================================================
-// TANSTACK COLLECTIONS
-// ====================================================
+export function singlePropertyMessagesQueryOptions(parentId: string) {
+  return queryOptions({
+    queryKey: ["property_messages", parentId],
+    queryFn: async () => {
+      const res = await fetch(`/api/messages?parentId=${encodeURIComponent(parentId)}`);
+      const json = (await res.json()) as { success: boolean; result: PropertyMessagesResponse[] };
+      if (!json.success) return [];
+      return json.result;
+    },
+  });
+}
 
-export const pbMessagesCollection = browserPB.from("property_messages");
+export async function createMessageViaApi(
+  data: PropertyMessagesCreate,
+): Promise<PropertyMessagesResponse | null> {
+  const res = await fetch("/api/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  const json = (await res.json()) as { success: boolean; result: PropertyMessagesResponse | null };
+  if (!json.success) return null;
+  return json.result;
+}
 
-// Filter for parent messages (main conversations, not replies)
-
-export const pbMessagesCollectionFilter = (parentId: string) =>
-  pbMessagesCollection.createFilter(or(pBeq("parent", parentId), pBeq("id", parentId)));
-
-// Select with expanded relations
-export const pbMessagesCollectionSelect = pbMessagesCollection.createSelect({
-  expand: {
-    property_id: true,
-    user_id: true,
-  },
-});
-
-// Messages for a specific property
-export const createSinglePropertyMessagesCollection = ({ parentId }: { parentId: string }) => {
-  return createCollection(
-    queryCollectionOptions({
-      queryKey: ["property_messages", parentId],
-      queryFn: async () => {
-        const result = await pbMessagesCollection.getList(1, 50, {
-          sort: "-created",
-          filter: pbMessagesCollectionFilter(parentId),
-          select: pbMessagesCollectionSelect,
-        });
-        return result.items;
-      },
-      getKey: (item) => item.id,
-      onInsert: async ({ transaction }) => {
-        const { modified } = transaction.mutations[0];
-        await pbMessagesCollection.create(modified);
-      },
-      onUpdate: async ({ transaction }) => {
-        const { original, modified } = transaction.mutations[0];
-        await pbMessagesCollection.update(original.id, modified);
-      },
-      onDelete: async ({ transaction }) => {
-        const { original } = transaction.mutations[0];
-        await pbMessagesCollection.delete(original.id);
-      },
-      queryClient: queryClient!,
-    }),
-  );
-};
-
-// Create the factory using our new utility.
-export const singlePropertyMessagesCollection = createCollectionFactory<
-  ReturnType<typeof createSinglePropertyMessagesCollection>,
-  Parameters<typeof createSinglePropertyMessagesCollection>[0]
->(createSinglePropertyMessagesCollection);
+export function invalidateMessages(parentId: string) {
+  queryClient?.invalidateQueries({ queryKey: ["property_messages", parentId] });
+}

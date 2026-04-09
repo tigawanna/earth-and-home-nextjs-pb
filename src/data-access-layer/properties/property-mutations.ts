@@ -1,13 +1,25 @@
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { PropertiesCreate, PropertiesUpdate } from "@/lib/pocketbase/types/pb-types";
+import type { PropertiesCreate, PropertiesUpdate } from "@/types/domain-types";
 import { mutationOptions } from "@tanstack/react-query";
 
 export const createPropertyMutationOptions = mutationOptions({
   mutationFn: async (data: PropertiesCreate) => {
     try {
-      const res = await browserPB.from("properties").create(data);
+      const res = await fetch("/api/properties", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = (await res.json()) as { success: boolean; record?: unknown; message?: string };
+      if (!res.ok || !json.success) {
+        return {
+          record: null,
+          success: false,
+          message: json.message ?? "Failed to create property",
+          code: "property/create-failed",
+        };
+      }
       return {
-        record: res,
+        record: json.record,
         success: true,
         message: "Property created successfully",
       };
@@ -28,9 +40,22 @@ export const updatePropertyMutationOptions = mutationOptions({
       if (!data.id) {
         throw new Error("Property ID is required for update");
       }
-      const res = await browserPB.from("properties").update(data.id, data);
+      const res = await fetch(`/api/properties/${data.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const json = (await res.json()) as { success: boolean; record?: unknown; message?: string };
+      if (!res.ok || !json.success) {
+        return {
+          record: null,
+          success: false,
+          message: json.message ?? "Failed to update property",
+          code: "property/update-failed",
+        };
+      }
       return {
-        record: res ?? null,
+        record: json.record ?? null,
         success: true,
         message: "Property updated successfully",
       };
@@ -48,9 +73,18 @@ export const updatePropertyMutationOptions = mutationOptions({
 export const deletePropertyMutationOptions = mutationOptions({
   mutationFn: async (id: string) => {
     try {
-      const res = await browserPB.from("properties").delete(id);
+      const res = await fetch(`/api/properties/${id}`, { method: "DELETE" });
+      const json = (await res.json()) as { success: boolean; record?: unknown; message?: string };
+      if (!res.ok || !json.success) {
+        return {
+          record: null,
+          success: false,
+          message: json.message ?? "Failed to delete property",
+          code: "property/delete-failed",
+        };
+      }
       return {
-        record: res ?? null,
+        record: null,
         success: true,
         message: "Property deleted successfully",
       };
@@ -65,7 +99,6 @@ export const deletePropertyMutationOptions = mutationOptions({
   },
 });
 
-// For backwards compatibility
 export const deleteProperty = async (id: string) => {
   const result = await deletePropertyMutationOptions.mutationFn!(id);
   return result;

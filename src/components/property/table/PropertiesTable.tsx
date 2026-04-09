@@ -24,8 +24,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { PropertiesResponse } from "@/types/domain-types";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Edit, Eye, MoreHorizontal, Search, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -144,7 +144,7 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
                   ? p.images[0]
                   : null);
               const imageUrl = primary
-                ? getImageThumbnailUrl(p as PropertiesResponse, primary, "120x90")
+                ? resolvePropertyThumbnailUrl(p as PropertiesResponse, primary, "120x90")
                 : null;
               const location = [p.city, p.state, p.country].filter(Boolean).join(", ");
 

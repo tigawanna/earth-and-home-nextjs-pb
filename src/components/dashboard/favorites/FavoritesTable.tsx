@@ -16,17 +16,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
-import {
+import type {
   FavoritesResponse,
   PropertiesResponse,
   UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+} from "@/types/domain-types";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ListResult } from "pocketbase";
 import { toast } from "sonner";
 import { FavoriteRow } from "./FavoriteMobileRow";
 
@@ -34,21 +33,18 @@ interface FavoritesTableProps {
   data:
     | {
         success: boolean;
-        result: ListResult<{
-          collectionName: "favorites";
-          id: string;
-          user_id: string;
-          property_id: string;
-          created: string;
-          updated: string;
-          collectionId: string;
-          expand?:
-            | {
-                user_id?: UsersResponse | undefined;
-                property_id?: PropertiesResponse | undefined;
-              }
-            | undefined;
-        }>;
+        result: {
+          items: (FavoritesResponse & {
+            expand?: {
+              user_id?: UsersResponse;
+              property_id?: PropertiesResponse;
+            };
+          })[];
+          page: number;
+          perPage: number;
+          totalItems: number;
+          totalPages: number;
+        };
         message?: undefined;
       }
     | {
@@ -63,22 +59,18 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
 
   async function handleRemoveFavorite(fav: FavoritesResponse) {
     const propertyId =
-      typeof fav.property_id === "string" ? fav.property_id : (fav.property_id as any)?.id;
-    const userId = typeof fav.user_id === "string" ? fav.user_id : (fav.user_id as any)?.id;
+      typeof fav.property_id === "string" ? fav.property_id : (fav.property_id as unknown as { id: string })?.id;
+    const userId = typeof fav.user_id === "string" ? fav.user_id : (fav.user_id as unknown as { id: string })?.id;
     if (!propertyId || !userId) return toast.error("Missing identifiers");
 
     try {
       await toggleFavorite(propertyId, userId);
       toast.success("Toggled favorite");
     } catch (e) {
-      console.log("error happende = =>\n", e);
+      console.error(e);
       toast.error("Failed to toggle favorite");
     }
   }
-
-  // if (isPending) {
-  //   return <TablePending />;
-  // }
 
   const favorites = data?.result?.items || [];
   const totalPages = data?.result?.totalPages || 1;
@@ -92,14 +84,12 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
   }
   return (
     <div className="space-y-4">
-      {/* Mobile: render cards */}
       <div className="flex flex-col gap-3 md:hidden">
         {favorites.map((f) => (
-          <FavoriteRow key={f.id} fav={f as any} onRemove={handleRemoveFavorite} />
+          <FavoriteRow key={f.id} fav={f as FavoritesResponse & { expand?: { property_id?: PropertiesResponse; user_id?: UsersResponse } }} onRemove={handleRemoveFavorite} />
         ))}
       </div>
 
-      {/* Desktop/table for md+ */}
       <div className="hidden md:block border rounded-lg overflow-hidden">
         <Table>
           <TableHeader>
@@ -113,8 +103,8 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
 
           <TableBody>
             {favorites.map((f) => {
-              const prop = f.expand?.property_id as any as PropertiesResponse | undefined;
-              const user = f.expand?.user_id as any as UsersResponse | undefined;
+              const prop = f.expand?.property_id;
+              const user = f.expand?.user_id;
               const primary =
                 prop?.image_url ||
                 (Array.isArray(prop?.images) &&
@@ -122,8 +112,8 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
                 typeof prop!.images[0] === "string"
                   ? prop!.images[0]
                   : null);
-              const imageUrl = primary
-                ? getImageThumbnailUrl(prop as PropertiesResponse, primary, "400x300")
+              const imageUrl = primary && prop
+                ? resolvePropertyThumbnailUrl(prop, primary, "400x300")
                 : null;
 
               const location = prop
@@ -138,7 +128,7 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
                         {imageUrl ? (
                           <Image
                             src={imageUrl}
-                            alt={(prop as any)?.title || "property"}
+                            alt={prop?.title || "property"}
                             fill
                             className="object-cover"
                           />
@@ -149,7 +139,7 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
                         )}
                       </div>
                       <div>
-                        <div className="font-medium">{(prop as any)?.title || "Untitled"}</div>
+                        <div className="font-medium">{prop?.title || "Untitled"}</div>
                         <div className="text-sm text-muted-foreground line-clamp-1">{location}</div>
                       </div>
                     </div>
@@ -157,10 +147,10 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
 
                   <TableCell>
                     <div className="font-medium">
-                      {(user as any)?.name || (user as any)?.email || "-"}
+                      {user?.name || user?.email || "-"}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {(user as any)?.email || "-"}
+                      {user?.email || "-"}
                     </div>
                   </TableCell>
 
@@ -173,7 +163,7 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <Link
-                        href={prop ? `/properties/${(prop as any).id}` : "#"}
+                        href={prop ? `/properties/${prop.id}` : "#"}
                         className="inline-block"
                       >
                         <Button variant="ghost" size="sm">
@@ -189,7 +179,7 @@ export function FavoritesTable({ data }: FavoritesTableProps) {
                         <DropdownMenuContent>
                           <DropdownMenuItem>
                             <Link
-                              href={prop ? `/properties/${(prop as any).id}` : "#"}
+                              href={prop ? `/properties/${prop.id}` : "#"}
                               className="flex items-center gap-2 w-full"
                             >
                               <Eye className="w-4 h-4" />

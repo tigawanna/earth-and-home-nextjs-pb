@@ -1,17 +1,19 @@
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { mutationOptions } from "@tanstack/react-query";
 
 export const toggleBanUserMutationOptions = mutationOptions({
   mutationFn: async ({ userId, is_banned }: { userId: string; is_banned: boolean }) => {
     try {
-      const response = await browserPB.from("users").update(userId, { is_banned: !is_banned });
+      const res = await fetch(`/api/dashboard/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_banned: !is_banned }),
+      });
+      const json = (await res.json()) as { success: boolean; message: string };
       return {
-        success: true,
-        message: `User ${is_banned ? "banned" : "unbanned"} successfully`,
-        result: response,
+        success: json.success as boolean,
+        message: json.message as string,
       };
     } catch (error) {
-      console.log("error happende = =>\n", "Error banning user:", error);
       return {
         success: false,
         message: error instanceof Error ? error.message : String(error),
@@ -23,14 +25,17 @@ export const toggleBanUserMutationOptions = mutationOptions({
 export const toggleAdminMutationOptions = mutationOptions({
   mutationFn: async ({ is_admin, userId }: { userId: string; is_admin: boolean }) => {
     try {
-      const response = await browserPB.from("users").update(userId, { is_admin: !is_admin });
+      const res = await fetch(`/api/dashboard/users/${userId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ is_admin: !is_admin }),
+      });
+      const json = (await res.json()) as { success: boolean; message: string };
       return {
-        success: true,
-        message: `User ${is_admin ? "granted" : "revoked"} admin privileges successfully`,
-        result: response,
+        success: json.success as boolean,
+        message: json.message as string,
       };
     } catch (error) {
-      console.log("error happende = =>\n", "Error toggling admin status:", error);
       return {
         success: false,
         message: error instanceof Error ? error.message : String(error),

@@ -1,9 +1,9 @@
-import {
+import type {
   AgentsResponse,
   FavoritesResponse,
   PropertiesResponse,
   UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
+} from "@/types/domain-types";
 
 export type FavoriteWithExpand = FavoritesResponse & {
   expand?: {

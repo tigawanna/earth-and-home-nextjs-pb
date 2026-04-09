@@ -1,4 +1,4 @@
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { PropertiesResponse } from "@/types/domain-types";
 import { properties } from "@/db/schema/app-schema";
 import type { InferSelectModel } from "drizzle-orm";
 
@@ -15,8 +15,6 @@ export function mapDrizzleRowToPropertiesResponse(row: PropertyRow): PropertiesR
 
   return {
     id: row.id,
-    collectionId: "",
-    collectionName: "properties",
     created,
     updated,
     title: row.title,
@@ -56,8 +54,8 @@ export function mapDrizzleRowToPropertiesResponse(row: PropertyRow): PropertiesR
     video_url: row.videoUrl ?? "",
     virtual_tour_url: row.virtualTourUrl ?? "",
     amenities: undefined,
-    features: row.features ?? null,
-    utilities: row.utilities ?? null,
+    features: (row.features ?? null) as Record<string, unknown> | unknown[] | null,
+    utilities: (row.utilities ?? null) as Record<string, unknown> | unknown[] | null,
     owner_id: row.ownerId ?? "",
     is_featured: row.isFeatured ?? false,
     is_new: row.isNew ?? false,

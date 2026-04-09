@@ -55,7 +55,7 @@ export default function DashboardOrAuth({ className }: DashboardOrAuthProps) {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user.avatar || "/user-fallback.png"} alt={user.name || "User"} />
+              <AvatarImage src={user.image ?? "/user-fallback.png"} alt={user.name || "User"} />
               <AvatarFallback>{user.name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
             </Avatar>
           </Button>

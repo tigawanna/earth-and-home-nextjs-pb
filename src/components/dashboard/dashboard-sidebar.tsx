@@ -38,7 +38,7 @@ import {
 
 import { ModeToggle } from "@/components/theme/theme-toggle";
 import { signoutMutationOptions } from "@/data-access-layer/user/auth";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse } from "@/types/domain-types";
 import { useMutation } from "@tanstack/react-query";
 
 // Menu items for regular users

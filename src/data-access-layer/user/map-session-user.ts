@@ -1,4 +1,4 @@
-import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import type { UsersResponse } from "@/types/domain-types";
 
 type SessionUser = {
   id: string;
@@ -13,13 +13,8 @@ type SessionUser = {
 export function mapSessionUserToUsersResponse(sessionUser: SessionUser): UsersResponse {
   const now = new Date().toISOString();
   return {
-    collectionName: "users",
-    collectionId: "",
     id: sessionUser.id,
-    username: sessionUser.email,
-    tokenKey: "",
     email: sessionUser.email,
-    emailVisibility: true,
     verified: sessionUser.emailVerified ?? false,
     name: sessionUser.name,
     avatar: sessionUser.image ?? "",

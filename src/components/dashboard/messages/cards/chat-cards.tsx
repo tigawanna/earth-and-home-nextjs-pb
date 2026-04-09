@@ -3,7 +3,7 @@ import {
   PropertiesResponse,
   PropertyMessagesResponse,
   UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
+} from "@/types/domain-types";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, Home, MessageCircle, User } from "lucide-react";

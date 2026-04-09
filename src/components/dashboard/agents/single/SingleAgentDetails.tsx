@@ -11,8 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { AgentsResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { AgentsResponse, UsersResponse } from "@/types/domain-types";
 import {
   Building2,
   Calendar,
@@ -37,7 +36,7 @@ interface SingleAgentDetailsProps {
 
 export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
   const user = agent.expand?.user_id;
-  const avatarSrc = user?.avatar ? getImageThumbnailUrl(user, user.avatar, "96x96") : undefined;
+  const avatarSrc = user?.avatar || undefined;
   const contactMethods = [user?.email, user?.phone].filter(Boolean).length;
   const agencyDataFields = [
     agent.agency_name,

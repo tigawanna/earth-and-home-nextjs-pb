@@ -2,7 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageWithProperty } from "@/data-access-layer/messages/properties-messages-collection";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, Home, User } from "lucide-react";
 import Image from "next/image";
@@ -25,7 +25,7 @@ export function PropertyMessageCard({ message, onViewMessages }: PropertyMessage
     (Array.isArray(property?.images) && property?.images.length > 0 ? property?.images[0] : null);
   const imageUrl =
     primaryImage && typeof primaryImage === "string" && property
-      ? getImageThumbnailUrl(property, primaryImage, "48x48")
+      ? resolvePropertyThumbnailUrl(property, primaryImage, "48x48")
       : null;
   return (
     <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={onViewMessages}>

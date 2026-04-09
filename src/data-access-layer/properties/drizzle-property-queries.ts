@@ -3,7 +3,7 @@ import "server-only";
 import { agents, favorites, properties, propertyMessages } from "@/db/schema/app-schema";
 import { user as userTable } from "@/db/schema/auth-schema";
 import { getDb } from "@/lib/db/get-db";
-import type { FavoritesResponse, PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { FavoritesResponse, PropertiesResponse } from "@/types/domain-types";
 import { mapAgentRowToAgentsResponse } from "@/data-access-layer/agents/drizzle-agent-mapper";
 import { mapUserRowToUsersResponse } from "@/data-access-layer/user/drizzle-user-mapper";
 import { mapDrizzleRowToPropertiesResponse } from "./drizzle-property-mapper";
@@ -296,8 +296,6 @@ export async function getSearchableFavoritesFromD1({
     };
   })[] = rows.map(({ fav, prop, usr }) => ({
     id: fav.id,
-    collectionId: "",
-    collectionName: "favorites",
     created: fav.createdAt ? new Date(fav.createdAt).toISOString() : "",
     updated: fav.updatedAt ? new Date(fav.updatedAt).toISOString() : "",
     user_id: fav.userId,
@@ -473,8 +471,6 @@ export async function getRecentActivitiesFromD1() {
 
   const recentFavorites = favRows.map(({ f, prop, usr }) => ({
     id: f.id,
-    collectionId: "",
-    collectionName: "favorites" as const,
     created: f.createdAt ? new Date(f.createdAt).toISOString() : "",
     updated: f.updatedAt ? new Date(f.updatedAt).toISOString() : "",
     user_id: f.userId,
@@ -487,8 +483,6 @@ export async function getRecentActivitiesFromD1() {
 
   const recentMessages = msgRows.map(({ m, prop, usr }) => ({
     id: m.id,
-    collectionId: "",
-    collectionName: "property_messages" as const,
     created: m.createdAt ? new Date(m.createdAt).toISOString() : "",
     updated: m.updatedAt ? new Date(m.updatedAt).toISOString() : "",
     user_id: m.userId,

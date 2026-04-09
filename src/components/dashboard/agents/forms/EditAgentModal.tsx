@@ -27,8 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { AgentsResponse, AgentsUpdate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import type { AgentsResponse, AgentsUpdate, UsersResponse } from "@/types/domain-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Pencil } from "lucide-react";
@@ -60,9 +59,13 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
 
   const updateMutation = useMutation({
     mutationFn: async (data: AgentsUpdate & { id: string }) => {
-      console.log("Updating agent:", data);
-      const result = await browserPB.from("agents").update(data.id, data);
-      return result;
+      const res = await fetch(`/api/agents/${data.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed to update agent");
+      return res.json();
     },
     onSuccess: () => {
       toast.success("Agent profile updated successfully");
@@ -71,7 +74,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
     },
     onError: (error) => {
       toast.error("Failed to update agent profile");
-      console.log(error);
+      console.error(error);
     },
   });
 
@@ -80,7 +83,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
       id: agent.id,
       agency_name: data.agency_name,
       license_number: data.license_number || undefined,
-      specialization: data.specialization || undefined,
+      specialization: (data.specialization || undefined) as AgentsUpdate["specialization"],
       service_areas: data.service_areas || undefined,
       years_experience: data.years_experience || undefined,
       is_verified: data.is_verified,
@@ -120,7 +123,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
                   <FormItem>
                     <FormLabel>Agency Name *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter agency name" {...field} />
+                      <Input placeholder="Enter agency name" {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -134,7 +137,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
                   <FormItem>
                     <FormLabel>License Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter license number" {...field} />
+                      <Input placeholder="Enter license number" {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -179,7 +182,14 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
                       <Input
                         type="number"
                         placeholder="Years"
-                        {...field}
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        value={
+                          typeof field.value === "number" && !Number.isNaN(field.value)
+                            ? field.value
+                            : ""
+                        }
                         onChange={(e) =>
                           field.onChange(e.target.value ? Number(e.target.value) : undefined)
                         }
@@ -198,7 +208,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
                 <FormItem>
                   <FormLabel>Service Areas</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Nairobi, Kiambu, Machakos" {...field} />
+                    <Input placeholder="e.g., Nairobi, Kiambu, Machakos" {...field} value={field.value ?? ""} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

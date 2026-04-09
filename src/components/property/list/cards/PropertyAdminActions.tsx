@@ -19,7 +19,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { updatePropertyMutationOptions } from "@/data-access-layer/properties/property-mutations";
-import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { PropertiesResponse } from "@/types/domain-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit, Eye, EyeOff, MapPin, MoreVertical, Settings, Sparkles, Star } from "lucide-react";
 import Link from "next/link";

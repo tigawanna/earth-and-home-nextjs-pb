@@ -1,6 +1,6 @@
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { queryOptions } from "@tanstack/react-query";
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { PropertiesResponse } from "@/types/domain-types";
 import { PropertyFilters, PropertySortBy, SortOrder } from "./property-types";
 
 type DashboardPropertiesApiSuccess = {

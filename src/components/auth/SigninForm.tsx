@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signinMutationOptions } from "@/data-access-layer/user/auth";
+import { authClient } from "@/lib/auth/client";
 import { FormErrorDisplay, FormStateDebug } from "@/lib/react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,14 @@ export function SigninForm(_props: SigninFormProps) {
   });
 
   const { mutate, isPending } = useMutation({
-    ...signinMutationOptions(),
+    mutationFn: async (data: { email: string; password: string }) => {
+      const res = await authClient.signIn.email({
+        email: data.email,
+        password: data.password,
+      });
+      if (res.error) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => {
       toast.success("Signed in successfully!");
       router.push("/dashboard");

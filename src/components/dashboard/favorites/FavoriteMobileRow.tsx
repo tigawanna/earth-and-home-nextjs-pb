@@ -12,8 +12,8 @@ import {
   FavoritesResponse,
   PropertiesResponse,
   UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+} from "@/types/domain-types";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -39,7 +39,7 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
       ? prop!.images[0]
       : null);
   const imageUrl = primary
-    ? getImageThumbnailUrl(prop as PropertiesResponse, primary, "400x300")
+    ? resolvePropertyThumbnailUrl(prop as PropertiesResponse, primary, "400x300")
     : null;
 
   const location = prop ? [prop.city, prop.state, prop.country].filter(Boolean).join(", ") : "";

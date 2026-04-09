@@ -5,7 +5,7 @@ import { getDb } from "@/lib/db/get-db";
 import { getBetterAuthSession } from "@/lib/auth/get-session";
 import { mapAgentRowToAgentsResponse } from "@/data-access-layer/agents/drizzle-agent-mapper";
 import { mapSessionUserToUsersResponse } from "@/data-access-layer/user/map-session-user";
-import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import type { UsersResponse } from "@/types/domain-types";
 import { eq } from "drizzle-orm";
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 

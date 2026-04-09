@@ -9,11 +9,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { AgentsResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { AgentsResponse, PropertyMessagesResponse, UsersResponse } from "@/types/domain-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { and, eq } from "@tigawanna/typed-pocketbase";
 import { Loader2, Mail, MessageCircle, MessageSquare, Phone, Send, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -47,14 +45,26 @@ interface SendMessagePayload {
   userId: string;
 }
 
-// Mutation function to send a message
+interface MessageCheckResponse {
+  success: boolean;
+  result: PropertyMessagesResponse | null;
+}
+
 const sendMessage = async ({ message, propertyId, userId }: SendMessagePayload) => {
-  return await browserPB.collection("property_messages").create({
-    body: message,
-    property_id: propertyId,
-    user_id: userId,
-    type: "parent",
+  const res = await fetch("/api/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      body: message,
+      property_id: propertyId,
+      user_id: userId,
+      type: "parent",
+    }),
   });
+  if (!res.ok) {
+    throw new Error("Failed to send message");
+  }
+  return res.json();
 };
 
 export function PropertyContactForm({
@@ -75,26 +85,14 @@ export function PropertyContactForm({
     error: messageCheckError,
   } = useQuery({
     queryKey: ["property_messages", propertyId, userId],
-    queryFn: async () => {
-      try {
-        const result = await browserPB
-          .from("property_messages")
-          .getFirstListItem(
-            and(eq("property_id", propertyId), eq("user_id", userId), eq("type", "parent")),
-          );
-        return {
-          result,
-          success: true,
-        };
-      } catch (error) {
-        console.log("Error fetching messages:", error);
-        return {
-          result: null,
-          success: false,
-        };
+    queryFn: async (): Promise<MessageCheckResponse> => {
+      const res = await fetch(`/api/messages?propertyId=${propertyId}&userId=${userId}`);
+      if (!res.ok) {
+        return { result: null, success: false };
       }
+      return res.json();
     },
-    enabled: open, // Only fetch when dialog is open
+    enabled: open,
   });
 
   const {
@@ -114,14 +112,13 @@ export function PropertyContactForm({
       setOpen(false);
     },
     onError: (error) => {
-      console.log("error happende = =>\n", "Error sending message:", error);
+      console.log("Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
     },
   });
 
   const onSubmit = async (data: MessageFormData) => {
-    const authUser = browserPB.authStore.record;
-    if (!authUser) {
+    if (!user) {
       toast.error("Please sign in to send a message");
       return;
     }
@@ -129,7 +126,7 @@ export function PropertyContactForm({
     sendMessageMutation.mutate({
       message: data.message,
       propertyId,
-      userId: authUser.id,
+      userId: user.id,
     });
   };
 
@@ -172,7 +169,6 @@ export function PropertyContactForm({
               </p>
 
               <div className="space-y-1">
-                {/* Phone Number */}
                 {agent_profile?.phone && (
                   <div className="flex items-center gap-2 text-xs">
                     <Phone className="w-3 h-3 text-muted-foreground" />
@@ -185,7 +181,6 @@ export function PropertyContactForm({
                   </div>
                 )}
 
-                {/* Email */}
                 {agent_profile?.email && (
                   <div className="flex items-center gap-2 text-xs">
                     <Mail className="w-3 h-3 text-muted-foreground" />
@@ -202,7 +197,6 @@ export function PropertyContactForm({
           </div>
         </div>
 
-        {/* Loading state while checking for existing messages */}
         {isCheckingExistingMessage && (
           <div className="flex items-center justify-center py-8">
             <Loader2 className="w-6 h-6 animate-spin mr-2" />
@@ -210,14 +204,12 @@ export function PropertyContactForm({
           </div>
         )}
 
-        {/* Error state */}
         {messageCheckError && !isCheckingExistingMessage && (
           <div className="text-center py-4">
             <p className="text-red-500 text-sm">Failed to check existing messages</p>
           </div>
         )}
 
-        {/* Show existing thread option or new message form */}
         {!isCheckingExistingMessage && !messageCheckError && (
           <>
             {hasExistingThread ? (

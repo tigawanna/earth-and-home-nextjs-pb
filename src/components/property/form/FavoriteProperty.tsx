@@ -2,16 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { and, eq } from "@tigawanna/typed-pocketbase";
 import { Heart } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface FavoritePropertyProps {
   userId?: string;
   property: PropertyWithFavorites;
+}
+
+interface ToggleFavoriteResponse {
+  success: boolean;
+  isFavorited: boolean;
+  message: string;
 }
 
 export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
@@ -19,40 +23,23 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
   const is_favorited =
     property.expand?.favorites_via_property_id?.some((fav) => fav.user_id === userId) || false;
   const queryClient = useQueryClient();
-  const [currentUserId, setCurrentUserId] = useState<string | null>(userId || null);
   const [favoriteState, setFavoriteState] = useState(is_favorited || false);
-
-  // Get current user from PocketBase auth if not provided
-  useEffect(() => {
-    if (!userId && browserPB.authStore.isValid) {
-      setCurrentUserId(browserPB.authStore.record?.id || null);
-    }
-  }, [userId]);
 
   const { mutate: toggleFavorite, isPending } = useMutation({
     mutationFn: async ({ user_id, property_id }: { user_id: string; property_id: string }) => {
-      try {
-        const existingFavorite = await browserPB
-          .from("favorites")
-          .getFirstListItem(and(eq("property_id", property_id), eq("user_id", user_id)));
-
-        if (existingFavorite) {
-          // If favorite exists, delete it (unfavorite)
-          await browserPB.from("favorites").delete(existingFavorite.id);
-          return { action: "unfavorited", isFavorited: false };
-        }
-      } catch {
-        // Favorite doesn't exist, so we'll create it
+      const res = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ propertyId: property_id, userId: user_id }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to toggle favorite");
       }
-      // Create favorite
-      await browserPB.from("favorites").create({ property_id, user_id });
-      return { action: "favorited", isFavorited: true };
+      return res.json() as Promise<ToggleFavoriteResponse>;
     },
     onSuccess: (result) => {
-      // Update local state
       setFavoriteState(result.isFavorited);
 
-      // Invalidate relevant queries to refetch data
       queryClient.invalidateQueries({
         queryKey: ["dashboard", "property", propertyId],
       });
@@ -64,9 +51,8 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
       });
     },
   });
-  // console.log("Favorite state:", {is_favorited,favoriteState});
-  // If no user is logged in, show login link
-  if (!currentUserId) {
+
+  if (!userId) {
     return (
       <Link href="/auth/signin">
         <Button
@@ -85,7 +71,7 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
     <Button
       onClick={(e) => {
         e.stopPropagation();
-        toggleFavorite({ user_id: currentUserId, property_id: propertyId });
+        toggleFavorite({ user_id: userId, property_id: propertyId });
       }}
       disabled={isPending}
       variant="outline"

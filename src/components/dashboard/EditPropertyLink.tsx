@@ -21,7 +21,7 @@ export function EditPropertyLink({ id }: EditPropertyLinkProps) {
       </Button>
     );
   }
-  if (user?.is_admin) {
+  if (user?.role === "admin") {
     return (
       <Button variant={"outline"} className="" size={"sm"}>
         <Link href={`/properties/${id}`} className="">

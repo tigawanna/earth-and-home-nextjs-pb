@@ -17,8 +17,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
-import { getFileUrl, getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import type { PropertiesResponse } from "@/types/domain-types";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Camera, Maximize2, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -72,7 +72,7 @@ export function PropertyImageGallery({
   const imageFilenames = processPropertyImages(property);
 
   // Generate PocketBase URLs for the images
-  const imageUrls = imageFilenames.map((filename) => getFileUrl(property, filename));
+  const imageUrls = imageFilenames.map((filename) => resolvePropertyThumbnailUrl(property, filename));
 
   const validImages = imageUrls.filter((url) => Boolean(url));
   const validCount = validImages.length;
@@ -255,7 +255,7 @@ export function PropertyImageGallery({
           >
             <CarouselContent className="-ml-2">
               {imageFilenames.slice(0, 5).map((filename, index) => {
-                const thumbnailUrl = getImageThumbnailUrl(property, filename, "80x80");
+                const thumbnailUrl = resolvePropertyThumbnailUrl(property, filename, "80x80");
 
                 return (
                   <CarouselItem key={index} className="pl-2 basis-auto">

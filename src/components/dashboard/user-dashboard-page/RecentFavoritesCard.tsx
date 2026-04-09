@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import type { PropertiesResponse } from "@/types/domain-types";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Building2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -68,7 +68,7 @@ export function RecentFavoritesCard({ favorites }: RecentFavoritesCardProps) {
               : null);
           const imageUrl =
             primaryImage && typeof primaryImage === "string"
-              ? getImageThumbnailUrl(favorite.property, primaryImage, "64x64")
+              ? resolvePropertyThumbnailUrl(favorite.property, primaryImage, "64x64")
               : null;
 
           return (

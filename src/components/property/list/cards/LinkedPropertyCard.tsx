@@ -3,7 +3,7 @@ import { Bath, Bed, Square } from "lucide-react";
 import { FavoriteProperty } from "../../form/FavoriteProperty";
 import { BasePropertyCard } from "./BasePropertyCard";
 import { PropertyAdminActions } from "./PropertyAdminActions";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse } from "@/types/domain-types";
 
 interface LinkedPropertyCardProps {
   property: PropertyWithFavorites;

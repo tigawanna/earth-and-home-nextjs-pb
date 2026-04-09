@@ -1,65 +1,27 @@
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { FavoritesCreate } from "@/lib/pocketbase/types/pb-types";
 import { mutationOptions } from "@tanstack/react-query";
-import { and, eq } from "@tigawanna/typed-pocketbase";
 
 export const toggleFavoriteMutationOptions = mutationOptions({
   mutationFn: async ({ propertyId, userId }: { propertyId: string; userId: string }) => {
     try {
-      // Check if favorite already exists
-      try {
-        browserPB.from("favorites").getOne("item_id", {
-          // this will select everything and especially the expand fields , which is joining to those tables it results in a data response that's {...est_of_data,expand:{property_id:{...property_fields},user_id:{...user_fields}}}
-          select: {
-            expand: {
-              property_id: true,
-              user_id: true,
-            },
-          },
-        });
-        // get first item that satisfies the filter
-        browserPB.from("favorites").getFirstListItem(eq("user_id", userId));
-        // get full list options ( use sparingly)
-        browserPB.from("favorites").getFullList({
-          filter: eq("user_id", userId),
-          sort: "-created",
-          perPage: 1,
-        });
-        // paginated list // page , perPage, options
-        browserPB.from("favorites").getList(1, 24, {
-          filter: eq("user_id", userId),
-          sort: "-created",
-          perPage: 1,
-        });
-
-        const existingFavorite = await browserPB
-          .from("favorites")
-          .getFirstListItem(and(eq("property_id", propertyId), eq("user_id", userId)), {});
-
-        // If exists, delete it (unfavorite)
-        await browserPB.from("favorites").delete(existingFavorite.id);
-
+      const res = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ propertyId, userId }),
+      });
+      const json = (await res.json()) as { success: boolean; isFavorited?: boolean; message?: string };
+      if (!res.ok || !json.success) {
         return {
-          success: true,
+          success: false,
           isFavorited: false,
-          message: "Removed from favorites",
-        };
-      } catch {
-        // Favorite doesn't exist, create it
-        const favoriteData: FavoritesCreate = {
-          property_id: propertyId,
-          user_id: userId,
-        };
-
-        const newFavorite = await browserPB.from("favorites").create(favoriteData);
-
-        return {
-          success: true,
-          isFavorited: true,
-          message: "Added to favorites",
-          favorite: newFavorite,
+          message: json.message ?? "Failed to toggle favorite",
+          code: "favorite/toggle-failed",
         };
       }
+      return {
+        success: true,
+        isFavorited: json.isFavorited as boolean,
+        message: json.message as string,
+      };
     } catch {
       return {
         success: false,
@@ -71,7 +33,6 @@ export const toggleFavoriteMutationOptions = mutationOptions({
   },
 });
 
-// For backwards compatibility
 export const toggleFavorite = async (propertyId: string, userId: string) => {
   const result = await toggleFavoriteMutationOptions.mutationFn!({ propertyId, userId });
   return result;

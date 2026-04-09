@@ -32,13 +32,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import {
+import type {
   AgentsCreate,
   AgentsResponse,
   AgentsUpdate,
   UsersResponse,
-} from "@/lib/pocketbase/types/pb-types";
+} from "@/types/domain-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -79,11 +78,13 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
 
   const createMutation = useMutation({
     mutationFn: async (data: AgentsCreate) => {
-      const result = await browserPB.from("agents").create({
-        ...data,
-        user_id: currentUser.id,
+      const res = await fetch("/api/agents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, user_id: currentUser.id }),
       });
-      return result;
+      if (!res.ok) throw new Error("Failed to create agent");
+      return res.json();
     },
     onSuccess: () => {
       toast.success("Agent profile created successfully");
@@ -91,35 +92,41 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
     },
     onError: (error) => {
       toast.error("Failed to create agent profile");
-      console.log("error happende = =>\n", error);
+      console.error("Agent create error:", error);
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: async (data: AgentsUpdate & { id: string }) => {
-      const result = await browserPB.from("agents").update(data.id, data);
-      return result;
+      const res = await fetch(`/api/agents/${data.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed to update agent");
+      return res.json();
     },
     onSuccess: () => {
       toast.success("Agent profile updated successfully");
     },
     onError: (error) => {
       toast.error("Failed to update agent profile");
-      console.log("error happende = =>\n", error);
+      console.error("Agent update error:", error);
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (data: { id: string }) => {
-      const result = await browserPB.from("agents").delete(data.id);
-      return result;
+      const res = await fetch(`/api/agents/${data.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete agent");
+      return res.json();
     },
     onSuccess: () => {
       toast.success("Agent profile deleted successfully");
     },
     onError: (error) => {
       toast.error("Failed to delete agent profile");
-      console.log("error happende = =>\n", error);
+      console.error("Agent delete error:", error);
     },
   });
 
@@ -129,7 +136,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
         id: initialAgent.id,
         agency_name: data.agency_name,
         license_number: data.license_number || undefined,
-        specialization: data.specialization || undefined,
+        specialization: (data.specialization || undefined) as AgentsUpdate["specialization"],
         service_areas: data.service_areas || undefined,
         years_experience: data.years_experience || undefined,
         is_verified: data.is_verified,
@@ -139,7 +146,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
         user_id: currentUser.id,
         agency_name: data.agency_name,
         license_number: data.license_number || undefined,
-        specialization: data.specialization || undefined,
+        specialization: (data.specialization || undefined) as AgentsCreate["specialization"],
         service_areas: data.service_areas || undefined,
         years_experience: data.years_experience || undefined,
         is_verified: data.is_verified || false,
@@ -158,7 +165,6 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Users className="h-6 w-6" />
@@ -168,7 +174,6 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
         </div>
       </div>
 
-      {/* Form */}
       <Card>
         <CardHeader>
           <CardTitle>{isEdit ? "Update Agent Information" : "Create New Agent"}</CardTitle>
@@ -189,7 +194,14 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                     <FormItem>
                       <FormLabel>Agency Name *</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter agency name" {...field} />
+                        <Input
+                          placeholder="Enter agency name"
+                          name={field.name}
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -203,7 +215,14 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                     <FormItem>
                       <FormLabel>License Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter license number" {...field} />
+                        <Input
+                          placeholder="Enter license number"
+                          name={field.name}
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          value={field.value ?? ""}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -248,7 +267,14 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                         <Input
                           type="number"
                           placeholder="Years"
-                          {...field}
+                          name={field.name}
+                          ref={field.ref}
+                          onBlur={field.onBlur}
+                          value={
+                            typeof field.value === "number" && !Number.isNaN(field.value)
+                              ? field.value
+                              : ""
+                          }
                           onChange={(e) =>
                             field.onChange(e.target.value ? Number(e.target.value) : undefined)
                           }
@@ -267,7 +293,14 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                   <FormItem>
                     <FormLabel>Service Areas</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Nairobi, Kiambu, Machakos" {...field} />
+                      <Input
+                        placeholder="e.g., Nairobi, Kiambu, Machakos"
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        value={field.value ?? ""}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -318,18 +351,13 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete your agent profile. This action cannot be
-                          undone.
+                          This action cannot be undone. This will permanently delete the agent
+                          profile.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={handleDelete}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                          Delete Profile
-                        </AlertDialogAction>
+                        <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -340,94 +368,55 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
         </CardContent>
       </Card>
 
-      {/* Current Agent Info */}
-      {isEdit && initialAgent && (
+      {initialAgent && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Current Agent Information
+              <Building2 className="h-5 w-5" />
+              Current Profile Summary
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Building2 className="h-4 w-4" />
-                  Agency Name
-                </label>
-                <p className="text-lg font-medium">{initialAgent.agency_name || "Not provided"}</p>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  Agent Name
-                </label>
-                <p className="text-lg font-medium">
-                  {initialAgent.expand?.user_id?.name ||
-                    initialAgent.expand?.user_id?.email ||
-                    currentUser.name ||
-                    currentUser.email}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  License Number
-                </label>
-                <p className="text-lg">{initialAgent.license_number || "Not provided"}</p>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Star className="h-4 w-4" />
-                  Experience
-                </label>
-                <p className="text-lg">
-                  {initialAgent.years_experience
-                    ? `${initialAgent.years_experience} years`
-                    : "Not provided"}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <Building2 className="h-4 w-4" />
-                  Specialization
-                </label>
-                <p className="text-lg capitalize">
-                  {initialAgent.specialization || "Not specified"}
-                </p>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <MapPin className="h-4 w-4" />
-                  Service Areas
-                </label>
-                <p className="text-lg">{initialAgent.service_areas || "Not provided"}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-2 border-t">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">Agent Profile</Badge>
-                {initialAgent.is_verified && (
-                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Verified
-                  </Badge>
-                )}
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">
+                  <strong>Agency:</strong> {initialAgent.agency_name}
+                </span>
               </div>
-              <div className="text-sm text-muted-foreground">
-                <p>Created: {new Date(initialAgent.created).toLocaleDateString()}</p>
-                <p>Updated: {new Date(initialAgent.updated).toLocaleDateString()}</p>
+              {initialAgent.license_number && (
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">
+                    <strong>License:</strong> {initialAgent.license_number}
+                  </span>
+                </div>
+              )}
+              {initialAgent.specialization && (
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">
+                    <strong>Specialization:</strong>{" "}
+                    <Badge variant="secondary">{initialAgent.specialization}</Badge>
+                  </span>
+                </div>
+              )}
+              {initialAgent.service_areas && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">
+                    <strong>Service Areas:</strong> {initialAgent.service_areas}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">
+                  <strong>Verified:</strong>{" "}
+                  <Badge variant={initialAgent.is_verified ? "default" : "secondary"}>
+                    {initialAgent.is_verified ? "Yes" : "No"}
+                  </Badge>
+                </span>
               </div>
             </div>
           </CardContent>

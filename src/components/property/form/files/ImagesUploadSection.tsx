@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Image as ImageIcon, Plus, Star, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
@@ -15,8 +15,6 @@ interface ImagesUploadSectionProps {
   control: Control<PropertyFormData>;
   existingProperty?: {
     id: string;
-    collectionId: string;
-    collectionName: string;
     images?: string[];
   };
 }
@@ -48,10 +46,8 @@ function getImageSize(item: ImageItem): string {
 }
 
 export function ImagesUploadSection({ control, existingProperty }: ImagesUploadSectionProps) {
-  const { append, remove } = useFieldArray({
-    control,
-    name: "images" as any, // Cast to any since PropertyFormData type might not have images defined yet
-  });
+  // @ts-expect-error - useFieldArray expects object arrays but images is (string | File)[]
+  const { append, remove } = useFieldArray({ control, name: "images" });
 
   const { images } = useWatch({ control });
   const fields: ImageItem[] = images || [];
@@ -110,9 +106,8 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
     }
 
     if (typeof item === "string") {
-      // For existing images, use PocketBase helper
-      if (existingProperty) {
-        return getImageThumbnailUrl(existingProperty, item, "400x300");
+      if (item.startsWith("http://") || item.startsWith("https://")) {
+        return item;
       }
     }
 

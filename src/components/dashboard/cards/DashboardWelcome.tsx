@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import type { UsersResponse } from "@/types/domain-types";
 import { Calendar, Shield, User } from "lucide-react";
 
 interface DashboardWelcomeProps {

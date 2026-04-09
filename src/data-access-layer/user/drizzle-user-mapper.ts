@@ -1,4 +1,4 @@
-import type { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import type { UsersResponse } from "@/types/domain-types";
 import { user as userTable } from "@/db/schema/auth-schema";
 import type { InferSelectModel } from "drizzle-orm";
 
@@ -9,13 +9,8 @@ export function mapUserRowToUsersResponse(row: UserRow): UsersResponse {
   const updated = row.updatedAt ? new Date(row.updatedAt).toISOString() : created;
 
   return {
-    collectionName: "users",
-    collectionId: "",
     id: row.id,
-    username: row.email,
-    tokenKey: "",
     email: row.email,
-    emailVisibility: true,
     verified: row.emailVerified ?? false,
     name: row.name,
     avatar: row.image ?? "",

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { AgentsResponse, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { AgentsResponse, UsersResponse } from "@/types/domain-types";
 import { Building2, CheckCircle, Mail, MapPin, Phone, Star, User } from "lucide-react";
 import Link from "next/link";
 

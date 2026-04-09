@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signupMutationOptions } from "@/data-access-layer/user/auth";
+import { authClient } from "@/lib/auth/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -37,7 +37,15 @@ export function SignupForm(_props: SignupFormProps) {
   });
 
   const { isPending, mutate } = useMutation({
-    ...signupMutationOptions(),
+    mutationFn: async (data: SignupFormData) => {
+      const res = await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      });
+      if (res.error) throw new Error(res.error.message);
+      return res.data;
+    },
     onSuccess: () => {
       toast.success("Account created successfully!");
       router.push("/auth/signin");

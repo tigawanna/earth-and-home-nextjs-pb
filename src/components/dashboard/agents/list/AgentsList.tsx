@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { getServerSideAgents } from "@/data-access-layer/admin/agents-management";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse } from "@/types/domain-types";
 import { Users } from "lucide-react";
 import { Suspense } from "react";
 import { AgentCard } from "./AgentCard";

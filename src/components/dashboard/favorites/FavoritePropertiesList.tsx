@@ -1,53 +1,53 @@
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import { FavoritesResponse, PropertiesResponse } from "@/types/domain-types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { eq } from "@tigawanna/typed-pocketbase";
 import { BasePropertyCard } from "../../property/list/cards/BasePropertyCard";
 
-interface FavoritePropertiesListProps {}
+interface FavoritePropertiesListProps {
+  userId: string;
+}
 
-export function FavoritePropertiesList(_props: FavoritePropertiesListProps) {
-  const user = browserPB.authStore.record!;
+type FavoriteWithProperty = FavoritesResponse & {
+  expand?: {
+    property_id?: PropertiesResponse;
+  };
+};
+
+interface FavoritesApiResponse {
+  success: boolean;
+  result: {
+    items: FavoriteWithProperty[];
+    page: number;
+    perPage: number;
+    totalItems: number;
+    totalPages: number;
+  };
+}
+
+export function FavoritePropertiesList({ userId }: FavoritePropertiesListProps) {
   const { data } = useSuspenseQuery({
-    queryKey: ["favorites", user?.id],
+    queryKey: ["favorites", userId],
     queryFn: async () => {
-      try {
-        const result = await browserPB.from("favorites").getList(1, 100, {
-          filter: eq("user_id", user?.id),
-          sort: "-created",
-          select: {
-            expand: {
-              property_id: true,
-            },
-          },
-        });
-        return {
-          success: true,
-          result,
-        };
-      } catch (error: unknown) {
-        return {
-          success: false,
-          result: null,
-          message: error instanceof Error ? error.message : String(error),
-        };
+      const res = await fetch(`/api/dashboard/favorites?page=1&limit=100&q=`);
+      if (!res.ok) {
+        throw new Error("Failed to fetch favorites");
       }
+      return res.json() as Promise<FavoritesApiResponse>;
     },
   });
 
-  const favorites = data.success ? data?.result?.items : [];
+  const favorites = data.success ? data.result?.items : [];
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center">
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {favorites?.map((property) => {
           if (!property.expand?.property_id) {
-            return null; // Skip if no property data
+            return null;
           }
           return (
             <BasePropertyCard
               key={property.id}
-              property={property.expand?.property_id as any as PropertiesResponse}
+              property={property.expand.property_id}
             />
           );
         })}

@@ -1,25 +1,16 @@
-import { browserPB } from "@/lib/pocketbase/clients/browser-client";
-import { UsersCreate, UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { authClient } from "@/lib/auth/client";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
-import { deleteBrowserCookie } from "@/utils/browser-cookie";
 import { mutationOptions, queryOptions, useQuery } from "@tanstack/react-query";
 
 export function localViewerQueryOptions() {
   return queryOptions({
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async () => {
-      try {
-        const res = browserPB.authStore.record as UsersResponse;
-        return res;
-      } catch {
-        return {
-          record: null,
-          error: {
-            message: "Failed to refresh user session",
-            code: "auth/refresh-failed",
-          },
-        };
+      const session = await authClient.getSession();
+      if (!session.data?.user) {
+        return null;
       }
+      return session.data.user;
     },
   });
 }
@@ -29,12 +20,12 @@ export const useLocalViewer = () => {
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async () => {
       try {
-        const res = browserPB.authStore.record as UsersResponse;
-        if (!res) {
+        const session = await authClient.getSession();
+        if (!session.data?.user) {
           throw new Error("No user is currently authenticated");
         }
         return {
-          viewer: res,
+          viewer: session.data.user,
           success: true,
         };
       } catch {
@@ -49,7 +40,7 @@ export const useLocalViewer = () => {
       }
     },
     meta: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
+      staleTime: 1000 * 60 * 5,
     },
   });
 };
@@ -58,18 +49,8 @@ export function viewerQueryOptions() {
   return queryOptions({
     queryKey: [queryKeyPrefixes.viewer] as const,
     queryFn: async () => {
-      try {
-        const res = browserPB.from("users").authRefresh();
-        return res;
-      } catch {
-        return {
-          record: null,
-          error: {
-            message: "Failed to refresh user session",
-            code: "auth/refresh-failed",
-          },
-        };
-      }
+      const session = await authClient.getSession();
+      return session.data ?? null;
     },
   });
 }
@@ -77,37 +58,8 @@ export function viewerQueryOptions() {
 export function signoutMutationOptions() {
   return mutationOptions({
     mutationFn: async () => {
-      await browserPB.authStore.clear();
-      deleteBrowserCookie("pb_auth");
+      await authClient.signOut();
       return true;
-    },
-    meta: {
-      invalidates: [[queryKeyPrefixes.viewer]],
-    },
-  });
-}
-
-export function signinMutationOptions() {
-  return mutationOptions({
-    mutationFn: async (data: { email: string; password: string }) => {
-      const res = await browserPB.from("users").authWithPassword(data.email, data.password);
-      browserPB.authStore.exportToCookie({
-        httpOnly: false,
-      });
-      return res;
-    },
-    meta: {
-      invalidates: [[queryKeyPrefixes.viewer]],
-    },
-  });
-}
-
-export function signupMutationOptions() {
-  return mutationOptions({
-    mutationFn: async (data: UsersCreate) => {
-      const res = await browserPB.from("users").create({ ...data, emailVisibility: true });
-      browserPB.authStore.exportToCookie();
-      return res;
     },
     meta: {
       invalidates: [[queryKeyPrefixes.viewer]],

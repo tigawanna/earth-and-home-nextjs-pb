@@ -29,7 +29,7 @@ export default function AllPropertiesMessages({
     return <PropertyMessagesError />;
   }
 
-  const messages = data?.result?.items || [];
+  const messages = (Array.isArray(data?.result) ? data.result : []);
 
   if (!messages || messages.length === 0) {
     return <NoPropertyMessages />;

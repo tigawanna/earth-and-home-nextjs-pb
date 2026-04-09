@@ -5,7 +5,7 @@ import {
   SortOrder,
 } from "@/data-access-layer/properties/property-types";
 import { getProperties } from "@/data-access-layer/properties/server-side-property-queries";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
+import { UsersResponse } from "@/types/domain-types";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";

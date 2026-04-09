@@ -2,7 +2,7 @@ import { ServersideSingleProperty } from "@/components/property/single/Serversid
 import { SinglePropertyLoadingFallback } from "@/components/property/single/single-property-query-states";
 import { siteinfo } from "@/config/siteinfo";
 import { getServerSidePropertyById } from "@/data-access-layer/properties/server-side-property-queries";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     (Array.isArray(property.images) && property.images.length > 0 ? property.images[0] : null);
   const imageUrl =
     primaryImage && typeof primaryImage === "string"
-      ? getImageThumbnailUrl(property, primaryImage, "800x600")
+      ? resolvePropertyThumbnailUrl(property, primaryImage, "800x600")
       : null;
 
   const formatPrice = (price: number) => {

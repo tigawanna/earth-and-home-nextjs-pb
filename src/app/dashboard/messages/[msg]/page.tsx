@@ -36,7 +36,7 @@ export default async function SinglePropertyMessagesPage({
             {messageParent.expand?.property_id?.title || "Property Message Thread"}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Message from {messageParent.expand?.user_id?.username} •{" "}
+            Message from {messageParent.expand?.user_id?.name || messageParent.expand?.user_id?.email} •{" "}
             {messageParent.expand?.user_id?.email} •{" "}
             {messageParent.type === "parent" ? " Original Message" : " Reply Thread"}
           </p>

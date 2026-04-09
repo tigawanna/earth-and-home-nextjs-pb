@@ -1,5 +1,5 @@
 import { agents } from "@/db/schema/app-schema";
-import type { AgentsResponse } from "@/lib/pocketbase/types/pb-types";
+import type { AgentsResponse } from "@/types/domain-types";
 import type { InferSelectModel } from "drizzle-orm";
 
 export type AgentRow = InferSelectModel<typeof agents>;
@@ -9,8 +9,6 @@ export function mapAgentRowToAgentsResponse(row: AgentRow): AgentsResponse {
   const updated = row.updatedAt ? new Date(row.updatedAt).toISOString() : created;
 
   return {
-    collectionName: "agents",
-    collectionId: "",
     id: row.id,
     created,
     updated,

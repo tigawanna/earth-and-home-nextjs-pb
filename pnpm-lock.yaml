@@ -104,9 +104,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.85.3
         version: 5.85.3(react@19.1.0)
-      '@tigawanna/typed-pocketbase':
-        specifier: 0.1.6
-        version: 0.1.6(pocketbase@0.26.2)
       autoprefixer:
         specifier: ^10.4.21
         version: 10.4.21(postcss@8.5.6)
@@ -152,9 +149,6 @@ importers:
       nuqs:
         specifier: ^2.4.3
         version: 2.4.3(next@16.2.2(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
-      pocketbase:
-        specifier: ^0.26.2
-        version: 0.26.2
       postcss:
         specifier: ^8.5.6
         version: 8.5.6
@@ -3057,12 +3051,6 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
-  '@tigawanna/typed-pocketbase@0.1.6':
-    resolution: {integrity: sha512-82K7grYGCXSPrNLhfJFd7c0RJzzbUecQ7gU8eUisUPga0JVBEoriYmX2PRnJ2Au5p/QQW1seYhvWZOpdWA7eIg==}
-    hasBin: true
-    peerDependencies:
-      pocketbase: '>=0.23.0 <0.27.0'
-
   '@tsconfig/node18@1.0.3':
     resolution: {integrity: sha512-RbwvSJQsuN9TB04AQbGULYfOGE/RnSFk/FLQ5b0NmDf5Kx2q/lABZbHQPKCO1vZ6Fiwkplu+yb9pGdLy1iGseQ==}
 
@@ -3468,10 +3456,6 @@ packages:
 
   commander@12.1.0:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
-
-  commander@13.1.0:
-    resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
 
   commander@2.20.3:
@@ -4687,9 +4671,6 @@ packages:
 
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
-
-  pocketbase@0.26.2:
-    resolution: {integrity: sha512-WA8EOBc3QnSJh8rJ3iYoi9DmmPOMFIgVfAmIGux7wwruUEIzXgvrO4u0W2htfQjGIcyezJkdZOy5Xmh7SxAftw==}
 
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
@@ -8449,11 +8430,6 @@ snapshots:
       '@tanstack/query-core': 5.85.3
       react: 19.1.0
 
-  '@tigawanna/typed-pocketbase@0.1.6(pocketbase@0.26.2)':
-    dependencies:
-      commander: 13.1.0
-      pocketbase: 0.26.2
-
   '@tsconfig/node18@1.0.3': {}
 
   '@types/better-sqlite3@7.6.13':
@@ -8824,8 +8800,6 @@ snapshots:
   commander@11.1.0: {}
 
   commander@12.1.0: {}
-
-  commander@13.1.0: {}
 
   commander@2.20.3: {}
 
@@ -9856,8 +9830,6 @@ snapshots:
       confbox: 0.2.4
       exsolve: 1.0.8
       pathe: 2.0.3
-
-  pocketbase@0.26.2: {}
 
   postcss-value-parser@4.2.0: {}
 

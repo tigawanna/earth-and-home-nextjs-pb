@@ -2,7 +2,7 @@ import "server-only";
 
 import { properties } from "@/db/schema/app-schema";
 import { getDb } from "@/lib/db/get-db";
-import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import type { PropertiesResponse } from "@/types/domain-types";
 import { mapDrizzleRowToPropertiesResponse } from "./drizzle-property-mapper";
 import { and, desc, eq } from "drizzle-orm";
 
