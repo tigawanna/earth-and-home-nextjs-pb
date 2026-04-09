@@ -1,13 +1,17 @@
 import "server-only";
 
-import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
+import {
+  drizzleGetUserDashboardStats,
+  drizzleGetUserFavoriteProperties,
+  drizzleGetUserMessages,
+} from "./drizzle-user-dashboard";
 
 export interface UserDashboardStats {
   totalFavorites: number;
   recentFavorites: {
     id: string;
-    property: PropertiesResponse[];
+    property: PropertiesResponse;
     created: string;
   }[];
 }
@@ -27,40 +31,14 @@ export async function getUserDashboardStats({ userId }: QueryProps) {
   }
 
   try {
-    const client = await createServerClient();
-
-    // Get total favorites count
-    const totalFavoritesResult = await client.from("favorites").getList(1, 1, {
-      filter: `user_id = "${userId}"`,
-    });
-
-    // Get recent favorites with property details (limit to 5 most recent)
-    const recentFavoritesResult = await client.from("favorites").getList(1, 5, {
-      filter: `user_id = "${userId}"`,
-      sort: "-created",
-      select: {
-        expand: {
-          property_id: true,
-        },
-      },
-    });
-
-    const recentFavorites = recentFavoritesResult.items
-      .map((favorite) => {
-        const property = favorite.expand?.property_id;
-        if (!property) return null;
-
-        return {
-          id: favorite.id,
-          property,
-          created: favorite.created,
-        };
-      })
-      .filter((item): item is NonNullable<typeof item> => item !== null);
-
+    const { totalFavorites, recentFavorites } = await drizzleGetUserDashboardStats(userId);
     return {
-      totalFavorites: totalFavoritesResult.totalItems,
-      recentFavorites,
+      totalFavorites,
+      recentFavorites: recentFavorites.map((r) => ({
+        id: r.id,
+        property: r.property,
+        created: r.created,
+      })),
     };
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching user dashboard stats:", error);
@@ -82,37 +60,7 @@ export async function getUserFavoriteProperties({ userId, page = 1, limit = 10 }
   }
 
   try {
-    const client = await createServerClient();
-
-    const result = await client.from("favorites").getList(page, limit, {
-      filter: `user_id = "${userId}"`,
-      sort: "-created",
-      select: {
-        expand: {
-          property_id: true,
-        },
-      },
-    });
-
-    const items = result.items
-      .map((favorite) => {
-        const property = favorite.expand?.property_id;
-        if (!property) return null;
-
-        return {
-          id: favorite.id,
-          property,
-          created: favorite.created,
-        };
-      })
-      .filter((item): item is NonNullable<typeof item> => item !== null);
-
-    return {
-      items,
-      totalItems: result.totalItems,
-      totalPages: result.totalPages,
-      page: result.page,
-    };
+    return await drizzleGetUserFavoriteProperties(userId, page, limit);
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching user favorite properties:", error);
     return {
@@ -130,15 +78,7 @@ export async function getUserMessages({ userId, limit = 50, page = 1 }: QueryPro
   }
 
   try {
-    const client = await createServerClient();
-
-    const result = await client.from("property_messages").getList(page, limit, {
-      filter: `user_id = "${userId}"`,
-      sort: "-created",
-      expand: "property_id",
-    });
-
-    return result.items;
+    return await drizzleGetUserMessages(userId, limit, page);
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching user messages:", error);
     return [];

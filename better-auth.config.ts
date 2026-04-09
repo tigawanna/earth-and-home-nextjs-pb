@@ -13,9 +13,9 @@ const db = drizzle(client);
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET ?? "01234567890123456789012345678901",
-  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+  baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3010",
   trustedOrigins: [
-    process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+    process.env.BETTER_AUTH_URL ?? "http://localhost:3010",
   ],
   database: drizzleAdapter(db, {
     provider: "sqlite",

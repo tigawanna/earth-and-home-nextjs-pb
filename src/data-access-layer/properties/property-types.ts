@@ -5,6 +5,13 @@ import {
   UsersResponse,
 } from "@/lib/pocketbase/types/pb-types";
 
+export type FavoriteWithExpand = FavoritesResponse & {
+  expand?: {
+    property_id?: PropertiesResponse;
+    user_id?: UsersResponse;
+  };
+};
+
 export type PropertyWithFavorites = PropertiesResponse & {
   expand?:
     | {

@@ -1,42 +1,22 @@
 import "server-only";
 
-import { createServerClient } from "@/lib/pocketbase/clients/server-client";
+import { getBetterAuthSession } from "@/lib/auth/get-session";
 import {
-  baseGetPaginatedProperties,
-  baseGetPaginatedUsers,
-  baseGetPropertyStats,
-} from "../properties/base-property-queries";
-
-// ====================================================
-// DASHBOARD STATS & OVERVIEW DATA
-// ====================================================
+  countPropertyMessagesFromD1,
+  getPaginatedUsersFromD1,
+  getPropertyStatsFromD1,
+  getRecentActivitiesFromD1,
+} from "../properties/drizzle-property-queries";
 
 export async function getAdminDashboardStats() {
   try {
-    const client = await createServerClient();
+    const usersResult = await getPaginatedUsersFromD1({ limit: 50, page: 1 });
 
-    // Get all users
-    const usersResult = await baseGetPaginatedUsers({ client, limit: 50 });
+    const propertiesResult = await getPropertyStatsFromD1();
 
-    // Get favorites count (commented out to reduce clutter)
-    // const favoritesCollection = client.from("favorites");
-    // const favoritesResult = await favoritesCollection.getList(1, 1);
+    const parentMessagesResult = await countPropertyMessagesFromD1("parent");
+    const allMessagesResult = await countPropertyMessagesFromD1("all");
 
-    // Get all properties for stats calculation
-    const propertiesResult = await baseGetPropertyStats({ client });
-
-    // Get messages stats
-    const messagesCollection = client.from("property_messages");
-
-    // Get total parent messages (messages with type="parent" and no replies)
-    const parentMessagesResult = await messagesCollection.getList(1, 1, {
-      filter: 'type = "parent"',
-    });
-
-    // Get all messages count
-    const allMessagesResult = await messagesCollection.getList(1, 1);
-
-    // Calculate property stats
     const propertyStats = {
       total: propertiesResult.result?.recent?.totalItems || 0,
       active: propertiesResult.result?.active || 0,
@@ -46,24 +26,16 @@ export async function getAdminDashboardStats() {
       featured: propertiesResult.result?.featured || 0,
     };
 
-    // Calculate user stats
     const userStats = {
       total: usersResult?.result?.totalItems || 0,
     };
 
-    // Calculate favorites stats (commented out to reduce clutter)
-    // const favoritesStats = {
-    //   total: favoritesResult.totalItems || 0,
-    // };
-
-    // Calculate messages stats
     const messagesStats = {
-      total: allMessagesResult.totalItems || 0,
-      parentMessages: parentMessagesResult.totalItems || 0, // Messages with no replies
-      unrepliedMessages: parentMessagesResult.totalItems || 0, // Same as parent messages in this context
+      total: allMessagesResult || 0,
+      parentMessages: parentMessagesResult || 0,
+      unrepliedMessages: parentMessagesResult || 0,
     };
 
-    // Get recent activities (last 10 properties and users)
     const recentProperties = propertiesResult.result?.recent?.items || [];
 
     const recentUsers = usersResult?.result?.items;
@@ -73,12 +45,11 @@ export async function getAdminDashboardStats() {
       data: {
         propertyStats,
         userStats,
-        // favoritesStats, // commented out to reduce clutter
         messagesStats,
         recentProperties,
         recentUsers,
-        totalRevenue: 0, // TODO: Calculate from actual revenue data
-        monthlyGrowth: 0, // TODO: Calculate from historical data
+        totalRevenue: 0,
+        monthlyGrowth: 0,
       },
     };
   } catch (error) {
@@ -91,23 +62,17 @@ export async function getAdminDashboardStats() {
   }
 }
 
-// ====================================================
-// QUICK ACTIONS DATA
-// ====================================================
-
 export async function getQuickActionsData() {
   try {
-    const client = await createServerClient();
-
-    // Get current user to check admin status
-    const authData = client.authStore;
-    const isAdmin = authData.record?.role === "admin";
+    const session = await getBetterAuthSession();
+    const u = session?.user;
+    const isAdmin = u?.role === "admin";
 
     return {
       success: true,
       data: {
         isAdmin,
-        userId: authData.record?.id,
+        userId: u?.id ?? null,
       },
     };
   } catch (error) {
@@ -123,58 +88,9 @@ export async function getQuickActionsData() {
   }
 }
 
-// ====================================================
-// RECENT ACTIVITIES DATA
-// ====================================================
-
 export async function getRecentActivities() {
   try {
-    const client = await createServerClient();
-
-    // Get recent properties (last 10)
-    const propertiesResult = await baseGetPaginatedProperties({
-      client,
-      sortBy: "created",
-      sortOrder: "desc",
-      page: 1,
-      limit: 10,
-    });
-
-    // Get recent favorites
-    const favoritesCollection = client.from("favorites");
-    const sort = favoritesCollection.createSort("-created");
-    const favoritesResult = await favoritesCollection.getList(1, 10, {
-      sort,
-      select: {
-        expand: {
-          property_id: true,
-          user_id: true,
-        },
-      },
-    });
-
-    // Get recent messages (last 10)
-    const messagesCollection = client.from("property_messages");
-    const messagesSort = messagesCollection.createSort("-created");
-    const messagesResult = await messagesCollection.getList(1, 10, {
-      sort: messagesSort,
-      select: {
-        expand: {
-          property_id: true,
-          user_id: true,
-          parent: true,
-        },
-      },
-    });
-
-    return {
-      success: true,
-      data: {
-        recentProperties: propertiesResult.properties || [],
-        recentFavorites: favoritesResult.items || [],
-        recentMessages: messagesResult.items || [],
-      },
-    };
+    return await getRecentActivitiesFromD1();
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching recent activities:", error);
     return {

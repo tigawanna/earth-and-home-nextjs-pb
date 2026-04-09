@@ -9,7 +9,10 @@ interface FavoritesStatsProps {}
 
 export function FavoritesStats(_props: FavoritesStatsProps) {
   const { data, isPending } = useSuspenseQuery(dashboardFavoritesQueryOptions());
-  const total = data?.result?.totalItems ?? 0;
+  const total =
+    data != null && typeof data === "object" && "result" in data && data.result != null
+      ? (data.result as { totalItems: number }).totalItems
+      : 0;
 
   return (
     <Card

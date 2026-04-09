@@ -54,10 +54,12 @@ export function SignupForm(_props: SignupFormProps) {
   return (
     <Form {...form}>
       <form
+        id="auth-signup-form"
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
         role="form"
         aria-label="Sign up form"
+        autoComplete="on"
       >
         <FormField
           control={form.control}
@@ -67,10 +69,10 @@ export function SignupForm(_props: SignupFormProps) {
               <FormLabel>Full Name</FormLabel>
               <FormControl>
                 <Input
+                  {...field}
                   type="text"
                   placeholder="Enter your full name"
-                  autoComplete="name"
-                  {...field}
+                  autoComplete="section-signup name"
                 />
               </FormControl>
               <FormMessage />
@@ -85,10 +87,11 @@ export function SignupForm(_props: SignupFormProps) {
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
+                  {...field}
                   type="email"
                   placeholder="Enter your email"
-                  autoComplete="email"
-                  {...field}
+                  inputMode="email"
+                  autoComplete="section-signup username"
                 />
               </FormControl>
               <FormMessage />
@@ -104,10 +107,10 @@ export function SignupForm(_props: SignupFormProps) {
               <FormControl>
                 <div className="relative">
                   <Input
+                    {...field}
                     type={showPassword ? "text" : "password"}
                     placeholder="Create a password"
-                    autoComplete="new-password"
-                    {...field}
+                    autoComplete="section-signup new-password"
                   />
                   <button
                     type="button"
@@ -132,10 +135,10 @@ export function SignupForm(_props: SignupFormProps) {
               <FormControl>
                 <div className="relative">
                   <Input
+                    {...field}
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm your password"
-                    autoComplete="new-password"
-                    {...field}
+                    autoComplete="section-signup new-password"
                   />
                   <button
                     type="button"

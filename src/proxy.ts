@@ -1,9 +1,7 @@
-import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { createServerClient } from "./lib/pocketbase/clients/server-client";
-import { UsersResponse } from "./lib/pocketbase/types/pb-types";
-import { deleteNextjsPocketbaseCookie } from "./lib/pocketbase/utils/next-cookies";
+import { getBetterAuthSession } from "@/lib/auth/get-session";
+import { mapSessionUserToUsersResponse } from "@/data-access-layer/user/map-session-user";
 
 const adminOnlyPatterns: RegExp[] = [
   /^\/dashboard\/properties\/add$/,
@@ -12,30 +10,18 @@ const adminOnlyPatterns: RegExp[] = [
 ];
 
 export async function proxy(request: NextRequest) {
-  const cookieStore = await cookies();
-  const client = await createServerClient(cookieStore);
   const pathname = new URL(request.url).pathname;
-  try {
-    if (client.authStore.isValid) {
-      await client.from("users").authRefresh();
-    }
-  } catch {
-    console.log("error happende = =>\n", "Failed to refresh user session, clearing auth store\n\n");
-    client.authStore.clear();
-  }
-
-  const user = client.authStore.record as UsersResponse;
+  const session = await getBetterAuthSession();
+  const user = session?.user ? mapSessionUserToUsersResponse(session.user) : null;
 
   if (!user) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
-  if (user?.is_banned) {
-    console.log("User is banned:", user.id, "\n\n");
-    await deleteNextjsPocketbaseCookie();
+  if (user.is_banned) {
     return NextResponse.redirect(new URL("/banned", request.url));
   }
   if (adminOnlyPatterns.some((re) => re.test(pathname))) {
-    const isAdmin = !!user?.is_admin;
+    const isAdmin = !!user.is_admin;
     if (!isAdmin) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }

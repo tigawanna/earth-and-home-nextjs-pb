@@ -9,7 +9,10 @@ interface UsersStatsProps {}
 
 export function UsersStats(_props: UsersStatsProps) {
   const { data, isPending } = useSuspenseQuery(dashboardUsersQueryOptions());
-  const total = data?.result?.totalItems ?? 0;
+  const total =
+    data != null && typeof data === "object" && "result" in data && data.result != null
+      ? (data.result as { totalItems: number }).totalItems
+      : 0;
 
   return (
     <Card

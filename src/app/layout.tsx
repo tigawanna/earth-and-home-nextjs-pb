@@ -88,14 +88,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Preconnect to important external domains */}
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />
-
-        {/* Preload critical CSS */}
-        <link rel="preload" href="/globals.css" as="style" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <PerformanceMonitor />

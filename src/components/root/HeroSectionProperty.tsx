@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { getServerSideFeaturedProperties } from "@/data-access-layer/properties/server-side-property-queries";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Bath, Bed, HomeIcon, MapPin, Square } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,7 +45,7 @@ export async function HeroSectionProperty({
         : null);
 
     if (primaryImageFilename) {
-      imageUrl = getImageThumbnailUrl(featuredProperty, primaryImageFilename, "1200x800");
+      imageUrl = resolvePropertyThumbnailUrl(featuredProperty, primaryImageFilename, "1200x800");
     }
   }
 

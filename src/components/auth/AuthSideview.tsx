@@ -26,6 +26,7 @@ export function AuthSideview(_props: AuthSideviewProps) {
               className="w-24 h-24 mx-auto drop-shadow-lg"
               width={96}
               height={96}
+              loading="eager"
             />
           </div>
         </div>

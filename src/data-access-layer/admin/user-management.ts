@@ -1,12 +1,10 @@
 import "server-only";
 
-import { createServerClient } from "@/lib/pocketbase/clients/server-client";
-import { UsersResponse } from "@/lib/pocketbase/types/pb-types";
-import { Sort } from "@tigawanna/typed-pocketbase";
-import { baseGetPaginatedUsers } from "../properties/base-property-queries";
-// ====================================================
-// GET USERS WITH SEARCH AND PAGINATION
-// ====================================================
+import { user as userTable } from "@/db/schema/auth-schema";
+import { getDb } from "@/lib/db/get-db";
+import { getBetterAuthSession } from "@/lib/auth/get-session";
+import { getPaginatedUsersFromD1 } from "../properties/drizzle-property-queries";
+import { eq } from "drizzle-orm";
 
 export async function getServerSideUsers({
   q = "",
@@ -22,30 +20,7 @@ export async function getServerSideUsers({
   sortOrder?: "asc" | "desc";
 } = {}) {
   try {
-    const client = await createServerClient();
-
-    // If there's a search query, use a custom query
-    if (q) {
-      const usersCollection = client.from("users");
-      const filter = usersCollection.createFilter(`name ~ "${q}" || email ~ "${q}"`);
-
-      const sort = usersCollection.createSort(
-        `${sortOrder === "desc" ? "-" : "+"}${sortBy}` as Sort<UsersResponse>,
-      );
-
-      const result = await usersCollection.getList(page, limit, {
-        filter,
-        sort,
-      });
-
-      return {
-        success: true,
-        result,
-      };
-    }
-
-    // Use the base function for standard pagination
-    return await baseGetPaginatedUsers({ client, page, limit });
+    return await getPaginatedUsersFromD1({ q, page, limit, sortBy, sortOrder });
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching users:", error);
     return {
@@ -55,10 +30,6 @@ export async function getServerSideUsers({
     };
   }
 }
-
-// ====================================================
-// USER MANAGEMENT ACTIONS
-// ====================================================
 
 export async function updateUserStatus({
   userId,
@@ -72,16 +43,24 @@ export async function updateUserStatus({
   };
 }) {
   try {
-    const client = await createServerClient();
-
-    // Check if current user is admin
-    const currentUser = client.authStore.record;
-    if (!currentUser?.is_admin) {
+    const session = await getBetterAuthSession();
+    if (session?.user?.role !== "admin") {
       throw new Error("Unauthorized: Admin access required");
     }
 
-    const usersCollection = client.from("users");
-    await usersCollection.update(userId, updates);
+    const db = await getDb();
+    const patch: Partial<typeof userTable.$inferInsert> = {};
+    if (updates.is_banned !== undefined) {
+      patch.banned = updates.is_banned;
+    }
+    if (updates.is_admin !== undefined) {
+      patch.role = updates.is_admin ? "admin" : "user";
+    }
+    if (updates.verified !== undefined) {
+      patch.emailVerified = updates.verified;
+    }
+
+    await db.update(userTable).set(patch).where(eq(userTable.id, userId));
 
     return {
       success: true,
@@ -98,21 +77,17 @@ export async function updateUserStatus({
 
 export async function deleteUser(userId: string) {
   try {
-    const client = await createServerClient();
-
-    // Check if current user is admin
-    const currentUser = client.authStore.record;
-    if (!currentUser?.is_admin) {
+    const session = await getBetterAuthSession();
+    if (session?.user?.role !== "admin") {
       throw new Error("Unauthorized: Admin access required");
     }
 
-    // Prevent admin from deleting themselves
-    if (currentUser.id === userId) {
+    if (session.user.id === userId) {
       throw new Error("Cannot delete your own account");
     }
 
-    const usersCollection = client.from("users");
-    await usersCollection.delete(userId);
+    const db = await getDb();
+    await db.delete(userTable).where(eq(userTable.id, userId));
 
     return {
       success: true,

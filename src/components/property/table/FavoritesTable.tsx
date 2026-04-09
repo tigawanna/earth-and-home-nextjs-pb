@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table";
 import { dashboardFavoritesQueryOptions } from "@/data-access-layer/properties/client-side-property-queries";
 import { toggleFavorite } from "@/data-access-layer/properties/favorite-mutations";
+import type { FavoriteWithExpand } from "@/data-access-layer/properties/property-types";
 import { getNuqsQueryParamKeys } from "@/lib/nuqs/get-keys";
 import {
   FavoritesResponse,
@@ -47,7 +48,7 @@ export function FavoritesTable(_props: FavoritesTableProps) {
     }),
   );
 
-  async function handleRemoveFavorite(fav: FavoritesResponse) {
+  async function handleRemoveFavorite(fav: FavoriteWithExpand) {
     const propertyId =
       typeof fav.property_id === "string" ? fav.property_id : (fav.property_id as any)?.id;
     const userId = typeof fav.user_id === "string" ? fav.user_id : (fav.user_id as any)?.id;
@@ -65,7 +66,8 @@ export function FavoritesTable(_props: FavoritesTableProps) {
   if (isPending) {
     return <TablePending />;
   }
-  const favorites = data?.result?.items || [];
+  const favorites =
+    (data && "result" in data && data.result?.items ? data.result.items : []) as FavoriteWithExpand[];
   if (favorites.length === 0) {
     return <TableEmpty querykeys={getNuqsQueryParamKeys(queryStates)} />;
   }

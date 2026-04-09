@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { dashboardPropertyQueryOptions } from "@/data-access-layer/properties/client-side-property-queries";
+import type { PropertiesResponse } from "@/lib/pocketbase/types/pb-types";
 import { cn } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
@@ -57,7 +58,7 @@ export function RecentPropertiesTable({ limit = 10, className }: RecentPropertie
                 </tr>
               )}
               {!isPending &&
-                items.map((p) => {
+                items.map((p: PropertiesResponse) => {
                   // Assuming structure has fields: title, location(city?), price, created
                   const created = p.created
                     ? formatDistanceToNow(new Date(p.created), { addSuffix: true })

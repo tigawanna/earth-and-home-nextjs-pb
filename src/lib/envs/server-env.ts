@@ -6,7 +6,7 @@ const serverEnvSchema = z.object({
     .string()
     .min(32)
     .default("dev-only-better-auth-secret-min-32-chars-long"),
-  BETTER_AUTH_URL: z.url().default("http://localhost:3000"),
+  BETTER_AUTH_URL: z.url().default("http://localhost:3010"),
   GOOGLE_CLIENT_ID: z.string().default(""),
   GOOGLE_CLIENT_SECRET: z.string().default(""),
   CLOUDFLARE_ACCOUNT_ID: z.string().default(""),

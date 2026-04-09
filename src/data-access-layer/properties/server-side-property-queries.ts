@@ -1,18 +1,13 @@
 import "server-only";
 
-import { createServerClient } from "@/lib/pocketbase/clients/server-client";
 import {
-  baseGetFavoriteProperties,
-  baseGetFeaturedProperties,
-  baseGetPaginatedProperties,
-  baseGetPropertyById,
-  baseGetSearchableFavorites,
-} from "./base-property-queries";
+  getFavoritePropertiesFromD1,
+  getPaginatedPropertiesFromD1,
+  getPropertyByIdFromD1,
+  getSearchableFavoritesFromD1,
+} from "./drizzle-property-queries";
+import { getFeaturedPropertiesFromD1 } from "./drizzle-featured-queries";
 import { PropertyFilters, PropertySortBy, SortOrder } from "./property-types";
-
-// ====================================================
-// GET PROPERTIES (with filtering, sorting, pagination)
-// ====================================================
 
 export async function getProperties({
   filters = {},
@@ -20,7 +15,7 @@ export async function getProperties({
   sortOrder = "desc",
   page = 1,
   limit = 20,
-  userId,
+  userId: _userId,
   agentId,
 }: {
   filters?: PropertyFilters;
@@ -28,24 +23,18 @@ export async function getProperties({
   sortOrder?: SortOrder;
   page?: number;
   limit?: number;
-  userId?: string; // For checking favorites
-  agentId?: string; // For filtering by agent
+  userId?: string;
+  agentId?: string;
 } = {}) {
   try {
-    const client = await createServerClient();
-
-    const result = await baseGetPaginatedProperties({
-      client,
+    return await getPaginatedPropertiesFromD1({
       filters,
       sortBy,
       sortOrder,
       page,
       limit,
-      userId,
       agentId,
     });
-
-    return result;
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching properties:", error);
     return {
@@ -64,23 +53,20 @@ export async function getProperties({
   }
 }
 
-// ====================================================
-// GET SINGLE PROPERTY
-// ====================================================
-
 export async function getServerSidePropertyById(identifier: string, _userId?: string) {
   try {
-    const client = await createServerClient();
-
-    const { result, success, message } = await baseGetPropertyById({
-      client,
-      propertyId: identifier,
-    });
-
+    const r = await getPropertyByIdFromD1(identifier);
+    if (!r.success) {
+      return {
+        success: false,
+        message: r.message,
+        property: null,
+      };
+    }
     return {
-      success,
-      property: result,
-      message,
+      success: true,
+      property: r.result,
+      message: undefined,
     };
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching property:", error);
@@ -102,8 +88,22 @@ export async function getServerSideFavoriteProperties({
   limit?: number;
 }) {
   try {
-    const client = await createServerClient();
-    return await baseGetFavoriteProperties({ client, userId, page, limit });
+    if (!userId) {
+      return {
+        success: false,
+        message: "User id required",
+        properties: [],
+        pagination: {
+          page: 1,
+          limit,
+          totalCount: 0,
+          totalPages: 0,
+          hasNextPage: false,
+          hasPrevPage: false,
+        },
+      };
+    }
+    return await getFavoritePropertiesFromD1({ userId, page, limit });
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching favorite properties:", error);
     return {
@@ -122,10 +122,6 @@ export async function getServerSideFavoriteProperties({
   }
 }
 
-// ====================================================
-// GET SEARCHABLE FAVORITES (for dashboard)
-// ====================================================
-
 export async function getServerSideSearchableFavorites({
   q = "",
   page = 1,
@@ -136,8 +132,7 @@ export async function getServerSideSearchableFavorites({
   limit?: number;
 }) {
   try {
-    const client = await createServerClient();
-    return await baseGetSearchableFavorites({ client, q, page, limit });
+    return await getSearchableFavoritesFromD1({ q, page, limit });
   } catch (error) {
     console.log("error happende = =>\n", "Error fetching searchable favorites:", error);
     return {
@@ -148,18 +143,13 @@ export async function getServerSideSearchableFavorites({
   }
 }
 
-// ====================================================
-// GET FEATURED PROPERTIES (server-side wrapper)
-// ====================================================
-
 export async function getServerSideFeaturedProperties({
   limit = 12,
 }: {
   limit?: number;
 } = {}) {
   try {
-    const client = await createServerClient();
-    return await baseGetFeaturedProperties({ client, limit });
+    return await getFeaturedPropertiesFromD1(limit);
   } catch (error) {
     console.log("Error fetching featured properties:", error);
     return {

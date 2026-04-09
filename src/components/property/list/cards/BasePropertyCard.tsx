@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
-import { getImageThumbnailUrl } from "@/lib/pocketbase/utils/files";
+import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Calendar, Home, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -68,7 +68,7 @@ export function BasePropertyCard({
       : null);
 
   const imageUrl = primaryImageFilename
-    ? getImageThumbnailUrl(property, primaryImageFilename, "400x300")
+    ? resolvePropertyThumbnailUrl(property, primaryImageFilename, "400x300")
     : null;
 
   // Get main price from the unified price field (previously sale_price/rental_price are now merged into price)

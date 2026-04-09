@@ -3,7 +3,7 @@ import {
   SinglePropertyLoadingFallback,
   SinglePropertyNotFound,
 } from "@/components/property/single/single-property-query-states";
-import { baseGetPropertyById } from "@/data-access-layer/properties/base-property-queries";
+import { getServerSidePropertyById } from "@/data-access-layer/properties/server-side-property-queries";
 import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -14,7 +14,7 @@ interface EditPropertyPageProps {
 
 export default async function EditPropertyPage({ params }: EditPropertyPageProps) {
   const { id } = await params;
-  const { user, agent, client } = await getServerSideUserwithAgent();
+  const { user, agent } = await getServerSideUserwithAgent();
   if (!user) {
     throw redirect("/auth/signin");
   }
@@ -22,11 +22,7 @@ export default async function EditPropertyPage({ params }: EditPropertyPageProps
     throw redirect("/dashboard/agents/new");
   }
 
-  const { result: property } = await baseGetPropertyById({
-    client,
-    propertyId: id,
-    userId: user.id,
-  });
+  const { property } = await getServerSidePropertyById(id, user.id);
 
   if (!property) {
     return <SinglePropertyNotFound />;
