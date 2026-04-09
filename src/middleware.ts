@@ -7,8 +7,15 @@ const adminOnlyPatterns: RegExp[] = [
   /^\/dashboard\/properties\/[^/]+\/edit$/,
 ];
 
+function getCookie(request: NextRequest, name: string): string | undefined {
+  return (
+    request.cookies.get(`__Secure-${name}`)?.value ??
+    request.cookies.get(name)?.value
+  );
+}
+
 export function middleware(request: NextRequest) {
-  const sessionToken = request.cookies.get("better-auth.session_token")?.value;
+  const sessionToken = getCookie(request, "better-auth.session_token");
 
   if (!sessionToken) {
     return NextResponse.redirect(new URL("/auth/signin", request.url));
@@ -16,7 +23,7 @@ export function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   if (adminOnlyPatterns.some((re) => re.test(pathname))) {
-    const sessionData = request.cookies.get("better-auth.session_data")?.value;
+    const sessionData = getCookie(request, "better-auth.session_data");
     if (sessionData) {
       try {
         const decoded = JSON.parse(atob(sessionData.split(".")[0]));
