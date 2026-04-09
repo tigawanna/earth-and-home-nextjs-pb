@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, MapPin, Search, Settings } from "lucide-react";
+import { Heart, MapPin, Search } from "lucide-react";
 import Link from "next/link";
 
 export function QuickActionsCard() {
@@ -24,13 +24,6 @@ export function QuickActionsCard() {
       description: "Explore different areas",
       icon: MapPin,
       href: "/properties?view=map",
-      variant: "outline" as const,
-    },
-    {
-      title: "Account Settings",
-      description: "Manage your profile",
-      icon: Settings,
-      href: "/dashboard/settings",
       variant: "outline" as const,
     },
   ];

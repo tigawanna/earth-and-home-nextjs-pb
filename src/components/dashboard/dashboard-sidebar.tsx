@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, ChevronDown, LogOut, Moon, Settings, Sun, User } from "lucide-react";
+import { Building2, ChevronDown, LogOut, Moon, Sun, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -197,13 +197,6 @@ function UserFooterMenu({ user }: { user: UsersResponse }) {
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuItem asChild>
-              <Link href="/dashboard/settings">
-                <Settings className="mr-2 h-4 w-4" />
-                Account Settings
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link href={`/dashboard/agents/${user.id}`}>
                 <User className="mr-2 h-4 w-4" />

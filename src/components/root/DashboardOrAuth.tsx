@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signoutMutationOptions, useLocalViewer } from "@/data-access-layer/user/auth";
 import { useMutation } from "@tanstack/react-query";
-import { LayoutDashboard, LogOut, Settings } from "lucide-react";
+import { LayoutDashboard, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -72,12 +72,6 @@ export default function DashboardOrAuth({ className }: DashboardOrAuthProps) {
             <Link href="/dashboard">
               <LayoutDashboard className="mr-2 h-4 w-4" />
               Dashboard
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings">
-              <Settings className="mr-2 h-4 w-4" />
-              Settings
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

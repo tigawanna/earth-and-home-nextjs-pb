@@ -4,7 +4,6 @@ import {
   Home,
   MessageSquare,
   Plus,
-  Settings,
   User,
   Users,
 } from "lucide-react";
@@ -16,7 +15,6 @@ export const navigationRoutes: SidebarNavItem[] = [
   { title: "Agents", href: "/dashboard/agents", icon: User },
   { title: "Favorites", href: "/dashboard/favorites", icon: Heart },
   { title: "Messages", href: "/dashboard/messages", icon: MessageSquare },
-  { title: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export const adminRoutes: SidebarNavItem[] = [

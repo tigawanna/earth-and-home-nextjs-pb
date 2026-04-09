@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Building2, Heart, Plus, Settings, Shield, UserCheck, Users } from "lucide-react";
+import { Building2, Heart, Plus, Shield, Zap, Users } from "lucide-react";
 import Link from "next/link";
 
 interface AdminActionsCardProps {
@@ -13,7 +13,7 @@ export function AdminActionsCard({ isAdmin, className }: AdminActionsCardProps) 
     <Card className={`${className || ""}`}>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
-          <Settings className="h-4 w-4" />
+          <Zap className="h-4 w-4" />
           Quick Actions
         </CardTitle>
       </CardHeader>
@@ -57,18 +57,6 @@ export function AdminActionsCard({ isAdmin, className }: AdminActionsCardProps) 
                   <Link href="/dashboard/users">
                     <Users className="mr-2 h-3.5 w-3.5" />
                     Manage Users
-                  </Link>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  asChild
-                  size="sm"
-                  className="w-full justify-start text-xs"
-                >
-                  <Link href="/dashboard/settings">
-                    <UserCheck className="mr-2 h-3.5 w-3.5" />
-                    User Verification
                   </Link>
                 </Button>
 
