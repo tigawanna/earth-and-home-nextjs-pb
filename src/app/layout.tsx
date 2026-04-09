@@ -1,5 +1,4 @@
 import "./globals.css";
-import { Footer } from "@/components/root/Footer";
 import { PerformanceMonitor } from "@/components/shared/PerformanceMonitor";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -102,7 +101,6 @@ export default function RootLayout({
               <div>
                 <div className="fixed inset-0 bg-gradient-to-b from-background to-background/80 z-[-1]" />
                 {children}
-                <Footer />
               </div>
               <Toaster />
             </ThemeProvider>

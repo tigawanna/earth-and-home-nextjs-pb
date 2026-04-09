@@ -1,19 +1,9 @@
 "use client";
 
-import {
-  Building2,
-  ChevronDown,
-  Heart,
-  Home,
-  LogOut,
-  MessageSquare,
-  Plus,
-  Settings,
-  User,
-  Users,
-} from "lucide-react";
+import { Building2, ChevronDown, LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -28,234 +18,206 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar";
-
-import { ModeToggle } from "@/components/theme/theme-toggle";
 import { signoutMutationOptions } from "@/data-access-layer/user/auth";
 import { UsersResponse } from "@/types/domain-types";
 import { useMutation } from "@tanstack/react-query";
-
-// Menu items for regular users
-const userMenuItems = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "Properties",
-    url: "/dashboard/properties",
-    icon: Building2,
-  },
-  {
-    title: "Property Agents",
-    url: "/dashboard/agents",
-    icon: User,
-  },
-  {
-    title: "Favorites",
-    url: "/dashboard/favorites",
-    icon: Heart,
-  },
-  {
-    title: "My Messages",
-    url: "/dashboard/messages",
-    icon: MessageSquare,
-  },
-  {
-    title: "Settings",
-    url: "/dashboard/settings",
-    icon: Settings,
-  },
-];
-
-const adminRoutes = [
-  {
-    title: "User Management",
-    url: "/dashboard/users",
-    icon: Users,
-  },
-  {
-    title: "Agent Management",
-    url: "/dashboard/agents",
-    icon: Building2,
-  },
-  {
-    title: "Add Property",
-    url: "/dashboard/properties/add",
-    icon: Plus,
-  },
-];
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  image?: string;
-  role?: string;
-}
+import { SidebarNavLinks } from "./sidebar/sidebar-nav-links";
+import { adminRoutes, navigationRoutes, quickLinks } from "./sidebar/sidebar-routes";
 
 export function DashboardSidebar({ user }: { user: UsersResponse }) {
-  const pathname = usePathname();
-  const router = useRouter();
+  return (
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <DashboardSidebarHeader />
+      </SidebarHeader>
 
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-sm font-semibold tracking-wide">
+            Navigation
+          </SidebarGroupLabel>
+          <SidebarNavLinks links={navigationRoutes} />
+        </SidebarGroup>
+
+        {user.is_admin && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-sm font-semibold tracking-wide">
+              Admin
+            </SidebarGroupLabel>
+            <SidebarNavLinks links={adminRoutes} />
+          </SidebarGroup>
+        )}
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-sm font-semibold tracking-wide">
+            Quick Links
+          </SidebarGroupLabel>
+          <SidebarNavLinks links={quickLinks} />
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter className="pb-3">
+        <ThemeToggleButton />
+        <UserFooterMenu user={user} />
+      </SidebarFooter>
+
+      <SidebarRail />
+    </Sidebar>
+  );
+}
+
+function DashboardSidebarHeader() {
+  const { state, isMobile, setOpenMobile } = useSidebar();
+  const showLabel = state === "expanded" || isMobile;
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          size="lg"
+          asChild
+          onClick={() => setOpenMobile(false)}
+        >
+          <Link href="/dashboard">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Building2 className="size-4" />
+            </div>
+            {showLabel && (
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">Earth & Home</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  Property Dashboard
+                </span>
+              </div>
+            )}
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+}
+
+function ThemeToggleButton() {
+  const { theme, setTheme } = useTheme();
+  const { state, isMobile } = useSidebar();
+  const showLabel = state === "expanded" || isMobile;
+
+  const toggleTheme = () => {
+    const next = theme === "light" ? "dark" : "light";
+    if (typeof document !== "undefined" && "startViewTransition" in document) {
+      try {
+        (
+          document as unknown as { startViewTransition: (cb: () => void) => void }
+        ).startViewTransition(() => setTheme(next));
+        return;
+      } catch {
+        /* fallback */
+      }
+    }
+    setTheme(next);
+  };
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton onClick={toggleTheme}>
+          {theme === "light" ? (
+            <Moon className="size-4" />
+          ) : (
+            <Sun className="size-4" />
+          )}
+          {showLabel && (
+            <span>{theme === "light" ? "Dark mode" : "Light mode"}</span>
+          )}
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+}
+
+function UserFooterMenu({ user }: { user: UsersResponse }) {
+  const router = useRouter();
+  const { state, isMobile } = useSidebar();
   const { mutate } = useMutation(signoutMutationOptions());
+  const showLabel = state === "expanded" || isMobile;
 
   const handleSignOut = async () => {
     try {
       await mutate();
       router.push("/");
-    } catch (error) {
-      console.log("error happende = =>\n", "Sign out failed:", error);
+    } catch {
+      /* sign out failed */
     }
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Building2 className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Earth & Home</span>
-                  <span className="truncate text-xs">Property Dashboard</span>
-                </div>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
-
-      <SidebarContent>
-        {/* Main Navigation */}
-        <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {userMenuItems.map((item) => {
-                const isActive = pathname === item.url;
-                return (
-                  <SidebarMenuItem
-                    key={item.title}
-                    data-active={isActive}
-                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground"
-                  >
-                    <SidebarMenuButton asChild isActive={isActive}>
-                      <Link href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-              {/* Landing page now matches structure */}
-              {(() => {
-                const landingIsActive = pathname === "/";
-                return (
-                  <SidebarMenuItem
-                    data-active={landingIsActive}
-                    className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground"
-                  >
-                    <SidebarMenuButton asChild isActive={landingIsActive}>
-                      <Link href="/">
-                        <Home className="mr-2 h-4 w-4" />
-                        <span>Landing Page</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })()}
-            </SidebarMenu>
-            {/* Admin section segmented */}
-            {user.is_admin && (
-              <div className="mt-4 space-y-2">
-                <SidebarGroupLabel className="text-xs font-semibold tracking-wide opacity-70">
-                  Admin
-                </SidebarGroupLabel>
-                <SidebarMenu>
-                  {adminRoutes.map((item) => {
-                    const isActive = pathname === item.url;
-                    return (
-                      <SidebarMenuItem
-                        key={item.title}
-                        data-active={isActive}
-                        className="data-[active=true]:bg-accent/50 data-[active=true]:text-sidebar-accent-foreground"
-                      >
-                        <SidebarMenuButton asChild isActive={isActive}>
-                          <Link href={item.url}>
-                            <item.icon />
-                            <span>{item.title}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </div>
-            )}
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-
-      <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
-                    <AvatarFallback className="rounded-lg">
-                      {user?.name?.charAt(0)?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+            >
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage
+                  src={user?.avatar || undefined}
+                  alt={user?.name || "User"}
+                />
+                <AvatarFallback className="rounded-lg">
+                  {user?.name?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+              {showLabel && (
+                <>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{user?.name || "User"}</span>
-                    <span className="truncate text-xs">{user?.email || "user@example.com"}</span>
+                    <span className="truncate font-semibold">
+                      {user?.name || "User"}
+                    </span>
+                    <span className="truncate text-xs">
+                      {user?.email || "user@example.com"}
+                    </span>
                   </div>
                   <ChevronDown className="ml-auto size-4" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="bottom"
-                align="end"
-                sideOffset={4}
-              >
-                <DropdownMenuItem asChild>
-                  <ModeToggle />
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard/settings">
-                    <User className="mr-2 h-4 w-4" />
-                    Account Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-    </Sidebar>
+                </>
+              )}
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            side="bottom"
+            align="end"
+            sideOffset={4}
+          >
+            <DropdownMenuItem asChild>
+              <Link href="/dashboard/settings">
+                <Settings className="mr-2 h-4 w-4" />
+                Account Settings
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/agents/${user.id}`}>
+                <User className="mr-2 h-4 w-4" />
+                My Profile
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }

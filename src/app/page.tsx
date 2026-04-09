@@ -6,7 +6,7 @@ import { ResponsiveDrawer } from "@/components/root/ResponsiveDrawer";
 import { SellYourHome } from "@/components/root/SellYourHome";
 import { siteinfo } from "@/config/siteinfo";
 import { Metadata } from "next";
-import { Footer } from "react-day-picker";
+import { Footer } from "@/components/root/Footer";
 
 export const metadata: Metadata = {
   title: siteinfo.title,
