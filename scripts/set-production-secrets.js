@@ -12,11 +12,9 @@ const ENV_FILE = path.join(process.cwd(), ".env.production");
 const ENVIRONMENT = "production";
 
 // Variables that should be set as secrets (sensitive data)
-const SENSITIVE_VARS = ["NEXT_PUBLIC_POSTHOG_KEY"];
+const SENSITIVE_VARS = [];
 
-// Variables that can be set as regular vars in wrangler.jsonc
 const PUBLIC_VARS = [
-  "NEXT_PUBLIC_POSTHOG_HOST",
   "NODE_ENV",
 ];
 
