@@ -30,9 +30,23 @@ import { signoutMutationOptions } from "@/data-access-layer/user/auth";
 import { UsersResponse } from "@/types/domain-types";
 import { useMutation } from "@tanstack/react-query";
 import { SidebarNavLinks } from "./sidebar/sidebar-nav-links";
-import { adminRoutes, navigationRoutes, quickLinks } from "./sidebar/sidebar-routes";
+import {
+  addPropertyRoute,
+  adminRoutes,
+  becomeAgentRoute,
+  navigationRoutes,
+  quickLinks,
+} from "./sidebar/sidebar-routes";
 
-export function DashboardSidebar({ user }: { user: UsersResponse }) {
+export function DashboardSidebar({
+  user,
+  canCreateListings,
+  showBecomeAgentSection,
+}: {
+  user: UsersResponse;
+  canCreateListings: boolean;
+  showBecomeAgentSection: boolean;
+}) {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -46,6 +60,24 @@ export function DashboardSidebar({ user }: { user: UsersResponse }) {
           </SidebarGroupLabel>
           <SidebarNavLinks links={navigationRoutes} />
         </SidebarGroup>
+
+        {showBecomeAgentSection && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-sm font-semibold tracking-wide">
+              List properties
+            </SidebarGroupLabel>
+            <SidebarNavLinks links={[becomeAgentRoute]} />
+          </SidebarGroup>
+        )}
+
+        {canCreateListings && (
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-sm font-semibold tracking-wide">
+              Listings
+            </SidebarGroupLabel>
+            <SidebarNavLinks links={[addPropertyRoute]} />
+          </SidebarGroup>
+        )}
 
         {user.is_admin && (
           <SidebarGroup>

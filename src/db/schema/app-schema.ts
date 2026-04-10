@@ -16,10 +16,14 @@ export const agents = sqliteTable(
     serviceAreas: text("service_areas"),
     yearsExperience: real("years_experience"),
     isVerified: integer("is_verified", { mode: "boolean" }),
+    approvalStatus: text("approval_status").notNull().default("pending"),
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
   },
-  (t) => [index("agents_user_id_idx").on(t.userId)],
+  (t) => [
+    index("agents_user_id_idx").on(t.userId),
+    index("agents_approval_status_idx").on(t.approvalStatus),
+  ],
 );
 
 export const properties = sqliteTable("properties", {

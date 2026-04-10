@@ -150,6 +150,7 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
         service_areas: data.service_areas || undefined,
         years_experience: data.years_experience || undefined,
         is_verified: data.is_verified,
+        resubmit: initialAgent.approval_status === "rejected" ? true : undefined,
       });
     } else {
       createMutation.mutate({

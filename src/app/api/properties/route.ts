@@ -1,6 +1,8 @@
-import { properties } from "@/db/schema/app-schema";
+import { mapSessionUserToUsersResponse } from "@/data-access-layer/user/map-session-user";
+import { agents, properties } from "@/db/schema/app-schema";
 import { getBetterAuthSession } from "@/lib/auth/get-session";
 import { getDb } from "@/lib/db/get-db";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -9,6 +11,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
+  const authUser = mapSessionUserToUsersResponse(session.user);
   const body = (await request.json()) as Record<string, unknown>;
   const locationPoint = body.location_point as { lat?: number; lon?: number } | undefined;
   const now = new Date();
@@ -17,7 +20,22 @@ export async function POST(request: NextRequest) {
   const toStr = (v: unknown): string | null => (v != null ? String(v) : null);
   const toNum = (v: unknown): number | null => (v != null ? Number(v) : null);
 
+  const agentId = String(body.agent_id);
   const db = await getDb();
+  const [agentRow] = await db.select().from(agents).where(eq(agents.id, agentId)).limit(1);
+  if (!agentRow) {
+    return NextResponse.json({ success: false, message: "Invalid agent" }, { status: 400 });
+  }
+  if (agentRow.userId !== session.user.id && !authUser.is_admin) {
+    return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+  }
+  if (!authUser.is_admin && agentRow.approvalStatus !== "approved") {
+    return NextResponse.json(
+      { success: false, message: "Agent account is not approved to list properties" },
+      { status: 403 },
+    );
+  }
+
   const [row] = await db
     .insert(properties)
     .values({
@@ -66,7 +84,7 @@ export async function POST(request: NextRequest) {
       isNew: Boolean(body.is_new ?? true),
       locationLat: locationPoint?.lat ?? null,
       locationLon: locationPoint?.lon ?? null,
-      agentId: String(body.agent_id),
+      agentId,
       createdAt: now,
       updatedAt: now,
     })

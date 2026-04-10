@@ -38,6 +38,8 @@ export type ZoningType =
   | "other";
 
 export type AgentSpecialization = "" | "general" | "residential" | "commercial" | "land" | "industrial" | "mixed";
+
+export type AgentApprovalStatus = "pending" | "approved" | "rejected";
 export type MessageType = "" | "parent" | "reply";
 
 export interface UsersResponse {
@@ -217,6 +219,7 @@ export interface AgentsResponse {
   service_areas: string;
   years_experience: number;
   is_verified: boolean;
+  approval_status: AgentApprovalStatus;
   created: string;
   updated: string;
 }
@@ -230,6 +233,7 @@ export interface AgentsCreate {
   service_areas?: string;
   years_experience?: number;
   is_verified?: boolean;
+  approval_status?: AgentApprovalStatus;
 }
 
 export interface AgentsUpdate {
@@ -241,6 +245,8 @@ export interface AgentsUpdate {
   service_areas?: string;
   years_experience?: number;
   is_verified?: boolean;
+  approval_status?: AgentApprovalStatus;
+  resubmit?: boolean;
 }
 
 export interface PropertyMessagesResponse {

@@ -1,9 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Heart, MapPin, Search } from "lucide-react";
+import { Heart, MapPin, Plus, Search } from "lucide-react";
 import Link from "next/link";
 
-export function QuickActionsCard() {
+interface QuickActionsCardProps {
+  canAddProperty?: boolean;
+}
+
+export function QuickActionsCard({ canAddProperty = false }: QuickActionsCardProps) {
   const quickActions = [
     {
       title: "Search Properties",
@@ -17,6 +21,16 @@ export function QuickActionsCard() {
       icon: Heart,
       href: "/dashboard/favorites",
     },
+    ...(canAddProperty
+      ? [
+          {
+            title: "Add Property",
+            description: "Create a new listing",
+            icon: Plus,
+            href: "/dashboard/properties/add",
+          },
+        ]
+      : []),
     {
       title: "Browse by Location",
       description: "Explore different areas",

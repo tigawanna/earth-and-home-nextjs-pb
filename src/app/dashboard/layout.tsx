@@ -1,22 +1,30 @@
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
+import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
+import { canCreatePropertyListings, showBecomeAgentNav } from "@/lib/agent/can-create-property-listings";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-  const user = await getServerSideUser(cookieStore);
+  const { user, agent } = await getServerSideUserwithAgent(cookieStore);
 
   if (!user) {
     redirect("/auth/signin");
   }
 
+  const canCreateListings = canCreatePropertyListings(user, agent);
+  const showBecomeAgentSection = showBecomeAgentNav(agent);
+
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <DashboardSidebar user={user} />
+      <DashboardSidebar
+        user={user}
+        canCreateListings={canCreateListings}
+        showBecomeAgentSection={showBecomeAgentSection}
+      />
       <SidebarInset>
         <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 bg-background transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">

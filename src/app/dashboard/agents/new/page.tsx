@@ -8,14 +8,17 @@ export default async function NewAgentPage() {
   if (!user) {
     throw redirect("/auth/signin");
   }
-  if (!user.is_admin && agent) {
+  if (!user.is_admin && agent && agent.approval_status !== "rejected") {
     throw redirect("/dashboard/agents");
   }
 
   return (
     <section className="w-full h-full flex flex-col">
       <Suspense fallback={null}>
-        <AgentForm currentUser={user} />
+        <AgentForm
+          currentUser={user}
+          initialAgent={agent && agent.approval_status === "rejected" ? agent : undefined}
+        />
       </Suspense>
     </section>
   );

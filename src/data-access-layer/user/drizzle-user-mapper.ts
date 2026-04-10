@@ -17,7 +17,7 @@ export function mapUserRowToUsersResponse(row: UserRow): UsersResponse {
     is_admin: row.role === "admin",
     is_banned: row.banned ?? false,
     phone: "",
-    is_agent: false,
+    is_agent: row.role === "agent",
     created,
     updated,
   };

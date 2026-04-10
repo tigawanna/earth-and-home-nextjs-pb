@@ -21,7 +21,7 @@ export function mapSessionUserToUsersResponse(sessionUser: SessionUser): UsersRe
     is_admin: sessionUser.role === "admin",
     is_banned: sessionUser.banned ?? false,
     phone: "",
-    is_agent: false,
+    is_agent: sessionUser.role === "agent",
     created: now,
     updated: now,
   };

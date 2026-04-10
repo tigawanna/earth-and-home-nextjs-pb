@@ -1,5 +1,5 @@
 import { agents } from "@/db/schema/app-schema";
-import type { AgentsResponse } from "@/types/domain-types";
+import type { AgentApprovalStatus, AgentsResponse } from "@/types/domain-types";
 import type { InferSelectModel } from "drizzle-orm";
 
 export type AgentRow = InferSelectModel<typeof agents>;
@@ -19,5 +19,6 @@ export function mapAgentRowToAgentsResponse(row: AgentRow): AgentsResponse {
     service_areas: row.serviceAreas ?? "",
     years_experience: row.yearsExperience ?? 0,
     is_verified: row.isVerified ?? false,
+    approval_status: (row.approvalStatus ?? "pending") as AgentApprovalStatus,
   };
 }

@@ -5,7 +5,7 @@ import { user as userTable } from "@/db/schema/auth-schema";
 import { getDb } from "@/lib/db/get-db";
 import { mapAgentRowToAgentsResponse } from "@/data-access-layer/agents/drizzle-agent-mapper";
 import { mapUserRowToUsersResponse } from "@/data-access-layer/user/drizzle-user-mapper";
-import { asc, count, desc, eq, like, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, like, or } from "drizzle-orm";
 
 export async function drizzleGetServerSideAgents({
   q = "",
@@ -34,6 +34,9 @@ export async function drizzleGetServerSideAgents({
       )
     : undefined;
 
+  const approvedOnly = eq(agents.approvalStatus, "approved");
+  const listFilter = search ? and(approvedOnly, search) : approvedOnly;
+
   const sortCol =
     sortBy === "agency_name"
       ? agents.agencyName
@@ -53,14 +56,12 @@ export async function drizzleGetServerSideAgents({
     .from(agents)
     .innerJoin(userTable, eq(agents.userId, userTable.id));
 
-  const [countRow] = search ? await countBase.where(search) : await countBase;
+  const [countRow] = await countBase.where(listFilter);
 
   const totalItems = Number(countRow?.n ?? 0);
   const totalPages = Math.max(1, Math.ceil(totalItems / limit));
 
-  const rows = search
-    ? await baseFrom.where(search).orderBy(order).limit(limit).offset(offset)
-    : await baseFrom.orderBy(order).limit(limit).offset(offset);
+  const rows = await baseFrom.where(listFilter).orderBy(order).limit(limit).offset(offset);
 
   const items = rows.map(({ a, u }) => ({
     ...mapAgentRowToAgentsResponse(a),

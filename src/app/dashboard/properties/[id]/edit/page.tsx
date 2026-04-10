@@ -1,10 +1,13 @@
 import { EditProperty } from "@/components/dashboard/EditProperty";
+import { AgentPendingModal } from "@/components/property/modals/AgentPendingModal";
+import { AgentRejectedModal } from "@/components/property/modals/AgentRejectedModal";
 import {
   SinglePropertyLoadingFallback,
   SinglePropertyNotFound,
 } from "@/components/property/single/single-property-query-states";
 import { getServerSidePropertyById } from "@/data-access-layer/properties/server-side-property-queries";
 import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
+import { canCreatePropertyListings } from "@/lib/agent/can-create-property-listings";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -17,6 +20,20 @@ export default async function EditPropertyPage({ params }: EditPropertyPageProps
   const { user, agent } = await getServerSideUserwithAgent();
   if (!user) {
     throw redirect("/auth/signin");
+  }
+  if (!canCreatePropertyListings(user, agent)) {
+    if (!agent) {
+      throw redirect(
+        `/dashboard/agents/new?returnTo=${encodeURIComponent(`/dashboard/properties/${id}/edit`)}`,
+      );
+    }
+    if (agent.approval_status === "pending") {
+      return <AgentPendingModal open />;
+    }
+    if (agent.approval_status === "rejected") {
+      return <AgentRejectedModal open />;
+    }
+    throw redirect("/dashboard");
   }
   if (!agent) {
     throw redirect(

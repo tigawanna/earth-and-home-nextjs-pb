@@ -78,7 +78,17 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
                   <Building2 className="w-3 h-3 mr-1" />
                   Property Agent
                 </Badge>
-                {agent.is_verified && (
+                {agent.approval_status === "pending" && (
+                  <Badge variant="outline" className="border-amber-500/50 text-amber-800 dark:text-amber-300">
+                    Pending review
+                  </Badge>
+                )}
+                {agent.approval_status === "rejected" && (
+                  <Badge variant="outline" className="border-destructive/50 text-destructive">
+                    Not approved
+                  </Badge>
+                )}
+                {agent.approval_status === "approved" && agent.is_verified && (
                   <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Verified
@@ -239,12 +249,18 @@ export function SingleAgentDetails({ agent }: SingleAgentDetailsProps) {
               </div>
               <Badge
                 className={
-                  agent.is_verified
+                  agent.approval_status === "approved"
                     ? "bg-green-600 hover:bg-green-700"
-                    : "bg-primary hover:bg-primary/90"
+                    : agent.approval_status === "rejected"
+                      ? "bg-destructive hover:bg-destructive/90"
+                      : "bg-primary hover:bg-primary/90"
                 }
               >
-                {agent.is_verified ? "Verified" : "Pending"}
+                {agent.approval_status === "approved"
+                  ? "Approved"
+                  : agent.approval_status === "rejected"
+                    ? "Declined"
+                    : "Pending review"}
               </Badge>
             </div>
 

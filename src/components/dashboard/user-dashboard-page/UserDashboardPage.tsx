@@ -1,8 +1,12 @@
-import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
+import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
 import { getUserDashboardStats } from "@/data-access-layer/user/user-dashboard";
+import { canCreatePropertyListings } from "@/lib/agent/can-create-property-listings";
 import { Calendar, Heart, Home, TrendingUp } from "lucide-react";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { AgentPendingBanner } from "./AgentPendingBanner";
+import { AgentRejectedBanner } from "./AgentRejectedBanner";
+import { BecomeAgentCard } from "./BecomeAgentCard";
 import { QuickActionsCard } from "./QuickActionsCard";
 import { RecentFavoritesCard } from "./RecentFavoritesCard";
 import { StatCard } from "./StatCard";
@@ -10,17 +14,33 @@ import { StatCard } from "./StatCard";
 interface UserDashboardPageProps {}
 
 async function DashboardContent() {
-  const user = await getServerSideUser();
+  const { user, agent } = await getServerSideUserwithAgent();
 
   if (!user) {
     redirect("/auth/signin");
   }
 
   const stats = await getUserDashboardStats({ userId: user.id });
+  const canList = canCreatePropertyListings(user, agent);
+
+  let accountLabel = "User";
+  let accountDescription = "Standard member";
+  if (agent?.approval_status === "pending") {
+    accountLabel = "Agent (pending)";
+    accountDescription = "Awaiting admin approval";
+  } else if (agent?.approval_status === "rejected") {
+    accountLabel = "Agent (declined)";
+    accountDescription = "Application not approved";
+  } else if (canList) {
+    accountLabel = "Agent";
+    accountDescription = "You can list properties";
+  }
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
+      {!agent && <BecomeAgentCard />}
+      {agent?.approval_status === "pending" && <AgentPendingBanner />}
+      {agent?.approval_status === "rejected" && <AgentRejectedBanner />}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Favorites"
@@ -34,7 +54,7 @@ async function DashboardContent() {
           description="Favorites this week"
           icon={TrendingUp}
         />
-        <StatCard title="Account Type" value="User" description="Standard member" icon={Home} />
+        <StatCard title="Account Type" value={accountLabel} description={accountDescription} icon={Home} />
         <StatCard
           title="Member Since"
           value={new Date(user.created).getFullYear()}
@@ -49,7 +69,7 @@ async function DashboardContent() {
         <RecentFavoritesCard favorites={stats.recentFavorites} />
 
         {/* Quick Actions */}
-        <QuickActionsCard />
+        <QuickActionsCard canAddProperty={canList} />
       </div>
     </div>
   );

@@ -28,7 +28,17 @@ export function AgentCard({ agent }: AgentCardProps) {
               <Badge variant="secondary" className="text-xs">
                 Agent
               </Badge>
-              {agent.is_verified && (
+              {agent.approval_status === "pending" && (
+                <Badge variant="outline" className="text-xs border-amber-500/50 text-amber-700 dark:text-amber-400">
+                  Pending
+                </Badge>
+              )}
+              {agent.approval_status === "rejected" && (
+                <Badge variant="outline" className="text-xs border-destructive/50 text-destructive">
+                  Declined
+                </Badge>
+              )}
+              {agent.approval_status === "approved" && agent.is_verified && (
                 <Badge variant="outline" className="text-xs text-green-600 border-green-200">
                   <CheckCircle className="h-3 w-3 mr-1" />
                   Verified
