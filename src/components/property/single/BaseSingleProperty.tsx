@@ -152,12 +152,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
                           propertyId={property.id}
                           propertyTitle={property.title}
                           agent={agent}
-                        >
-                          <Button className="w-full sm:w-auto">
-                            <Phone className="h-4 w-4 mr-2" />
-                            Contact About Property
-                          </Button>
-                        </PropertyContactForm>
+                        />
                       ) : (
                         <Link href="/auth/signin">
                           <Button className="w-full sm:w-auto">

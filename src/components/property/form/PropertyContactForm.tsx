@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AgentsResponse, PropertyMessagesResponse, UsersResponse } from "@/types/domain-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Loader2, Mail, MessageCircle, MessageSquare, Phone, Send, User } from "lucide-react";
+import { Loader2, Mail, MessageCircle, Phone, Send, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -28,7 +28,6 @@ type MessageFormData = z.infer<typeof messageSchema>;
 interface PropertyContactFormProps {
   propertyId: string;
   propertyTitle: string;
-  children?: React.ReactNode;
   user: UsersResponse;
   agent: AgentsResponse & {
     expand?:
@@ -70,7 +69,6 @@ const sendMessage = async ({ message, propertyId, userId }: SendMessagePayload) 
 export function PropertyContactForm({
   propertyId,
   propertyTitle,
-  children,
   user,
   agent,
 }: PropertyContactFormProps) {
@@ -144,12 +142,10 @@ export function PropertyContactForm({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {children || (
-          <Button className="w-full">
-            <MessageSquare className="w-4 h-4 mr-2" />
-            Contact About This Property
-          </Button>
-        )}
+        <Button type="button" className="w-full sm:w-auto">
+          <Phone className="h-4 w-4 mr-2" />
+          Contact About Property
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
