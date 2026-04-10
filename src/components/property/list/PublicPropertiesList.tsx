@@ -5,7 +5,7 @@ import {
   SortOrder,
 } from "@/data-access-layer/properties/property-types";
 import { getProperties } from "@/data-access-layer/properties/server-side-property-queries";
-import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
+import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
 import { ListPagination } from "@/lib/react-responsive-pagination/ListPagination";
 import { PropertiesEmpty } from "../query-states/PropertiesEmpty";
 import { LinkedPropertyCard } from "./cards/LinkedPropertyCard";
@@ -49,7 +49,7 @@ export async function PublicPropertiesList({
     page,
     limit: limit || 50, // Default to 50 if no limit provided
   });
-  const user = await getServerSideUser();
+  const { user, agent } = await getServerSideUserwithAgent();
 
   const properties = result.success ? result.properties : [];
   const totalPages = result.success ? result.pagination.totalPages : 0;
@@ -67,6 +67,7 @@ export async function PublicPropertiesList({
             key={property.id}
             property={property as PropertyWithFavorites}
             currentUser={user}
+            currentAgentId={agent?.id}
           />
         ))}
       </div>

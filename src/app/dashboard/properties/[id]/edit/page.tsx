@@ -8,6 +8,7 @@ import {
 import { getServerSidePropertyById } from "@/data-access-layer/properties/server-side-property-queries";
 import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
 import { canCreatePropertyListings } from "@/lib/agent/can-create-property-listings";
+import { canManageProperty } from "@/lib/property/can-manage-property";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -21,6 +22,17 @@ export default async function EditPropertyPage({ params }: EditPropertyPageProps
   if (!user) {
     throw redirect("/auth/signin");
   }
+
+  const { property } = await getServerSidePropertyById(id, user.id);
+
+  if (!property) {
+    return <SinglePropertyNotFound />;
+  }
+
+  if (!canManageProperty(user, agent, property)) {
+    throw redirect("/dashboard/properties");
+  }
+
   if (!canCreatePropertyListings(user, agent)) {
     if (!agent) {
       throw redirect(
@@ -41,11 +53,6 @@ export default async function EditPropertyPage({ params }: EditPropertyPageProps
     );
   }
 
-  const { property } = await getServerSidePropertyById(id, user.id);
-
-  if (!property) {
-    return <SinglePropertyNotFound />;
-  }
   return (
     <section className="w-full h-full  flex flex-col items-center justify-center">
       <Suspense fallback={<SinglePropertyLoadingFallback />}>

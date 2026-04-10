@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { PropertyFilters as PropertyFiltersType } from "@/data-access-layer/properties/property-types";
 import { Filter, Loader, Search, X } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
@@ -24,6 +25,7 @@ import { ReactNode, useState, useTransition } from "react";
 
 interface PropertyFiltersProps {
   showStatusFilter?: boolean;
+  showMineFilter?: boolean;
   title?: string;
   showAddButton?: boolean;
   addButtonHref?: string;
@@ -32,6 +34,7 @@ interface PropertyFiltersProps {
 
 export function PropertyFilters({
   showStatusFilter = true,
+  showMineFilter = false,
   title: _title = "Properties",
   showAddButton: _showAddButton = false,
   addButtonHref: _addButtonHref = "/dashboard/properties/add",
@@ -47,6 +50,7 @@ export function PropertyFilters({
       propertyType: parseAsString,
       listingType: parseAsString,
       status: parseAsString,
+      scope: parseAsString.withDefault("all"),
       minPrice: parseAsInteger,
       maxPrice: parseAsInteger,
       beds: parseAsInteger,
@@ -78,6 +82,7 @@ export function PropertyFilters({
     sortBy,
     sortOrder,
     page: currentPage,
+    scope,
   } = queryState;
 
   const filters: PropertyFiltersType = {
@@ -97,6 +102,7 @@ export function PropertyFilters({
     ...filters,
     sortBy: sortBy !== "created" ? sortBy : undefined,
     sortOrder: sortOrder !== "desc" ? sortOrder : undefined,
+    scope: showMineFilter && scope === "mine" ? scope : undefined,
   };
 
   const hasActiveFilters = Object.values(allFilters).some(
@@ -121,6 +127,7 @@ export function PropertyFilters({
     if (showStatusFilter && status) n++;
     if (sortBy && sortBy !== "created") n++;
     if (sortOrder && sortOrder !== "desc") n++;
+    if (showMineFilter && scope === "mine") n++;
     return n;
   };
 
@@ -131,6 +138,7 @@ export function PropertyFilters({
       propertyType: null,
       listingType: null,
       status: showStatusFilter ? null : prev.status,
+      scope: "all",
       minPrice: null,
       maxPrice: null,
       beds: null,
@@ -163,6 +171,32 @@ export function PropertyFilters({
 
   const filterFormBody = (
     <div className="space-y-4 pt-1">
+      {showMineFilter ? (
+        <div className="space-y-1">
+          <Label className="text-xs font-medium text-muted-foreground">Listings</Label>
+          <Select
+            value={scope}
+            onValueChange={(value) => {
+              setQueryState((prev) => ({
+                ...prev,
+                scope: value as "all" | "mine",
+                page: 1,
+              }));
+            }}
+          >
+            <SelectTrigger
+              className="h-9 w-full border-border/50 focus:border-primary rounded-md"
+              aria-label="Show all listings or only mine"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent sideOffset={4}>
+              <SelectItem value="all">All listings</SelectItem>
+              <SelectItem value="mine">Mine</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      ) : null}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div className="space-y-1">
           <Label className="text-xs font-medium text-muted-foreground">Property Type</Label>
@@ -348,23 +382,23 @@ export function PropertyFilters({
               />
             </div>
 
-            <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md border-border/50">
-              <input
-                type="checkbox"
+            <div className="flex flex-row items-center justify-between gap-3 rounded-lg border border-border/50 bg-muted/30 p-3">
+              <Label htmlFor="featured-dialog" className="text-xs font-medium leading-snug cursor-pointer">
+                Featured only
+              </Label>
+              <Switch
                 id="featured-dialog"
                 checked={isFeatured === "true"}
-                onChange={(e) => {
+                onCheckedChange={(checked) => {
                   setQueryState((prev) => ({
                     ...prev,
-                    featured: e.target.checked ? "true" : null,
+                    featured: checked ? "true" : null,
                     page: 1,
                   }));
                 }}
-                className="w-3 h-3 text-primary bg-background border border-border rounded focus:ring-primary focus-visible:outline-none"
+                className="h-5 w-9 shrink-0"
+                aria-label="Show featured properties only"
               />
-              <Label htmlFor="featured-dialog" className="text-xs font-medium">
-                Featured only
-              </Label>
             </div>
           </div>
         </div>
@@ -574,6 +608,30 @@ export function PropertyFilters({
             <SelectItem value="rent">Rent</SelectItem>
           </SelectContent>
         </Select>
+
+        {showMineFilter ? (
+          <Select
+            value={scope}
+            onValueChange={(value) => {
+              setQueryState((prev) => ({
+                ...prev,
+                scope: value as "all" | "mine",
+                page: 1,
+              }));
+            }}
+          >
+            <SelectTrigger
+              className="h-9 w-[7.5rem] shrink-0 border-border/50 focus:border-primary rounded-md px-2 text-xs"
+              aria-label="All listings or mine"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent sideOffset={4}>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="mine">Mine</SelectItem>
+            </SelectContent>
+          </Select>
+        ) : null}
 
         <Button
           type="button"

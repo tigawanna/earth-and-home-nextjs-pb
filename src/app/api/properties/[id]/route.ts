@@ -1,6 +1,9 @@
-import { properties } from "@/db/schema/app-schema";
+import { agents, properties } from "@/db/schema/app-schema";
+import { mapAgentRowToAgentsResponse } from "@/data-access-layer/agents/drizzle-agent-mapper";
+import { mapSessionUserToUsersResponse } from "@/data-access-layer/user/map-session-user";
 import { getBetterAuthSession } from "@/lib/auth/get-session";
 import { getDb } from "@/lib/db/get-db";
+import { canManageProperty } from "@/lib/property/can-manage-property";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,7 +14,38 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   }
 
   const { id } = await params;
+  const user = mapSessionUserToUsersResponse(session.user);
+  const db = await getDb();
+  const [agentRow] = await db.select().from(agents).where(eq(agents.userId, user.id)).limit(1);
+  const agent = agentRow ? mapAgentRowToAgentsResponse(agentRow) : null;
+
+  const [existing] = await db
+    .select({
+      agentId: properties.agentId,
+      ownerId: properties.ownerId,
+    })
+    .from(properties)
+    .where(eq(properties.id, id))
+    .limit(1);
+
+  if (!existing) {
+    return NextResponse.json({ success: false, message: "Property not found" }, { status: 404 });
+  }
+
+  if (
+    !canManageProperty(user, agent, {
+      agent_id: existing.agentId,
+      owner_id: existing.ownerId ?? "",
+    })
+  ) {
+    return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+  }
+
   const body = (await request.json()) as Record<string, unknown>;
+  if (!user.is_admin) {
+    delete body.owner_id;
+    delete body.agent_id;
+  }
   const now = new Date();
 
   const updates: Record<string, unknown> = { updatedAt: now };
@@ -74,7 +108,6 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     updates.locationLon = locationPoint?.lon ?? null;
   }
 
-  const db = await getDb();
   const [row] = await db.update(properties).set(updates).where(eq(properties.id, id)).returning();
 
   if (!row) {
@@ -98,7 +131,33 @@ export async function DELETE(
   }
 
   const { id } = await params;
+  const user = mapSessionUserToUsersResponse(session.user);
   const db = await getDb();
+  const [agentRow] = await db.select().from(agents).where(eq(agents.userId, user.id)).limit(1);
+  const agent = agentRow ? mapAgentRowToAgentsResponse(agentRow) : null;
+
+  const [existing] = await db
+    .select({
+      agentId: properties.agentId,
+      ownerId: properties.ownerId,
+    })
+    .from(properties)
+    .where(eq(properties.id, id))
+    .limit(1);
+
+  if (!existing) {
+    return NextResponse.json({ success: false, message: "Property not found" }, { status: 404 });
+  }
+
+  if (
+    !canManageProperty(user, agent, {
+      agent_id: existing.agentId,
+      owner_id: existing.ownerId ?? "",
+    })
+  ) {
+    return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+  }
+
   await db.delete(properties).where(eq(properties.id, id));
 
   return NextResponse.json({

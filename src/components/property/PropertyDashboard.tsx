@@ -1,6 +1,6 @@
 import { PropertyFilters } from "@/components/property/list/PropertyFilters";
 import { Button } from "@/components/ui/button";
-import { UsersResponse } from "@/types/domain-types";
+import type { AgentsResponse, UsersResponse } from "@/types/domain-types";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -8,15 +8,22 @@ import { DashboardPropertiesList } from "@/components/property/list/DashboardPro
 import { PropertiesListLoading } from "@/components/property/query-states/PropertiesListLoading";
 
 interface PropertyDashboardProps {
-  agentId?: string;
+  agent: Pick<AgentsResponse, "id"> | null;
   user: UsersResponse | null;
   searchParams: {
     [key: string]: string | string[] | undefined;
   };
+  listFilterAgentId?: string;
 }
 
-export function PropertyDashboard({ user, searchParams, agentId }: PropertyDashboardProps) {
+export function PropertyDashboard({
+  user,
+  searchParams,
+  agent,
+  listFilterAgentId,
+}: PropertyDashboardProps) {
   const isAdmin = user?.is_admin;
+  const showMineFilter = Boolean(!listFilterAgentId && (user?.is_admin || user?.is_agent));
 
   return (
     <div className="space-y-2">
@@ -32,10 +39,15 @@ export function PropertyDashboard({ user, searchParams, agentId }: PropertyDashb
         )}
       </div>
       {/* Filters */}
-      <PropertyFilters showStatusFilter={isAdmin} />
+      <PropertyFilters showStatusFilter={isAdmin || user?.is_agent} showMineFilter={showMineFilter} />
       {/* Properties List */}
       <Suspense fallback={<PropertiesListLoading />}>
-        <DashboardPropertiesList user={user} searchParams={searchParams} agentId={agentId} />
+        <DashboardPropertiesList
+          user={user}
+          agent={agent}
+          searchParams={searchParams}
+          listFilterAgentId={listFilterAgentId}
+        />
       </Suspense>
       {/* Quick Actions Card */}
     </div>

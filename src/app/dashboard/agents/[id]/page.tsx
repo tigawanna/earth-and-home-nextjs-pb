@@ -14,7 +14,7 @@ interface SingleAgentPageProps {
 }
 
 export default async function SingleAgentPage({ params, searchParams }: SingleAgentPageProps) {
-  const { user } = await getServerSideUserwithAgent();
+  const { user, agent: sessionAgent } = await getServerSideUserwithAgent();
   if (!user) {
     throw redirect("/auth/signin");
   }
@@ -58,7 +58,12 @@ export default async function SingleAgentPage({ params, searchParams }: SingleAg
         {/* Agent Details */}
         <SingleAgentDetails agent={agent} />
       </div>
-      <PropertyDashboard user={user} searchParams={sp} agentId={agentId} />
+      <PropertyDashboard
+        user={user}
+        agent={sessionAgent}
+        searchParams={sp}
+        listFilterAgentId={agentId}
+      />
     </section>
   );
 }

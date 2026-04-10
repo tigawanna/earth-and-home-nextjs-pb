@@ -1,12 +1,12 @@
 import { PropertyDashboard } from "@/components/property/PropertyDashboard";
-import { getServerSideUser } from "@/data-access-layer/user/server-side-auth";
+import { getServerSideUserwithAgent } from "@/data-access-layer/user/server-side-auth";
 
 export default async function PropertiesPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const user = await getServerSideUser();
+  const { user, agent } = await getServerSideUserwithAgent();
   const params = await searchParams;
-  return <PropertyDashboard user={user} searchParams={params} />;
+  return <PropertyDashboard user={user} agent={agent} searchParams={params} />;
 }
