@@ -10,43 +10,40 @@ export function QuickActionsCard() {
       description: "Find your perfect home",
       icon: Search,
       href: "/properties",
-      variant: "default" as const,
     },
     {
       title: "View Favorites",
       description: "See your saved properties",
       icon: Heart,
       href: "/dashboard/favorites",
-      variant: "outline" as const,
     },
     {
       title: "Browse by Location",
       description: "Explore different areas",
       icon: MapPin,
       href: "/properties?view=map",
-      variant: "outline" as const,
     },
   ];
 
   return (
-    <Card>
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>Quick Actions</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <CardContent className="flex flex-1 flex-col gap-3">
         {quickActions.map((action) => (
           <Button
             key={action.title}
             asChild
-            variant={action.variant}
-            className="h-auto p-4 flex flex-col items-start space-y-2"
+            variant="outline"
+            className="h-auto w-full justify-start p-4"
           >
-            <Link href={action.href}>
-              <div className="flex items-center space-x-2 w-full">
-                <action.icon className="h-5 w-5" />
-                <span className="font-medium">{action.title}</span>
-              </div>
-              <p className="text-xs text-muted-foreground text-left">{action.description}</p>
+            <Link href={action.href} className="flex w-full flex-row items-start gap-3">
+              <action.icon className="mt-0.5 h-5 w-5 shrink-0" aria-hidden />
+              <span className="flex min-w-0 flex-col items-start gap-1 text-left">
+                <span className="font-medium leading-tight">{action.title}</span>
+                <span className="text-xs leading-snug text-muted-foreground">{action.description}</span>
+              </span>
             </Link>
           </Button>
         ))}

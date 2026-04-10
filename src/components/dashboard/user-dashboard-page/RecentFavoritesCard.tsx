@@ -42,7 +42,7 @@ function formatTimeAgo(dateString: string): string {
 export function RecentFavoritesCard({ favorites }: RecentFavoritesCardProps) {
   if (favorites.length === 0) {
     return (
-      <Card>
+      <Card className="flex h-full flex-col">
         <CardHeader>
           <CardTitle>Recent Favorites</CardTitle>
         </CardHeader>
@@ -56,7 +56,7 @@ export function RecentFavoritesCard({ favorites }: RecentFavoritesCardProps) {
   }
 
   return (
-    <Card>
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle>Recent Favorites</CardTitle>
       </CardHeader>
