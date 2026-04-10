@@ -279,7 +279,7 @@ export default function PropertyForm({
 
             {/* Images Upload - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
-              <ImagesUploadSection />
+              <ImagesUploadSection propertyId={isEdit ? propertyId : undefined} />
             </div>
 
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />

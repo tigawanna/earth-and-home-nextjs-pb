@@ -3,6 +3,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { revalidatePropertyById } from "@/data-access-layer/actions/revalidate-actions";
+import { preparePropertyFormForApi } from "@/lib/property/prepare-property-for-api";
 import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import type { PropertiesResponse } from "@/types/domain-types";
@@ -53,7 +55,11 @@ function getPreviewUrl(item: string): string {
   return resolvePropertyThumbnailUrl(PLACEHOLDER_PROPERTY, item);
 }
 
-export function ImagesUploadSection() {
+interface ImagesUploadSectionProps {
+  propertyId?: string;
+}
+
+export function ImagesUploadSection({ propertyId }: ImagesUploadSectionProps) {
   const { control, setValue, getValues } = useFormContext<PropertyFormData>();
   const images = (useWatch({ control, name: "images" }) ?? []) as (string | File)[];
   const featuredImageIndex = useWatch({ control, name: "featured_image_index" }) ?? 0;
@@ -68,6 +74,24 @@ export function ImagesUploadSection() {
     },
     [setValue],
   );
+
+  const persistImagesToProperty = useCallback(async () => {
+    if (!propertyId) return;
+    const prepared = preparePropertyFormForApi(getValues());
+    const res = await fetch(`/api/properties/${propertyId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        images: prepared.images ?? [],
+        image_url: prepared.image_url ?? "",
+      }),
+    });
+    const json = (await res.json()) as { success?: boolean; message?: string };
+    if (!res.ok || !json.success) {
+      throw new Error(json.message ?? "Failed to save images");
+    }
+    await revalidatePropertyById(propertyId);
+  }, [propertyId, getValues]);
 
   const handleFileSelect = useCallback(
     async (fileList: FileList | null) => {
@@ -116,6 +140,13 @@ export function ImagesUploadSection() {
         );
         setImages([...current, ...newUrls]);
         toast.success(`${newUrls.length} image(s) uploaded`);
+        if (propertyId) {
+          try {
+            await persistImagesToProperty();
+          } catch {
+            toast.error("Images uploaded but not saved to the listing. Click Update Property.");
+          }
+        }
       }
       if (failCount > 0) {
         toast.error(`${failCount} image(s) failed to upload`);
@@ -123,10 +154,10 @@ export function ImagesUploadSection() {
 
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
-    [getValues, setImages],
+    [getValues, persistImagesToProperty, propertyId, setImages],
   );
 
-  const handleRemove = (index: number) => {
+  const handleRemove = async (index: number) => {
     const next = [...urlImages];
     next.splice(index, 1);
     setImages(next);
@@ -135,11 +166,25 @@ export function ImagesUploadSection() {
     } else if (featuredImageIndex > index) {
       setValue("featured_image_index", featuredImageIndex - 1);
     }
+    if (propertyId) {
+      try {
+        await persistImagesToProperty();
+      } catch {
+        toast.error("Could not remove image from the listing. Click Update Property.");
+      }
+    }
   };
 
-  const handleSetFeatured = (index: number) => {
+  const handleSetFeatured = async (index: number) => {
     setValue("featured_image_index", index);
     toast.success("Featured image updated");
+    if (propertyId) {
+      try {
+        await persistImagesToProperty();
+      } catch {
+        toast.error("Could not save featured image. Click Update Property.");
+      }
+    }
   };
 
   const isUploading = uploadingCount > 0;
