@@ -31,6 +31,7 @@ interface SinglePropertyProps {
   property: PropertyWithFavorites;
   basePath?: "/" | "/dashboard/";
   user: UsersResponse | null;
+  canManage?: boolean;
 }
 
 function formatPrice(price: number | null, currency = "KES") {
@@ -42,7 +43,12 @@ function formatPrice(price: number | null, currency = "KES") {
   }).format(price);
 }
 
-export function BaseSingleProperty({ property, basePath = "/", user }: SinglePropertyProps) {
+export function BaseSingleProperty({
+  property,
+  basePath = "/",
+  user,
+  canManage = false,
+}: SinglePropertyProps) {
   const mainPrice = property.price;
 
   const amenities = Array.isArray(property.amenities) ? property.amenities : [];
@@ -63,8 +69,7 @@ export function BaseSingleProperty({ property, basePath = "/", user }: SinglePro
             </Link>
           </Button>
 
-          {/* Admin Controls - Only show for admin users */}
-          {user?.is_admin && <PropertyAdminActions property={property} />}
+          {canManage ? <PropertyAdminActions property={property} /> : null}
         </div>
       </div>
 
