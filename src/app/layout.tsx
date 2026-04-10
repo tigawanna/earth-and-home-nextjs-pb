@@ -1,5 +1,6 @@
 import "./globals.css";
 import { PerformanceMonitor } from "@/components/shared/PerformanceMonitor";
+import Script from "next/script";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { siteinfo } from "@/config/siteinfo";
@@ -89,6 +90,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
+        {process.env.NODE_ENV === "development" && (
+          <Script
+            src="//unpkg.com/react-grab/dist/index.global.js"
+            crossOrigin="anonymous"
+            strategy="beforeInteractive"
+          />
+        )}
         {/* Preconnect to important external domains */}
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="dns-prefetch" href="https://images.unsplash.com" />

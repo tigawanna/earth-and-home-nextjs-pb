@@ -15,13 +15,50 @@ import {
 import { updatePropertyMutationOptions } from "@/data-access-layer/properties/property-mutations";
 import type { PropertiesResponse, PropertiesUpdate } from "@/types/domain-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Edit, MapPin, MoreVertical } from "lucide-react";
+import { Edit, Eye, EyeOff, MapPin, MoreVertical, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface PropertyAdminActionsProps {
   property: PropertiesResponse;
+}
+
+function getStatusBadgeVariant(status: string) {
+  switch (status) {
+    case "active":
+      return "default";
+    case "pending":
+      return "secondary";
+    case "sold":
+      return "destructive";
+    case "rented":
+      return "outline";
+    case "draft":
+      return "secondary";
+    case "off_market":
+      return "outline";
+    default:
+      return "secondary";
+  }
+}
+
+function getStatusIcon(status: string) {
+  switch (status) {
+    case "active":
+      return <Eye className="w-3 h-3" />;
+    case "pending":
+      return <Sparkles className="w-3 h-3" />;
+    case "sold":
+    case "rented":
+      return <Star className="w-3 h-3" />;
+    case "draft":
+      return <Edit className="w-3 h-3" />;
+    case "off_market":
+      return <EyeOff className="w-3 h-3" />;
+    default:
+      return null;
+  }
 }
 
 export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
@@ -49,6 +86,10 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
       id: property.id,
       ...updates,
     });
+  };
+
+  const handleStatusChange = async (status: string) => {
+    await applyUpdate({ status: status as PropertiesResponse["status"] });
   };
 
   return (
@@ -86,6 +127,37 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
           <MapPin className="mr-2 h-4 w-4" />
           Copy property ID
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="gap-2">
+            {getStatusIcon(property.status)}
+            <span className="capitalize">{property.status.replace("_", " ")}</span>
+            <Badge variant={getStatusBadgeVariant(property.status)} className="ml-auto text-[10px]">
+              {property.status}
+            </Badge>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="max-h-64 overflow-y-auto">
+            {["draft", "active", "pending", "sold", "rented", "off_market"].map((status) => (
+              <DropdownMenuItem
+                key={status}
+                onClick={() => handleStatusChange(status)}
+                className="flex items-center justify-between gap-2"
+              >
+                <span className="flex items-center gap-2">
+                  {getStatusIcon(status)}
+                  <span className="capitalize">{status.replace("_", " ")}</span>
+                </span>
+                {property.status === status ? (
+                  <Badge variant="secondary" className="text-[10px]">
+                    Current
+                  </Badge>
+                ) : null}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
         <DropdownMenuSeparator />
         <div className="grid grid-cols-2 gap-1 px-0.5 pb-1">
           <DropdownMenuSub>
