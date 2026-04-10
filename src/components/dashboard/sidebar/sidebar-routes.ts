@@ -2,6 +2,7 @@ import {
   Building2,
   Heart,
   Home,
+  Image as ImageIcon,
   MessageSquare,
   Plus,
   User,
@@ -20,6 +21,7 @@ export const navigationRoutes: SidebarNavItem[] = [
 export const adminRoutes: SidebarNavItem[] = [
   { title: "User Management", href: "/dashboard/users", icon: Users },
   { title: "Add Property", href: "/dashboard/properties/add", icon: Plus },
+  { title: "Image upload test", href: "/dashboard/admin/image-upload-test", icon: ImageIcon },
 ];
 
 export const quickLinks: SidebarNavItem[] = [

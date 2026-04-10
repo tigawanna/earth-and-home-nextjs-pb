@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { PropertiesResponse } from "@/types/domain-types";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Camera, Maximize2, X } from "lucide-react";
 import Image from "next/image";
@@ -25,15 +26,11 @@ import { useEffect, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 
 interface PropertyImageGalleryProps {
-  property: PropertiesResponse; // Pass the full property record for PocketBase file URLs
+  property: PropertiesResponse;
   videoUrl?: string | null;
   virtualTourUrl?: string | null;
 }
 
-/**
- * Process property images from PocketBase - handles both string filenames and File objects
- * For display, we only use string filenames that have been uploaded to PocketBase
- */
 function processPropertyImages(property: PropertiesResponse): string[] {
   const imageFilenames: string[] = [];
 
@@ -149,7 +146,8 @@ export function PropertyImageGallery({
                         priority={index === 0}
                         loading={index === 0 ? "eager" : "lazy"}
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                        placeholder="blur"
+                        unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
+                        placeholder={propertyImageNeedsUnoptimized(imageUrl) ? "empty" : "blur"}
                         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                       />
                     </div>
@@ -200,8 +198,9 @@ export function PropertyImageGallery({
                               src={imageUrl}
                               alt={`${property.title} - Image ${index + 1}`}
                               fill
-                              className="object-contain" // Use contain for fullscreen view
+                              className="object-contain"
                               priority={index === 0}
+                              unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
                             />
                           </div>
                         </CarouselItem>
@@ -273,6 +272,7 @@ export function PropertyImageGallery({
                         alt={`${property.title} - Thumbnail ${index + 1}`}
                         fill
                         className="object-cover transition-transform duration-200 hover:scale-105"
+                        unoptimized={propertyImageNeedsUnoptimized(thumbnailUrl)}
                       />
                       {index === 4 && validCount > 5 && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">

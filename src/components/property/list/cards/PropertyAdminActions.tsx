@@ -144,12 +144,9 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
                   Actions
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-border to-transparent" />
-                <DropdownMenuItem className="hover:bg-accent/50 transition-colors group">
+                <DropdownMenuItem asChild className="hover:bg-accent/50 transition-colors group">
                   <Link
-                    className="flex items-center w-full"
-                    href={`/dashboard/properties/${property.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`/dashboard/properties/${property.id}/edit`}
                   >
                     <Edit className="mr-3 h-4 w-4 group-hover:text-primary transition-colors" />
                     <span>Edit Property</span>

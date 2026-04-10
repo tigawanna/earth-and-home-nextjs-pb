@@ -27,6 +27,7 @@ import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { ImagesUploadSection } from "./files/ImagesUploadSection";
+import { preparePropertyFormForApi } from "@/lib/property/prepare-property-for-api";
 import { PropertyFormData, PropertyFormSchema } from "./property-form-schema";
 import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { BuildingSection } from "./sections/BuildingSection";
@@ -55,12 +56,22 @@ export default function PropertyForm({
   const agentId = agent.id;
   const router = useRouter();
   const [isSubmittingDraft, submitDraft] = useTransition();
+  const initialFeaturedIndex = (() => {
+    const images = initialData?.images as string[] | undefined;
+    const main = initialData?.image_url;
+    if (images?.length && main && typeof main === "string") {
+      const i = images.indexOf(main);
+      return i >= 0 ? i : 0;
+    }
+    return 0;
+  })();
+
   const form = useForm({
     resolver: zodResolver(PropertyFormSchema),
     defaultValues: {
-      // ...defaultPropertyFormValues,
-      agent_id: agentId,
       ...initialData,
+      agent_id: agentId,
+      featured_image_index: initialFeaturedIndex,
     },
   });
 
@@ -115,17 +126,15 @@ export default function PropertyForm({
     },
   });
 
-  const handleSubmit = async (values: PropertyFormData) => {
-    try {
-      if (isEdit && propertyId) {
-        const payload = { ...values } as PropertiesUpdate;
-        await updatePropertyMutation.mutateAsync(payload);
-      } else {
-        await createPropertyMutation.mutateAsync(values as PropertiesCreate);
-      }
-    } catch (error) {
-      console.log("error happende = =>\n", "Form submission error:", error);
-      toast.error("Failed to save property. Please try again.");
+  const submitProperty = async (values: PropertyFormData) => {
+    const prepared = preparePropertyFormForApi(values);
+    if (isEdit && propertyId) {
+      await updatePropertyMutation.mutateAsync({
+        ...(prepared as PropertiesUpdate),
+        id: propertyId,
+      });
+    } else {
+      await createPropertyMutation.mutateAsync(prepared as PropertiesCreate);
     }
   };
 
@@ -135,15 +144,12 @@ export default function PropertyForm({
 
     submitDraft(async () => {
       try {
-        if (isEdit && propertyId) {
-          const payload = { ...data } as PropertiesUpdate;
-          await updatePropertyMutation.mutateAsync(payload);
-        } else {
-          await createPropertyMutation.mutateAsync(data as PropertiesCreate);
-        }
+        await submitProperty(data);
       } catch (error) {
-        console.log("error happende = =>\n", "Save draft error:", error);
-        toast.error("Failed to save draft. Please try again.");
+        console.error("Save draft error:", error);
+        toast.error(
+          error instanceof Error ? error.message : "Failed to save draft. Please try again.",
+        );
       }
     });
   };
@@ -151,19 +157,18 @@ export default function PropertyForm({
   const handlePublish = async () => {
     const data = form.getValues();
     data.status = "active";
-    await handleSubmit(data);
+    try {
+      await submitProperty(data);
+    } catch (error) {
+      console.error("Form submission error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to save property. Please try again.",
+      );
+    }
   };
 
-  // React Query v5 typing can make isLoading not directly visible on the result in some cases,
-  // use `status === 'loading'` which is stable and typed.
-  const isSubmitting = createPropertyMutation.isPending || updatePropertyMutation.isPending;
-
-  const existingProperty = isEdit
-    ? {
-        id: initialData?.id || "",
-        images: (initialData?.images as string[]) || [],
-      }
-    : undefined;
+  const isBusy =
+    createPropertyMutation.isPending || updatePropertyMutation.isPending || isSubmittingDraft;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
@@ -214,16 +219,6 @@ export default function PropertyForm({
                 />
               </div>
             </div>
-            <Button
-              type="button"
-              variant={"outline"}
-              onClick={() => {
-                toast("Hello from button");
-              }}
-            >
-              hello
-            </Button>
-
             {/* Basic Information - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
               <BasicInfoSection control={form.control as any} />
@@ -284,10 +279,7 @@ export default function PropertyForm({
 
             {/* Images Upload - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
-              <ImagesUploadSection
-                control={form.control as any}
-                existingProperty={existingProperty}
-              />
+              <ImagesUploadSection />
             </div>
 
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
@@ -305,25 +297,28 @@ export default function PropertyForm({
                     type="button"
                     variant="outline"
                     onClick={handleSaveDraft}
-                    disabled={isSubmittingDraft}
+                    disabled={isBusy}
                     size="lg"
-                    className="flex "
                   >
                     {isSubmittingDraft ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
                       <Save className="h-5 w-5" />
                     )}
-                    Save as Draft
+                    {isSubmittingDraft ? "Saving..." : "Save as Draft"}
                   </Button>
 
-                  <Button type="submit" disabled={isSubmitting} size="lg" className="flex">
-                    {isSubmitting ? (
+                  <Button type="submit" disabled={isBusy} size="lg">
+                    {createPropertyMutation.isPending || updatePropertyMutation.isPending ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
                       <Eye className="h-5 w-5" />
                     )}
-                    {isEdit ? "Update Property" : "Publish Property"}
+                    {createPropertyMutation.isPending || updatePropertyMutation.isPending
+                      ? "Saving..."
+                      : isEdit
+                        ? "Update Property"
+                        : "Publish Property"}
                   </Button>
                 </div>
 

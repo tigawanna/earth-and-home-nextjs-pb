@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PropertiesResponse } from "@/types/domain-types";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Building2, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
@@ -50,6 +51,7 @@ export function RecentPropertiesCard({ properties, className }: RecentProperties
                       fill
                       className="object-cover"
                       sizes="80px"
+                      unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">

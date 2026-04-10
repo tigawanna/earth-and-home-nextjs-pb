@@ -13,6 +13,7 @@ import {
   PropertiesResponse,
   UsersResponse,
 } from "@/types/domain-types";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -49,7 +50,13 @@ export function FavoriteRow({ fav, onRemove }: FavoriteRowProps) {
       <div className="flex items-start gap-4">
         <div className="w-24 h-16 relative rounded-md overflow-hidden bg-muted/40 flex-shrink-0">
           {imageUrl ? (
-            <Image src={imageUrl} alt={prop?.title || "property"} fill className="object-cover" />
+            <Image
+              src={imageUrl}
+              alt={prop?.title || "property"}
+              fill
+              className="object-cover"
+              unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
+            />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
               No image

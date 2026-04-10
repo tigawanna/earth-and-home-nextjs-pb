@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { PropertiesResponse } from "@/types/domain-types";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Building2 } from "lucide-react";
 import Image from "next/image";
@@ -84,6 +85,7 @@ export function RecentFavoritesCard({ favorites }: RecentFavoritesCardProps) {
                     fill
                     className="object-cover"
                     sizes="64px"
+                    unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">

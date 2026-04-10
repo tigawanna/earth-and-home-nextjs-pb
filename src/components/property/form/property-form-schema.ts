@@ -40,6 +40,7 @@ export const PropertyFormSchema = z.object({
   annual_taxes: z.number().optional(),
   available_from: z.string().optional(),
   image_url: z.string().optional(),
+  featured_image_index: z.number().int().min(0).optional(),
   images: z.array(z.union([z.string(), z.instanceof(File)])).nullable(),
   video_url: z.string().optional(),
   virtual_tour_url: z.string().optional(),

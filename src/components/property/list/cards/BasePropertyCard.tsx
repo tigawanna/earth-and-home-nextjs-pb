@@ -1,8 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
-import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
-import { Calendar, Home, MapPin } from "lucide-react";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
+import { getPrimaryDisplayImageUrl } from "@/lib/property/resolve-thumbnail-url";
+import { Home, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -47,8 +48,6 @@ export function BasePropertyCard({
     city,
     state,
     country,
-    image_url,
-    images,
     listing_type,
     property_type,
     price,
@@ -58,18 +57,7 @@ export function BasePropertyCard({
     status,
   } = property;
 
-  // Get the primary image or first gallery image
-  const primaryImageFilename =
-    image_url ||
-    (Array.isArray(images) && images.length > 0
-      ? typeof images[0] === "string"
-        ? images[0]
-        : null
-      : null);
-
-  const imageUrl = primaryImageFilename
-    ? resolvePropertyThumbnailUrl(property, primaryImageFilename, "400x300")
-    : null;
+  const imageUrl = getPrimaryDisplayImageUrl(property, "400x300");
 
   // Get main price from the unified price field (previously sale_price/rental_price are now merged into price)
   const mainPrice = price;
@@ -90,6 +78,7 @@ export function BasePropertyCard({
               priority={false}
               sizes="(max-width:768px) 100vw, 400px"
               className="object-cover select-none group-hover:scale-105 transition-transform duration-300"
+              unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
             />
             {/* Soft gradient for legibility */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -151,45 +140,38 @@ export function BasePropertyCard({
         </div>
       </div>
 
-      {/* Content */}
-      <CardContent className="p-1">
-        {/* Property Type Badge */}
-        {property_type ? (
-          <div className="mb-2">
-            <Badge className="border-gray-600 bg-gray-100 text-gray-800 text-[10px] font-medium uppercase tracking-wide">
+      <CardContent className="px-4 pt-3 pb-4 space-y-2">
+        <div className="flex items-center gap-2">
+          {property_type ? (
+            <Badge
+              variant="outline"
+              className="text-[10px] font-semibold uppercase tracking-wider"
+            >
               {property_type.replace(/_/g, " ")}
             </Badge>
-          </div>
-        ) : null}
-
-        <div className="flex flex-wrap items-start justify-between mb-3">
-          <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
-            {title ?? "Untitled Property"}
-          </h3>
-          <div className="text-right min-w-fit flex items-center">
-            <div className="font-bold text-xl text-primary">
-              {mainPrice ? formatPrice(currency, mainPrice) : "Price on request"}
-            </div>
-            {listing_type === "rent" ? (
-              <div className="text-sm text-muted-foreground">/month</div>
-            ) : null}
-          </div>
+          ) : null}
         </div>
 
-        <div className="flex items-center text-muted-foreground mb-3">
-          <MapPin className="w-4 h-4 mr-1" />
+        <h3 className="font-semibold text-base leading-tight line-clamp-1 group-hover:text-primary transition-colors">
+          {title ?? "Untitled Property"}
+        </h3>
+
+        <div className="flex items-baseline gap-1">
+          <span className="font-bold text-lg text-primary">
+            {mainPrice ? formatPrice(currency, mainPrice) : "Price on request"}
+          </span>
+          {listing_type === "rent" && mainPrice ? (
+            <span className="text-xs text-muted-foreground">/month</span>
+          ) : null}
+        </div>
+
+        <div className="flex items-center text-muted-foreground">
+          <MapPin className="w-3.5 h-3.5 mr-1 shrink-0" />
           <span className="text-sm line-clamp-1">{locationLabel || "Location not specified"}</span>
         </div>
 
         {property.description ? (
-          <p className="text-sm text-muted-foreground mb-4 line-clamp-1">{property.description}</p>
-        ) : null}
-
-        {property.available_from ? (
-          <div className="flex items-center text-sm text-muted-foreground mb-4">
-            <Calendar className="w-4 h-4 mr-1" />
-            <span>Available from {new Date(property.available_from).toLocaleDateString()}</span>
-          </div>
+          <p className="text-sm text-muted-foreground line-clamp-2">{property.description}</p>
         ) : null}
       </CardContent>
     </div>

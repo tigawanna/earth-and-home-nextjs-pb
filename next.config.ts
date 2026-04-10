@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "127.0.0.1",
       },
+      {
+        protocol: "https",
+        hostname: "pub-be82a0d2544b4a45967d88385834cc9b.r2.dev",
+      },
     ],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 31536000, // 1 year

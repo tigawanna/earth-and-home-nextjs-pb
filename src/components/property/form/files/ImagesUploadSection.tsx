@@ -3,116 +3,146 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
-import { Image as ImageIcon, Plus, Star, Trash2, Upload } from "lucide-react";
+import type { PropertiesResponse } from "@/types/domain-types";
+import {
+  Image as ImageIcon,
+  Loader2,
+  Plus,
+  Star,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
-import { Control, useFieldArray, useWatch } from "react-hook-form";
+import { useCallback, useRef, useState } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
-import { PropertyFormData } from "../property-form-schema";
+import type { PropertyFormData } from "../property-form-schema";
 
-interface ImagesUploadSectionProps {
-  control: Control<PropertyFormData>;
-  existingProperty?: {
-    id: string;
-    images?: string[];
+const PLACEHOLDER_PROPERTY = {} as PropertiesResponse;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
+async function uploadFile(file: File): Promise<string> {
+  const fd = new FormData();
+  fd.append("file", file);
+  const res = await fetch("/api/media", { method: "POST", body: fd });
+  const json = (await res.json()) as {
+    success?: boolean;
+    url?: string;
+    proxyPath?: string;
+    message?: string;
   };
+  const stored = json.proxyPath ?? json.url;
+  if (!res.ok || !json.success || !stored) {
+    throw new Error(json.message ?? "Upload failed");
+  }
+  return stored;
 }
 
-type ImageItem = File | string;
-
-function getImageName(item: ImageItem): string {
-  if (!item) return "Unknown file";
-
-  if (item instanceof File) {
-    return item.name;
-  }
-
-  if (typeof item === "string") {
-    return item;
-  }
-
-  return "Unknown file";
+function getDisplayName(item: string): string {
+  if (!item) return "Unknown";
+  const segments = item.split("/");
+  const last = segments[segments.length - 1];
+  return decodeURIComponent(last);
 }
 
-function getImageSize(item: ImageItem): string {
-  if (!item) return "—";
-
-  if (item instanceof File) {
-    return `${(item.size / 1024 / 1024).toFixed(2)} MB`;
-  }
-
-  return "—";
+function getPreviewUrl(item: string): string {
+  if (!item) return "/apple-icon.png";
+  return resolvePropertyThumbnailUrl(PLACEHOLDER_PROPERTY, item);
 }
 
-export function ImagesUploadSection({ control, existingProperty }: ImagesUploadSectionProps) {
-  // @ts-expect-error - useFieldArray expects object arrays but images is (string | File)[]
-  const { append, remove } = useFieldArray({ control, name: "images" });
-
-  const { images } = useWatch({ control });
-  const fields: ImageItem[] = images || [];
-
-  const [featuredImageIndex, setFeaturedImageIndex] = useState<number>(0);
+export function ImagesUploadSection() {
+  const { control, setValue, getValues } = useFormContext<PropertyFormData>();
+  const images = (useWatch({ control, name: "images" }) ?? []) as (string | File)[];
+  const featuredImageIndex = useWatch({ control, name: "featured_image_index" }) ?? 0;
+  const [uploadingCount, setUploadingCount] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileSelect = (files: FileList | null) => {
-    if (!files) return;
+  const urlImages = images.filter((i): i is string => typeof i === "string");
 
-    const validFiles: File[] = [];
-    const maxFileSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  const setImages = useCallback(
+    (next: string[]) => {
+      setValue("images", next as (string | File)[], { shouldDirty: true });
+    },
+    [setValue],
+  );
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
+  const handleFileSelect = useCallback(
+    async (fileList: FileList | null) => {
+      if (!fileList) return;
 
-      if (!allowedTypes.includes(file.type)) {
-        toast.error(`${file.name} is not a supported image format`);
-        continue;
+      const validFiles: File[] = [];
+      for (let i = 0; i < fileList.length; i++) {
+        const f = fileList[i];
+        if (!ALLOWED_TYPES.includes(f.type)) {
+          toast.error(`${f.name}: unsupported format`);
+          continue;
+        }
+        if (f.size > MAX_FILE_SIZE) {
+          toast.error(`${f.name}: too large (max 5 MB)`);
+          continue;
+        }
+        validFiles.push(f);
       }
 
-      if (file.size > maxFileSize) {
-        toast.error(`${file.name} is too large (max 5MB)`);
-        continue;
+      if (validFiles.length === 0) return;
+
+      setUploadingCount((c) => c + validFiles.length);
+
+      const results = await Promise.allSettled(
+        validFiles.map(async (f) => {
+          const url = await uploadFile(f);
+          return url;
+        }),
+      );
+
+      setUploadingCount((c) => c - validFiles.length);
+
+      const newUrls: string[] = [];
+      let failCount = 0;
+      for (const r of results) {
+        if (r.status === "fulfilled") {
+          newUrls.push(r.value);
+        } else {
+          failCount++;
+        }
       }
-      validFiles.push(file);
-    }
 
-    if (validFiles.length > 0) {
-      validFiles.forEach((file) => append(file as any));
-      toast.success(`${validFiles.length} image(s) added`);
-    }
-  };
+      if (newUrls.length > 0) {
+        const current = (getValues("images") ?? []).filter(
+          (i): i is string => typeof i === "string",
+        );
+        setImages([...current, ...newUrls]);
+        toast.success(`${newUrls.length} image(s) uploaded`);
+      }
+      if (failCount > 0) {
+        toast.error(`${failCount} image(s) failed to upload`);
+      }
 
-  const handleRemoveImage = (index: number) => {
-    remove(index);
-    // Adjust featured image index if needed
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    },
+    [getValues, setImages],
+  );
+
+  const handleRemove = (index: number) => {
+    const next = [...urlImages];
+    next.splice(index, 1);
+    setImages(next);
     if (featuredImageIndex === index) {
-      setFeaturedImageIndex(0);
+      setValue("featured_image_index", 0);
     } else if (featuredImageIndex > index) {
-      setFeaturedImageIndex(featuredImageIndex - 1);
+      setValue("featured_image_index", featuredImageIndex - 1);
     }
-    toast.success("Image removed");
   };
 
   const handleSetFeatured = (index: number) => {
-    setFeaturedImageIndex(index);
+    setValue("featured_image_index", index);
     toast.success("Featured image updated");
   };
 
-  const getImagePreview = (item: ImageItem): string => {
-    if (!item) return "/apple-icon.png";
-    if (item instanceof File) {
-      return URL.createObjectURL(item);
-    }
-
-    if (typeof item === "string") {
-      if (item.startsWith("http://") || item.startsWith("https://")) {
-        return item;
-      }
-    }
-
-    return "/apple-icon.png";
-  };
+  const isUploading = uploadingCount > 0;
 
   return (
     <Card>
@@ -120,20 +150,25 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
         <CardTitle className="flex items-center gap-2">
           <ImageIcon className="h-5 w-5" />
           Property Images
-          {fields?.length > 0 && (
+          {urlImages.length > 0 && (
             <Badge variant="secondary">
-              {fields?.length} image{fields?.length !== 1 ? "s" : ""}
+              {urlImages.length} image{urlImages.length !== 1 ? "s" : ""}
+            </Badge>
+          )}
+          {isUploading && (
+            <Badge variant="outline" className="gap-1">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Uploading {uploadingCount}
             </Badge>
           )}
         </CardTitle>
         <CardDescription>
-          Upload high-quality images of your property. The first image will be used as the featured
-          image.
+          Upload high-quality images of your property. The starred image is used as the featured
+          image. Images upload immediately.
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* Upload Section */}
         <div className="space-y-4">
           <input
             ref={fileInputRef}
@@ -158,117 +193,87 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             className="w-full"
+            disabled={isUploading}
           >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Images
+            {isUploading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4 mr-2" />
+            )}
+            {isUploading ? `Uploading ${uploadingCount}...` : "Add Images"}
           </Button>
         </div>
 
-        {/* Image Gallery */}
-        {fields?.length > 0 && (
+        {urlImages.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium">Selected Images</h4>
+              <h4 className="text-sm font-medium">Uploaded Images</h4>
               <div className="text-xs text-muted-foreground">
                 Click the star to set as featured image
               </div>
             </div>
 
-            {/* Debug info - remove this later */}
-            {process.env.NODE_ENV === "development" && (
-              <pre className="text-xs  p-2 rounded">
-                {JSON.stringify(
-                  fields.map((field) => {
-                    if (typeof field === "string") {
-                      return { name: field, type: "string" };
-                    }
-                    return { name: field.name, type: "file" };
-                  }),
-                  null,
-                  2,
-                )}
-              </pre>
-            )}
-
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {fields.map((field, index) => {
-                // Safely extract the actual value from the field
-                const imageItem = field;
-
-                if (typeof imageItem === "string") {
-                  return;
-                }
-                return (
-                  <div
-                    key={index}
-                    className={`group relative overflow-hidden rounded-lg border transition-all hover:shadow-md ${
-                      index === featuredImageIndex ? "ring-2 ring-primary ring-offset-2" : ""
-                    }`}
-                  >
-                    {/* Image */}
-                    <div className="aspect-video relative bg-muted">
-                      <Image
-                        src={getImagePreview(imageItem)}
-                        alt={getImageName(imageItem)}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = "/apple-icon.png";
-                        }}
-                      />
-
-                      {/* Featured Badge */}
-                      {index === featuredImageIndex && (
-                        <div className="absolute top-2 left-2">
-                          <Badge className="bg-primary text-primary-foreground flex items-center gap-1">
-                            <Star className="h-3 w-3 fill-current" />
-                            Featured
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Image Info */}
-                    <div className="p-3 space-y-2">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium truncate">{getImageName(imageItem)}</p>
-                        <p className="text-xs text-muted-foreground">{getImageSize(imageItem)}</p>
+              {urlImages.map((url, index) => (
+                <div
+                  key={`img-${index}-${url.slice(-32)}`}
+                  className={`group relative overflow-hidden rounded-lg border transition-all hover:shadow-md ${
+                    index === featuredImageIndex ? "ring-2 ring-primary ring-offset-2" : ""
+                  }`}
+                >
+                  <div className="aspect-video relative bg-muted">
+                    <Image
+                      src={getPreviewUrl(url)}
+                      alt={getDisplayName(url)}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      unoptimized={propertyImageNeedsUnoptimized(getPreviewUrl(url))}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/apple-icon.png";
+                      }}
+                    />
+                    {index === featuredImageIndex && (
+                      <div className="absolute top-2 left-2">
+                        <Badge className="bg-primary text-primary-foreground flex items-center gap-1">
+                          <Star className="h-3 w-3 fill-current" />
+                          Featured
+                        </Badge>
                       </div>
+                    )}
+                  </div>
 
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-1">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-7 px-2"
-                          onClick={() => handleSetFeatured(index)}
-                          disabled={index === featuredImageIndex}
-                        >
-                          <Star className="h-3 w-3" />
-                        </Button>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="h-7 px-2 hover:bg-destructive hover:text-destructive-foreground ml-auto"
-                          onClick={() => handleRemoveImage(index)}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
+                  <div className="p-3 space-y-2">
+                    <p className="text-sm font-medium truncate">{getDisplayName(url)}</p>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-7 px-2"
+                        onClick={() => handleSetFeatured(index)}
+                        disabled={index === featuredImageIndex}
+                      >
+                        <Star className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-7 px-2 hover:bg-destructive hover:text-destructive-foreground ml-auto"
+                        onClick={() => handleRemove(index)}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Upload Tips */}
-        {fields.length === 0 && (
+        {urlImages.length === 0 && !isUploading && (
           <div className="text-center py-8 text-muted-foreground">
             <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p className="text-sm">No images uploaded yet</p>
@@ -276,14 +281,13 @@ export function ImagesUploadSection({ control, existingProperty }: ImagesUploadS
           </div>
         )}
 
-        {/* Tips */}
         <div className="text-xs text-muted-foreground space-y-1">
           <p>
             💡 <strong>Tips:</strong>
           </p>
           <ul className="list-disc list-inside space-y-1 ml-4">
             <li>Upload high-resolution images (at least 1200px wide) for best results</li>
-            <li>The first image will be used as the main property photo</li>
+            <li>The starred image is used as the main property photo</li>
             <li>Supported formats: JPEG, PNG, WebP, GIF</li>
             <li>Maximum file size: 5MB per image</li>
           </ul>

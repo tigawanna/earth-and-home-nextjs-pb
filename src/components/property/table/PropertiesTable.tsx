@@ -25,6 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { PropertiesResponse } from "@/types/domain-types";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Edit, Eye, MoreHorizontal, Search, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -159,6 +160,7 @@ export function PropertiesTable({ properties }: PropertiesTableProps) {
                             alt={p.title || "property"}
                             fill
                             className="object-cover"
+                            unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-muted-foreground">

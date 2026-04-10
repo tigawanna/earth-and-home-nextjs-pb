@@ -4,6 +4,24 @@ import type { InferSelectModel } from "drizzle-orm";
 
 export type PropertyRow = InferSelectModel<typeof properties>;
 
+function normalizeImagesJson(raw: unknown): string[] {
+  if (raw == null) return [];
+  if (Array.isArray(raw)) {
+    return raw.filter((x): x is string => typeof x === "string" && x.trim() !== "");
+  }
+  if (typeof raw === "string") {
+    try {
+      const p = JSON.parse(raw) as unknown;
+      if (Array.isArray(p)) {
+        return p.filter((x): x is string => typeof x === "string" && x.trim() !== "");
+      }
+    } catch {
+      return [];
+    }
+  }
+  return [];
+}
+
 export function mapDrizzleRowToPropertiesResponse(row: PropertyRow): PropertiesResponse {
   const created = row.createdAt ? new Date(row.createdAt).toISOString() : new Date().toISOString();
   const updated = row.updatedAt ? new Date(row.updatedAt).toISOString() : created;
@@ -11,7 +29,7 @@ export function mapDrizzleRowToPropertiesResponse(row: PropertyRow): PropertiesR
   const listingType = row.listingType === "rent" ? "rent" : "sale";
 
   const imagesList = row.images ?? [];
-  const imagesNormalized = Array.isArray(imagesList) ? imagesList : [];
+  const imagesNormalized = normalizeImagesJson(imagesList);
 
   return {
     id: row.id,

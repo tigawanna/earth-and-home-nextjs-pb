@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageWithProperty } from "@/data-access-layer/messages/properties-messages-collection";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { formatDistanceToNow } from "date-fns";
 import { Clock, Home, User } from "lucide-react";
@@ -41,6 +42,7 @@ export function PropertyMessageCard({ message, onViewMessages }: PropertyMessage
                   fill
                   className="object-cover"
                   sizes="48px"
+                  unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
                 />
               ) : (
                 <div className="h-full w-full flex items-center justify-center">

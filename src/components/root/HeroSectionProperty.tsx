@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { getServerSideFeaturedProperties } from "@/data-access-layer/properties/server-side-property-queries";
-import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
+import { getPrimaryDisplayImageUrl } from "@/lib/property/resolve-thumbnail-url";
 import { Bath, Bed, HomeIcon, MapPin, Square } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,41 +28,25 @@ export async function HeroSectionProperty({
   title: _title = "Featured Property",
   showAddButton: _showAddButton = false,
 }: HeroSectionPropertyProps) {
-  // Fetch featured properties from the backend - we'll just get the top one
-  const { success, properties } = await getServerSideFeaturedProperties({ limit: 1 });
+  try {
+    const { success, properties } = await getServerSideFeaturedProperties({ limit: 1 });
+    const featuredProperty = success && properties.length > 0 ? properties[0] : null;
 
-  // Get the first property if available
-  const featuredProperty = success && properties.length > 0 ? properties[0] : null;
+    const imageUrl = featuredProperty
+      ? getPrimaryDisplayImageUrl(featuredProperty, "1200x800")
+      : null;
 
-  // Get image URL if available
-  let imageUrl = null;
-  if (featuredProperty) {
-    const primaryImageFilename =
-      featuredProperty.image_url ||
-      (Array.isArray(featuredProperty.images) && featuredProperty.images.length > 0
-        ? typeof featuredProperty.images[0] === "string"
-          ? featuredProperty.images[0]
-          : null
-        : null);
+    const locationLabel = featuredProperty
+      ? [featuredProperty.city, featuredProperty.state, featuredProperty.country]
+          .filter(Boolean)
+          .join(", ")
+      : "";
 
-    if (primaryImageFilename) {
-      imageUrl = resolvePropertyThumbnailUrl(featuredProperty, primaryImageFilename, "1200x800");
+    if (!featuredProperty) {
+      return <HeroSectionPropertyFallback />;
     }
-  }
 
-  // Get location string
-  const locationLabel = featuredProperty
-    ? [featuredProperty.city, featuredProperty.state, featuredProperty.country]
-        .filter(Boolean)
-        .join(", ")
-    : "";
-
-  // Early return with fallback design if no property is found
-  if (!featuredProperty) {
-    return <HeroSectionPropertyFallback />;
-  }
-
-  return (
+    return (
     <section className="w-full py-8 ">
       <div className="container mx-auto px-4">
         {/* Single featured property in a giant card */}
@@ -83,6 +68,7 @@ export async function HeroSectionProperty({
                       priority={true}
                       sizes="(max-width:768px) 100vw, 50vw"
                       className="object-cover"
+                      unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
                     />
                     {/* Soft gradient for legibility */}
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -159,7 +145,10 @@ export async function HeroSectionProperty({
         ) : null}
       </div>
     </section>
-  );
+    );
+  } catch {
+    return <HeroSectionPropertyFallback />;
+  }
 }
 
 export function HeroSectionPropertyFallback() {

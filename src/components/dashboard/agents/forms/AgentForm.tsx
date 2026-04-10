@@ -51,8 +51,10 @@ import {
   User,
   Users,
 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { getSafeDashboardReturnPath } from "@/lib/safe-return-path";
 import { AgentFormData, agentFormSchema } from "./agents-schemas";
 
 interface AgentFormProps {
@@ -62,6 +64,8 @@ interface AgentFormProps {
 
 export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
   const isEdit = !!initialAgent;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const form = useForm<AgentFormData>({
     resolver: zodResolver(agentFormSchema),
@@ -89,6 +93,12 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
     onSuccess: () => {
       toast.success("Agent profile created successfully");
       form.reset();
+      const next = getSafeDashboardReturnPath(searchParams.get("returnTo"));
+      if (next) {
+        router.push(next);
+      } else {
+        router.push("/dashboard/agents");
+      }
     },
     onError: (error) => {
       toast.error("Failed to create agent profile");

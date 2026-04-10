@@ -19,7 +19,9 @@ export default async function EditPropertyPage({ params }: EditPropertyPageProps
     throw redirect("/auth/signin");
   }
   if (!agent) {
-    throw redirect("/dashboard/agents/new");
+    throw redirect(
+      `/dashboard/agents/new?returnTo=${encodeURIComponent(`/dashboard/properties/${id}/edit`)}`,
+    );
   }
 
   const { property } = await getServerSidePropertyById(id, user.id);

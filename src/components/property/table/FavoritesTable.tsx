@@ -25,6 +25,7 @@ import type {
   PropertiesResponse,
   UsersResponse,
 } from "@/types/domain-types";
+import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
 import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
@@ -108,6 +109,7 @@ export function FavoritesTable(_props: FavoritesTableProps) {
                             alt={property?.title || "property"}
                             fill
                             className="object-cover"
+                            unoptimized={propertyImageNeedsUnoptimized(imageUrl)}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-muted-foreground">

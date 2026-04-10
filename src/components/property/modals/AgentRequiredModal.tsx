@@ -34,7 +34,10 @@ export function AgentRequiredModal({ open, onOpenChange }: AgentRequiredModalPro
 
         <DialogFooter className="sm:flex-col sm:space-x-0 sm:space-y-2">
           <Button asChild className="w-full">
-            <Link href="/dashboard/agents/add">
+            <Link
+              href={`/dashboard/agents/new?returnTo=${encodeURIComponent("/dashboard/properties/add")}`}
+              prefetch={false}
+            >
               <UserPlus className="w-4 h-4" />
               Add Agent
             </Link>
