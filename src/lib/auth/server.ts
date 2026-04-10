@@ -5,12 +5,23 @@ import { admin } from "better-auth/plugins";
 import { drizzle } from "drizzle-orm/d1";
 import * as schema from "@/db/schema";
 
+const defaultLocalAuthUrl = "http://localhost:3010";
+
 function authSecret(env: CloudflareEnv) {
-  return env.BETTER_AUTH_SECRET || process.env.BETTER_AUTH_SECRET || "";
+  const fromEnv = env.BETTER_AUTH_SECRET || process.env.BETTER_AUTH_SECRET;
+  if (fromEnv) {
+    return fromEnv;
+  }
+  return "01234567890123456789012345678901";
 }
 
 function authBaseUrl(env: CloudflareEnv) {
-  return env.BETTER_AUTH_URL || process.env.BETTER_AUTH_URL || "";
+  return (
+    env.BETTER_AUTH_URL ||
+    process.env.BETTER_AUTH_URL ||
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
+    defaultLocalAuthUrl
+  );
 }
 
 function googleClientId(env: CloudflareEnv) {
