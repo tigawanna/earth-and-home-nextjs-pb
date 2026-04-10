@@ -12,7 +12,7 @@ export default async function AgentReviewPage() {
   }
 
   return (
-    <section className="w-full max-w-4xl mx-auto p-6 space-y-6">
+    <section className="w-full max-w-6xl mx-auto p-6 space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Agent applications</h1>
         <p className="text-sm text-muted-foreground mt-1">
