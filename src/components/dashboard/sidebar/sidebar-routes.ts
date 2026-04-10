@@ -3,7 +3,6 @@ import {
   ClipboardList,
   Heart,
   Home,
-  Image as ImageIcon,
   MessageSquare,
   Plus,
   User,
@@ -35,7 +34,6 @@ export const addPropertyRoute: SidebarNavItem = {
 export const adminRoutes: SidebarNavItem[] = [
   { title: "User Management", href: "/dashboard/users", icon: Users },
   { title: "Agent review", href: "/dashboard/admin/agent-review", icon: ClipboardList },
-  { title: "Image upload test", href: "/dashboard/admin/image-upload-test", icon: ImageIcon },
 ];
 
 export const quickLinks: SidebarNavItem[] = [

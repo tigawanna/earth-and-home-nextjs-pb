@@ -17,7 +17,7 @@ import {
   Upload,
 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import type { PropertyFormData } from "../property-form-schema";
@@ -57,9 +57,10 @@ function getPreviewUrl(item: string): string {
 
 interface ImagesUploadSectionProps {
   propertyId?: string;
+  onUploadingChange?: (uploading: boolean) => void;
 }
 
-export function ImagesUploadSection({ propertyId }: ImagesUploadSectionProps) {
+export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUploadSectionProps) {
   const { control, setValue, getValues } = useFormContext<PropertyFormData>();
   const images = (useWatch({ control, name: "images" }) ?? []) as (string | File)[];
   const featuredImageIndex = useWatch({ control, name: "featured_image_index" }) ?? 0;
@@ -188,6 +189,16 @@ export function ImagesUploadSection({ propertyId }: ImagesUploadSectionProps) {
   };
 
   const isUploading = uploadingCount > 0;
+
+  useEffect(() => {
+    onUploadingChange?.(uploadingCount > 0);
+  }, [uploadingCount, onUploadingChange]);
+
+  useEffect(() => {
+    return () => {
+      onUploadingChange?.(false);
+    };
+  }, [onUploadingChange]);
 
   return (
     <Card>

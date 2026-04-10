@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { ImagesUploadSection } from "./files/ImagesUploadSection";
@@ -56,6 +56,7 @@ export default function PropertyForm({
   const agentId = agent.id;
   const router = useRouter();
   const [isSubmittingDraft, submitDraft] = useTransition();
+  const [imagesUploading, setImagesUploading] = useState(false);
   const initialFeaturedIndex = (() => {
     const images = initialData?.images as string[] | undefined;
     const main = initialData?.image_url;
@@ -168,7 +169,10 @@ export default function PropertyForm({
   };
 
   const isBusy =
-    createPropertyMutation.isPending || updatePropertyMutation.isPending || isSubmittingDraft;
+    createPropertyMutation.isPending ||
+    updatePropertyMutation.isPending ||
+    isSubmittingDraft ||
+    imagesUploading;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-card to-background">
@@ -279,7 +283,10 @@ export default function PropertyForm({
 
             {/* Images Upload - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
-              <ImagesUploadSection propertyId={isEdit ? propertyId : undefined} />
+              <ImagesUploadSection
+                propertyId={isEdit ? propertyId : undefined}
+                onUploadingChange={setImagesUploading}
+              />
             </div>
 
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
@@ -299,6 +306,11 @@ export default function PropertyForm({
                     onClick={handleSaveDraft}
                     disabled={isBusy}
                     size="lg"
+                    title={
+                      imagesUploading
+                        ? "Wait until image uploads finish before saving"
+                        : undefined
+                    }
                   >
                     {isSubmittingDraft ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
@@ -308,7 +320,16 @@ export default function PropertyForm({
                     {isSubmittingDraft ? "Saving..." : "Save as Draft"}
                   </Button>
 
-                  <Button type="submit" disabled={isBusy} size="lg">
+                  <Button
+                    type="submit"
+                    disabled={isBusy}
+                    size="lg"
+                    title={
+                      imagesUploading
+                        ? "Wait until image uploads finish before publishing"
+                        : undefined
+                    }
+                  >
                     {createPropertyMutation.isPending || updatePropertyMutation.isPending ? (
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
