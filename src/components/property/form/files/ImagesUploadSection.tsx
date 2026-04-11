@@ -33,10 +33,9 @@ async function uploadFile(file: File): Promise<string> {
   const json = (await res.json()) as {
     success?: boolean;
     url?: string;
-    proxyPath?: string;
     message?: string;
   };
-  const stored = json.proxyPath ?? json.url;
+  const stored = json.url;
   if (!res.ok || !json.success || !stored) {
     throw new Error(json.message ?? "Upload failed");
   }

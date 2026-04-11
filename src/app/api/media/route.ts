@@ -53,13 +53,16 @@ export async function POST(request: NextRequest) {
       httpMetadata: { contentType: file.type },
     });
 
-    const proxyPath = `/api/media/${key.split("/").map(encodeURIComponent).join("/")}`;
-    const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL;
-    const url = r2Base
-      ? `${r2Base.replace(/\/+$/, "")}/${key}`
-      : proxyPath;
+    const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.trim()?.replace(/\/+$/, "") ?? "";
+    if (!r2Base) {
+      return NextResponse.json(
+        { success: false, message: "NEXT_PUBLIC_R2_PUBLIC_URL is not configured" },
+        { status: 503 },
+      );
+    }
 
-    return NextResponse.json({ success: true, url, proxyPath });
+    const url = `${r2Base}/${key}`;
+    return NextResponse.json({ success: true, url });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";
     return NextResponse.json({ success: false, message }, { status: 500 });
