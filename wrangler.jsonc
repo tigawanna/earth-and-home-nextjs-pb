@@ -32,7 +32,7 @@
       "database_name": "earth-and-home-db",
       "database_id": "fce5d319-e0d2-4c33-aea1-31bc18908686",
       "migrations_dir": "drizzle",
-      "remote": true
+      "remote": false
     }
   ],
   "images": {
