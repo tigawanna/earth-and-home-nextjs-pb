@@ -9,11 +9,14 @@ export function isValidStoredImagePath(path: string): boolean {
 export function storedPathToPublicUrl(storedPath: string): string {
   if (!storedPath) return "";
   if (storedPath.startsWith("http://") || storedPath.startsWith("https://")) {
+    console.log("storedPathToPublicUrl:storedPath === ", storedPath);
     return storedPath;
   }
   const base = getR2Base();
   if (!base) return storedPath;
-  return `${base}${storedPath}`;
+  const finalPath = new URL(storedPath, base).toString();
+  console.log("storedPathToPublicUrl:finalPath === ", finalPath);
+  return finalPath;
 }
 
 export function sanitizeStoredPath(raw: string): string {
