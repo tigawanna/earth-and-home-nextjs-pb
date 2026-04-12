@@ -11,7 +11,13 @@ interface AgentsListProps {
   searchQuery?: string;
 }
 
-async function AgentsGrid({ searchQuery }: { searchQuery?: string }) {
+async function AgentsGrid({
+  searchQuery,
+  currentUser,
+}: {
+  searchQuery?: string;
+  currentUser: UsersResponse;
+}) {
   const agentsResult = await getServerSideAgents({
     q: searchQuery,
     limit: 50,
@@ -38,7 +44,7 @@ async function AgentsGrid({ searchQuery }: { searchQuery?: string }) {
   return (
     <>
       {agents.map((agent) => (
-        <AgentCard key={agent.id} agent={agent} />
+        <AgentCard key={agent.id} agent={agent} currentUserId={currentUser.id} />
       ))}
     </>
   );
@@ -70,7 +76,7 @@ export function AgentsList({ currentUser, searchQuery }: AgentsListProps) {
       {/* Agents Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Suspense fallback={<AgentsGridSkeleton />}>
-          <AgentsGrid searchQuery={searchQuery} />
+          <AgentsGrid searchQuery={searchQuery} currentUser={currentUser} />
         </Suspense>
       </div>
     </div>

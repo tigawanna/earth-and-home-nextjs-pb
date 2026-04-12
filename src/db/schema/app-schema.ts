@@ -121,6 +121,46 @@ export const propertyMessages = sqliteTable(
   ],
 );
 
+export const directConversations = sqliteTable(
+  "direct_conversations",
+  {
+    id: text("id").primaryKey(),
+    userLowerId: text("user_lower_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    userHigherId: text("user_higher_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [
+    uniqueIndex("direct_conversations_pair_uidx").on(t.userLowerId, t.userHigherId),
+    index("direct_conversations_user_lower_idx").on(t.userLowerId),
+    index("direct_conversations_user_higher_idx").on(t.userHigherId),
+  ],
+);
+
+export const directMessages = sqliteTable(
+  "direct_messages",
+  {
+    id: text("id").primaryKey(),
+    conversationId: text("conversation_id")
+      .notNull()
+      .references(() => directConversations.id, { onDelete: "cascade" }),
+    senderUserId: text("sender_user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+  },
+  (t) => [
+    index("direct_messages_conversation_id_idx").on(t.conversationId),
+    index("direct_messages_sender_idx").on(t.senderUserId),
+  ],
+);
+
 export const agentsRelations = relations(agents, ({ one, many }) => ({
   user: one(user, {
     fields: [agents.userId],
@@ -170,6 +210,22 @@ export const propertyMessagesRelations = relations(propertyMessages, ({ one }) =
   adminUser: one(user, {
     relationName: "property_message_admin",
     fields: [propertyMessages.adminId],
+    references: [user.id],
+  }),
+}));
+
+export const directConversationsRelations = relations(directConversations, ({ many }) => ({
+  messages: many(directMessages),
+}));
+
+export const directMessagesRelations = relations(directMessages, ({ one }) => ({
+  conversation: one(directConversations, {
+    fields: [directMessages.conversationId],
+    references: [directConversations.id],
+  }),
+  sender: one(user, {
+    relationName: "direct_message_sender",
+    fields: [directMessages.senderUserId],
     references: [user.id],
   }),
 }));

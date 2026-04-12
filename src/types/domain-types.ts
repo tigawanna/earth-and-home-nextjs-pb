@@ -270,3 +270,32 @@ export interface PropertyMessagesCreate {
   parent?: string;
   admin_id?: string;
 }
+
+export interface DirectConversationResponse {
+  id: string;
+  user_lower_id: string;
+  user_higher_id: string;
+  created: string;
+  updated: string;
+}
+
+export interface DirectMessageResponse {
+  id: string;
+  conversation_id: string;
+  sender_user_id: string;
+  body: string;
+  created: string;
+  updated: string;
+}
+
+export interface DirectConversationListItem {
+  conversation: DirectConversationResponse;
+  other_user: UsersResponse;
+  last_message: DirectMessageResponse | null;
+}
+
+export interface DirectMessageCreatePayload {
+  body: string;
+  conversation_id?: string;
+  recipient_user_id?: string;
+}

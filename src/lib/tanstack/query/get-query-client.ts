@@ -15,6 +15,7 @@ export const queryKeyPrefixes = {
   dashboard: "dashboard",
   favorite: "favorite",
   property_messages: "property_messages",
+  direct_messages: "direct_messages",
   users: "users",
   user: "user",
   admin: "admin",

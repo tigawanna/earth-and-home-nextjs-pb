@@ -1,19 +1,23 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AgentsResponse, UsersResponse } from "@/types/domain-types";
-import { Building2, CheckCircle, Mail, MapPin, Phone, Star, User } from "lucide-react";
+import { Building2, CheckCircle, Mail, MapPin, MessageCircle, Phone, Star, User } from "lucide-react";
 import Link from "next/link";
 
 interface AgentCardProps {
   agent: AgentsResponse & { expand?: { user_id?: UsersResponse } };
+  currentUserId: string;
 }
 
-export function AgentCard({ agent }: AgentCardProps) {
+export function AgentCard({ agent, currentUserId }: AgentCardProps) {
   const user = agent.expand?.user_id;
+  const agentUserId = user?.id;
+  const canMessage = Boolean(agentUserId && agentUserId !== currentUserId);
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <Link href={`/dashboard/agents/${agent.id}`} className="hover:text-primary">
+    <Card className="hover:shadow-md transition-shadow flex flex-col">
+      <Link href={`/dashboard/agents/${agent.id}`} className="hover:text-primary block flex-1">
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="min-w-0 flex-1">
@@ -96,6 +100,17 @@ export function AgentCard({ agent }: AgentCardProps) {
           </div>
         </CardContent>
       </Link>
+
+      {canMessage && (
+        <div className="px-6 pb-6 pt-0">
+          <Button className="w-full" variant="default" asChild>
+            <Link href={`/dashboard/messages/direct/open?userId=${encodeURIComponent(agentUserId!)}`}>
+              <MessageCircle className="h-4 w-4" />
+              Message
+            </Link>
+          </Button>
+        </div>
+      )}
     </Card>
   );
 }
