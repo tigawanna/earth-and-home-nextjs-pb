@@ -37,5 +37,8 @@
   ],
   "images": {
     "binding": "IMAGES"
+  },
+  "vars": {
+    "NEXT_PUBLIC_R2_PUBLIC_URL": "https://pub-054a1003a0504e408cf45abf0c951a6d.r2.dev"
   }
 }

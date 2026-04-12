@@ -1,4 +1,28 @@
+let _r2BaseCache: string | null = null;
+
+export async function initR2Base(): Promise<void> {
+  if (_r2BaseCache !== null) return;
+  const fromEnv = process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.trim().replace(/\/+$/, "");
+  if (fromEnv) {
+    _r2BaseCache = fromEnv;
+    return;
+  }
+  try {
+    const { getCloudflareContext } = await import("@opennextjs/cloudflare");
+    const { env } = await getCloudflareContext({ async: true });
+    const cfVal = env.NEXT_PUBLIC_R2_PUBLIC_URL;
+    if (cfVal) {
+      _r2BaseCache = cfVal.trim().replace(/\/+$/, "");
+      return;
+    }
+  } catch {
+    // not running on Cloudflare Workers
+  }
+  _r2BaseCache = "";
+}
+
 function getR2Base(): string {
+  if (_r2BaseCache !== null) return _r2BaseCache;
   return process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.trim().replace(/\/+$/, "") ?? "";
 }
 
@@ -9,14 +33,11 @@ export function isValidStoredImagePath(path: string): boolean {
 export function storedPathToPublicUrl(storedPath: string): string {
   if (!storedPath) return "";
   if (storedPath.startsWith("http://") || storedPath.startsWith("https://")) {
-    console.log("storedPathToPublicUrl:storedPath === ", storedPath);
     return storedPath;
   }
   const base = getR2Base();
   if (!base) return storedPath;
-  const finalPath = new URL(storedPath, base).toString();
-  console.log("storedPathToPublicUrl:finalPath === ", finalPath);
-  return finalPath;
+  return `${base}${storedPath}`;
 }
 
 export function sanitizeStoredPath(raw: string): string {

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { initR2Base } from "@/data-access-layer/media/image-url";
 import { unstable_cache } from "next/cache";
 import {
   getFavoritePropertiesFromD1,
@@ -27,6 +28,7 @@ export async function getProperties({
   userId?: string;
   agentId?: string;
 } = {}) {
+  await initR2Base();
   try {
     const cached = unstable_cache(
       async () =>
@@ -61,6 +63,7 @@ export async function getProperties({
 }
 
 export async function getServerSidePropertyById(identifier: string, _userId?: string) {
+  await initR2Base();
   try {
     const cached = unstable_cache(
       async () => getPropertyByIdFromD1(identifier),
@@ -152,6 +155,7 @@ export async function getServerSideFeaturedProperties({
 }: {
   limit?: number;
 } = {}) {
+  await initR2Base();
   try {
     const cached = unstable_cache(
       async () => getFeaturedPropertiesFromD1(limit),

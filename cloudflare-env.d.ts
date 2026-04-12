@@ -6,6 +6,11 @@ declare namespace Cloudflare {
     NEXTJS_ENV: string;
     WORKER_SELF_REFERENCE: Fetcher /* earth-and-home-nextjs */;
     ASSETS: Fetcher;
+    DB: D1Database;
+    MEDIA: R2Bucket;
+    NEXT_INC_CACHE_R2_BUCKET: R2Bucket;
+    IMAGES: unknown;
+    NEXT_PUBLIC_R2_PUBLIC_URL: string;
   }
 }
 interface CloudflareEnv extends Cloudflare.Env {}
