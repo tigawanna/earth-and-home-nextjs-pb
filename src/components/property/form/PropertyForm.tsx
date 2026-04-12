@@ -37,6 +37,7 @@ import { LocationSection } from "./sections/LocationSection";
 import { MediaSection } from "./sections/MediaSection";
 import { ParkingSection } from "./sections/ParkingSection";
 import { PricingSection } from "./sections/PricingSection";
+import { DevRandomPropertyFillButton } from "./DevRandomPropertyFillButton";
 
 interface PropertyFormProps {
   initialData?: PropertyFormData & { id?: string };
@@ -210,6 +211,11 @@ export default function PropertyForm({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handlePublish)} className="space-y-8">
+            {!isEdit && (
+              <div className="flex justify-center">
+                <DevRandomPropertyFillButton agentId={agentId} />
+              </div>
+            )}
             {/* Progress Indicator */}
             <div className="bg-card rounded-xl p-6 b shadow-md shadow-primary/15">
               <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">

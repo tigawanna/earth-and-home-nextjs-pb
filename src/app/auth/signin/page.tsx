@@ -2,6 +2,7 @@ import { AuthSideview } from "@/components/auth/AuthSideview";
 import { GoogleOauthLogin } from "@/components/auth/GoogleOauthLogin";
 import { SigninForm } from "@/components/auth/SigninForm";
 import { siteinfo } from "@/config/siteinfo";
+import { isNodeEnvDevelopment } from "@/lib/env/dev-mode";
 import LinkLoadingIndicator from "@/lib/next/LinkLoadingIndicator";
 import { Metadata } from "next";
 import Link from "next/link";
@@ -42,7 +43,7 @@ export default function SigninPage() {
             >
               Sign In
             </span>
-            {process.env.NODE_ENV === "development" && <SigninForm />}
+            {isNodeEnvDevelopment() && <SigninForm />}
             <GoogleOauthLogin />
             <div className="mt-6 text-center text-sm flex flex-col justify-center items-center gap-2">
               <span className="text-muted-foreground">Don&apos;t have an account? </span>
