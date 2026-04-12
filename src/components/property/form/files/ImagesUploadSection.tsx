@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { uploadPropertyImage } from "@/data-access-layer/actions/media-actions";
 import { updatePropertyImages } from "@/data-access-layer/actions/property-actions";
 import { revalidatePropertyById } from "@/data-access-layer/actions/revalidate-actions";
 import { storedPathToPublicUrl } from "@/data-access-layer/media/image-url";
@@ -28,17 +29,11 @@ async function uploadFile(file: File, propertyId: string): Promise<string> {
   const fd = new FormData();
   fd.append("propertyId", propertyId);
   fd.append("file", file);
-  const res = await fetch("/api/media", { method: "POST", body: fd });
-  const json = (await res.json()) as {
-    success?: boolean;
-    url?: string;
-    message?: string;
-  };
-  const stored = json.url;
-  if (!res.ok || !json.success || !stored) {
-    throw new Error(json.message ?? "Upload failed");
+  const result = await uploadPropertyImage(fd);
+  if (!result.success) {
+    throw new Error(result.message);
   }
-  return stored;
+  return result.url;
 }
 
 function getDisplayName(item: string): string {
@@ -124,12 +119,14 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
       setUploadingCount((c) => c - validFiles.length);
 
       const newUrls: string[] = [];
-      let failCount = 0;
-      for (const r of results) {
+      const errors: string[] = [];
+      for (let idx = 0; idx < results.length; idx++) {
+        const r = results[idx];
         if (r.status === "fulfilled") {
           newUrls.push(r.value);
         } else {
-          failCount++;
+          const msg = r.reason instanceof Error ? r.reason.message : "Upload failed";
+          errors.push(`${validFiles[idx].name}: ${msg}`);
         }
       }
 
@@ -147,13 +144,13 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
           }
         }
       }
-      if (failCount > 0) {
-        toast.error(`${failCount} image(s) failed to upload`);
+      for (const err of errors) {
+        toast.error(err);
       }
 
       if (fileInputRef.current) fileInputRef.current.value = "";
     },
-    [getValues, persistImagesToProperty, propertyId, setImages],
+    [getValues, persistImagesToProperty, propertyId, setImages, isExisting],
   );
 
   const handleRemove = async (index: number) => {

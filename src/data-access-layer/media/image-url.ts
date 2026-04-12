@@ -1,6 +1,6 @@
-const R2_BASE = (
-  process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.trim().replace(/\/+$/, "") ?? ""
-);
+function getR2Base(): string {
+  return process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.trim().replace(/\/+$/, "") ?? "";
+}
 
 export function isValidStoredImagePath(path: string): boolean {
   return path.startsWith("/properties/") && !path.includes("..");
@@ -11,8 +11,9 @@ export function storedPathToPublicUrl(storedPath: string): string {
   if (storedPath.startsWith("http://") || storedPath.startsWith("https://")) {
     return storedPath;
   }
-  if (!R2_BASE) return storedPath;
-  return `${R2_BASE}${storedPath}`;
+  const base = getR2Base();
+  if (!base) return storedPath;
+  return `${base}${storedPath}`;
 }
 
 export function sanitizeStoredPath(raw: string): string {

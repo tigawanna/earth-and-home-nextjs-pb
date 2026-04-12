@@ -31,6 +31,9 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   experimental: {
+    serverActions: {
+      bodySizeLimit: "6mb",
+    },
     viewTransition: true,
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
   },
