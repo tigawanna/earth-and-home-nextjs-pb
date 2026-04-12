@@ -1,6 +1,12 @@
+import { agents, properties } from "@/db/schema/app-schema";
+import { mapAgentRowToAgentsResponse } from "@/data-access-layer/agents/drizzle-agent-mapper";
+import { mapSessionUserToUsersResponse } from "@/data-access-layer/user/map-session-user";
 import { getBetterAuthSession } from "@/lib/auth/get-session";
+import { getDb } from "@/lib/db/get-db";
 import { getMediaBucket } from "@/lib/media/r2";
 import { isSafeMediaObjectKey } from "@/lib/media/media-key";
+import { canManageProperty } from "@/lib/property/can-manage-property";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -24,6 +30,16 @@ export async function POST(request: NextRequest) {
     }
 
     const formData = await request.formData();
+    const propertyIdRaw = formData.get("propertyId");
+    const propertyId =
+      typeof propertyIdRaw === "string" ? propertyIdRaw.trim() : "";
+    if (!propertyId) {
+      return NextResponse.json(
+        { success: false, message: "Missing propertyId" },
+        { status: 400 },
+      );
+    }
+
     const file = formData.get("file");
 
     if (!file || !(file instanceof File)) {
@@ -41,9 +57,36 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: "File too large" }, { status: 400 });
     }
 
+    const user = mapSessionUserToUsersResponse(session.user);
+    const db = await getDb();
+    const [agentRow] = await db.select().from(agents).where(eq(agents.userId, user.id)).limit(1);
+    const agent = agentRow ? mapAgentRowToAgentsResponse(agentRow) : null;
+
+    const [existing] = await db
+      .select({
+        agentId: properties.agentId,
+        ownerId: properties.ownerId,
+      })
+      .from(properties)
+      .where(eq(properties.id, propertyId))
+      .limit(1);
+
+    if (!existing) {
+      return NextResponse.json({ success: false, message: "Property not found" }, { status: 404 });
+    }
+
+    if (
+      !canManageProperty(user, agent, {
+        agent_id: existing.agentId,
+        owner_id: existing.ownerId ?? "",
+      })
+    ) {
+      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+    }
+
     const bucket = await getMediaBucket();
     const ext = extFromType(file.type, file.name);
-    const key = `properties/${session.user.id}/${crypto.randomUUID()}.${ext}`;
+    const key = `properties/${propertyId}/${crypto.randomUUID()}.${ext}`;
     if (!isSafeMediaObjectKey(key)) {
       return NextResponse.json({ success: false, message: "Invalid key" }, { status: 500 });
     }

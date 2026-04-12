@@ -26,8 +26,9 @@ const PLACEHOLDER_PROPERTY = {} as PropertiesResponse;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
-async function uploadFile(file: File): Promise<string> {
+async function uploadFile(file: File, propertyId: string): Promise<string> {
   const fd = new FormData();
+  fd.append("propertyId", propertyId);
   fd.append("file", file);
   const res = await fetch("/api/media", { method: "POST", body: fd });
   const json = (await res.json()) as {
@@ -96,6 +97,10 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
   const handleFileSelect = useCallback(
     async (fileList: FileList | null) => {
       if (!fileList) return;
+      if (!propertyId) {
+        toast.error("Save the listing first, then add images from the edit page.");
+        return;
+      }
 
       const validFiles: File[] = [];
       for (let i = 0; i < fileList.length; i++) {
@@ -117,7 +122,7 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
 
       const results = await Promise.allSettled(
         validFiles.map(async (f) => {
-          const url = await uploadFile(f);
+          const url = await uploadFile(f, propertyId);
           return url;
         }),
       );
@@ -156,6 +161,8 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
     },
     [getValues, persistImagesToProperty, propertyId, setImages],
   );
+
+  const canUpload = Boolean(propertyId);
 
   const handleRemove = async (index: number) => {
     const next = [...urlImages];
@@ -220,6 +227,12 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
         <CardDescription>
           Upload high-quality images of your property. The starred image is used as the featured
           image. Images upload immediately.
+          {!canUpload && (
+            <span className="block mt-2 text-amber-600 dark:text-amber-500">
+              Save your listing as a draft or publish it first, then open this page from the
+              dashboard to upload images.
+            </span>
+          )}
         </CardDescription>
       </CardHeader>
 
@@ -235,8 +248,12 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
           />
 
           <div
-            className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
-            onClick={() => fileInputRef.current?.click()}
+            className={`border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center transition-colors ${
+              canUpload
+                ? "hover:border-muted-foreground/50 cursor-pointer"
+                : "opacity-60 cursor-not-allowed"
+            }`}
+            onClick={() => canUpload && fileInputRef.current?.click()}
           >
             <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
             <p className="text-sm font-medium mb-2">Click to upload images</p>
@@ -248,7 +265,7 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             className="w-full"
-            disabled={isUploading}
+            disabled={isUploading || !canUpload}
           >
             {isUploading ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />

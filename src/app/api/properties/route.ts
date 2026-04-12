@@ -5,6 +5,8 @@ import { getDb } from "@/lib/db/get-db";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+const toStr = (v: unknown): string | null => (v != null ? String(v) : null);
+const toNum = (v: unknown): number | null => (v != null ? Number(v) : null);
 export async function POST(request: NextRequest) {
   const session = await getBetterAuthSession();
   if (!session?.user) {
@@ -17,8 +19,6 @@ export async function POST(request: NextRequest) {
   const now = new Date();
   const id = crypto.randomUUID();
 
-  const toStr = (v: unknown): string | null => (v != null ? String(v) : null);
-  const toNum = (v: unknown): number | null => (v != null ? Number(v) : null);
 
   const agentId = String(body.agent_id);
   const db = await getDb();
