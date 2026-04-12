@@ -3,10 +3,10 @@ import "server-only";
 import { getBetterAuthSession } from "@/lib/auth/get-session";
 import {
   countPropertyMessagesFromD1,
-  getPaginatedUsersFromD1,
   getPropertyStatsFromD1,
   getRecentActivitiesFromD1,
 } from "../properties/drizzle-property-queries";
+import { getPaginatedUsersFromD1 } from "../user/drizzle-user-queries";
 
 export async function getAdminDashboardStats() {
   try {

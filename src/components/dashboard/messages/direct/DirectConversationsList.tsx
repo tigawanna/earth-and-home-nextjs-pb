@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { fetchDirectConversations } from "@/data-access-layer/actions/message-actions";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import type { DirectConversationListItem } from "@/types/domain-types";
 import { useQuery } from "@tanstack/react-query";
@@ -9,23 +10,14 @@ import { formatDistanceToNow } from "date-fns";
 import { MessageCircle, User } from "lucide-react";
 import Link from "next/link";
 
-interface ListApiResponse {
-  success: boolean;
-  result: DirectConversationListItem[];
-}
-
-async function fetchDirectConversations(): Promise<ListApiResponse> {
-  const res = await fetch("/api/direct-messages");
-  if (!res.ok) {
-    throw new Error("Failed to load conversations");
-  }
-  return (await res.json()) as ListApiResponse;
-}
-
 export default function DirectConversationsList() {
   const { data, isLoading, error } = useQuery({
     queryKey: [queryKeyPrefixes.direct_messages, "list"] as const,
-    queryFn: fetchDirectConversations,
+    queryFn: async () => {
+      const result = await fetchDirectConversations();
+      if (!result.success) throw new Error(result.message);
+      return result.data;
+    },
     refetchInterval: 30000,
   });
 
@@ -45,7 +37,7 @@ export default function DirectConversationsList() {
     );
   }
 
-  const items = data?.result ?? [];
+  const items = data ?? [];
   if (items.length === 0) {
     return (
       <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">

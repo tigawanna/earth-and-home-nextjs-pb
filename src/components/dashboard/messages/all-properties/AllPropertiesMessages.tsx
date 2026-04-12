@@ -1,5 +1,5 @@
 "use client";
-import { getPropertyMessageSummaries } from "@/data-access-layer/messages/properties-messages-collection";
+import { fetchParentMessages } from "@/data-access-layer/actions/message-actions";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -14,11 +14,14 @@ interface AllPropertiesMessagesProps {
 export default function AllPropertiesMessages({
   onViewPropertyMessages,
 }: AllPropertiesMessagesProps) {
-  // Use TanStack Query for better caching and state management
   const { data, isLoading, error } = useQuery({
     queryKey: [queryKeyPrefixes.property_messages] as const,
-    queryFn: getPropertyMessageSummaries,
-    refetchInterval: 30000, // Refetch every 30 seconds
+    queryFn: async () => {
+      const result = await fetchParentMessages();
+      if (!result.success) throw new Error(result.message);
+      return result.data;
+    },
+    refetchInterval: 30000,
   });
 
   if (isLoading) {
@@ -29,7 +32,7 @@ export default function AllPropertiesMessages({
     return <PropertyMessagesError />;
   }
 
-  const messages = (Array.isArray(data?.result) ? data.result : []);
+  const messages = data ?? [];
 
   if (!messages || messages.length === 0) {
     return <NoPropertyMessages />;

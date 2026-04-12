@@ -3,11 +3,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { updatePropertyImages } from "@/data-access-layer/actions/property-actions";
 import { revalidatePropertyById } from "@/data-access-layer/actions/revalidate-actions";
-import { preparePropertyFormForApi } from "@/lib/property/prepare-property-for-api";
+import { storedPathToPublicUrl } from "@/data-access-layer/media/image-url";
 import { propertyImageNeedsUnoptimized } from "@/lib/property/property-image-unoptimized";
-import { resolvePropertyThumbnailUrl } from "@/lib/property/resolve-thumbnail-url";
-import type { PropertiesResponse } from "@/types/domain-types";
 import {
   Image as ImageIcon,
   Loader2,
@@ -22,7 +21,6 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import type { PropertyFormData } from "../property-form-schema";
 
-const PLACEHOLDER_PROPERTY = {} as PropertiesResponse;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
@@ -52,15 +50,16 @@ function getDisplayName(item: string): string {
 
 function getPreviewUrl(item: string): string {
   if (!item) return "/apple-icon.png";
-  return resolvePropertyThumbnailUrl(PLACEHOLDER_PROPERTY, item);
+  return storedPathToPublicUrl(item) || "/apple-icon.png";
 }
 
 interface ImagesUploadSectionProps {
-  propertyId?: string;
+  propertyId: string;
+  isExisting?: boolean;
   onUploadingChange?: (uploading: boolean) => void;
 }
 
-export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUploadSectionProps) {
+export function ImagesUploadSection({ propertyId, isExisting = false, onUploadingChange }: ImagesUploadSectionProps) {
   const { control, setValue, getValues } = useFormContext<PropertyFormData>();
   const images = (useWatch({ control, name: "images" }) ?? []) as (string | File)[];
   const featuredImageIndex = useWatch({ control, name: "featured_image_index" }) ?? 0;
@@ -77,30 +76,25 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
   );
 
   const persistImagesToProperty = useCallback(async () => {
-    if (!propertyId) return;
-    const prepared = preparePropertyFormForApi(getValues());
-    const res = await fetch(`/api/properties/${propertyId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        images: prepared.images ?? [],
-        image_url: prepared.image_url ?? "",
-      }),
-    });
-    const json = (await res.json()) as { success?: boolean; message?: string };
-    if (!res.ok || !json.success) {
-      throw new Error(json.message ?? "Failed to save images");
+    if (!isExisting) return;
+    const currentImages = (getValues("images") ?? []).filter(
+      (i): i is string => typeof i === "string",
+    );
+    const featuredIdx = Math.min(
+      Math.max(0, getValues("featured_image_index") ?? 0),
+      Math.max(0, currentImages.length - 1),
+    );
+    const imageUrl = currentImages[featuredIdx] ?? "";
+    const result = await updatePropertyImages(propertyId, currentImages, imageUrl);
+    if (!result.success) {
+      throw new Error(result.message);
     }
     await revalidatePropertyById(propertyId);
-  }, [propertyId, getValues]);
+  }, [isExisting, propertyId, getValues]);
 
   const handleFileSelect = useCallback(
     async (fileList: FileList | null) => {
       if (!fileList) return;
-      if (!propertyId) {
-        toast.error("Save the listing first, then add images from the edit page.");
-        return;
-      }
 
       const validFiles: File[] = [];
       for (let i = 0; i < fileList.length; i++) {
@@ -145,7 +139,7 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
         );
         setImages([...current, ...newUrls]);
         toast.success(`${newUrls.length} image(s) uploaded`);
-        if (propertyId) {
+        if (isExisting) {
           try {
             await persistImagesToProperty();
           } catch {
@@ -162,8 +156,6 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
     [getValues, persistImagesToProperty, propertyId, setImages],
   );
 
-  const canUpload = Boolean(propertyId);
-
   const handleRemove = async (index: number) => {
     const next = [...urlImages];
     next.splice(index, 1);
@@ -173,7 +165,7 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
     } else if (featuredImageIndex > index) {
       setValue("featured_image_index", featuredImageIndex - 1);
     }
-    if (propertyId) {
+    if (isExisting) {
       try {
         await persistImagesToProperty();
       } catch {
@@ -185,7 +177,7 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
   const handleSetFeatured = async (index: number) => {
     setValue("featured_image_index", index);
     toast.success("Featured image updated");
-    if (propertyId) {
+    if (isExisting) {
       try {
         await persistImagesToProperty();
       } catch {
@@ -227,12 +219,6 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
         <CardDescription>
           Upload high-quality images of your property. The starred image is used as the featured
           image. Images upload immediately.
-          {!canUpload && (
-            <span className="block mt-2 text-amber-600 dark:text-amber-500">
-              Save your listing as a draft or publish it first, then open this page from the
-              dashboard to upload images.
-            </span>
-          )}
         </CardDescription>
       </CardHeader>
 
@@ -248,12 +234,8 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
           />
 
           <div
-            className={`border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center transition-colors ${
-              canUpload
-                ? "hover:border-muted-foreground/50 cursor-pointer"
-                : "opacity-60 cursor-not-allowed"
-            }`}
-            onClick={() => canUpload && fileInputRef.current?.click()}
+            className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center transition-colors hover:border-muted-foreground/50 cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
           >
             <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
             <p className="text-sm font-medium mb-2">Click to upload images</p>
@@ -265,7 +247,7 @@ export function ImagesUploadSection({ propertyId, onUploadingChange }: ImagesUpl
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             className="w-full"
-            disabled={isUploading || !canUpload}
+            disabled={isUploading}
           >
             {isUploading ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />

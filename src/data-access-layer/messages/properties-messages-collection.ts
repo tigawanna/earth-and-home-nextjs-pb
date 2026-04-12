@@ -3,6 +3,9 @@ import type {
   PropertyMessagesResponse,
   UsersResponse,
 } from "@/types/domain-types";
+import {
+  createPropertyMessage as createPropertyMessageAction,
+} from "../actions/message-actions";
 
 export type PropertyMessageWithExpansion = PropertyMessagesResponse & {
   expand?: {
@@ -27,53 +30,18 @@ export type PropertyMessageSummary = {
   lastActivity: string;
 };
 
-export async function getPropertyMessageSummaries() {
-  try {
-    const res = await fetch("/api/messages?type=parent");
-    const json = (await res.json()) as { success: boolean; result: PropertyMessageWithExpansion[] };
-    return {
-      result: json.result ?? null,
-      success: json.success,
-    };
-  } catch {
-    return {
-      result: null,
-      success: false,
-      error: "Failed to fetch property message summaries",
-    };
-  }
-}
-
-export async function getPropertyMessages(
-  propertyId: string,
-): Promise<PropertyMessageWithExpansion[]> {
-  try {
-    const res = await fetch(`/api/messages?propertyId=${encodeURIComponent(propertyId)}`);
-    const json = (await res.json()) as { success: boolean; result: PropertyMessageWithExpansion[] };
-    return json.result ?? [];
-  } catch {
-    return [];
-  }
-}
-
 export async function createPropertyMessage(data: {
   property_id: string;
   user_id: string;
   body: string;
   type?: "parent" | "reply";
 }): Promise<PropertyMessagesResponse | null> {
-  try {
-    const res = await fetch("/api/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...data,
-        type: data.type || "parent",
-      }),
-    });
-    const json = (await res.json()) as { success: boolean; result: PropertyMessagesResponse | null };
-    return json.result ?? null;
-  } catch {
-    return null;
-  }
+  const result = await createPropertyMessageAction({
+    property_id: data.property_id,
+    user_id: data.user_id,
+    body: data.body,
+    type: data.type || "parent",
+  });
+  if (!result.success) return null;
+  return result.data;
 }

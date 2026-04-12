@@ -71,17 +71,20 @@ export async function POST(request: NextRequest) {
       .where(eq(properties.id, propertyId))
       .limit(1);
 
-    if (!existing) {
-      return NextResponse.json({ success: false, message: "Property not found" }, { status: 404 });
-    }
-
-    if (
-      !canManageProperty(user, agent, {
-        agent_id: existing.agentId,
-        owner_id: existing.ownerId ?? "",
-      })
-    ) {
-      return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+    if (existing) {
+      if (
+        !canManageProperty(user, agent, {
+          agent_id: existing.agentId,
+          owner_id: existing.ownerId ?? "",
+        })
+      ) {
+        return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+      }
+    } else {
+      const canCreate = agent && (user.is_admin || agent.approval_status === "approved");
+      if (!canCreate) {
+        return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
+      }
     }
 
     const bucket = await getMediaBucket();
@@ -96,15 +99,7 @@ export async function POST(request: NextRequest) {
       httpMetadata: { contentType: file.type },
     });
 
-    const r2Base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.trim()?.replace(/\/+$/, "") ?? "";
-    if (!r2Base) {
-      return NextResponse.json(
-        { success: false, message: "NEXT_PUBLIC_R2_PUBLIC_URL is not configured" },
-        { status: 503 },
-      );
-    }
-
-    const storedPath = `/${key.replace(/^\/+/, "")}`;
+    const storedPath = `/${key}`;
     return NextResponse.json({ success: true, url: storedPath });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";

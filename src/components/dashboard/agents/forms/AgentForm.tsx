@@ -38,6 +38,11 @@ import type {
   AgentsUpdate,
   UsersResponse,
 } from "@/types/domain-types";
+import {
+  createAgent,
+  updateAgent,
+  deleteAgent,
+} from "@/data-access-layer/actions/agent-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -82,13 +87,9 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
 
   const createMutation = useMutation({
     mutationFn: async (data: AgentsCreate) => {
-      const res = await fetch("/api/agents", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, user_id: currentUser.id }),
-      });
-      if (!res.ok) throw new Error("Failed to create agent");
-      return res.json();
+      const result = await createAgent({ ...data, user_id: currentUser.id });
+      if (!result.success) throw new Error(result.message);
+      return result.data;
     },
     onSuccess: () => {
       toast.success("Agent profile created successfully");
@@ -101,42 +102,35 @@ export function AgentForm({ initialAgent, currentUser }: AgentFormProps) {
       }
     },
     onError: (error) => {
-      toast.error("Failed to create agent profile");
-      console.error("Agent create error:", error);
+      toast.error(error.message || "Failed to create agent profile");
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: async (data: AgentsUpdate & { id: string }) => {
-      const res = await fetch(`/api/agents/${data.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Failed to update agent");
-      return res.json();
+      const result = await updateAgent(data);
+      if (!result.success) throw new Error(result.message);
+      return result.data;
     },
     onSuccess: () => {
       toast.success("Agent profile updated successfully");
     },
     onError: (error) => {
-      toast.error("Failed to update agent profile");
-      console.error("Agent update error:", error);
+      toast.error(error.message || "Failed to update agent profile");
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (data: { id: string }) => {
-      const res = await fetch(`/api/agents/${data.id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete agent");
-      return res.json();
+      const result = await deleteAgent(data.id);
+      if (!result.success) throw new Error(result.message);
+      return result;
     },
     onSuccess: () => {
       toast.success("Agent profile deleted successfully");
     },
     onError: (error) => {
-      toast.error("Failed to delete agent profile");
-      console.error("Agent delete error:", error);
+      toast.error(error.message || "Failed to delete agent profile");
     },
   });
 

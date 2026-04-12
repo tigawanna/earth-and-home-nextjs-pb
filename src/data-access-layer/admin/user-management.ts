@@ -3,7 +3,7 @@ import "server-only";
 import { user as userTable } from "@/db/schema/auth-schema";
 import { getDb } from "@/lib/db/get-db";
 import { getBetterAuthSession } from "@/lib/auth/get-session";
-import { getPaginatedUsersFromD1 } from "../properties/drizzle-property-queries";
+import { getPaginatedUsersFromD1 } from "../user/drizzle-user-queries";
 import { eq } from "drizzle-orm";
 
 export async function getServerSideUsers({

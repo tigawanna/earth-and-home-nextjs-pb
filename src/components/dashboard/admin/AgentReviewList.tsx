@@ -21,6 +21,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import type { AgentsResponse, UsersResponse } from "@/types/domain-types";
+import {
+  fetchPendingAgents,
+  approveAgent,
+  rejectAgent,
+} from "@/data-access-layer/actions/agent-actions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowDownUp, Check, Search, X } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryStates } from "nuqs";
@@ -28,31 +33,6 @@ import { useTransition } from "react";
 import ResponsivePagination from "react-responsive-pagination";
 
 type PendingItem = { agent: AgentsResponse; user: UsersResponse };
-
-type PendingAgentsResponse = {
-  success?: boolean;
-  items: PendingItem[];
-  page: number;
-  limit: number;
-  totalItems: number;
-  totalPages: number;
-};
-
-async function fetchPending(
-  search: string,
-  page: number,
-  sortOrder: "asc" | "desc",
-): Promise<PendingAgentsResponse> {
-  const params = new URLSearchParams({
-    search,
-    page: String(page),
-    limit: "10",
-    sortOrder,
-  });
-  const res = await fetch(`/api/admin/pending-agents?${params.toString()}`);
-  if (!res.ok) throw new Error("Failed to load");
-  return res.json();
-}
 
 function AgentReviewTableSkeleton({ rows = 6 }: { rows?: number }) {
   return (
@@ -141,14 +121,18 @@ export function AgentReviewList() {
 
   const { data, isLoading, error, isFetching } = useQuery({
     queryKey: ["admin", "pending-agents", search, page, sortOrder],
-    queryFn: () => fetchPending(search, page, sortOrder),
+    queryFn: async () => {
+      const result = await fetchPendingAgents({ search, page, limit: 10, sortOrder });
+      if (!result.success) throw new Error(result.message);
+      return result.data;
+    },
   });
 
   const approveMutation = useMutation({
     mutationFn: async (agentId: string) => {
-      const res = await fetch(`/api/admin/agents/${agentId}/approve`, { method: "POST" });
-      if (!res.ok) throw new Error("Approve failed");
-      return res.json();
+      const result = await approveAgent(agentId);
+      if (!result.success) throw new Error(result.message);
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "pending-agents"] });
@@ -157,9 +141,9 @@ export function AgentReviewList() {
 
   const rejectMutation = useMutation({
     mutationFn: async (agentId: string) => {
-      const res = await fetch(`/api/admin/agents/${agentId}/reject`, { method: "POST" });
-      if (!res.ok) throw new Error("Reject failed");
-      return res.json();
+      const result = await rejectAgent(agentId);
+      if (!result.success) throw new Error(result.message);
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin", "pending-agents"] });

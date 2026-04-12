@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { toggleFavorite as toggleFavoriteAction } from "@/data-access-layer/actions/favorite-actions";
 import { PropertyWithFavorites } from "@/data-access-layer/properties/property-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
@@ -27,15 +28,9 @@ export function FavoriteProperty({ userId, property }: FavoritePropertyProps) {
 
   const { mutate: toggleFavorite, isPending } = useMutation({
     mutationFn: async ({ user_id, property_id }: { user_id: string; property_id: string }) => {
-      const res = await fetch("/api/favorites", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ propertyId: property_id, userId: user_id }),
-      });
-      if (!res.ok) {
-        throw new Error("Failed to toggle favorite");
-      }
-      return res.json() as Promise<ToggleFavoriteResponse>;
+      const result = await toggleFavoriteAction({ propertyId: property_id, userId: user_id });
+      if (!result.success) throw new Error(result.message);
+      return result;
     },
     onSuccess: (result) => {
       setFavoriteState(result.isFavorited);

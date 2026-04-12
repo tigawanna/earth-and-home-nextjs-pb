@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "pub-be82a0d2544b4a45967d88385834cc9b.r2.dev",
+        hostname: "pub-054a1003a0504e408cf45abf0c951a6d.r2.dev",
       },
     ],
     formats: ["image/webp", "image/avif"],

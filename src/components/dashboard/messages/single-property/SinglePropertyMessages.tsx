@@ -3,6 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  createPropertyMessage,
+  fetchMessageReplies,
+} from "@/data-access-layer/actions/message-actions";
+import {
   PropertyMessagesCreate,
   PropertyMessagesResponse,
   UsersResponse,
@@ -15,11 +19,6 @@ interface SinglePropertyMessagesProps {
   propertyId: string;
   user: UsersResponse;
   messageParent: PropertyMessagesResponse;
-}
-
-interface MessagesApiResponse {
-  success: boolean;
-  result: PropertyMessagesResponse[];
 }
 
 export default function SinglePropertyMessages({
@@ -35,19 +34,17 @@ export default function SinglePropertyMessages({
 
   const { data } = useQuery({
     queryKey: ["property_messages", parentId],
-    queryFn: async (): Promise<MessagesApiResponse> => {
-      const res = await fetch(`/api/messages?parentId=${parentId}`);
-      if (!res.ok) {
-        throw new Error("Failed to fetch messages");
-      }
-      return (await res.json()) as MessagesApiResponse;
+    queryFn: async () => {
+      const result = await fetchMessageReplies(parentId);
+      if (!result.success) throw new Error(result.message);
+      return result.data;
     },
     refetchInterval: 5000,
   });
 
   const allMessages: PropertyMessagesResponse[] = [
     messageParent,
-    ...(data?.result ?? []),
+    ...(data ?? []),
   ];
 
   const scrollToBottom = () => {
@@ -62,15 +59,9 @@ export default function SinglePropertyMessages({
 
   const sendMessageMutation = useMutation({
     mutationFn: async (payload: PropertyMessagesCreate) => {
-      const res = await fetch("/api/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) {
-        throw new Error("Failed to send message");
-      }
-      return res.json();
+      const result = await createPropertyMessage(payload);
+      if (!result.success) throw new Error(result.message);
+      return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["property_messages", parentId] });

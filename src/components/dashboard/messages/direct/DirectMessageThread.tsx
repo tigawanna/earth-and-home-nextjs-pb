@@ -2,6 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  fetchConversationMessages,
+  sendDirectMessage,
+} from "@/data-access-layer/actions/message-actions";
 import { queryKeyPrefixes } from "@/lib/tanstack/query/get-query-client";
 import type { DirectMessageResponse } from "@/types/domain-types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,11 +17,6 @@ interface DirectMessageThreadProps {
   currentUserId: string;
 }
 
-interface ThreadApiResponse {
-  success: boolean;
-  result: DirectMessageResponse[];
-}
-
 export function DirectMessageThread({ conversationId, currentUserId }: DirectMessageThreadProps) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState("");
@@ -25,17 +24,15 @@ export function DirectMessageThread({ conversationId, currentUserId }: DirectMes
 
   const { data, isLoading } = useQuery({
     queryKey: [queryKeyPrefixes.direct_messages, "thread", conversationId] as const,
-    queryFn: async (): Promise<ThreadApiResponse> => {
-      const res = await fetch(`/api/direct-messages/${encodeURIComponent(conversationId)}`);
-      if (!res.ok) {
-        throw new Error("Failed to load messages");
-      }
-      return (await res.json()) as ThreadApiResponse;
+    queryFn: async () => {
+      const result = await fetchConversationMessages(conversationId);
+      if (!result.success) throw new Error(result.message);
+      return result.data;
     },
     refetchInterval: 5000,
   });
 
-  const messages = data?.result ?? [];
+  const messages = data ?? [];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -49,15 +46,9 @@ export function DirectMessageThread({ conversationId, currentUserId }: DirectMes
 
   const sendMutation = useMutation({
     mutationFn: async (body: string) => {
-      const res = await fetch("/api/direct-messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ conversation_id: conversationId, body }),
-      });
-      if (!res.ok) {
-        throw new Error("Failed to send");
-      }
-      return res.json();
+      const result = await sendDirectMessage({ conversation_id: conversationId, body });
+      if (!result.success) throw new Error(result.message);
+      return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

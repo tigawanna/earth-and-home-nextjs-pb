@@ -28,6 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { AgentsResponse, AgentsUpdate, UsersResponse } from "@/types/domain-types";
+import { updateAgent } from "@/data-access-layer/actions/agent-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Pencil } from "lucide-react";
@@ -59,13 +60,9 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
 
   const updateMutation = useMutation({
     mutationFn: async (data: AgentsUpdate & { id: string }) => {
-      const res = await fetch(`/api/agents/${data.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Failed to update agent");
-      return res.json();
+      const result = await updateAgent(data);
+      if (!result.success) throw new Error(result.message);
+      return result.data;
     },
     onSuccess: () => {
       toast.success("Agent profile updated successfully");
@@ -73,8 +70,7 @@ export function EditAgentModal({ agent, currentUser, trigger }: EditAgentModalPr
       form.reset();
     },
     onError: (error) => {
-      toast.error("Failed to update agent profile");
-      console.error(error);
+      toast.error(error.message || "Failed to update agent profile");
     },
   });
 

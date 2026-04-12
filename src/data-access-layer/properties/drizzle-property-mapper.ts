@@ -1,4 +1,5 @@
 import type { PropertiesResponse } from "@/types/domain-types";
+import { sanitizeStoredPath } from "@/data-access-layer/media/image-url";
 import { properties } from "@/db/schema/app-schema";
 import type { InferSelectModel } from "drizzle-orm";
 
@@ -6,20 +7,21 @@ export type PropertyRow = InferSelectModel<typeof properties>;
 
 function normalizeImagesJson(raw: unknown): string[] {
   if (raw == null) return [];
+  let items: unknown[] = [];
   if (Array.isArray(raw)) {
-    return raw.filter((x): x is string => typeof x === "string" && x.trim() !== "");
-  }
-  if (typeof raw === "string") {
+    items = raw;
+  } else if (typeof raw === "string") {
     try {
-      const p = JSON.parse(raw) as unknown;
-      if (Array.isArray(p)) {
-        return p.filter((x): x is string => typeof x === "string" && x.trim() !== "");
-      }
+      const parsed = JSON.parse(raw) as unknown;
+      if (Array.isArray(parsed)) items = parsed;
     } catch {
       return [];
     }
   }
-  return [];
+  return items
+    .filter((x): x is string => typeof x === "string")
+    .map(sanitizeStoredPath)
+    .filter(Boolean);
 }
 
 export function mapDrizzleRowToPropertiesResponse(row: PropertyRow): PropertiesResponse {
@@ -67,7 +69,7 @@ export function mapDrizzleRowToPropertiesResponse(row: PropertyRow): PropertiesR
     hoa_fee: row.hoaFee ?? 0,
     annual_taxes: row.annualTaxes ?? 0,
     available_from: row.availableFrom ?? "",
-    image_url: row.imageUrl ?? "",
+    image_url: sanitizeStoredPath(row.imageUrl ?? ""),
     images: imagesNormalized,
     video_url: row.videoUrl ?? "",
     virtual_tour_url: row.virtualTourUrl ?? "",

@@ -10,6 +10,10 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { AgentsResponse, PropertyMessagesResponse, UsersResponse } from "@/types/domain-types";
+import {
+  createPropertyMessage,
+  fetchPropertyMessageThread,
+} from "@/data-access-layer/actions/message-actions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Loader2, Mail, MessageCircle, Phone, Send, User } from "lucide-react";
@@ -49,23 +53,6 @@ interface MessageCheckResponse {
   result: PropertyMessagesResponse | null;
 }
 
-const sendMessage = async ({ message, propertyId, userId }: SendMessagePayload) => {
-  const res = await fetch("/api/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      body: message,
-      property_id: propertyId,
-      user_id: userId,
-      type: "parent",
-    }),
-  });
-  if (!res.ok) {
-    throw new Error("Failed to send message");
-  }
-  return res.json();
-};
-
 export function PropertyContactForm({
   propertyId,
   propertyTitle,
@@ -84,11 +71,9 @@ export function PropertyContactForm({
   } = useQuery({
     queryKey: ["property_messages", propertyId, userId],
     queryFn: async (): Promise<MessageCheckResponse> => {
-      const res = await fetch(`/api/messages?propertyId=${propertyId}&userId=${userId}`);
-      if (!res.ok) {
-        return { result: null, success: false };
-      }
-      return res.json();
+      const result = await fetchPropertyMessageThread(propertyId, userId);
+      if (!result.success) return { result: null, success: false };
+      return { success: true, result: result.data };
     },
     enabled: open,
   });
@@ -103,7 +88,16 @@ export function PropertyContactForm({
   });
 
   const sendMessageMutation = useMutation({
-    mutationFn: sendMessage,
+    mutationFn: async ({ message, propertyId, userId }: SendMessagePayload) => {
+      const result = await createPropertyMessage({
+        body: message,
+        property_id: propertyId,
+        user_id: userId,
+        type: "parent",
+      });
+      if (!result.success) throw new Error(result.message);
+      return result.data;
+    },
     onSuccess: () => {
       toast.success("Message sent successfully! We'll get back to you soon.");
       reset();

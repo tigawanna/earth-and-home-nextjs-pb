@@ -23,7 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, Loader2, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { ImagesUploadSection } from "./files/ImagesUploadSection";
@@ -58,6 +58,8 @@ export default function PropertyForm({
   const router = useRouter();
   const [isSubmittingDraft, submitDraft] = useTransition();
   const [imagesUploading, setImagesUploading] = useState(false);
+  const draftPropertyId = useMemo(() => crypto.randomUUID(), []);
+  const effectivePropertyId = propertyId ?? draftPropertyId;
   const initialFeaturedIndex = (() => {
     const images = initialData?.images as string[] | undefined;
     const main = initialData?.image_url;
@@ -136,7 +138,10 @@ export default function PropertyForm({
         id: propertyId,
       });
     } else {
-      await createPropertyMutation.mutateAsync(prepared as PropertiesCreate);
+      await createPropertyMutation.mutateAsync({
+        ...(prepared as PropertiesCreate),
+        id: draftPropertyId,
+      });
     }
   };
 
@@ -287,10 +292,10 @@ export default function PropertyForm({
 
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-            {/* Images Upload - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
               <ImagesUploadSection
-                propertyId={isEdit ? propertyId : undefined}
+                propertyId={effectivePropertyId}
+                isExisting={isEdit}
                 onUploadingChange={setImagesUploading}
               />
             </div>
