@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { deletePropertyImage, uploadPropertyImage } from "@/data-access-layer/actions/media-actions";
 import { updatePropertyImages } from "@/data-access-layer/actions/property-actions";
 import { revalidatePropertyById } from "@/data-access-layer/actions/revalidate-actions";
@@ -17,7 +18,7 @@ import {
   Upload,
 } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import type { PropertyFormData } from "../property-form-schema";
@@ -48,6 +49,25 @@ function getPreviewUrl(item: string): string {
   return storedPathToPublicUrl(item) || "/apple-icon.png";
 }
 
+function computeBulkRemoval(
+  urlImages: string[],
+  featuredImageIndex: number,
+  removeUrls: Set<string>,
+): { nextImages: string[]; nextFeatured: number } {
+  const nextImages = urlImages.filter((u) => !removeUrls.has(u));
+  const featuredUrl = urlImages[featuredImageIndex];
+  let nextFeatured = 0;
+  if (nextImages.length > 0) {
+    if (featuredUrl && !removeUrls.has(featuredUrl)) {
+      const idx = nextImages.indexOf(featuredUrl);
+      nextFeatured = idx >= 0 ? idx : 0;
+    } else {
+      nextFeatured = 0;
+    }
+  }
+  return { nextImages, nextFeatured };
+}
+
 interface ImagesUploadSectionProps {
   propertyId: string;
   isExisting?: boolean;
@@ -60,6 +80,8 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
   const featuredImageIndex = useWatch({ control, name: "featured_image_index" }) ?? 0;
   const [uploadingCount, setUploadingCount] = useState(0);
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
+  const [isDeletePending, startDeleteTransition] = useTransition();
+  const [selectedUrls, setSelectedUrls] = useState<Set<string>>(() => new Set());
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const urlImages = images.filter((i): i is string => typeof i === "string");
@@ -87,6 +109,107 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
     }
     await revalidatePropertyById(propertyId);
   }, [isExisting, propertyId, getValues]);
+
+  useEffect(() => {
+    const allowed = new Set(urlImages);
+    setSelectedUrls((prev) => {
+      for (const u of prev) {
+        if (!allowed.has(u)) {
+          const next = new Set<string>();
+          for (const x of prev) {
+            if (allowed.has(x)) next.add(x);
+          }
+          return next;
+        }
+      }
+      return prev;
+    });
+  }, [urlImages]);
+
+  const toggleUrlSelected = useCallback((url: string) => {
+    setSelectedUrls((prev) => {
+      const next = new Set(prev);
+      if (next.has(url)) next.delete(url);
+      else next.add(url);
+      return next;
+    });
+  }, []);
+
+  const allUrlsSelected =
+    urlImages.length > 0 && urlImages.every((u) => selectedUrls.has(u));
+
+  const toggleSelectAll = useCallback(() => {
+    if (allUrlsSelected) {
+      setSelectedUrls(new Set());
+    } else {
+      setSelectedUrls(new Set(urlImages));
+    }
+  }, [allUrlsSelected, urlImages]);
+
+  const handleBulkRemove = () => {
+    if (selectedUrls.size === 0) return;
+    startDeleteTransition(async () => {
+      const toRemove = [...selectedUrls];
+      const removeSet = new Set(toRemove);
+      const prevImages = [...urlImages];
+      const prevFeatured = featuredImageIndex;
+      const { nextImages, nextFeatured } = computeBulkRemoval(
+        urlImages,
+        featuredImageIndex,
+        removeSet,
+      );
+      setImages(nextImages);
+      setValue("featured_image_index", nextFeatured);
+      setSelectedUrls(new Set());
+      try {
+        if (isExisting) {
+          try {
+            await persistImagesToProperty();
+          } catch {
+            toast.error("Could not update the listing. Click Update Property.");
+            setImages(prevImages);
+            setValue("featured_image_index", prevFeatured);
+            setSelectedUrls(removeSet);
+            return;
+          }
+        }
+        const results = await Promise.allSettled(
+          toRemove.map((path) => deletePropertyImage(propertyId, path)),
+        );
+        const failed: string[] = [];
+        for (let i = 0; i < results.length; i++) {
+          const r = results[i];
+          const path = toRemove[i];
+          if (r.status === "rejected") {
+            failed.push(path);
+          } else if (!r.value.success) {
+            failed.push(r.value.message);
+          }
+        }
+        if (failed.length > 0) {
+          toast.error(
+            failed.length === results.length
+              ? "Could not remove selected images from storage"
+              : `Some images could not be removed from storage (${failed.length} failed)`,
+          );
+          if (!isExisting) {
+            setImages(prevImages);
+            setValue("featured_image_index", prevFeatured);
+            setSelectedUrls(removeSet);
+          }
+        } else {
+          toast.success(`Removed ${toRemove.length} image(s)`);
+        }
+      } catch {
+        toast.error("Delete failed");
+        if (!isExisting) {
+          setImages(prevImages);
+          setValue("featured_image_index", prevFeatured);
+          setSelectedUrls(removeSet);
+        }
+      }
+    });
+  };
 
   const handleFileSelect = useCallback(
     async (fileList: FileList | null) => {
@@ -154,42 +277,50 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
     [getValues, persistImagesToProperty, propertyId, setImages, isExisting],
   );
 
-  const handleRemove = async (index: number) => {
+  const handleRemove = (index: number) => {
     const removed = urlImages[index];
     if (!removed) return;
     setDeletingIndex(index);
-    const prevImages = [...urlImages];
-    const prevFeatured = featuredImageIndex;
-    const next = [...urlImages];
-    next.splice(index, 1);
-    setImages(next);
-    if (featuredImageIndex === index) {
-      setValue("featured_image_index", 0);
-    } else if (featuredImageIndex > index) {
-      setValue("featured_image_index", featuredImageIndex - 1);
-    }
-    try {
-      if (isExisting) {
-        try {
-          await persistImagesToProperty();
-        } catch {
-          toast.error("Could not remove image from the listing. Click Update Property.");
-          setImages(prevImages);
-          setValue("featured_image_index", prevFeatured);
-          return;
-        }
+    startDeleteTransition(async () => {
+      const prevImages = [...urlImages];
+      const prevFeatured = featuredImageIndex;
+      const next = [...urlImages];
+      next.splice(index, 1);
+      setImages(next);
+      if (featuredImageIndex === index) {
+        setValue("featured_image_index", 0);
+      } else if (featuredImageIndex > index) {
+        setValue("featured_image_index", featuredImageIndex - 1);
       }
-      const del = await deletePropertyImage(propertyId, removed);
-      if (!del.success) {
-        toast.error(del.message);
+      try {
+        if (isExisting) {
+          try {
+            await persistImagesToProperty();
+          } catch {
+            toast.error("Could not remove image from the listing. Click Update Property.");
+            setImages(prevImages);
+            setValue("featured_image_index", prevFeatured);
+            return;
+          }
+        }
+        const del = await deletePropertyImage(propertyId, removed);
+        if (!del.success) {
+          toast.error(del.message);
+          if (!isExisting) {
+            setImages(prevImages);
+            setValue("featured_image_index", prevFeatured);
+          }
+        }
+      } catch {
+        toast.error("Delete failed");
         if (!isExisting) {
           setImages(prevImages);
           setValue("featured_image_index", prevFeatured);
         }
+      } finally {
+        setDeletingIndex(null);
       }
-    } finally {
-      setDeletingIndex(null);
-    }
+    });
   };
 
   const handleSetFeatured = async (index: number) => {
@@ -205,11 +336,12 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
   };
 
   const isUploading = uploadingCount > 0;
-  const isBusy = isUploading || deletingIndex !== null;
+  const isBusy = isUploading || isDeletePending;
+  const selectedCount = selectedUrls.size;
 
   useEffect(() => {
-    onUploadingChange?.(uploadingCount > 0);
-  }, [uploadingCount, onUploadingChange]);
+    onUploadingChange?.(uploadingCount > 0 || isDeletePending);
+  }, [uploadingCount, isDeletePending, onUploadingChange]);
 
   useEffect(() => {
     return () => {
@@ -234,6 +366,12 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
               Uploading {uploadingCount}
             </Badge>
           )}
+          {isDeletePending && (
+            <Badge variant="outline" className="gap-1 border-destructive/40 text-destructive">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Deleting…
+            </Badge>
+          )}
         </CardTitle>
         <CardDescription>
           Upload high-quality images of your property. The starred image is used as the featured
@@ -253,8 +391,8 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
           />
 
           <div
-            className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center transition-colors hover:border-muted-foreground/50 cursor-pointer"
-            onClick={() => fileInputRef.current?.click()}
+            className={`border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center transition-colors hover:border-muted-foreground/50 ${isBusy ? "pointer-events-none opacity-60" : "cursor-pointer"}`}
+            onClick={() => !isBusy && fileInputRef.current?.click()}
           >
             <Upload className="h-8 w-8 mx-auto mb-4 text-muted-foreground" />
             <p className="text-sm font-medium mb-2">Click to upload images</p>
@@ -266,7 +404,7 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             className="w-full"
-            disabled={isUploading}
+            disabled={isBusy}
           >
             {isUploading ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -279,10 +417,39 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
 
         {urlImages.length > 0 && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <h4 className="text-sm font-medium">Uploaded Images</h4>
-              <div className="text-xs text-muted-foreground">
-                Click the star to set as featured image
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={toggleSelectAll}
+                  disabled={isBusy}
+                >
+                  {allUrlsSelected ? "Clear selection" : "Select all"}
+                </Button>
+                {selectedCount > 0 && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="h-8 text-xs gap-1"
+                    onClick={handleBulkRemove}
+                    disabled={isBusy}
+                  >
+                    {isDeletePending ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-3 w-3" />
+                    )}
+                    Delete selected ({selectedCount})
+                  </Button>
+                )}
+                <span className="text-xs text-muted-foreground hidden sm:inline">
+                  Star sets featured
+                </span>
               </div>
             </div>
 
@@ -292,9 +459,17 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
                   key={`img-${index}-${url.slice(-32)}`}
                   className={`group relative overflow-hidden rounded-lg border transition-all hover:shadow-md ${
                     index === featuredImageIndex ? "ring-2 ring-primary ring-offset-2" : ""
-                  }`}
+                  } ${deletingIndex === index ? "opacity-70 pointer-events-none" : ""}`}
                 >
                   <div className="aspect-video relative bg-muted">
+                    <div className="absolute top-2 right-2 z-10 flex items-center gap-1 rounded-md bg-background/90 p-1 shadow-sm border border-border/50">
+                      <Checkbox
+                        checked={selectedUrls.has(url)}
+                        onCheckedChange={() => toggleUrlSelected(url)}
+                        disabled={isBusy}
+                        aria-label={`Select ${getDisplayName(url)} for bulk delete`}
+                      />
+                    </div>
                     <Image
                       src={getPreviewUrl(url)}
                       alt={getDisplayName(url)}
@@ -325,7 +500,7 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
                         size="sm"
                         className="h-7 px-2"
                         onClick={() => handleSetFeatured(index)}
-                        disabled={index === featuredImageIndex}
+                        disabled={index === featuredImageIndex || isBusy}
                       >
                         <Star className="h-3 w-3" />
                       </Button>
@@ -335,7 +510,7 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
                         size="sm"
                         className="h-7 px-2 hover:bg-destructive hover:text-destructive-foreground ml-auto"
                         onClick={() => handleRemove(index)}
-                        disabled={deletingIndex !== null}
+                        disabled={isDeletePending}
                       >
                         {deletingIndex === index ? (
                           <Loader2 className="h-3 w-3 animate-spin" />
@@ -351,7 +526,7 @@ export function ImagesUploadSection({ propertyId, isExisting = false, onUploadin
           </div>
         )}
 
-        {urlImages.length === 0 && !isUploading && (
+        {urlImages.length === 0 && !isUploading && !isDeletePending && (
           <div className="text-center py-8 text-muted-foreground">
             <ImageIcon className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p className="text-sm">No images uploaded yet</p>
