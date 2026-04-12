@@ -5,6 +5,7 @@ import { mapAgentRowToAgentsResponse } from "@/data-access-layer/agents/drizzle-
 import { mapSessionUserToUsersResponse } from "@/data-access-layer/user/map-session-user";
 import { getBetterAuthSession } from "@/lib/auth/get-session";
 import { getDb } from "@/lib/db/get-db";
+import { sanitizeStoredPath } from "@/data-access-layer/media/image-url";
 import { getMediaBucket } from "@/lib/media/r2";
 import { isSafeMediaObjectKey } from "@/lib/media/media-key";
 import { canManageProperty } from "@/lib/property/can-manage-property";
@@ -13,6 +14,20 @@ import { eq } from "drizzle-orm";
 type UploadResult =
   | { success: true; url: string }
   | { success: false; message: string };
+
+type DeleteResult = { success: true } | { success: false; message: string };
+
+function resolvePropertyMediaObjectKey(propertyId: string, storedPath: string): string | null {
+  const path = sanitizeStoredPath(storedPath);
+  if (!path) return null;
+  const key = path.startsWith("/") ? path.slice(1) : path;
+  if (!isSafeMediaObjectKey(key)) return null;
+  const expectedPrefix = `properties/${propertyId}/`;
+  if (!key.startsWith(expectedPrefix)) return null;
+  const remainder = key.slice(expectedPrefix.length);
+  if (!remainder || remainder.includes("/")) return null;
+  return key;
+}
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -89,5 +104,52 @@ export async function uploadPropertyImage(formData: FormData): Promise<UploadRes
     return { success: true, url: `/${key}` };
   } catch (err) {
     return { success: false, message: err instanceof Error ? err.message : "Upload failed" };
+  }
+}
+
+export async function deletePropertyImage(propertyId: string, storedPath: string): Promise<DeleteResult> {
+  try {
+    const session = await getBetterAuthSession();
+    if (!session?.user) {
+      return { success: false, message: "Unauthorized" };
+    }
+
+    const id = propertyId.trim();
+    if (!id) {
+      return { success: false, message: "Missing propertyId" };
+    }
+
+    const key = resolvePropertyMediaObjectKey(id, storedPath);
+    if (!key) {
+      return { success: false, message: "Invalid image path" };
+    }
+
+    const user = mapSessionUserToUsersResponse(session.user);
+    const db = await getDb();
+    const [agentRow] = await db.select().from(agents).where(eq(agents.userId, user.id)).limit(1);
+    const agent = agentRow ? mapAgentRowToAgentsResponse(agentRow) : null;
+
+    const [existing] = await db
+      .select({ agentId: properties.agentId, ownerId: properties.ownerId })
+      .from(properties)
+      .where(eq(properties.id, id))
+      .limit(1);
+
+    if (existing) {
+      if (!canManageProperty(user, agent, { agent_id: existing.agentId, owner_id: existing.ownerId ?? "" })) {
+        return { success: false, message: "Forbidden" };
+      }
+    } else {
+      const canCreate = agent && (user.is_admin || agent.approval_status === "approved");
+      if (!canCreate) {
+        return { success: false, message: "Forbidden" };
+      }
+    }
+
+    const bucket = await getMediaBucket();
+    await bucket.delete(key);
+    return { success: true };
+  } catch (err) {
+    return { success: false, message: err instanceof Error ? err.message : "Delete failed" };
   }
 }

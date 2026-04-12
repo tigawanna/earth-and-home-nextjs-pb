@@ -10,6 +10,7 @@ export interface FormFieldProps<T extends FieldValues> {
   description?: string;
   required?: boolean;
   disabled?: boolean;
+  readOnly?: boolean;
 }
 
 // Utility to create enum options for select fields

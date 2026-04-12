@@ -15,7 +15,7 @@ import {
 import { updatePropertyMutationOptions } from "@/data-access-layer/properties/property-mutations";
 import type { PropertiesResponse, PropertiesUpdate } from "@/types/domain-types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Edit, Eye, EyeOff, MapPin, MoreVertical, Sparkles, Star } from "lucide-react";
+import { Copy, Edit, Eye, EyeOff, MoreVertical, Sparkles, Star } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -121,11 +121,11 @@ export function PropertyAdminActions({ property }: PropertyAdminActionsProps) {
           onSelect={(e) => {
             e.preventDefault();
             void navigator.clipboard.writeText(property.id);
-            toast.success("Property ID copied to clipboard");
+            toast.success("Property ID copied");
           }}
         >
-          <MapPin className="mr-2 h-4 w-4" />
-          Copy property ID
+          <Copy className="mr-2 h-4 w-4" />
+          Copy ID
         </DropdownMenuItem>
         <DropdownMenuSeparator />
 

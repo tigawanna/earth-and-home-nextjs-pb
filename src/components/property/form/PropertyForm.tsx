@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { ImagesUploadSection } from "./files/ImagesUploadSection";
 import { preparePropertyFormForApi } from "@/lib/property/prepare-property-for-api";
 import { PropertyFormData, PropertyFormSchema } from "./property-form-schema";
+import { PropertyListingIdSection } from "./sections/PropertyListingIdSection";
 import { BasicInfoSection } from "./sections/BasicInfoSection";
 import { BuildingSection } from "./sections/BuildingSection";
 import { FeaturesAmenitiesSection } from "./sections/FeaturesAmenitiesSection";
@@ -76,6 +77,7 @@ export default function PropertyForm({
       ...initialData,
       agent_id: agentId,
       featured_image_index: initialFeaturedIndex,
+      id: propertyId ?? initialData?.id ?? draftPropertyId,
     },
   });
 
@@ -138,9 +140,10 @@ export default function PropertyForm({
         id: propertyId,
       });
     } else {
+      const listingId = values.id?.trim() || draftPropertyId;
       await createPropertyMutation.mutateAsync({
         ...(prepared as PropertiesCreate),
-        id: draftPropertyId,
+        id: listingId,
       });
     }
   };
@@ -234,6 +237,10 @@ export default function PropertyForm({
                 />
               </div>
             </div>
+            <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
+              <PropertyListingIdSection control={form.control} />
+            </div>
+            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
             {/* Basic Information - Enhanced */}
             <div className="bg-card rounded-xl shadow-md shadow-primary/15 overflow-hidden">
               <BasicInfoSection control={form.control as any} />

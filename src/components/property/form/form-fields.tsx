@@ -36,6 +36,8 @@ export function TextFieldComponent({
   placeholder,
   description,
   required = false,
+  disabled,
+  readOnly,
 }: FormFieldProps<PropertyFormData>) {
   return (
     <FormField
@@ -54,6 +56,8 @@ export function TextFieldComponent({
               placeholder={placeholder}
               {...field}
               value={(field.value as string) || ""}
+              disabled={disabled}
+              readOnly={readOnly}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
