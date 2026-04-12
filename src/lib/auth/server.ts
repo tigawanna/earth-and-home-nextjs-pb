@@ -43,7 +43,7 @@ export function createAuth(env: CloudflareEnv) {
       provider: "sqlite",
       schema,
     }),
-    emailAndPassword: { enabled: false },
+    emailAndPassword: { enabled: true },
     socialProviders: {
       google: {
         clientId: googleClientId(env),
