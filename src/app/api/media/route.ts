@@ -104,8 +104,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const url = `${r2Base}/${key}`;
-    return NextResponse.json({ success: true, url });
+    const storedPath = `/${key.replace(/^\/+/, "")}`;
+    return NextResponse.json({ success: true, url: storedPath });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload failed";
     return NextResponse.json({ success: false, message }, { status: 500 });

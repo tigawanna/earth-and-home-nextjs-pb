@@ -1,5 +1,24 @@
 import type { PropertiesResponse } from "@/types/domain-types";
 
+function getR2PublicBase(): string {
+  return process.env.NEXT_PUBLIC_R2_PUBLIC_URL?.trim().replace(/\/+$/, "") ?? "";
+}
+
+export function normalizeStoredPropertyImagePath(ref: string): string {
+  const t = ref.trim();
+  if (!t) return "";
+  if (/^https?:\/\//i.test(t)) {
+    try {
+      const p = new URL(t).pathname.replace(/\/+/g, "/");
+      return p.startsWith("/properties/") ? p : t;
+    } catch {
+      return "";
+    }
+  }
+  const p = (t.startsWith("/") ? t : `/${t}`).replace(/\/+/g, "/");
+  return p.startsWith("/properties/") ? p : "";
+}
+
 export function resolvePropertyThumbnailUrl(
   _property: PropertiesResponse,
   filenameOrUrl: string,
@@ -12,12 +31,19 @@ export function resolvePropertyThumbnailUrl(
   if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) {
     return trimmed;
   }
-  return trimmed || "/apple-icon.png";
+  const path = normalizeStoredPropertyImagePath(trimmed);
+  if (!path) {
+    return "/apple-icon.png";
+  }
+  const base = getR2PublicBase();
+  if (!base) {
+    return path;
+  }
+  return `${base}${path}`;
 }
 
 export function normalizeStoredPropertyImageUrl(ref: string): string {
-  if (!ref?.trim()) return ref;
-  return resolvePropertyThumbnailUrl({} as PropertiesResponse, ref.trim());
+  return normalizeStoredPropertyImagePath(ref);
 }
 
 export function getPrimaryDisplayImageUrl(
