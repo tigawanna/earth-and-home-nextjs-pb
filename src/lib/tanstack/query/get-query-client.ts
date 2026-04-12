@@ -68,7 +68,7 @@ function makeQueryClient() {
     defaultOptions: {
       queries: {
         // With SSR, set a small staleTime to avoid refetching immediately
-        staleTime: 60 * 1000,
+        staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         gcTime: TSQ_CACHE_TIME,

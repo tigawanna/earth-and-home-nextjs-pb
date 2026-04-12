@@ -5,6 +5,8 @@ import { siteinfo } from "@/config/siteinfo";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
+export const revalidate = 60;
+
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }

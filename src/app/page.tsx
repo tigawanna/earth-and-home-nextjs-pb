@@ -8,6 +8,8 @@ import { siteinfo } from "@/config/siteinfo";
 import { Metadata } from "next";
 import { Footer } from "@/components/root/Footer";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: siteinfo.title,
   description:

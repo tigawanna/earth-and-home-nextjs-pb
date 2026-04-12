@@ -1,5 +1,6 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import {
   getFavoritePropertiesFromD1,
   getPaginatedPropertiesFromD1,
@@ -27,16 +28,22 @@ export async function getProperties({
   agentId?: string;
 } = {}) {
   try {
-    return await getPaginatedPropertiesFromD1({
-      filters,
-      sortBy,
-      sortOrder,
-      page,
-      limit,
-      agentId,
-    });
+    const cached = unstable_cache(
+      async () =>
+        getPaginatedPropertiesFromD1({
+          filters,
+          sortBy,
+          sortOrder,
+          page,
+          limit,
+          agentId,
+        }),
+      ["properties-list", JSON.stringify({ filters, sortBy, sortOrder, page, limit, agentId })],
+      { tags: ["properties-list"], revalidate: 60 },
+    );
+    return await cached();
   } catch (error) {
-    console.log("error happende = =>\n", "Error fetching properties:", error);
+    console.error("Error fetching properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch properties",
@@ -55,21 +62,18 @@ export async function getProperties({
 
 export async function getServerSidePropertyById(identifier: string, _userId?: string) {
   try {
-    const r = await getPropertyByIdFromD1(identifier);
+    const cached = unstable_cache(
+      async () => getPropertyByIdFromD1(identifier),
+      ["property", identifier],
+      { tags: ["properties-list", identifier], revalidate: 60 },
+    );
+    const r = await cached();
     if (!r.success) {
-      return {
-        success: false,
-        message: r.message,
-        property: null,
-      };
+      return { success: false, message: r.message, property: null };
     }
-    return {
-      success: true,
-      property: r.result,
-      message: undefined,
-    };
+    return { success: true, property: r.result, message: undefined };
   } catch (error) {
-    console.log("error happende = =>\n", "Error fetching property:", error);
+    console.error("Error fetching property:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch property",
@@ -105,7 +109,7 @@ export async function getServerSideFavoriteProperties({
     }
     return await getFavoritePropertiesFromD1({ userId, page, limit });
   } catch (error) {
-    console.log("error happende = =>\n", "Error fetching favorite properties:", error);
+    console.error("Error fetching favorite properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch favorites",
@@ -134,7 +138,7 @@ export async function getServerSideSearchableFavorites({
   try {
     return await getSearchableFavoritesFromD1({ q, page, limit });
   } catch (error) {
-    console.log("error happende = =>\n", "Error fetching searchable favorites:", error);
+    console.error("Error fetching searchable favorites:", error);
     return {
       success: false,
       result: null,
@@ -149,9 +153,14 @@ export async function getServerSideFeaturedProperties({
   limit?: number;
 } = {}) {
   try {
-    return await getFeaturedPropertiesFromD1(limit);
+    const cached = unstable_cache(
+      async () => getFeaturedPropertiesFromD1(limit),
+      ["featured-properties", String(limit)],
+      { tags: ["properties-list"], revalidate: 60 },
+    );
+    return await cached();
   } catch (error) {
-    console.log("Error fetching featured properties:", error);
+    console.error("Error fetching featured properties:", error);
     return {
       success: false,
       message: error instanceof Error ? error.message : "Failed to fetch featured properties",

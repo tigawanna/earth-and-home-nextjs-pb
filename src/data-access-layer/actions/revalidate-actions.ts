@@ -8,4 +8,5 @@ export async function revalidatePropertiesList() {
 
 export async function revalidatePropertyById(propertyId: string) {
   revalidateTag(propertyId, "max");
+  revalidateTag("properties-list", "max");
 }

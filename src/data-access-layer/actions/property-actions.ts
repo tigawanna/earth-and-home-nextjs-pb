@@ -150,7 +150,15 @@ export async function createProperty(
   }
 
   const now = new Date();
-  const id = data.id?.trim() || crypto.randomUUID();
+  let id = data.id?.trim() || crypto.randomUUID();
+  const [collision] = await db
+    .select({ id: properties.id })
+    .from(properties)
+    .where(eq(properties.id, id))
+    .limit(1);
+  if (collision) {
+    id = `${id}-${crypto.randomUUID().slice(0, 8)}`;
+  }
   const locationPoint = data.location_point;
 
   const [row] = await db
